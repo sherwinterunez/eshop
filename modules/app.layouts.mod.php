@@ -1,0 +1,550 @@
+<?php
+/*
+* 
+* Author: Sherwin R. Terunez
+* Contact: sherwinterunez@yahoo.com
+*
+* Description:
+*
+* App Module
+*
+* Date: November 13, 2015
+*
+*/
+
+if(!defined('APPLICATION_RUNNING')) {
+	header("HTTP/1.0 404 Not Found");
+	die('access denied');
+}
+
+if(defined('ANNOUNCE')) {
+	echo "\n<!-- loaded: ".__FILE__." -->\n";
+}
+
+$layouts['app']['usermanagement'] = array(
+	'pattern'=>'2U',
+	'module'=>'user',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>200,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'usermanagementcontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'usermanagementmanage',
+			),
+		),
+	)
+);
+
+$layouts['app']['useraccount'] = array(
+	'pattern'=>'2U',
+	'module'=>'useraccount',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>200,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'useraccountcontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'useraccountmain',
+			),
+		),
+	)
+);
+
+$layouts['app']['websites'] = array(
+	'pattern'=>'2U',
+	'module'=>'web',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>200,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'websitescontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'websitesmanage',
+			),
+		),
+	)
+);
+
+$layouts['app']['messaging'] = array(
+	'pattern'=>'4H',
+	'module'=>'messaging',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'messagingcontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'messagingmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'messagingdetails',
+			),
+		),
+		array(
+			'id'=>'d',
+			'text'=>'Details',
+			'width'=>250,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'messagingmisc',
+			),
+		),
+	)
+);
+
+$layouts['app']['load'] = array(
+	'pattern'=>'3L',
+	'module'=>'load',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'loadcontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'loadmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'loaddetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['discount'] = array(
+	'pattern'=>'3L',
+	'module'=>'discount',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'discountcontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'discountmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'discountdetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['inventory'] = array(
+	'pattern'=>'3L',
+	'module'=>'inventory',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'inventorycontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'inventorymain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'inventorydetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['payables'] = array(
+	'pattern'=>'3L',
+	'module'=>'payables',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'payablescontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'payablesmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'payablesdetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['receivables'] = array(
+	'pattern'=>'3L',
+	'module'=>'receivables',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'receivablescontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'receivablesmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'receivablesdetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['contact'] = array(
+	'pattern'=>'3L',
+	'module'=>'contact',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'contactcontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'contactmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'contactdetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['remittance'] = array(
+	'pattern'=>'3L',
+	'module'=>'remittance',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'remittancecontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'remittancemain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'remittancedetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['encashment'] = array(
+	'pattern'=>'3L',
+	'module'=>'encashment',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'encashmentcontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'encashmentmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'encashmentdetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['reports'] = array(
+	'pattern'=>'3L',
+	'module'=>'reports',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'reportscontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'reportsmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'reportsdetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['setting'] = array(
+	'pattern'=>'3L',
+	'module'=>'setting',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'settingcontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'settingmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'settingdetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['tools'] = array(
+	'pattern'=>'3L',
+	'module'=>'tools',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'toolscontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'toolsmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'toolsdetail',
+			),
+		),
+	)
+);
+
+$layouts['app']['dashboard'] = array(
+	'pattern'=>'1C',
+	'module'=>'tools',
+	'toolbar'=>'a',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'dashboardcontrol',
+			),
+		),
+	)
+);
+
+$layouts['app']['sample'] = array(
+	'pattern'=>'3L',
+	'module'=>'sample',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'samplecontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'samplemain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'sampledetail',
+			),
+		),
+	)
+);
+

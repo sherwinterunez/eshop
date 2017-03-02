@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=x.y
+Name=ProgramName
+Comment=This is my comment
+Exec=/srv/www/eshop.dev/tailmessages.sh
+#Icon=/home/alex/Pictures/icon.png
+Terminal=true
+Type=Application
+Categories=Utility;Application;
