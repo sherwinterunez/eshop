@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,7 +24,7 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_app_useraccount')) {
 
 	class APP_app_useraccount extends APP_Base_Ajax {
-	
+
 		var $desc = 'User Account';
 
 		var $pathid = 'useraccount';
@@ -39,7 +39,7 @@ if(!class_exists('APP_app_useraccount')) {
 		function __construct() {
 			$this->init();
 		}
-		
+
 		function __destruct() {
 		}
 
@@ -222,11 +222,11 @@ if(!class_exists('APP_app_useraccount')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_useraccountcontrol
 
 		function _form_useraccountmain($routerid=false,$formid=false) {
@@ -242,11 +242,11 @@ if(!class_exists('APP_app_useraccount')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_useraccountmain
 
 		function _form_useraccountrole($routerid=false,$formid=false) {
@@ -272,7 +272,7 @@ if(!class_exists('APP_app_useraccount')) {
 						if(!empty($this->vars['post']['roleid'])&&is_numeric($this->vars['post']['roleid'])&&$this->vars['post']['roleid']>0) {
 							if(!($result = $appdb->query("select * from tbl_roles where role_id=".$this->vars['post']['roleid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['role_id'])) {
@@ -386,7 +386,7 @@ if(!class_exists('APP_app_useraccount')) {
 
 							if(!($result = $appdb->update("tbl_roles",$content,"role_id=".$this->vars['post']['roleid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							$ret['treeid'] = $this->vars['post']['roleid'];
@@ -410,7 +410,7 @@ if(!class_exists('APP_app_useraccount')) {
 
 							if(!($result = $appdb->insert("tbl_roles",$content,"role_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['returning'][0]['role_id'])) {
@@ -434,7 +434,7 @@ if(!class_exists('APP_app_useraccount')) {
 
 							if(!($result = $appdb->query("delete from tbl_roles where role_id=".$this->vars['post']['roleid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 						}
@@ -451,11 +451,11 @@ if(!class_exists('APP_app_useraccount')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_useraccountrole
 
 		function _form_useraccountuser($routerid=false,$formid=false) {
@@ -478,7 +478,13 @@ if(!class_exists('APP_app_useraccount')) {
 					} else {
 						if(!($result = $appdb->query("select * from tbl_roles where flag=0 and role_id!=1 order by role_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-						}	
+						}
+					}
+
+					$allroles = array();
+
+					if(!empty($result['rows'][0]['role_id'])) {
+						$allroles = $result['rows'];
 					}
 
 					$params['allroles'] = array();
@@ -493,38 +499,6 @@ if(!class_exists('APP_app_useraccount')) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Invalid Role/User ID'));
 						}
 
-						if($this->vars['post']['method']=='useraccountedit') {
-
-							if(in_array('useraccountchangerole',$access)) {
-								foreach($result['rows'] as $k=>$v) {
-									$selected = false;
-									if($this->vars['post']['roleid']==$v['role_id']) {
-										$params['rolesinfo'] = $v;
-										$selected = true;
-									}
-
-									$params['allroles'][] = array('value'=>$v['role_id'],'text'=>$v['role_name'],'selected'=>$selected);
-								}
-							} else {
-								foreach($result['rows'] as $k=>$v) {
-									if($this->vars['post']['roleid']==$v['role_id']) {
-										$params['rolesinfo'] = $v;
-										$params['allroles'][] = array('value'=>$v['role_id'],'text'=>$v['role_name'],'selected'=>true);
-										break;
-									}
-								}
-							}
-
-						} else {
-							foreach($result['rows'] as $k=>$v) {
-								if($this->vars['post']['roleid']==$v['role_id']) {
-									$params['rolesinfo'] = $v;
-									$params['allroles'][] = array('value'=>$v['role_id'],'text'=>$v['role_name'],'selected'=>true);
-									break;
-								}
-							}							
-						}
-
 						if(!($result = $appdb->query("select * from tbl_users where role_id=".$this->vars['post']['roleid']." and user_id=".$this->vars['post']['userid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 						}
@@ -535,6 +509,91 @@ if(!class_exists('APP_app_useraccount')) {
 								$params['userinfo']['content'] = json_decode($params['userinfo']['content'],true);
 							}
 						}
+
+						if($this->vars['post']['method']=='useraccountedit') {
+
+							if(in_array('useraccountchangerole',$access)) {
+								foreach($allroles as $k=>$v) {
+									$selected = false;
+									if($this->vars['post']['roleid']==$v['role_id']) {
+										$params['rolesinfo'] = $v;
+										$selected = true;
+									}
+
+									$params['allroles'][] = array('value'=>$v['role_id'],'text'=>$v['role_name'],'selected'=>$selected);
+								}
+
+								$allStaff = getAllStaff();
+
+								if(!empty($allStaff)) {
+									$params['allstaff'] = array();
+									$params['allstaff'][] = array('value'=>0,'text'=>'','selected'=>false);
+
+									foreach($allStaff as $k=>$v) {
+										$selected = false;
+										if($params['userinfo']['user_staffid']==$k) {
+											$selected = true;
+										}
+
+										$params['allstaff'][] = array('value'=>$k,'text'=>getCustomerFullname($k),'selected'=>$selected);
+									}
+								}
+
+							} else {
+								foreach($allroles as $k=>$v) {
+									if($this->vars['post']['roleid']==$v['role_id']) {
+										$params['rolesinfo'] = $v;
+										$params['allroles'][] = array('value'=>$v['role_id'],'text'=>$v['role_name'],'selected'=>true);
+										break;
+									}
+								}
+
+								$allStaff = getAllStaff();
+
+								if(!empty($allStaff)) {
+									foreach($allStaff as $k=>$v) {
+										$selected = false;
+										if($params['userinfo']['user_staffid']==$k) {
+											$params['allstaff'][] = array('value'=>$k,'text'=>getCustomerFullname($k),'selected'=>true);
+											break;
+										}
+									}
+								}
+							}
+
+						} else {
+							foreach($allroles as $k=>$v) {
+								if($this->vars['post']['roleid']==$v['role_id']) {
+									$params['rolesinfo'] = $v;
+									$params['allroles'][] = array('value'=>$v['role_id'],'text'=>$v['role_name'],'selected'=>true);
+									break;
+								}
+							}
+
+							$allStaff = getAllStaff();
+
+							if(!empty($allStaff)) {
+								foreach($allStaff as $k=>$v) {
+									$selected = false;
+									if($params['userinfo']['user_staffid']==$k) {
+										$params['allstaff'][] = array('value'=>$k,'text'=>getCustomerFullname($k),'selected'=>true);
+										break;
+									}
+								}
+							}
+
+						}
+
+						/*if(!($result = $appdb->query("select * from tbl_users where role_id=".$this->vars['post']['roleid']." and user_id=".$this->vars['post']['userid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						}
+
+						if(!empty($result['rows'][0]['user_id'])) {
+							$params['userinfo'] = $result['rows'][0];
+							if(!empty($params['userinfo']['content'])) {
+								$params['userinfo']['content'] = json_decode($params['userinfo']['content'],true);
+							}
+						}*/
 
 					} else
 					if($this->vars['post']['method']=='useraccountnewuser') {
@@ -571,6 +630,7 @@ if(!class_exists('APP_app_useraccount')) {
 							$content['role_id'] = $ret['roleid'] = $this->vars['post']['user_role'];
 							$content['user_login'] = $this->vars['post']['user_login'];
 							$content['user_email'] = $this->vars['post']['user_email'];
+							$content['user_staffid'] = !empty($this->vars['post']['user_staffid']) ? $this->vars['post']['user_staffid'] : 0;
 
 							if(!empty($this->vars['post']['new_hash'])) {
 								$content['user_hash'] = $this->vars['post']['new_hash'];
@@ -588,7 +648,7 @@ if(!class_exists('APP_app_useraccount')) {
 
 							if(!($result = $appdb->update("tbl_users",$content,"user_id=".$this->vars['post']['userid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							$ret['userid'] = $this->vars['post']['userid'];
@@ -599,6 +659,7 @@ if(!class_exists('APP_app_useraccount')) {
 							$content['role_id'] = $ret['roleid'] = $this->vars['post']['user_role'];
 							$content['user_login'] = $this->vars['post']['user_login'];
 							$content['user_email'] = $this->vars['post']['user_email'];
+							$content['user_staffid'] = !empty($this->vars['post']['user_staffid']) ? $this->vars['post']['user_staffid'] : 0;
 
 							if(!empty($this->vars['post']['new_hash'])) {
 								$content['user_hash'] = $this->vars['post']['new_hash'];
@@ -616,7 +677,7 @@ if(!class_exists('APP_app_useraccount')) {
 
 							if(!($result = $appdb->insert("tbl_users",$content,"user_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['returning'][0]['user_id'])) {
@@ -625,6 +686,16 @@ if(!class_exists('APP_app_useraccount')) {
 
 						}
 
+						if(!empty($this->vars['post']['user_staffid'])&&!empty($ret['userid'])) {
+
+							$content = array();
+							$content['customer_userid'] = $ret['userid'];
+
+							if(!($result = $appdb->update("tbl_customer",$content,"customer_id=".$this->vars['post']['user_staffid']))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+						}
 
 						//$ret['roleid'] = $this->vars['post']['roleid'];
 						$ret['xml'] = $this->_xml_useraccountcontrol($routerid,$formid);
@@ -643,7 +714,7 @@ if(!class_exists('APP_app_useraccount')) {
 
 							if(!($result = $appdb->query("delete from tbl_users where user_id=".$this->vars['post']['userid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 						}
@@ -659,11 +730,11 @@ if(!class_exists('APP_app_useraccount')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_useraccountuser
 
 		function router() {
@@ -731,7 +802,7 @@ if(!class_exists('APP_app_useraccount')) {
 						if($retflag==2) {
 							return $jsonval;
 						}
-					} 
+					}
 
 				} else
 				if( $this->post['action']=='form' && !empty($this->post['formid']) ) {
@@ -832,7 +903,7 @@ if(!class_exists('APP_app_useraccount')) {
 
 			return false;
 		} // router($vars=false,$retflag=false)
-		
+
 	}
 
 	$appappuseraccount = new APP_app_useraccount;

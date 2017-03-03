@@ -914,3 +914,9 @@ alter table tbl_item add column item_checkprovider integer NOT NULL DEFAULT 0;
 ---------------------------------------------------------------------
 
 alter table tbl_customer add column customer_freezelevel numeric NOT NULL DEFAULT 0;
+alter table tbl_customer add column customer_userid integer NOT NULL DEFAULT 0;
+alter table tbl_customer add column customer_freezed integer NOT NULL DEFAULT 0;
+
+---------------------------------------------------------------------
+
+alter table tbl_users add column user_staffid integer NOT NULL DEFAULT 0;

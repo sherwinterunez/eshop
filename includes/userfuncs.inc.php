@@ -770,6 +770,50 @@ function getContactNickByNumber($number=false) {
 	return 'Unregistered';
 }
 
+function getCustomerFullname($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)&&intval($id)>0) {
+	} else return false;
+
+	$sql = "select customer_firstname,customer_lastname,customer_middlename from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	$fullname = '';
+
+	if(!empty($result['rows'][0]['customer_firstname'])) {
+		$f = trim($result['rows'][0]['customer_firstname']);
+		if(!empty($f)) {
+			$fullname .= $f;
+		}
+	}
+
+	if(!empty($result['rows'][0]['customer_middlename'])) {
+		$f = trim($result['rows'][0]['customer_middlename']);
+		if(!empty($f)) {
+			$fullname .= ' '.$f;
+		}
+	}
+
+	if(!empty($result['rows'][0]['customer_lastname'])) {
+		$f = trim($result['rows'][0]['customer_lastname']);
+		if(!empty($f)) {
+			$fullname .= ' '.$f;
+		}
+	}
+
+	$fullname = trim($fullname);
+
+	if(!empty($fullname)) {
+		return $fullname;
+	}
+
+	return false;
+}
+
 function getCustomerNickByNumber($number=false) {
 	global $appdb;
 
@@ -1190,6 +1234,63 @@ function computeCustomerBalance($id=false) {
 	}*/
 
 	return false;
+}
+
+function getStaffCreditLimit($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_creditlimit'])) {
+		return floatval($result['rows'][0]['customer_creditlimit']);
+	}
+
+	return 0;
+}
+
+function isCustomerFreezed($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_freezed'])) {
+		return true;
+	}
+
+	return false;
+}
+
+function getStaffAvailableCredit($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_creditlimit'])) {
+		return floatval($result['rows'][0]['customer_creditlimit']) - floatval($result['rows'][0]['customer_staffbalance']);
+	}
+
+	return 0;
 }
 
 function getStaffBalance($id=false) {
@@ -7687,6 +7788,10 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 		$loadtransaction_regularload = $loadtransaction['loadtransaction_regularload'];
 
+		if(!empty($loadtransaction['loadtransaction_load'])) {
+			$loadtransaction_load = $loadtransaction['loadtransaction_load'];
+		}
+
 		if($loadtransaction['elapsedtime']>(60*5)) {  /// retail transaction approved more than 5 minutes will be set to failed
 
 			if($loadtransaction_type=='retail') {
@@ -7805,6 +7910,10 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 				if(!empty($loadtransaction_regularload)) {
 					$at = str_replace('$REGULARLOAD',intval($loadtransaction_regularload),$at);
+				}
+
+				if(!empty($loadtransaction_load)) {
+					$at = str_replace('$QUANTITY',intval($loadtransaction_load),$at);
 				}
 
 				$pin = getSimCardPinByNumber($mobileNo);

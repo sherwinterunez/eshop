@@ -344,6 +344,7 @@ if(!class_exists('APP_app_contact')) {
 					$content['customer_accounttype'] = !empty($post['customer_accounttype']) ? $post['customer_accounttype'] : '';
 					$content['customer_type'] = $customer_type = !empty($post['customer_type']) ? $post['customer_type'] : '';
 					$content['customer_freezelevel'] = !empty($post['customer_freezelevel']) ? $post['customer_freezelevel'] : 0;
+					$content['customer_terms'] = !empty($post['customer_terms']) ? $post['customer_terms'] : '';
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
@@ -901,7 +902,7 @@ if(!class_exists('APP_app_contact')) {
 					$opt[] = array('text'=>'','value'=>'','selected'=>false);
 				}
 
-				$accounttype = array('3 DAYS','7 DAYS','10 DAYS');
+				$accounttype = array('1 DAY','3 DAYS','7 DAYS','10 DAYS','15 DAYS','30 DAYS');
 
 				foreach($accounttype as $v) {
 					$selected = false;

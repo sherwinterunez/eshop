@@ -40,7 +40,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 ?>
 <!--
-<?php 
+<?php
 
 $dt = getDbDate(1);
 
@@ -176,7 +176,7 @@ pre(array('$vars'=>$vars)); ?>
 				}
 				if(ddata.html) {
 					jQuery("#"+odata.obj.wid).html(ddata.html);
-					//layout_resize_%formval%();								
+					//layout_resize_%formval%();
 				}
 			});
 		});
@@ -197,7 +197,7 @@ pre(array('$vars'=>$vars)); ?>
 		var myTabbar = new dhtmlXTabBar("<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
+
 		myTabbar.addTab("tbDetails", "Details");
 		myTabbar.addTab("tbPayments", "Payments");
 		//myTabbar.addTab("tbMessage", "Message");
@@ -214,7 +214,7 @@ pre(array('$vars'=>$vars)); ?>
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "<?php echo $moduleid; ?>"},
-				{type: "hidden", name: "formid", value: "<?php echo $templatedetailid.$submod; ?>"},				
+				{type: "hidden", name: "formid", value: "<?php echo $templatedetailid.$submod; ?>"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
@@ -249,7 +249,7 @@ pre(array('$vars'=>$vars)); ?>
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?> 
+		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -347,9 +347,9 @@ pre(array('$vars'=>$vars)); ?>
 
 		myForm.setItemFocus("fund_recepientname");
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'save') { ?> 
+		<?php } else if($method==$moduleid.'save') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -357,7 +357,7 @@ pre(array('$vars'=>$vars)); ?>
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
@@ -382,7 +382,7 @@ pre(array('$vars'=>$vars)); ?>
 
 ///////////////////////////////////
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
@@ -476,7 +476,7 @@ pre(array('$vars'=>$vars)); ?>
 				    //myForm2_%formval%.hideItem(tbId);
 			    }
 			});
- 
+
 		});
 
 		myForm.attachEvent("onBeforeChange", function (name, old_value, new_value){
@@ -527,7 +527,7 @@ pre(array('$vars'=>$vars)); ?>
 				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval=%formval%",
 			}, function(ddata,odata){
 				if(ddata.html) {
-					jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);					
+					jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 				}
 			});
 		};*/
@@ -550,7 +550,7 @@ pre(array('$vars'=>$vars)); ?>
 				}, function(ddata,odata){
 					if(ddata.html) {
 						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
 				});
 			}
@@ -602,7 +602,7 @@ pre(array('$vars'=>$vars)); ?>
 			var myForm = myWinObj.form;
 
 			//var txt_optionnumber = parseInt($("#messagingdetailsoptionsdetailsform_%formval% input[name='txt_optionnumber']").val());
-			
+
 			//if(isNaN(txt_optionnumber)) {
 			//	txt_optionnumber = '';
 			//}
@@ -613,7 +613,7 @@ pre(array('$vars'=>$vars)); ?>
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			showSaving();
 
@@ -676,7 +676,7 @@ pre(array('$vars'=>$vars)); ?>
 
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
-	
+
 							try {
 								if(data.rowid) {
 									layout_resize_%formval%();
@@ -716,7 +716,7 @@ pre(array('$vars'=>$vars)); ?>
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=onrowselect&rowid="+rowid+"&formval="+formval+"&wid="+wid,
 				}, function(ddata,odata){
 					if(ddata.html) {
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
 				});
 			} else {
@@ -725,9 +725,9 @@ pre(array('$vars'=>$vars)); ?>
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=<?php echo $moduleid; ?>new&rowid=0&formval="+formval+"&wid="+wid,
 				}, function(ddata,odata){
 					if(ddata.html) {
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
-				});				
+				});
 			}
 
 		};

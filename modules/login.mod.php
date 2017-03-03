@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,22 +24,22 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_Login')) {
 
 	class APP_Login extends APP_Base {
-	
+
 		var $pathid = 'login';
 		var $desc = 'Login';
 		var $post = false;
 		var $vars = false;
-		
+
 		var $cls_ajax = false;
-	
+
 		function __construct() {
 			parent::__construct();
 		}
-		
+
 		function __destruct() {
 			parent::__destruct();
 		}
-		
+
 		function modulespath() {
 			return str_replace(basename(__FILE__),'',__FILE__);
 		}
@@ -95,6 +95,26 @@ if(!class_exists('APP_Login')) {
 			if(!empty($_SESSION['USER']['user_id'])) {
 				return $_SESSION['USER']['user_id'];
 			}
+			return false;
+		}
+
+		function getUserData() {
+			global $appdb;
+
+			$userId = $this->getUserID();
+
+			$sql = "select * from tbl_users where user_id=$userId";
+
+			if(!($result = $appdb->query($sql))) {
+				return false;
+			}
+
+			//pre(array($sql,$result));
+
+			if(!empty($result['rows'][0]['user_id'])) {
+				return $result['rows'][0];
+			}
+
 			return false;
 		}
 
@@ -166,7 +186,7 @@ if(!class_exists('APP_Login')) {
 					}
 
 					json_error_return(3); // 3 => 'Username has been disabled.'
-				} 
+				}
 
 				if(!($result = $appdb->update('tbl_users',array('loginfailed'=>'#loginfailed + 1#','loginfailedstamp'=>'now()'),"user_login='".pgFixString($this->post['username'])."'"))) {
 					json_error_return(1); // 1 => 'Error in SQL execution.'
@@ -208,7 +228,7 @@ if(!class_exists('APP_Login')) {
 				$_SESSION['ROLE'] = $roleinfo;
 /////
 			}
-		
+
 			if(!($result = $appdb->update('tbl_users',array('lastloginstamp'=>'now()','loginfailed'=>0),'user_id='.$userinfo['user_id']))) {
 				json_error_return(1); // 1 => 'Error in SQL execution.'
 			}
@@ -229,15 +249,15 @@ if(!class_exists('APP_Login')) {
 
 		function render($vars) {
 			global $apptemplate, $appform, $current_page;
-			
+
 			$this->check_url();
 
 			$apptemplate->header($this->desc.' | '.APP_NAME);
 
 			//$apptemplate->page('topnavbar');
-	
+
 			//$apptemplate->page('topnav');
-	
+
 			//$apptemplate->page('topmenu');
 
 			//$apptemplate->page('workarea');
@@ -245,9 +265,9 @@ if(!class_exists('APP_Login')) {
 			//$apptemplate->page('login');
 
 			$apptemplate->footer();
-			
+
 		} // render
-								
+
 	} // class APP_Login
 
 	$applogin = new APP_Login;

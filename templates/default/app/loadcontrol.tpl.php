@@ -16,6 +16,11 @@ $sidebar[] = array(
 	'icon'=>'desktop.png',
 );
 $sidebar[] = array(
+	'id'=>'customerreload',
+	'text'=>'Customer Reload',
+	'icon'=>'documents.png',
+);
+$sidebar[] = array(
 	'id'=>'fundreload',
 	'text'=>'Fund Reload',
 	'icon'=>'downloads.png',
@@ -25,11 +30,6 @@ $sidebar[] = array(
 	'text'=>'Child Reload',
 	'icon'=>'music.png',
 );
-//$sidebar[] = array(
-//	'id'=>'customerreload',
-//	'text'=>'Customer Reload',
-//	'icon'=>'documents.png',
-//);
 $sidebar[] = array(
 	'id'=>'fundtransfer',
 	'text'=>'Fund Transfer',
@@ -43,14 +43,14 @@ $sidebar[] = array(
 
 ?>
 <!--
-<?php 
+<?php
 
 global $appaccess;
 global $applogin;
 
 $access = $applogin->getAccess();
 
-//$appaccess->showrules(); 
+//$appaccess->showrules();
 
 pre(array('$_SESSION'=>$_SESSION));
 
@@ -307,9 +307,9 @@ pre(array('$_SESSION'=>$_SESSION));
 			pdata: "routerid="+settings.router_id+"&action=formonly&formid=loadmain"+id+"&module=load&formval=%formval%",
 		}, function(ddata,odata){
 			if(ddata.html) {
-				jQuery("#formdiv_%formval% #loadmain").parent().html(ddata.html);	
+				jQuery("#formdiv_%formval% #loadmain").parent().html(ddata.html);
 				myTab.toolbar.setValue("<?php echo $moduleid; ?>datefrom","<?php $dt=getDbDate(1); echo $dt['date']; ?> 00:00");
-				myTab.toolbar.setValue("<?php echo $moduleid; ?>dateto","<?php echo getDbDate(); ?>");			
+				myTab.toolbar.setValue("<?php echo $moduleid; ?>dateto","<?php echo getDbDate(); ?>");
 			}
 		});
 

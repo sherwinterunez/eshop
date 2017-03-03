@@ -38,14 +38,14 @@ if(in_array('useraccounteditrole',$access)) {
 	$toolbars[] = 'useraccountedit';
 	$savecancel = true;
 } else {
-	$disabledtb[] = 'useraccountedit';	
+	$disabledtb[] = 'useraccountedit';
 }
 
 if(in_array('useraccountdeleterole',$access)) {
 	$toolbars[] = 'useraccountdelete';
 	$savecancel = true;
 } else {
-	$disabledtb[] = 'useraccountdelete';		
+	$disabledtb[] = 'useraccountdelete';
 }
 */
 
@@ -53,7 +53,7 @@ if(in_array('useraccountnewuser',$access)) {
 	$toolbars[] = 'useraccountnewuser';
 	$savecancel = true;
 } else {
-	$disabledtb[] = 'useraccountnewuser';		
+	$disabledtb[] = 'useraccountnewuser';
 }
 
 if(in_array('useraccountedituser',$access)) {
@@ -67,7 +67,7 @@ if(in_array('useraccountdeleteuser',$access)) {
 	$toolbars[] = 'useraccountdelete';
 	$savecancel = true;
 } else {
-	$disabledtb[] = 'useraccountdelete';	
+	$disabledtb[] = 'useraccountdelete';
 }
 
 if($savecancel) {
@@ -75,7 +75,7 @@ if($savecancel) {
 	$toolbars[] = 'useraccountcancel';
 } else {
 	//$disabledtb[] = 'useraccountsave';
-	//$disabledtb[] = 'useraccountcancel';	
+	//$disabledtb[] = 'useraccountcancel';
 }
 
 ?>
@@ -126,11 +126,11 @@ if($savecancel) {
 
 		var myTab = srt.getTabUsingFormVal('%formval%');
 
-		<?php /*if($sysadmin) { ?>
+		<?php /*if($sysadmin) {
 		myTab.toolbar.disableOnly(['useraccountedit','useraccountdelete','useraccountsave']);
 		<?php } else { ?>
 		myTab.toolbar.disableOnly(['useraccountdelete','useraccountsave']);
-		<?php }*/ ?>
+		}*/ ?>
 
 		myTab.toolbar.resetAll();
 
@@ -143,7 +143,7 @@ if($savecancel) {
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "useraccount"},
-				{type: "hidden", name: "formid", value: "useraccountuser"},				
+				{type: "hidden", name: "formid", value: "useraccountuser"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "roleid", value: <?php echo !empty($params['userinfo']['role_id']) ? json_encode($params['userinfo']['role_id']) : '""'; ?>},
 				{type: "hidden", name: "userid", value: <?php echo !empty($params['userinfo']['user_id']) ? json_encode($params['userinfo']['user_id']) : '""'; ?>},
@@ -174,7 +174,16 @@ if($savecancel) {
 				{type: "input", name: "user_mname", label: "Middle Name", readonly:<?php echo $readonly ? 'true' : 'false'; ?>, value: <?php echo !empty($params['userinfo']['content']['user_mname']) ? json_encode($params['userinfo']['content']['user_mname']) : '""'; ?>},
 				{type: "input", name: "user_lname", label: "Last Name", validate:"NotEmpty", required:<?php echo !$readonly ? 'true' : 'false'; ?>, readonly:<?php echo $readonly ? 'true' : 'false'; ?>, value: <?php echo !empty($params['userinfo']['content']['user_lname']) ? json_encode($params['userinfo']['content']['user_lname']) : '""'; ?>},
 			]},
+			{type: "fieldset", name: "staffinfo", label: "Staff Information", inputWidth: 500, list:[
+				//{type: "input", name: "user_staffid", label: "Staff Name", readonly:<?php echo $readonly ? 'true' : 'false'; ?>, value: <?php echo !empty($params['userinfo']['content']['user_staffid']) ? json_encode($params['userinfo']['content']['user_staffid']) : '""'; ?>},
+				{type: "combo", name: "user_staffid", label: "Staff Account", readonly:true, filtering:true, options: <?php echo !empty($params['allstaff']) ? json_encode($params['allstaff']) : '[]'; ?>},
+			]},
+			{type: "label", label: ""}
 		];
+
+		/* <!--
+		<?php pre(array($params['allstaff'])); ?>
+		--> */
 
 		if(typeof(myForm_%formval%)!='null'&&typeof(myForm_%formval%)!='undefined'&&myForm_%formval%!=null) {
 			try {
@@ -213,7 +222,7 @@ if($savecancel) {
 		myTab.toolbar.enableOnly(['useraccountsave','useraccountcancel']);
 		<?php } ?>
 
-		//myTab.toolbar.showOnly(myToolbar);	
+		//myTab.toolbar.showOnly(myToolbar);
 
 		//myTab.toolbar.disableOnly(disabledtb);
 
@@ -250,9 +259,9 @@ if($savecancel) {
 				msg = 'Please enter Password. This field is required.';
 			} else if(id=='user_pass2') {
 				if(typeof(value)=='string' && value!='') {
-					msg = 'Please make sure the password is the same.';					
+					msg = 'Please make sure the password is the same.';
 				} else {
-					msg = 'Please enter Confirm Password. This field is required. ';					
+					msg = 'Please enter Confirm Password. This field is required. ';
 				}
 			} else if(id=='user_email') {
 				msg = 'Please enter proper Email Address (eg. joshua@yahoo.com). This field is required.';
@@ -352,7 +361,7 @@ if($savecancel) {
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			var user_hash = computeHash(myForm.getItemValue('user_pass2'), myForm.getItemValue('user_login'));
 
@@ -409,20 +418,20 @@ if($savecancel) {
 					}
 
 					if(data.error_code) {
-					} else 
+					} else
 					if(data.html) {
 					}
 
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
-	
+
 							var roleid = data.roleid ? data.roleid : 0;
 							var userid = data.userid ? data.userid : 0;
 
 							if(data.xml) {
 								myTree_%formval%.deleteItem('0|0');
 
-								myTree_%formval%.parse(data.xml,"xml"); 
+								myTree_%formval%.parse(data.xml,"xml");
 
 								myTree_%formval%.selectItem(roleid+'|'+userid,true);
 							}
@@ -439,7 +448,7 @@ if($savecancel) {
 
 		myTab.toolbar.getToolbarData('useraccountdelete').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);
-			
+
 			var roleid = 0;
 
 			var userid = 0;
@@ -477,9 +486,9 @@ if($savecancel) {
 								if(ddata.xml) {
 									myTree_%formval%.deleteItem('0|0');
 
-									myTree_%formval%.parse(ddata.xml,"xml"); 
+									myTree_%formval%.parse(ddata.xml,"xml");
 
-									myTree_%formval%.selectItem(1,true);									
+									myTree_%formval%.selectItem(1,true);
 								}
 
 								showAlert(ddata.return_message);
