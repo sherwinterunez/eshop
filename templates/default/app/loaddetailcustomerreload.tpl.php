@@ -249,6 +249,12 @@ pre(array('$vars'=>$vars)); ?>
 
 ///////////////////////////////////
 
+		<?php if(!empty($vars['params']['return_code'])&&!empty($vars['params']['return_message'])) { ?>
+			showAlert('<?php echo $vars['params']['return_message']; ?>');
+		<?php } ?>
+
+///////////////////////////////////
+
 		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?>
 
 		myWinToolbar.disableAll();

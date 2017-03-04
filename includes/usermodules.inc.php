@@ -455,6 +455,10 @@ function _eLoadProcessSMS($vars=array()) {
 
 		//return false;
 
+		if(isCriticalLevel($loadtransaction_customerid)) {
+			$errmsg = smsdt()." ".getNotification('CRITICAL LEVEL');
+			sendToGateway($loadtransaction_customernumber,$simhotline,$errmsg);
+		}
 
 		if(!isValidItem($matched['$ITEMCODE'])) {
 			if(!($forregularload=isValidItemForRegularLoad($matched['$ITEMCODE']))) {
@@ -2125,6 +2129,11 @@ function _eShopBalance($vars=array()) {
 		$loadtransaction_customerid = $vars['smsinbox']['smsinbox_contactsid'];
 
 		$smscommandskeys = array();
+
+		if(isCriticalLevel($loadtransaction_customerid)) {
+			$errmsg = smsdt()." ".getNotification('CRITICAL LEVEL');
+			sendToGateway($confirmationFrom,$loadtransaction_assignedsim,$errmsg);
+		}
 
 		$noti = '';
 

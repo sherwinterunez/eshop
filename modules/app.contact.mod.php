@@ -345,6 +345,8 @@ if(!class_exists('APP_app_contact')) {
 					$content['customer_type'] = $customer_type = !empty($post['customer_type']) ? $post['customer_type'] : '';
 					$content['customer_freezelevel'] = !empty($post['customer_freezelevel']) ? $post['customer_freezelevel'] : 0;
 					$content['customer_terms'] = !empty($post['customer_terms']) ? $post['customer_terms'] : '';
+					$content['customer_paymentpercentage'] = !empty($post['customer_paymentpercentage']) ? $post['customer_paymentpercentage'] : 100;
+					$content['customer_freezed'] = !empty($post['customer_freezed']) ? 1 : 0;
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
@@ -854,6 +856,17 @@ if(!class_exists('APP_app_contact')) {
 
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
+					'label' => 'CRITICAL LEVEL',
+					'name' => 'customer_criticallevel',
+					'readonly' => $readonly,
+					//'hidden' => $accounttypecash,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_criticallevel']) ? $params['customerinfo']['customer_criticallevel'] : '',
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
 					'label' => 'CREDIT LIMIT',
 					'name' => 'customer_creditlimit',
 					'readonly' => $readonly,
@@ -861,17 +874,6 @@ if(!class_exists('APP_app_contact')) {
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
 					'value' => !empty($params['customerinfo']['customer_creditlimit']) ? $params['customerinfo']['customer_creditlimit'] : '',
-				);
-
-				$params['tbCustomer'][] = array(
-					'type' => 'input',
-					'label' => 'CRITICAL LEVEL',
-					'name' => 'customer_criticallevel',
-					'readonly' => $readonly,
-					'hidden' => $accounttypecash,
-					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_criticallevel']) ? $params['customerinfo']['customer_criticallevel'] : '',
 				);
 
 				$params['tbCustomer'][] = array(
@@ -886,6 +888,11 @@ if(!class_exists('APP_app_contact')) {
 				);
 
 				$params['tbCustomer'][] = array(
+					'type' => 'newcolumn',
+					'offset' => $newcolumnoffset,
+				);
+
+				$params['tbCustomer'][] = array(
 					'type' => 'input',
 					'label' => 'AVAILABLE CREDIT',
 					'name' => 'customer_availablecredit',
@@ -893,7 +900,8 @@ if(!class_exists('APP_app_contact')) {
 					'hidden' => $accounttypecash,
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_availablecredit']) ? $params['customerinfo']['customer_availablecredit'] : '',
+					//'value' => !empty($params['customerinfo']['customer_availablecredit']) ? $params['customerinfo']['customer_availablecredit'] : '',
+					'value' => getStaffAvailableCredit($params['customerinfo']['customer_id']),
 				);
 
 				$opt = array();
@@ -937,6 +945,28 @@ if(!class_exists('APP_app_contact')) {
 					//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
 					'value' => !empty($params['customerinfo']['customer_creditdue']) ? $params['customerinfo']['customer_creditdue'] : '',
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'PAYMENT PERCENTAGE',
+					'name' => 'customer_paymentpercentage',
+					'readonly' => $readonly,
+					'hidden' => $accounttypecash,
+					'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
+					//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_paymentpercentage']) ? $params['customerinfo']['customer_paymentpercentage'] : 0,
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'checkbox',
+					'label' => 'ACCOUNT FREEZED',
+					//'labelWidth' => 500,
+					'name' => 'customer_freezed',
+					'readonly' => $readonly,
+					'checked' => !empty($params['customerinfo']['customer_freezed']) ? true : false,
+					'position' => 'label-right',
 				);
 
 				/*$opt = array();

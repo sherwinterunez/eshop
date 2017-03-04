@@ -1638,27 +1638,33 @@ if(!class_exists('APP_app_load')) {
 
 				$params = array();
 
+				$userId = $applogin->getUserID();
+				$userData = $applogin->getUserData();
+
+				if(!empty($userData['user_staffid'])) {
+					$user_staffid = $userData['user_staffid'];
+					$customer_type = getCustomerType($userData['user_staffid']);
+					//$retval['customer_type'] = $customer_type;
+				}
+
 				if(!empty($post['method'])&&($post['method']=='loadnew'||$post['method']=='loadedit')) {
 					$readonly = false;
 				}
 
 				if(!empty($post['method'])&&$post['method']=='loadnew') {
 
-					//$userId = $applogin->getUserID();
-
 					$retval = array();
 
-					$userData = $applogin->getUserData();
-
-					$retval['userdata'] = $userData;
-
-					if(!empty($userData['user_staffid'])) {
-						$user_staffid = $userData['user_staffid'];
-						$customer_type = getCustomerType($userData['user_staffid']);
-						$retval['customer_type'] = $customer_type;
-					}
+					//$retval['userdata'] = $userData;
 
 					if(!empty($customer_type)&&$customer_type=='STAFF') {
+
+						/*if(!($result = $appdb->query("select * from tbl_fund where fund_userid=$userId order by fund_datetimeunix asc limit 1"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						pre(array('$result'=>$result));*/
 
 						if(isCustomerFreezed($user_staffid)) {
 							$retval['return_code'] = 'ERROR';
@@ -1667,7 +1673,52 @@ if(!class_exists('APP_app_load')) {
 							die;
 						}
 
-						if(getStaffAvailableCredit($user_staffid)) {
+						if(isCriticalLevel($user_staffid)) {
+							$params['return_code'] = 'ALERT';
+							$params['return_message'] = 'Your account has reached its critical level. Please contact administrator!';
+						}
+
+						if(($availableCredit = getStaffAvailableCredit($user_staffid))) {
+
+							$creditLimit = getStaffCreditLimit($user_staffid);
+
+							if($availableCredit!=$creditLimit) {
+
+								if(($terms = getStaffTerms($user_staffid))) {
+
+									if(!empty(($unpaidTran = getStaffFirstUnpaidTransactions($user_staffid)))) {
+
+										$currentDate = getDbUnixDate();
+
+										$unpaidDate = pgDateUnix($unpaidTran['ledger_datetimeunix'],'m-d-Y') . ' 23:59';
+
+										$unpaidStamp = date2timestamp($unpaidDate, getOption('$DISPLAY_DATE_FORMAT','r'));
+
+										//$dueDate = floatval(86400 * ($terms-1)) + floatval($unpaidTran['ledger_datetimeunix']);
+
+										$dueDate = floatval(86400 * ($terms-1)) + $unpaidStamp;
+
+										setCustomerCreditDue($user_staffid,$dueDate);
+
+										//pre(array('$unpaidStamp'=>$unpaidStamp,'$unpaidDate'=>$unpaidDate,'ledger_datetimeunix'=>$unpaidTran['ledger_datetimeunix'],'ledger_datetimeunix2'=>pgDateUnix($unpaidTran['ledger_datetimeunix']),'$dueDate'=>$dueDate,'$dueDate2'=>pgDateUnix($dueDate),'$currentDate'=>$currentDate,'$currentDate2'=>pgDateUnix($currentDate),'$unpaidTran'=>$unpaidTran));
+
+										if($currentDate>$dueDate) {
+
+											setCustomerFreeze($user_staffid);
+
+											$retval['return_code'] = 'ERROR';
+											$retval['return_message'] = 'Your account is currently freezed. Please contact administrator!';
+											json_encode_return($retval);
+											die;
+										}
+									}
+
+								}
+
+								//pre(array('$terms'=>$terms));
+							}
+
+							unsetCustomerCreditDue($user_staffid);
 
 						} else {
 							$retval['return_code'] = 'ERROR';
@@ -1677,10 +1728,13 @@ if(!class_exists('APP_app_load')) {
 						}
 
 					} else {
-						$retval['return_code'] = 'ERROR';
-						$retval['return_message'] = 'You are not allowed to access this module!';
-						json_encode_return($retval);
-						die;
+
+						if(!$applogin->isSystemAdministrator()) {
+							$retval['return_code'] = 'ERROR';
+							$retval['return_message'] = 'You are not allowed to access this module!';
+							json_encode_return($retval);
+							die;
+						}
 					}
 
 				} else
@@ -1697,6 +1751,15 @@ if(!class_exists('APP_app_load')) {
 					}
 				} else
 				if(!empty($post['method'])&&$post['method']=='loadsave') {
+
+					$userId = $applogin->getUserID();
+					$userData = $applogin->getUserData();
+
+
+					if(!empty($userData['user_staffid'])) {
+						$user_staffid = $userData['user_staffid'];
+						$customer_type = getCustomerType($userData['user_staffid']);
+					}
 
 					$retval = array();
 					$retval['return_code'] = 'SUCCESS';
@@ -1720,6 +1783,10 @@ if(!class_exists('APP_app_load')) {
 					$content['fund_recepientnumber'] = !empty($post['fund_recepientnumber']) ? $post['fund_recepientnumber'] : '';
 					$content['fund_recepientpaymentterm'] = !empty($post['fund_recepientpaymentterm']) ? $post['fund_recepientpaymentterm'] : '';
 					$content['fund_status'] = 1;
+
+					if(!empty($customer_type)&&$customer_type=='STAFF') {
+						$content['fund_staffid'] = $user_staffid;
+					}
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
@@ -1775,6 +1842,14 @@ if(!class_exists('APP_app_load')) {
 
 						computeCustomerBalance($fund_recepientid);
 
+						$content['ledger_user'] = $user_staffid;
+
+						if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						computeStaffBalance($user_staffid);
 					}
 
 					json_encode_return($retval);

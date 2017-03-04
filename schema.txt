@@ -850,6 +850,39 @@ ALTER TABLE ONLY tbl_sample ADD CONSTRAINT tbl_sample_primary_key PRIMARY KEY (s
 
 insert into tbl_sample(sample_createstamp) values('01-01-2010');
 
+-- tbl_stafftransaction
+
+DROP SEQUENCE IF EXISTS tbl_stafftransaction_seq CASCADE;
+
+CREATE SEQUENCE tbl_stafftransaction_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_stafftransaction;
+
+CREATE TABLE tbl_stafftransaction (
+    stafftransaction_id bigint DEFAULT nextval(('tbl_stafftransaction_seq'::text)::regclass) NOT NULL,
+    stafftransaction_ymd text DEFAULT ''::text NOT NULL,
+    stafftransaction_type text DEFAULT ''::text NOT NULL,
+    stafftransaction_amount numeric NOT NULL DEFAULT 0,
+    stafftransaction_datetime text DEFAULT ''::text NOT NULL,
+    stafftransaction_datetimeunix integer NOT NULL DEFAULT 0,
+    stafftransaction_userid integer NOT NULL DEFAULT 0,
+    stafftransaction_username text DEFAULT ''::text NOT NULL,
+    stafftransaction_paid integer NOT NULL DEFAULT 0,
+    stafftransaction_active integer NOT NULL DEFAULT 0,
+    stafftransaction_deleted integer NOT NULL DEFAULT 0,
+    stafftransaction_flag integer NOT NULL DEFAULT 0,
+    stafftransaction_status integer NOT NULL DEFAULT 0,
+    stafftransaction_createstamp timestamp with time zone DEFAULT now(),
+    stafftransaction_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_stafftransaction ADD CONSTRAINT tbl_stafftransaction_primary_key PRIMARY KEY (fund_id);
+
 ---------------------------------------------------------------------
 
 
@@ -873,6 +906,8 @@ alter table tbl_ledger add column ledger_loadtransactionid integer NOT NULL DEFA
 alter table tbl_ledger add column ledger_fundid integer NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_receiptno text DEFAULT ''::text NOT NULL;
 alter table tbl_ledger add column ledger_adjustmentid integer NOT NULL DEFAULT 0;
+alter table tbl_ledger add column ledger_staff integer NOT NULL DEFAULT 0;
+alter table tbl_ledger add column ledger_staffpaid integer NOT NULL DEFAULT 0;
 
 ALTER TABLE tbl_ledger ALTER COLUMN ledger_loadtransactionid TYPE numeric;
 
@@ -916,7 +951,17 @@ alter table tbl_item add column item_checkprovider integer NOT NULL DEFAULT 0;
 alter table tbl_customer add column customer_freezelevel numeric NOT NULL DEFAULT 0;
 alter table tbl_customer add column customer_userid integer NOT NULL DEFAULT 0;
 alter table tbl_customer add column customer_freezed integer NOT NULL DEFAULT 0;
+alter table tbl_customer add column customer_paymentpercentage numeric NOT NULL DEFAULT 100;
+
+ALTER TABLE tbl_customer ALTER COLUMN customer_creditdue TYPE text;
+ALTER TABLE tbl_customer ALTER COLUMN customer_creditdue DROP DEFAULT;
+ALTER TABLE tbl_customer ALTER COLUMN customer_creditdue SET DEFAULT ''::text;
 
 ---------------------------------------------------------------------
 
 alter table tbl_users add column user_staffid integer NOT NULL DEFAULT 0;
+
+---------------------------------------------------------------------
+
+alter table tbl_fund add column fund_paid integer NOT NULL DEFAULT 0;
+alter table tbl_fund add column fund_staffid integer NOT NULL DEFAULT 0;

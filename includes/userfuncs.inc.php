@@ -1108,8 +1108,37 @@ function getCustomerBalance($id=false) {
 	return false;
 }
 
+/*function computeStaffAvailableCredit($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	computeStaffBalance($id);
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_creditlimit'])) {
+		$balance = floatval($result['rows'][0]['customer_creditlimit']) - floatval($result['rows'][0]['customer_staffbalance']);
+
+		$content = array();
+		$content['ledger_balance'] = $balance;
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=".$id))) {
+			return false;
+		}
+
+		return $balance;
+	}
+
+	return 0;
+}*/
+
 function computeStaffBalance($id=false) {
-	// ;
 	global $appdb;
 
 	if(!empty($id)&&is_numeric($id)) {
@@ -1236,6 +1265,102 @@ function computeCustomerBalance($id=false) {
 	return false;
 }
 
+function getStaffFirstUnpaidTransactions($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_ledger where ledger_user=$id and ledger_staffpaid=0 order by ledger_datetimeunix asc limit 1";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['ledger_id'])) {
+		return $result['rows'][0];
+	}
+
+	return false;
+}
+
+function getStaffTerms($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_terms'])) {
+		$terms = $result['rows'][0]['customer_terms'];
+
+		if(preg_match('/(\d+).+?/si',$terms,$matched)) {
+			//pre(array('$matched'=>$matched));
+			if(!empty($matched[1])&&intval($matched[1])>0) {
+				return intval($matched[1]);
+			}
+		}
+	}
+
+	return false;
+}
+
+function isCriticalLevel($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$customer_type = getCustomerType($id);
+
+	$critical_level = getCriticalLevel($id);
+
+	if(!empty($critical_level)&&is_numeric($critical_level)) {
+	} else {
+		return false;
+	}
+
+	if(!empty($customer_type)&&$customer_type=='STAFF') {
+		$balance = getStaffBalance($id);
+
+		if($balance>=$critical_level) {
+			return true;
+		}
+	} else {
+		$balance = getCustomerBalance($id);
+
+		if($balance<=$critical_level) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function getCriticalLevel($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_criticallevel'])) {
+		return floatval($result['rows'][0]['customer_criticallevel']);
+	}
+
+	return 0;
+}
+
 function getStaffCreditLimit($id=false) {
 	global $appdb;
 
@@ -1253,6 +1378,80 @@ function getStaffCreditLimit($id=false) {
 	}
 
 	return 0;
+}
+
+function unsetCustomerCreditDue($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$content = array();
+	$content['customer_creditdue'] = '';
+
+	if(!($result = $appdb->update('tbl_customer',$content,"customer_id=$id"))) {
+		return false;
+	}
+
+	return true;
+}
+
+function setCustomerCreditDue($id=false,$due=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)&&!empty($due)&&is_numeric($due)) {
+	} else return false;
+
+	$content = array();
+	$content['customer_creditdue'] = pgDateUnix($due);
+
+	if(!($result = $appdb->update('tbl_customer',$content,"customer_id=$id"))) {
+		return false;
+	}
+
+	return true;
+}
+
+function setCustomerFreeze($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	if(!isCustomerFreezed($id)) {
+
+		$content = array();
+		$content['customer_freezed'] = 1;
+
+		if(!($result = $appdb->update('tbl_customer',$content,"customer_id=$id"))) {
+			return false;
+		}
+
+		//pre(array('$result'=>$result));
+
+	}
+
+	return true;
+}
+
+function setCustomerUnFreeze($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	if(isCustomerFreezed($id)) {
+
+		$content = array();
+		$content['customer_freezed'] = 0;
+
+		if(!($result = $appdb->update('tbl_customer',$content,"customer_id=$id"))) {
+			return false;
+		}
+
+	}
+
+	return true;
 }
 
 function isCustomerFreezed($id=false) {
