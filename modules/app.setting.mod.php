@@ -3780,6 +3780,8 @@ if(!class_exists('APP_app_setting')) {
 				//$actionOptions[] = array('text'=>'_LoadWalletProcessSMS','value'=>'_LoadWalletProcessSMS');
 				$actionOptions[] = array('text'=>'_LoadWalletBalanceProcessSMS','value'=>'_LoadWalletBalanceProcessSMS');
 				$actionOptions[] = array('text'=>'_LoadAirtimeBalanceProcessSMS','value'=>'_LoadAirtimeBalanceProcessSMS');
+				$actionOptions[] = array('text'=>'_childReload','value'=>'_childReload');
+				$actionOptions[] = array('text'=>'_fundTransfer','value'=>'_fundTransfer');
 				$actionOptions[] = array('text'=>'_eShopBalance','value'=>'_eShopBalance');
 				$actionOptions[] = array('text'=>'_eShopStatus','value'=>'_eShopStatus');
 				$actionOptions[] = array('text'=>'_eShopVL','value'=>'_eShopVL');

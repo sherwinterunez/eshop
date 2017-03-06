@@ -1024,6 +1024,27 @@ function getSupplierNameById($id=false) {
 	return '';
 }
 
+function isCustomerChild($customerId=false,$childId=false) {
+	global $appdb;
+
+	if(!empty($customerId)&&is_numeric($customerId)&&!empty($childId)&&is_numeric($childId)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$childId and customer_parent=$customerId";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	print_r(array('$sql'=>$sql,'$result'=>$result));
+
+	if(!empty($result['rows'][0]['customer_id'])) {
+		return true;
+	}
+
+	return false;
+}
+
 function getCustomerChild($id=false,$mode=0) {
 	global $appdb;
 
@@ -1105,7 +1126,7 @@ function getCustomerBalance($id=false) {
 		return floatval($result['rows'][0]['customer_balance']);
 	}
 
-	return false;
+	return 0;
 }
 
 /*function computeStaffAvailableCredit($id=false) {
@@ -1635,6 +1656,25 @@ function getCustomerDiscounts($id=false,$mode=0) {
 
 	if(!empty($allDiscounts)) {
 		return $allDiscounts;
+	}
+
+	return false;
+}
+
+function getCustomerFundTransferDiscount($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_discountfundtransfer'])) {
+		return $result['rows'][0]['customer_discountfundtransfer'];
 	}
 
 	return false;

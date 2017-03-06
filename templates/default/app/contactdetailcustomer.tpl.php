@@ -234,6 +234,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		myTabbar.addTab("tbAddress", "Address");
 		myTabbar.addTab("tbVirtualNumbers", "Virtual Numbers");
 		myTabbar.addTab("tbWebAccess", "Web Access");
+		myTabbar.addTab("tbDiscount", "Discount Settings");
 		myTabbar.addTab("tbChild", "Child");
 		myTabbar.addTab("tbChildRebate", "Child Rebate Settings");
 		myTabbar.addTab("tbDownline", "Downline");
@@ -262,6 +263,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			{type: "block", name: "tbAddress", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbAddress']); ?>},
 			{type: "block", name: "tbVirtualNumbers", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbVirtualNumbers']); ?>},
 			{type: "block", name: "tbWebAccess", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbWebAccess']); ?>},
+			{type: "block", name: "tbDiscount", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDiscount']); ?>},
 			{type: "block", name: "tbDownline", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDownline']); ?>},
 			{type: "block", name: "tbDownlineRebate", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDownlineRebate']); ?>},
 			{type: "block", name: "tbChild", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbChild']); ?>},
@@ -298,6 +300,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		myForm.hideItem('tbWebAccess');
 		myForm.hideItem('tbDownline');
 		myForm.hideItem('tbDownlineRebate');
+		myForm.hideItem('tbDiscount');
 		myForm.hideItem('tbChild');
 		myForm.hideItem('tbChildRebate');
 		myForm.hideItem('tbTransaction');

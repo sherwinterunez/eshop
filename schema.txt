@@ -957,6 +957,8 @@ ALTER TABLE tbl_customer ALTER COLUMN customer_creditdue TYPE text;
 ALTER TABLE tbl_customer ALTER COLUMN customer_creditdue DROP DEFAULT;
 ALTER TABLE tbl_customer ALTER COLUMN customer_creditdue SET DEFAULT ''::text;
 
+alter table tbl_customer add column customer_discountfundtransfer text DEFAULT ''::text NOT NULL;
+
 ---------------------------------------------------------------------
 
 alter table tbl_users add column user_staffid integer NOT NULL DEFAULT 0;

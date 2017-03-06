@@ -347,6 +347,7 @@ if(!class_exists('APP_app_contact')) {
 					$content['customer_terms'] = !empty($post['customer_terms']) ? $post['customer_terms'] : '';
 					$content['customer_paymentpercentage'] = !empty($post['customer_paymentpercentage']) ? $post['customer_paymentpercentage'] : 100;
 					$content['customer_freezed'] = !empty($post['customer_freezed']) ? 1 : 0;
+					$content['customer_discountfundtransfer'] = !empty($post['customer_discountfundtransfer']) ? $post['customer_discountfundtransfer'] : '';
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
@@ -568,6 +569,7 @@ if(!class_exists('APP_app_contact')) {
 				$params['tbWebAccess'] = array();
 				$params['tbDownline'] = array();
 				$params['tbDownlineRebate'] = array();
+				$params['tbDiscount'] = array();
 				$params['tbChild'] = array();
 				$params['tbChildRebate'] = array();
 				$params['tbTransaction'] = array();
@@ -968,6 +970,59 @@ if(!class_exists('APP_app_contact')) {
 					'checked' => !empty($params['customerinfo']['customer_freezed']) ? true : false,
 					'position' => 'label-right',
 				);
+
+				if($readonly) {
+
+					$params['tbDiscount'][] = array(
+						'type' => 'input',
+						'label' => 'FUND TRANSFER',
+						'name' => 'customer_discountfundtransfer',
+						'readonly' => $readonly,
+						'inputWidth' => 200,
+						//'disabled' => !empty($params['iteminfo']['item_maintenance']) ? false : true,
+						//'required' => !$readonly,
+						//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+						'value' => !empty($params['customerinfo']['customer_discountfundtransfer']) ? $params['customerinfo']['customer_discountfundtransfer'] : '',
+					);
+
+				} else {
+
+					$opt = array();
+
+					if(!$readonly) {
+						$opt[] = array('text'=>'','value'=>'','selected'=>false);
+					}
+
+					$discountSchemes = getDiscountScheme();
+
+					foreach($discountSchemes as $k=>$v) {
+						$selected = false;
+						if(!empty($params['customerinfo']['customer_discountfundtransfer'])&&$params['customerinfo']['customer_discountfundtransfer']==$v['discount_desc']) {
+							$selected = true;
+						}
+						if($readonly) {
+							if($selected) {
+								$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']['discount_desc'],'selected'=>$selected);
+							}
+						} else {
+							$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc'],'selected'=>$selected);
+						}
+					}
+
+					$params['tbDiscount'][] = array(
+						'type' => 'combo',
+						'label' => 'FUND TRANSFER',
+						//'labelWidth' => 210,
+						'inputWidth' => 200,
+						//'comboType' => 'checkbox',
+						'name' => 'customer_discountfundtransfer',
+						'readonly' => $readonly,
+						//'disabled' => !empty($params['iteminfo']['item_regularload']) ? false : true,
+						//'required' => !$readonly,
+						'options' => $opt,
+					);
+
+				}
 
 				/*$opt = array();
 				$opt[] = array('value'=>1,'text'=>array('one'=>'one1','two'=>'two1','three'=>'three1'));

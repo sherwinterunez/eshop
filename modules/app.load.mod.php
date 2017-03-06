@@ -1459,13 +1459,24 @@ if(!class_exists('APP_app_load')) {
 
 			if(!empty($routerid)&&!empty($formid)) {
 
+				$post = $this->vars['post'];
+
 				$readonly = true;
 
-				if(!empty($this->vars['post']['method'])&&($this->vars['post']['method']=='loadnew'||$this->vars['post']['method']=='loadedit')) {
-					$readonly = false;
-				}
-
 				$params = array();
+
+				if(!empty($post['method'])&&($post['method']=='onrowselect')) {
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+						if(!($result = $appdb->query("select * from tbl_fund where fund_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['rows'][0]['fund_id'])) {
+							$params['customerreloadinfo'] = $result['rows'][0];
+						}
+					}
+				}
 
 				$params['hello'] = 'Hello, Sherwin!';
 
@@ -1475,51 +1486,86 @@ if(!class_exists('APP_app_load')) {
 
 				$params['tbDetails'] = array();
 
+				$receiptno = '';
+
+				if(!empty($params['customerreloadinfo']['fund_id'])&&!empty($params['customerreloadinfo']['fund_ymd'])) {
+					$receiptno = $params['customerreloadinfo']['fund_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['customerreloadinfo']['fund_id']));
+				}
+
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'RECEIPT NO',
-					'name' => 'childreload_receiptno',
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'name' => 'fund_receiptno',
+					'readonly' => true,
+					//'required' => !$readonly,
 					//'labelAlign' => $position,
-					'value' => '',
+					'value' => $receiptno,
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'RECEIPT DATE/TIME',
-					'name' => 'childreload_date',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
+					'name' => 'fund_datetime',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_datetime']) ? $params['customerreloadinfo']['fund_datetime'] : '',
 				);
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'FROM PARENT',
-					'name' => 'childreload_fromparent',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);
+				if($readonly) {
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'CUSTOMER NAME',
+						'name' => 'fund_recepientname',
+						'readonly' => true,
+						//'required' => !$readonly,
+						'value' => !empty($params['customerreloadinfo']['fund_recepientname']) ? $params['customerreloadinfo']['fund_recepientname'] : '',
+					);
+				} else {
+
+					if(!empty($params['customerreloadinfo']['fund_recepientid'])) {
+						$params['tbDetails'][] = array(
+							'type' => 'hidden',
+							'name' => 'fund_recepientid',
+							'value' => $params['customerreloadinfo']['fund_recepientid'],
+						);
+
+						$params['tbDetails'][] = array(
+							'type' => 'input',
+							'label' => 'CUSTOMER NAME',
+							'name' => 'fund_recepientname',
+							'readonly' => true,
+							//'required' => !$readonly,
+							'value' => getCustomerNameByID($params['customerreloadinfo']['fund_recepientid']),
+						);
+					} else {
+						$params['tbDetails'][] = array(
+							'type' => 'combo',
+							'label' => 'CUSTOMER NAME',
+							'name' => 'fund_recepientid',
+							'readonly' => $readonly,
+							'required' => !$readonly,
+							'options' => array(), //$opt,
+						);
+					}
+				}
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'MOBILE NUMBER',
-					'name' => 'childreload_customernumber',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
+					'name' => 'fund_recepientnumber',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_recepientnumber']) ? $params['customerreloadinfo']['fund_recepientnumber'] : '',
 				);
 
-				/*$params['tbDetails'][] = array(
+				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'PAYMENT TERM',
-					'name' => 'fundreload_paymentterm',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);*/
+					'name' => 'fund_recepientpaymentterm',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_recepientpaymentterm']) ? $params['customerreloadinfo']['fund_recepientpaymentterm'] : '',
+				);
 
 				/*$params['tbDetails'][] = array(
 					'type' => 'input',
@@ -1528,92 +1574,79 @@ if(!class_exists('APP_app_load')) {
 					'readonly' => $readonly,
 					'required' => !$readonly,
 					'value' => '',
-				);
+				);*/
 
-
-
-				$params['tbDetails'][] = array(
-					'type' => 'newcolumn',
-					'offset' => $newcolumnoffset,
-				);
-
-				*/
-
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'AMOUNT',
-					'name' => 'childreload_amount',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'DISCOUNT',
-					'name' => 'childreload_discount',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);
-
-				$params['tbDetails'][] = array(
-					'type' => 'newcolumn',
-					'offset' => $newcolumnoffset,
+					'name' => 'fund_discount',
+					'readonly' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_discount']) ? $params['customerreloadinfo']['fund_discount'] : 0,
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'PROCESSING FEE',
-					'name' => 'childreload_processingfee',
+					'name' => 'fund_processingfee',
+					'readonly' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_processingfee']) ? $params['customerreloadinfo']['fund_processingfee'] : 0,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'newcolumn',
+					'offset' => $newcolumnoffset,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'AMOUNT',
+					'name' => 'fund_amount',
 					'readonly' => $readonly,
 					'required' => !$readonly,
-					'value' => '',
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['customerreloadinfo']['fund_amount']) ? $params['customerreloadinfo']['fund_amount'] : 0,
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'AMOUNT DUE',
-					'name' => 'childreload_amountdue',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
+					'name' => 'fund_amountdue',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['customerreloadinfo']['fund_amountdue']) ? $params['customerreloadinfo']['fund_amountdue'] : 0,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'hidden',
+					//'label' => 'USER ID',
+					'name' => 'fund_userid',
+					//'readonly' => true,
+					//'required' => !$readonly,
+					'value' => $applogin->getUserID(),
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'USER',
-					'name' => 'childreload_user',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
+					'name' => 'fund_username',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => $applogin->fullname(),
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'STATUS',
-					'name' => 'childreload_status',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);
-
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'TO CHILD',
-					'name' => 'childreload_tochild',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);
-
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'MOBILE NUMBER',
-					'name' => 'childreload_childmobilenumber',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
+					'name' => 'fund_status',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_status']) ? getLoadTransactionStatusString($params['customerreloadinfo']['fund_status']) : 'DRAFT',
 				);
 
 				$templatefile = $this->templatefile($routerid,$formid);
@@ -1624,7 +1657,6 @@ if(!class_exists('APP_app_load')) {
 			}
 
 			return false;
-
 		} // _form_loaddetailchildreload
 
 		function _form_loaddetailcustomerreload($routerid=false,$formid=false) {
@@ -2044,13 +2076,24 @@ if(!class_exists('APP_app_load')) {
 
 			if(!empty($routerid)&&!empty($formid)) {
 
+				$post = $this->vars['post'];
+
 				$readonly = true;
 
-				if(!empty($this->vars['post']['method'])&&($this->vars['post']['method']=='loadnew'||$this->vars['post']['method']=='loadedit')) {
-					$readonly = false;
-				}
-
 				$params = array();
+
+				if(!empty($post['method'])&&($post['method']=='onrowselect')) {
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+						if(!($result = $appdb->query("select * from tbl_fund where fund_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['rows'][0]['fund_id'])) {
+							$params['customerreloadinfo'] = $result['rows'][0];
+						}
+					}
+				}
 
 				$params['hello'] = 'Hello, Sherwin!';
 
@@ -2060,51 +2103,86 @@ if(!class_exists('APP_app_load')) {
 
 				$params['tbDetails'] = array();
 
+				$receiptno = '';
+
+				if(!empty($params['customerreloadinfo']['fund_id'])&&!empty($params['customerreloadinfo']['fund_ymd'])) {
+					$receiptno = $params['customerreloadinfo']['fund_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['customerreloadinfo']['fund_id']));
+				}
+
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'RECEIPT NO',
-					'name' => 'fundtransferreload_receiptno',
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'name' => 'fund_receiptno',
+					'readonly' => true,
+					//'required' => !$readonly,
 					//'labelAlign' => $position,
-					'value' => '',
+					'value' => $receiptno,
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'RECEIPT DATE/TIME',
-					'name' => 'fundtransferreload_date',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
+					'name' => 'fund_datetime',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_datetime']) ? $params['customerreloadinfo']['fund_datetime'] : '',
 				);
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'FROM CUSTOMER',
-					'name' => 'fundtransferreload_fromcustomer',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);
+				if($readonly) {
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'CUSTOMER NAME',
+						'name' => 'fund_recepientname',
+						'readonly' => true,
+						//'required' => !$readonly,
+						'value' => !empty($params['customerreloadinfo']['fund_recepientname']) ? $params['customerreloadinfo']['fund_recepientname'] : '',
+					);
+				} else {
+
+					if(!empty($params['customerreloadinfo']['fund_recepientid'])) {
+						$params['tbDetails'][] = array(
+							'type' => 'hidden',
+							'name' => 'fund_recepientid',
+							'value' => $params['customerreloadinfo']['fund_recepientid'],
+						);
+
+						$params['tbDetails'][] = array(
+							'type' => 'input',
+							'label' => 'CUSTOMER NAME',
+							'name' => 'fund_recepientname',
+							'readonly' => true,
+							//'required' => !$readonly,
+							'value' => getCustomerNameByID($params['customerreloadinfo']['fund_recepientid']),
+						);
+					} else {
+						$params['tbDetails'][] = array(
+							'type' => 'combo',
+							'label' => 'CUSTOMER NAME',
+							'name' => 'fund_recepientid',
+							'readonly' => $readonly,
+							'required' => !$readonly,
+							'options' => array(), //$opt,
+						);
+					}
+				}
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'MOBILE NUMBER',
-					'name' => 'fundtransferreload_fromcustomernumber',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
+					'name' => 'fund_recepientnumber',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_recepientnumber']) ? $params['customerreloadinfo']['fund_recepientnumber'] : '',
 				);
 
-				/*$params['tbDetails'][] = array(
+				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'PAYMENT TERM',
-					'name' => 'fundreload_paymentterm',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);*/
+					'name' => 'fund_recepientpaymentterm',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_recepientpaymentterm']) ? $params['customerreloadinfo']['fund_recepientpaymentterm'] : '',
+				);
 
 				/*$params['tbDetails'][] = array(
 					'type' => 'input',
@@ -2113,92 +2191,79 @@ if(!class_exists('APP_app_load')) {
 					'readonly' => $readonly,
 					'required' => !$readonly,
 					'value' => '',
-				);
+				);*/
 
-
-
-				$params['tbDetails'][] = array(
-					'type' => 'newcolumn',
-					'offset' => $newcolumnoffset,
-				);
-
-				*/
-
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'AMOUNT',
-					'name' => 'fundtransferreload_amount',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'DISCOUNT',
-					'name' => 'fundtransferreload_discount',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);
-
-				$params['tbDetails'][] = array(
-					'type' => 'newcolumn',
-					'offset' => $newcolumnoffset,
+					'name' => 'fund_discount',
+					'readonly' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_discount']) ? $params['customerreloadinfo']['fund_discount'] : 0,
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'PROCESSING FEE',
-					'name' => 'fundtransferreload_processingfee',
+					'name' => 'fund_processingfee',
+					'readonly' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_processingfee']) ? $params['customerreloadinfo']['fund_processingfee'] : 0,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'newcolumn',
+					'offset' => $newcolumnoffset,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'AMOUNT',
+					'name' => 'fund_amount',
 					'readonly' => $readonly,
 					'required' => !$readonly,
-					'value' => '',
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['customerreloadinfo']['fund_amount']) ? $params['customerreloadinfo']['fund_amount'] : 0,
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'AMOUNT DUE',
-					'name' => 'fundtransferreload_amountdue',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
+					'name' => 'fund_amountdue',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['customerreloadinfo']['fund_amountdue']) ? $params['customerreloadinfo']['fund_amountdue'] : 0,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'hidden',
+					//'label' => 'USER ID',
+					'name' => 'fund_userid',
+					//'readonly' => true,
+					//'required' => !$readonly,
+					'value' => $applogin->getUserID(),
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'USER',
-					'name' => 'fundtransferreload_user',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
+					'name' => 'fund_username',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => $applogin->fullname(),
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'STATUS',
-					'name' => 'fundtransferreload_status',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);
-
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'TO CUSTOMER',
-					'name' => 'fundtransferreload_tochild',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);
-
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'MOBILE NUMBER',
-					'name' => 'fundtransferreload_tocustomermobilenumber',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
+					'name' => 'fund_status',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerreloadinfo']['fund_status']) ? getLoadTransactionStatusString($params['customerreloadinfo']['fund_status']) : 'DRAFT',
 				);
 
 				$templatefile = $this->templatefile($routerid,$formid);
@@ -2659,6 +2724,78 @@ if(!class_exists('APP_app_load')) {
 								}
 
 								$rows[] = array('id'=>$v['fund_id'],'data'=>array(0,$v['fund_id'],$v['fund_datetime'],$receiptno,$v['fund_recepientname'],$v['fund_recepientnumber'],number_format($v['fund_amountdue'],2),getLoadTransactionStatusString($v['fund_status'])));
+							}
+
+							$retval = array('rows'=>$rows);
+						}
+
+					} else
+					if($this->post['table']=='childreload') {
+
+						//if($applogin->isSystemAdministrator()) {
+							if(!($result = $appdb->query("select * from tbl_fund where fund_type='childreload' order by fund_id desc"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+						//} else {
+						//	$userid = $applogin->getUserID();
+
+						//	if(!($result = $appdb->query("select * from tbl_fund where fund_type='childreload' and fund_userid=$userid order by fund_id desc"))) {
+						//		json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						//		die;
+						//	}
+						//}
+
+						//pre(array('$result'=>$result));
+
+						if(!empty($result['rows'][0]['fund_id'])) {
+							$rows = array();
+
+							foreach($result['rows'] as $k=>$v) {
+
+								$receiptno = '';
+
+								if(!empty($v['fund_id'])&&!empty($v['fund_ymd'])) {
+									$receiptno = $v['fund_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($v['fund_id']));
+								}
+
+								$rows[] = array('id'=>$v['fund_id'],'data'=>array(0,$v['fund_id'],$v['fund_datetime'],$receiptno,$v['fund_username'],$v['fund_usernumber'],$v['fund_recepientname'],$v['fund_recepientnumber'],number_format($v['fund_amountdue'],2),getLoadTransactionStatusString($v['fund_status'])));
+							}
+
+							$retval = array('rows'=>$rows);
+						}
+
+					} else
+					if($this->post['table']=='fundtransfer') {
+
+						//if($applogin->isSystemAdministrator()) {
+							if(!($result = $appdb->query("select * from tbl_fund where fund_type='fundtransfer' order by fund_id desc"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+						//} else {
+						//	$userid = $applogin->getUserID();
+
+						//	if(!($result = $appdb->query("select * from tbl_fund where fund_type='fundtransfer' and fund_userid=$userid order by fund_id desc"))) {
+						//		json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						//		die;
+						//	}
+						//}
+
+						//pre(array('$result'=>$result));
+
+						if(!empty($result['rows'][0]['fund_id'])) {
+							$rows = array();
+
+							foreach($result['rows'] as $k=>$v) {
+
+								$receiptno = '';
+
+								if(!empty($v['fund_id'])&&!empty($v['fund_ymd'])) {
+									$receiptno = $v['fund_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($v['fund_id']));
+								}
+
+								$rows[] = array('id'=>$v['fund_id'],'data'=>array(0,$v['fund_id'],$v['fund_datetime'],$receiptno,$v['fund_username'],$v['fund_usernumber'],$v['fund_recepientname'],$v['fund_recepientnumber'],number_format($v['fund_amountdue'],2),getLoadTransactionStatusString($v['fund_status'])));
 							}
 
 							$retval = array('rows'=>$rows);
