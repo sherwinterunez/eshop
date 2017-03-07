@@ -628,6 +628,7 @@ function _eLoadProcessSMS($vars=array()) {
 				$item_srp = floatval($itemData['item_srp']);
 				$item_eshopsrp = floatval($itemData['item_eshopsrp']);
 				$item_threshold = floatval($itemData['item_threshold']);
+				$item_provider = $itemData['item_provider'];
 
 				if(!empty($loadtransaction_regularload)) {
 
@@ -730,19 +731,69 @@ function _eLoadProcessSMS($vars=array()) {
 				} else {
 
 					if(($parentData=getCustomerParent($loadtransaction_customerid))&&!empty($parentData['customer_parent'])) {
-						if(($discount = getCustomerDiscounts($parentData['customer_parent']))) {
-							pre(array('$discount'=>$discount));
+						if(($discount = getCustomerDiscounts($parentData['customer_parent'],$item_provider,$loadtransaction_assignedsim))) {
+							pre(array('$item_provider'=>$item_provider,'$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'$discount'=>$discount));
+
+							$discountBypass = false;
 
 							foreach($discount as $x=>$z) {
 								//pre(array('$z'=>$z,'discountlist_type'=>$z['discountlist_type'],'$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'discountlist_simcard'=>$z['discountlist_simcard']));
-								if($z['discountlist_type']=='RETAIL'&&$loadtransaction_assignedsim==$z['discountlist_simcard']&&$item_quantity>=floatval($z['discountlist_min'])&&$item_quantity<=floatval($z['discountlist_max'])) {
+								if($z['discountlist_type']=='RETAIL'&&$item_quantity>=floatval($z['discountlist_min'])&&$item_quantity<=floatval($z['discountlist_max'])) {
 
 									$content['loadtransaction_processingfee'] = number_format($z['discountlist_fee'],2);
 									$content['loadtransaction_rebatediscount'] = number_format($z['discountlist_rate'],2);
 									$content['loadtransaction_rebateparent'] = $parentData['customer_parent'];
+									$discountBypass = true;
 									break;
 								}
 							}
+
+							if(!$discountBypass) {
+								foreach($discount as $x=>$z) {
+									//pre(array('$z'=>$z,'discountlist_type'=>$z['discountlist_type'],'$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'discountlist_simcard'=>$z['discountlist_simcard']));
+									if($z['discountlist_type']=='RETAIL') {
+
+										$content['loadtransaction_processingfee'] = number_format($z['discountlist_fee'],2);
+										$content['loadtransaction_rebatediscount'] = number_format($z['discountlist_rate'],2);
+										$content['loadtransaction_rebateparent'] = $parentData['customer_parent'];
+										$discountBypass = true;
+										break;
+									}
+								}
+							}
+
+						} else
+						if(($discount = getCustomerDiscounts($parentData['customer_parent'],$item_provider))) {
+							pre(array('$item_provider'=>$item_provider,'$discount'=>$discount));
+
+							$discountBypass = false;
+
+							foreach($discount as $x=>$z) {
+								//pre(array('$z'=>$z,'discountlist_type'=>$z['discountlist_type'],'$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'discountlist_simcard'=>$z['discountlist_simcard']));
+								if($z['discountlist_type']=='RETAIL'&&$item_quantity>=floatval($z['discountlist_min'])&&$item_quantity<=floatval($z['discountlist_max'])) {
+
+									$content['loadtransaction_processingfee'] = number_format($z['discountlist_fee'],2);
+									$content['loadtransaction_rebatediscount'] = number_format($z['discountlist_rate'],2);
+									$content['loadtransaction_rebateparent'] = $parentData['customer_parent'];
+									$discountBypass = true;
+									break;
+								}
+							}
+
+							if(!$discountBypass) {
+								foreach($discount as $x=>$z) {
+									//pre(array('$z'=>$z,'discountlist_type'=>$z['discountlist_type'],'$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'discountlist_simcard'=>$z['discountlist_simcard']));
+									if($z['discountlist_type']=='RETAIL') {
+
+										$content['loadtransaction_processingfee'] = number_format($z['discountlist_fee'],2);
+										$content['loadtransaction_rebatediscount'] = number_format($z['discountlist_rate'],2);
+										$content['loadtransaction_rebateparent'] = $parentData['customer_parent'];
+										$discountBypass = true;
+										break;
+									}
+								}
+							}
+
 						}
 					}
 
@@ -828,22 +879,26 @@ function _eLoadProcessSMS($vars=array()) {
 
 						$content = array();
 						$content['rebate_customerid'] = $loadtransaction_rebateparent;
-						$content['rebate_credit'] = number_format($loadtransaction_rebateamount,3);
+						$content['rebate_credit'] = $rebate_credit = number_format($loadtransaction_rebateamount,3);
+						$content['rebate_childid'] = $loadtransaction_customerid;
+						$content['rebate_loadtransactionid'] = $loadtransaction_id;
 
-						$rebate_balance = getRebateBalance($loadtransaction_rebateparent) + $loadtransaction_rebateamount;
+						//$rebate_balance = getRebateBalance($loadtransaction_rebateparent) + $loadtransaction_rebateamount;
 
-						$content['rebate_balance'] = number_format($rebate_balance,3);
+						//$content['rebate_balance'] = $rebate_balance = number_format($rebate_balance,3);
 
 						if(!($result = $appdb->insert("tbl_rebate",$content,"rebate_id"))) {
 							return false;
 						}
 
-						$content = array();
-						$content['customer_totalrebate'] = number_format($rebate_balance,3);
+						computeCustomerRebateBalance($loadtransaction_rebateparent);
 
-						if(!($result = $appdb->update("tbl_customer",$content,"customer_id=".$loadtransaction_rebateparent))) {
-							return false;
-						}
+						//$content = array();
+						//$content['customer_totalrebate'] = number_format($rebate_balance,3);
+
+						//if(!($result = $appdb->update("tbl_customer",$content,"customer_id=".$loadtransaction_rebateparent))) {
+						//	return false;
+						//}
 
 					}
 
@@ -880,6 +935,12 @@ function _eLoadProcessSMS($vars=array()) {
 					$content['ledger_seq'] = '0';
 					$content['ledger_receiptno'] = $receiptno;
 
+					if(!empty($rebate_credit)) {
+						$content['ledger_rebate'] = $rebate_credit;
+						//$content['ledger_rebatebalance'] = $rebate_balance;
+					}
+
+
 					$content['ledger_datetimeunix'] = date2timestamp($content['ledger_datetime'], getOption('$DISPLAY_DATE_FORMAT','r'));
 
 					if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
@@ -891,6 +952,7 @@ function _eLoadProcessSMS($vars=array()) {
 						computeStaffBalance($loadtransaction_customerid);
 					} else {
 						computeCustomerBalance($loadtransaction_customerid);
+						computeChildRebateBalance($loadtransaction_customerid);
 					}
 
 				}
@@ -1286,10 +1348,10 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 			//}
 
 			if(!empty($match['BALANCE'])) {
-				$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = $match['BALANCE'];
+				$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = floatval($match['BALANCE']);
 
 				$newbal = array();
-				$newbal['simcard_balance'] = $match['BALANCE'];
+				$newbal['simcard_balance'] = floatval($match['BALANCE']);
 
 				if(!($result = $appdb->update("tbl_simcard",$newbal,"simcard_number='".$loadtransaction_assignedsim."'"))) {
 					return false;
@@ -1297,7 +1359,7 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 			}
 
 			if(!empty($match['AMOUNT'])) {
-				$content['loadtransaction_amount'] = $match['AMOUNT'];
+				$content['loadtransaction_amount'] = floatval($match['AMOUNT']);
 			}
 
 			if(!empty($match['PRODUCT'])) {
@@ -1308,6 +1370,8 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 				$content['loadtransaction_status'] = TRN_COMPLETED;
 				$content['loadtransaction_confirmationstamp'] = 'now()';
 			}
+
+			print_r(array('hello'=>'sherwin','$match'=>$match,'loadtransaction_cost'=>$loadtransaction_cost,'loadtransaction_amount'=>$loadtransaction_amount));
 
 			if(!empty($content['loadtransaction_cost'])&&!empty($content['loadtransaction_amount'])) {
 				if(floatval($content['loadtransaction_cost'])!=floatval($content['loadtransaction_amount'])) {
@@ -2012,6 +2076,47 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 
 						$content['ledger_datetimeunix'] = date2timestamp($content['ledger_datetime'], getOption('$DISPLAY_DATE_FORMAT','r'));
 
+						if(!empty(($rebate = getRebateByLoadTransactionId($loadtransaction_id)))) {
+
+							print_r(array('$rebate'=>$rebate));
+
+							if(!empty($rebate['rebate_credit'])) {
+
+								$rcontent = $rebate;
+
+								$rebate_credit = floatval($rcontent['rebate_credit']);
+
+								unset($rcontent['rebate_credit']);
+								unset($rcontent['rebate_id']);
+								unset($rcontent['rebate_balance']);
+								unset($rcontent['rebate_createstamp']);
+								unset($rcontent['rebate_updatestamp']);
+
+								$rcontent['rebate_debit'] = number_format($rebate_credit,3);
+
+								//$rebate_balance = getRebateBalance($rebate['rebate_customerid']) - $rebate_credit;
+
+								//$rcontent['rebate_balance'] = number_format($rebate_balance,3);
+
+								if(!($result = $appdb->insert("tbl_rebate",$rcontent,"rebate_id"))) {
+									return false;
+								}
+
+								//$ccontent = array();
+								//$ccontent['customer_totalrebate'] = $rcontent['rebate_balance'];
+
+								//if(!($result = $appdb->update("tbl_customer",$ccontent,"customer_id=".$rebate['rebate_customerid']))) {
+								//	return false;
+								//}
+
+								computeCustomerRebateBalance($rebate['rebate_customerid']);
+
+								$content['ledger_rebate'] = (0 - floatval($rcontent['rebate_debit']));
+								//$content['ledger_rebatebalance'] = $rcontent['rebate_balance'];
+
+							}
+						}
+
 						sleep(1);
 
 						if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
@@ -2023,6 +2128,7 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 							computeStaffBalance($loadtransaction_customerid);
 						} else {
 							computeCustomerBalance($loadtransaction_customerid);
+							computeChildRebateBalance($loadtransaction_customerid);
 						}
 					}
 

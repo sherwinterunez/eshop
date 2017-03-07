@@ -1223,7 +1223,6 @@ function computeStaffBalance($id=false) {
 }
 
 function computeCustomerBalance($id=false) {
-	// ;
 	global $appdb;
 
 	if(!empty($id)&&is_numeric($id)) {
@@ -1284,6 +1283,129 @@ function computeCustomerBalance($id=false) {
 	}*/
 
 	return false;
+}
+
+function computeCustomerRebateBalance($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select rebate_id,rebate_debit as debit,rebate_credit as credit,(rebate_credit-rebate_debit) as balance from tbl_rebate where rebate_customerid=$id order by rebate_id asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['rebate_id'])) {
+		$ledger = $result['rows'];
+		$balance = 0;
+
+		foreach($result['rows'] as $k=>$v) {
+			$balance = floatval($balance) + floatval($v['balance']);
+			$ledger[$k]['rebate_runningbalance'] = $balance;
+
+			$content = array();
+			$content['rebate_balance'] = $balance;
+
+			if(!($result = $appdb->update("tbl_rebate",$content,"rebate_id=".$ledger[$k]['rebate_id']))) {
+				return false;
+			}
+
+		}
+
+		$content = array();
+		$content['customer_totalrebate'] = floatval($balance);
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+			return false;
+		}
+
+		return floatval($balance);
+
+	} else {
+
+		$content = array();
+		$content['customer_totalrebate'] = 0;
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+			return false;
+		}
+
+	}
+
+	return false;
+}
+
+function computeChildRebateBalance($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select ledger_id,ledger_rebate from tbl_ledger where ledger_user=$id order by ledger_id asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['ledger_id'])) {
+		$ledger = $result['rows'];
+		$balance = 0;
+
+		foreach($result['rows'] as $k=>$v) {
+			$balance = floatval($balance) + floatval($v['ledger_rebate']);
+			//$ledger[$k]['running_balance'] = $balance;
+
+			$content = array();
+			$content['ledger_rebatebalance'] = $balance;
+
+			if(!($result = $appdb->update("tbl_ledger",$content,"ledger_id=".$ledger[$k]['ledger_id']))) {
+				return false;
+			}
+
+		}
+
+		$content = array();
+		$content['customer_totalrebateaschild'] = floatval($balance);
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+			return false;
+		}
+
+		return floatval($balance);
+
+	} else {
+
+		$content = array();
+		$content['customer_totalrebateaschild'] = 0;
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+			return false;
+		}
+
+	}
+
+	return false;
+}
+
+function getTotalRebateAsChild($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_id'])) {
+		return $result['rows'][0]['customer_totalrebateaschild'];
+	}
+
+	return 0;
 }
 
 function getStaffFirstUnpaidTransactions($id=false) {
@@ -1551,6 +1673,25 @@ function getRebateBalance($id=false) {
 	return 0;
 }
 
+function getRebateByLoadTransactionId($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_rebate where rebate_loadtransactionid=$id order by rebate_id desc limit 1";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['rebate_id'])) {
+		return $result['rows'][0];
+	}
+
+	return false;
+}
+
 function getItemDiscount($desc=false,$type=false,$provider=false,$simcard=false) {
 	global $appdb;
 
@@ -1634,7 +1775,7 @@ function getDiscounts($id=false,$mode=0) {
 	return false;
 }
 
-function getCustomerDiscounts($id=false,$mode=0) {
+function getCustomerDiscounts($id=false,$provider=false,$simcard=false,$mode=0) {
 	global $appdb;
 
 	if(!empty($id)&&is_numeric($id)) {
@@ -1647,7 +1788,20 @@ function getCustomerDiscounts($id=false,$mode=0) {
 			if(($discountId = getDiscountIDFromDesc($v['childsettings_discount']))) {
 				if(($discounts = getDiscounts($discountId))) {
 					foreach($discounts as $x=>$z) {
-						$allDiscounts[$x] = $z;
+						//$allDiscounts[$x] = $z;
+						if(!empty($provider)) {
+							if($provider===$z['discountlist_provider']) {
+								if(!empty($simcard)) {
+									if($simcard===$z['discountlist_simcard']) {
+										$allDiscounts[] = $z;
+									}
+								} else {
+									$allDiscounts[] = $z;
+								}
+							}
+						} else {
+							$allDiscounts[] = $z;
+						}
 					}
 				}
 			}

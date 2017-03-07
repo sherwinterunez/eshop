@@ -2790,7 +2790,7 @@ if($readonly) {
 						'type' => 'calendar',
 						'label' => 'DATE',
 						'name' => 'adjustment_simcarddatetime',
-						'readonly' => true,
+						'readonly' => $readonly,
 						'required' => !$readonly,
 						'enableTime' => true,
 						'enableTodayButton' => true,

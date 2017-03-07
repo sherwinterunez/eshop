@@ -3935,7 +3935,7 @@ if(!class_exists('APP_app_contact')) {
 								$customerName .= !empty($v['customer_middlename']) ? ' '.$v['customer_middlename'] : '';
 								$customerName .= !empty($v['customer_lastname']) ? ' '.$v['customer_lastname'] : '';
 
-								$rows[] = array('id'=>$k,'data'=>array($custid,$v['customer_mobileno'],$customerName,$v['customer_totalrebate']));
+								$rows[] = array('id'=>$k,'data'=>array($custid,$v['customer_mobileno'],$customerName,getTotalRebateAsChild($v['customer_id'])));
 							}
 						}
 
@@ -4019,7 +4019,7 @@ if(!class_exists('APP_app_contact')) {
 									}
 								}
 
-								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],pgDateUnix($v['ledger_datetimeunix']),$v['ledger_receiptno'],$v['ledger_type'],$mobileNo,$v['ledger_debit'],$v['ledger_credit'],$v['ledger_balance']));
+								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],pgDateUnix($v['ledger_datetimeunix']),$v['ledger_receiptno'],$v['ledger_type'],$mobileNo,$v['ledger_debit'],$v['ledger_credit'],$v['ledger_balance'],$v['ledger_rebate'],$v['ledger_rebatebalance']));
 							}
 						}
 

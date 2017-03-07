@@ -313,7 +313,7 @@ if(!class_exists('APP_app_load')) {
 						}
 
 						$content = array();
-						$content['ledger_loadtransactionid'] = $params['retailinfo']['loadtransaction_id'];
+						$content['ledger_loadtransactionid'] = $loadtransaction_id = $params['retailinfo']['loadtransaction_id'];
 
 						if($customer_type=='STAFF') {
 							//$content['ledger_debit'] = $itemData['item_srp'];
@@ -330,6 +330,42 @@ if(!class_exists('APP_app_load')) {
 						$content['ledger_receiptno'] = $receiptno;
 
 						$content['ledger_datetimeunix'] = date2timestamp($content['ledger_datetime'], getOption('$DISPLAY_DATE_FORMAT','r'));
+
+						if(!empty(($rebate = getRebateByLoadTransactionId($loadtransaction_id)))) {
+
+							print_r(array('$rebate'=>$rebate));
+
+							if(!empty($rebate['rebate_credit'])) {
+
+								$rcontent = $rebate;
+
+								$rebate_credit = floatval($rcontent['rebate_credit']);
+
+								unset($rcontent['rebate_credit']);
+								unset($rcontent['rebate_id']);
+
+								$rcontent['rebate_debit'] = number_format($rebate_credit,3);
+
+								$rebate_balance = getRebateBalance($rebate['rebate_customerid']) - $rebate_credit;
+
+								$rcontent['rebate_balance'] = number_format($rebate_balance,3);
+
+								if(!($result = $appdb->insert("tbl_rebate",$rcontent,"rebate_id"))) {
+									return false;
+								}
+
+								$ccontent = array();
+								$ccontent['customer_totalrebate'] = $rcontent['rebate_balance'];
+
+								if(!($result = $appdb->update("tbl_customer",$ccontent,"customer_id=".$rebate['rebate_customerid']))) {
+									return false;
+								}
+
+								$content['ledger_rebate'] = (0 - floatval($rcontent['rebate_debit']));
+								$content['ledger_rebatebalance'] = $rcontent['rebate_balance'];
+
+							}
+						}
 
 						if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));

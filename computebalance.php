@@ -62,6 +62,16 @@ if(!empty($_GET['id'])&&is_numeric($_GET['id'])&&intval($_GET['id'])>0) {
 
 }*/
 
-$dt = getDbDate();
+//$dt = getDbDate();
 
-pre(array('$dt'=>$dt));
+//pre(array('$dt'=>$dt));
+
+computeCustomerRebateBalance(5);
+computeCustomerRebateBalance(21);
+
+computeChildRebateBalance(19);
+computeChildRebateBalance(23);
+
+
+
+//

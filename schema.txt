@@ -908,6 +908,8 @@ alter table tbl_ledger add column ledger_receiptno text DEFAULT ''::text NOT NUL
 alter table tbl_ledger add column ledger_adjustmentid integer NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_staff integer NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_staffpaid integer NOT NULL DEFAULT 0;
+alter table tbl_ledger add column ledger_rebate numeric NOT NULL DEFAULT 0;
+alter table tbl_ledger add column ledger_rebatebalance numeric NOT NULL DEFAULT 0;
 
 ALTER TABLE tbl_ledger ALTER COLUMN ledger_loadtransactionid TYPE numeric;
 
@@ -952,6 +954,7 @@ alter table tbl_customer add column customer_freezelevel numeric NOT NULL DEFAUL
 alter table tbl_customer add column customer_userid integer NOT NULL DEFAULT 0;
 alter table tbl_customer add column customer_freezed integer NOT NULL DEFAULT 0;
 alter table tbl_customer add column customer_paymentpercentage numeric NOT NULL DEFAULT 100;
+alter table tbl_customer add column customer_totalrebateaschild numeric NOT NULL DEFAULT 0;
 
 ALTER TABLE tbl_customer ALTER COLUMN customer_creditdue TYPE text;
 ALTER TABLE tbl_customer ALTER COLUMN customer_creditdue DROP DEFAULT;
@@ -967,3 +970,8 @@ alter table tbl_users add column user_staffid integer NOT NULL DEFAULT 0;
 
 alter table tbl_fund add column fund_paid integer NOT NULL DEFAULT 0;
 alter table tbl_fund add column fund_staffid integer NOT NULL DEFAULT 0;
+
+---------------------------------------------------------------------
+
+alter table tbl_rebate add column rebate_childid integer NOT NULL DEFAULT 0;
+alter table tbl_rebate add column rebate_loadtransactionid integer NOT NULL DEFAULT 0;

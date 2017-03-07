@@ -723,19 +723,21 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myGridTransaction.setImagePath("/codebase/imgs/")
 
-			myGridTransaction.setHeader("ID,Date/Time, Receipt No., Transaction Type, Customer Mobile, Debit, Credit, Balance,&nbsp;");
+			myGridTransaction.setHeader("ID,Date/Time, Receipt No., Transaction Type, Customer Mobile, Debit, Credit, Balance, Rebate, Rebate Balance, &nbsp;");
 
-			myGridTransaction.setInitWidths("70,120,150,150,150,150,150,150,*");
+			myGridTransaction.setInitWidths("70,120,130,150,120,110,110,110,110,110,*");
 
-			myGridTransaction.setColAlign("center,center,left,left,left,,right,right,right,left");
+			myGridTransaction.setColAlign("center,center,left,left,left,right,right,right,right,right,left");
 
-			myGridTransaction.setColTypes("ro,ro,ro,ro,ro,ron,ron,ron,ro");
+			myGridTransaction.setColTypes("ro,ro,ro,ro,ro,ron,ron,ron,ron,ron,ro");
 
-			myGridTransaction.setColSorting("int,str,str,str,str,str,str,str,str");
+			myGridTransaction.setColSorting("int,str,str,str,str,str,str,str,str,str,str");
 
 			myGridTransaction.setNumberFormat("0,000.00",5);
 			myGridTransaction.setNumberFormat("0,000.00",6);
 			myGridTransaction.setNumberFormat("0,000.00",7);
+			myGridTransaction.setNumberFormat("0,000.000",8);
+			myGridTransaction.setNumberFormat("0,000.000",9);
 
 			myGridTransaction.init();
 
