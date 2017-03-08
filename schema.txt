@@ -961,6 +961,10 @@ ALTER TABLE tbl_customer ALTER COLUMN customer_creditdue DROP DEFAULT;
 ALTER TABLE tbl_customer ALTER COLUMN customer_creditdue SET DEFAULT ''::text;
 
 alter table tbl_customer add column customer_discountfundtransfer text DEFAULT ''::text NOT NULL;
+alter table tbl_customer add column customer_discountcustomerreload text DEFAULT ''::text NOT NULL;
+alter table tbl_customer add column customer_discountfundreload text DEFAULT ''::text NOT NULL;
+alter table tbl_customer add column customer_discountchildreload text DEFAULT ''::text NOT NULL;
+alter table tbl_customer add column customer_totalcredit numeric NOT NULL DEFAULT 0;
 
 ---------------------------------------------------------------------
 
@@ -970,8 +974,16 @@ alter table tbl_users add column user_staffid integer NOT NULL DEFAULT 0;
 
 alter table tbl_fund add column fund_paid integer NOT NULL DEFAULT 0;
 alter table tbl_fund add column fund_staffid integer NOT NULL DEFAULT 0;
+alter table tbl_fund add column fund_discountamount numeric NOT NULL DEFAULT 0;
 
 ---------------------------------------------------------------------
 
 alter table tbl_rebate add column rebate_childid integer NOT NULL DEFAULT 0;
 alter table tbl_rebate add column rebate_loadtransactionid integer NOT NULL DEFAULT 0;
+
+alter table tbl_options add column options_desc text DEFAULT ''::text NOT NULL;
+
+
+
+
+---------------------------------------------------------------------

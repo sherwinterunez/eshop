@@ -71,6 +71,7 @@ computeCustomerRebateBalance(21);
 
 computeChildRebateBalance(19);
 computeChildRebateBalance(23);
+computeChildRebateBalance(20);
 
 
 

@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,7 +24,7 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_app_discount')) {
 
 	class APP_app_discount extends APP_Base_Ajax {
-	
+
 		var $desc = 'Discount';
 
 		var $pathid = 'discount';
@@ -39,7 +39,7 @@ if(!class_exists('APP_app_discount')) {
 		function __construct() {
 			$this->init();
 		}
-		
+
 		function __destruct() {
 		}
 
@@ -77,11 +77,11 @@ if(!class_exists('APP_app_discount')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_discountmainscheme
 
 		function _form_discountmaintransferfee($routerid=false,$formid=false) {
@@ -97,11 +97,11 @@ if(!class_exists('APP_app_discount')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_discountmaintransferfee
 
 		function _form_discountmainrebate($routerid=false,$formid=false) {
@@ -117,11 +117,11 @@ if(!class_exists('APP_app_discount')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_discountmainrebate
 
 		function _form_discountdetailscheme($routerid=false,$formid=false) {
@@ -143,14 +143,14 @@ if(!class_exists('APP_app_discount')) {
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 						if(!($result = $appdb->query("select * from tbl_discount where discount_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['discount_id'])) {
 							$params['discountinfo'] = $result['rows'][0];
 						}
 					}
-				} else 
+				} else
 				if(!empty($post['method'])&&$post['method']=='discountsave') {
 
 					$retval = array();
@@ -171,14 +171,14 @@ if(!class_exists('APP_app_discount')) {
 
 						if(!($result = $appdb->update("tbl_discount",$content,"discount_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 					} else {
 
 						if(!($result = $appdb->insert("tbl_discount",$content,"discount_id"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['returning'][0]['discount_id'])) {
@@ -190,7 +190,7 @@ if(!class_exists('APP_app_discount')) {
 					if(!empty($retval['rowid'])) {
 						if(!($result = $appdb->query("delete from tbl_discountlist where discountlist_discountid=".$retval['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 					}
 
@@ -209,7 +209,7 @@ if(!class_exists('APP_app_discount')) {
 
 							if(!($result = $appdb->insert("tbl_discountlist",$content,"discountlist_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						}
 					}
@@ -241,12 +241,12 @@ if(!class_exists('APP_app_discount')) {
 
 							if(!($result = $appdb->query("delete from tbl_discount where discount_id in (".$rowids.")"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!($result = $appdb->query("delete from tbl_discountlist where discountlist_discountid in (".$rowids.")"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							json_encode_return($retval);
@@ -258,18 +258,18 @@ if(!class_exists('APP_app_discount')) {
 					if(!empty($post['rowid'])) {
 						if(!($result = $appdb->query("delete from tbl_discount where discount_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!($result = $appdb->query("delete from tbl_discountlist where discountlist_discountid=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 					}
 
 					json_encode_return($retval);
 					die;
-				} 
+				}
 
 				$params['hello'] = 'Hello, Sherwin!';
 
@@ -315,11 +315,11 @@ if(!class_exists('APP_app_discount')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_discountdetailscheme
 
 		function _form_discountdetailtransferfee($routerid=false,$formid=false) {
@@ -464,11 +464,11 @@ if(!class_exists('APP_app_discount')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_discountdetailtransferfee
 
 		function _form_discountdetailrebate($routerid=false,$formid=false) {
@@ -613,11 +613,11 @@ if(!class_exists('APP_app_discount')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_discountdetailrebate
 
 		function router() {
@@ -685,7 +685,7 @@ if(!class_exists('APP_app_discount')) {
 						if($retflag==2) {
 							return $jsonval;
 						}
-					} 
+					}
 
 				} else
 				if( $this->post['action']=='form' && !empty($this->post['formid']) ) {
@@ -800,7 +800,7 @@ if(!class_exists('APP_app_discount')) {
 					if($this->post['table']=='modemcommands') {
 						if(!($result = $appdb->query("select * from tbl_modemcommands order by modemcommands_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -818,7 +818,7 @@ if(!class_exists('APP_app_discount')) {
 					if($this->post['table']=='scheme') {
 						if(!($result = $appdb->query("select * from tbl_discount order by discount_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -836,13 +836,13 @@ if(!class_exists('APP_app_discount')) {
 					if($this->post['table']=='discountscheme') {
 						if(!($result = $appdb->query("select * from tbl_discountlist where discountlist_discountid=".$this->post['rowid']." order by discountlist_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
 						$rows = array();
 
-						$type = array('RETAIL','DEALER');
+						$type = array('RETAIL','DEALER','CUSTOMER RELOAD','FUND RELOAD','CHILD RELOAD','FUND TRANSFER');
 						$provider = getProviders();
 						$simcard = getAllSims(8);
 						$opttype = array(array('text'=>'','value'=>''));
@@ -899,7 +899,7 @@ if(!class_exists('APP_app_discount')) {
 
 			return false;
 		} // router($vars=false,$retflag=false)
-		
+
 	}
 
 	$appappdiscount = new APP_app_discount;

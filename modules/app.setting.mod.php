@@ -3782,10 +3782,11 @@ if(!class_exists('APP_app_setting')) {
 				$actionOptions[] = array('text'=>'_LoadAirtimeBalanceProcessSMS','value'=>'_LoadAirtimeBalanceProcessSMS');
 				$actionOptions[] = array('text'=>'_childReload','value'=>'_childReload');
 				$actionOptions[] = array('text'=>'_fundTransfer','value'=>'_fundTransfer');
+				$actionOptions[] = array('text'=>'_fundCredit','value'=>'_fundCredit');
 				$actionOptions[] = array('text'=>'_eShopBalance','value'=>'_eShopBalance');
 				$actionOptions[] = array('text'=>'_eShopStatus','value'=>'_eShopStatus');
-				$actionOptions[] = array('text'=>'_eShopVL','value'=>'_eShopVL');
-				$actionOptions[] = array('text'=>'_MobileDTR','value'=>'_MobileDTR');
+				//$actionOptions[] = array('text'=>'_eShopVL','value'=>'_eShopVL');
+				//$actionOptions[] = array('text'=>'_MobileDTR','value'=>'_MobileDTR');
 				$actionOptions[] = array('text'=>'_SmartPadalaCustomerPayment','value'=>'_SmartPadalaCustomerPayment');
 
 				$opt = array();
@@ -4368,6 +4369,7 @@ if(!class_exists('APP_app_setting')) {
 					$content['options_name'] = !empty($post['options_name']) ? trim($post['options_name']) : '';
 					$content['options_value'] = !empty($post['options_value']) ? trim($post['options_value']) : '';
 					$content['options_type'] = !empty($post['options_type']) ? trim($post['options_type']) : '';
+					$content['options_desc'] = !empty($post['options_desc']) ? trim($post['options_desc']) : '';
 					$content['options_hidden'] = !empty($post['options_hidden']) ? 1 : 0;
 					$content['options_field1'] = !empty($post['options_field1']) ? trim($post['options_field1']) : '';
 					$content['options_field2'] = !empty($post['options_field2']) ? trim($post['options_field2']) : '';
@@ -4500,6 +4502,17 @@ if(!class_exists('APP_app_setting')) {
 					'required' => !$readonly,
 					'inputWidth' => 500,
 					'value' => !empty($params['optionsinfo']['options_name']) ? $params['optionsinfo']['options_name'] : '',
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'DESCRIPTION',
+					'name' => 'options_desc',
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'rows' => 3,
+					'inputWidth' => 500,
+					'value' => !empty($params['optionsinfo']['options_desc']) ? $params['optionsinfo']['options_desc'] : '',
 				);
 
 				$options_types = array('STRING','NUMERIC','SETTING','NETWORK','REGEX','KEYCODE','PRODUCTCODE','ITEMCODE','ERRORMESSAGE','MESSAGE');
@@ -5598,7 +5611,7 @@ if(!class_exists('APP_app_setting')) {
 							$rows = array();
 
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$v['options_id'],'data'=>array(0,$v['options_id'],$v['options_name'],$v['options_type'],htmlentities($v['options_value'])));
+								$rows[] = array('id'=>$v['options_id'],'data'=>array(0,$v['options_id'],$v['options_name'],$v['options_type'],htmlentities($v['options_desc']),htmlentities($v['options_value'])));
 							}
 
 							$retval = array('rows'=>$rows);

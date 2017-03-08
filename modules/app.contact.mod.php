@@ -832,16 +832,6 @@ if(!class_exists('APP_app_contact')) {
 						'value' => !empty($params['customerinfo']['customer_staffbalance']) ? $params['customerinfo']['customer_staffbalance'] : '',
 					);
 
-					$params['tbCustomer'][] = array(
-						'type' => 'input',
-						'label' => 'FREEZE LEVEL',
-						'name' => 'customer_freezelevel',
-						'readonly' => $readonly,
-						'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-						//'required' => !$readonly,
-						'value' => !empty($params['customerinfo']['customer_freezelevel']) ? $params['customerinfo']['customer_freezelevel'] : '',
-					);
-
 				} else {
 
 					$params['tbCustomer'][] = array(
@@ -855,6 +845,16 @@ if(!class_exists('APP_app_contact')) {
 					);
 
 				}
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'FREEZE LEVEL',
+					'name' => 'customer_freezelevel',
+					'readonly' => $readonly,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_freezelevel']) ? $params['customerinfo']['customer_freezelevel'] : '',
+				);
 
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
@@ -894,6 +894,12 @@ if(!class_exists('APP_app_contact')) {
 					'offset' => $newcolumnoffset,
 				);
 
+				if($customer_type=='STAFF') {
+					$customer_availablecredit = getStaffAvailableCredit($params['customerinfo']['customer_id']);
+				} else {
+					$customer_availablecredit = getCustomerAvailableCredit($params['customerinfo']['customer_id']);
+				}
+
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
 					'label' => 'AVAILABLE CREDIT',
@@ -903,7 +909,8 @@ if(!class_exists('APP_app_contact')) {
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
 					//'value' => !empty($params['customerinfo']['customer_availablecredit']) ? $params['customerinfo']['customer_availablecredit'] : '',
-					'value' => getStaffAvailableCredit($params['customerinfo']['customer_id']),
+					//'value' => getStaffAvailableCredit($params['customerinfo']['customer_id']),
+					'value' => $customer_availablecredit,
 				);
 
 				$opt = array();
@@ -975,6 +982,42 @@ if(!class_exists('APP_app_contact')) {
 
 					$params['tbDiscount'][] = array(
 						'type' => 'input',
+						'label' => 'CUSTOMER RELOAD',
+						'name' => 'customer_discountcustomerreload',
+						'readonly' => $readonly,
+						'inputWidth' => 200,
+						//'disabled' => !empty($params['iteminfo']['item_maintenance']) ? false : true,
+						//'required' => !$readonly,
+						//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+						'value' => !empty($params['customerinfo']['customer_discountcustomerreload']) ? $params['customerinfo']['customer_discountcustomerreload'] : '',
+					);
+
+					$params['tbDiscount'][] = array(
+						'type' => 'input',
+						'label' => 'FUND RELOAD',
+						'name' => 'customer_discountfundreload',
+						'readonly' => $readonly,
+						'inputWidth' => 200,
+						//'disabled' => !empty($params['iteminfo']['item_maintenance']) ? false : true,
+						//'required' => !$readonly,
+						//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+						'value' => !empty($params['customerinfo']['customer_discountfundreload']) ? $params['customerinfo']['customer_discountfundreload'] : '',
+					);
+
+					$params['tbDiscount'][] = array(
+						'type' => 'input',
+						'label' => 'CHILD RELOAD',
+						'name' => 'customer_discountchildreload',
+						'readonly' => $readonly,
+						'inputWidth' => 200,
+						//'disabled' => !empty($params['iteminfo']['item_maintenance']) ? false : true,
+						//'required' => !$readonly,
+						//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+						'value' => !empty($params['customerinfo']['customer_discountchildreload']) ? $params['customerinfo']['customer_discountchildreload'] : '',
+					);
+
+					$params['tbDiscount'][] = array(
+						'type' => 'input',
 						'label' => 'FUND TRANSFER',
 						'name' => 'customer_discountfundtransfer',
 						'readonly' => $readonly,
@@ -986,6 +1029,119 @@ if(!class_exists('APP_app_contact')) {
 					);
 
 				} else {
+
+////////////////
+
+					$opt = array();
+
+					if(!$readonly) {
+						$opt[] = array('text'=>'','value'=>'','selected'=>false);
+					}
+
+					$discountSchemes = getDiscountScheme();
+
+					foreach($discountSchemes as $k=>$v) {
+						$selected = false;
+						if(!empty($params['customerinfo']['customer_discountcustomerreload'])&&$params['customerinfo']['customer_discountcustomerreload']==$v['discount_desc']) {
+							$selected = true;
+						}
+						if($readonly) {
+							if($selected) {
+								$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']['discount_desc'],'selected'=>$selected);
+							}
+						} else {
+							$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc'],'selected'=>$selected);
+						}
+					}
+
+					$params['tbDiscount'][] = array(
+						'type' => 'combo',
+						'label' => 'CUSTOMER RELOAD',
+						//'labelWidth' => 210,
+						'inputWidth' => 200,
+						//'comboType' => 'checkbox',
+						'name' => 'customer_discountcustomerreload',
+						'readonly' => $readonly,
+						//'disabled' => !empty($params['iteminfo']['item_regularload']) ? false : true,
+						//'required' => !$readonly,
+						'options' => $opt,
+					);
+
+////////////////
+
+					$opt = array();
+
+					if(!$readonly) {
+						$opt[] = array('text'=>'','value'=>'','selected'=>false);
+					}
+
+					$discountSchemes = getDiscountScheme();
+
+					foreach($discountSchemes as $k=>$v) {
+						$selected = false;
+						if(!empty($params['customerinfo']['customer_discountfundreload'])&&$params['customerinfo']['customer_discountfundreload']==$v['discount_desc']) {
+							$selected = true;
+						}
+						if($readonly) {
+							if($selected) {
+								$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']['discount_desc'],'selected'=>$selected);
+							}
+						} else {
+							$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc'],'selected'=>$selected);
+						}
+					}
+
+					$params['tbDiscount'][] = array(
+						'type' => 'combo',
+						'label' => 'FUND RELOAD',
+						//'labelWidth' => 210,
+						'inputWidth' => 200,
+						//'comboType' => 'checkbox',
+						'name' => 'customer_discountfundreload',
+						'readonly' => $readonly,
+						//'disabled' => !empty($params['iteminfo']['item_regularload']) ? false : true,
+						//'required' => !$readonly,
+						'options' => $opt,
+					);
+
+////////////////
+
+					$opt = array();
+
+					if(!$readonly) {
+						$opt[] = array('text'=>'','value'=>'','selected'=>false);
+					}
+
+					$discountSchemes = getDiscountScheme();
+
+					foreach($discountSchemes as $k=>$v) {
+						$selected = false;
+						if(!empty($params['customerinfo']['customer_discountchildreload'])&&$params['customerinfo']['customer_discountchildreload']==$v['discount_desc']) {
+							$selected = true;
+						}
+						if($readonly) {
+							if($selected) {
+								$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']['discount_desc'],'selected'=>$selected);
+							}
+						} else {
+							$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc'],'selected'=>$selected);
+						}
+					}
+
+					$params['tbDiscount'][] = array(
+						'type' => 'combo',
+						'label' => 'CHILD RELOAD',
+						//'labelWidth' => 210,
+						'inputWidth' => 200,
+						//'comboType' => 'checkbox',
+						'name' => 'customer_discountchildreload',
+						'readonly' => $readonly,
+						//'disabled' => !empty($params['iteminfo']['item_regularload']) ? false : true,
+						//'required' => !$readonly,
+						'options' => $opt,
+					);
+
+////////////////
 
 					$opt = array();
 

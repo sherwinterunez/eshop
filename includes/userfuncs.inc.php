@@ -1389,6 +1389,36 @@ function computeChildRebateBalance($id=false) {
 	return false;
 }
 
+function computeCustomerAvailableCredit($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_fund where fund_type='fundcredit' and fund_userid=$id and fund_paid=0 order by fund_id asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	$customer_totalcredit = 0;
+
+	if(!empty($result['rows'][0]['fund_id'])) {
+		foreach($result['rows'] as $k=>$v) {
+			$customer_totalcredit = floatval($customer_totalcredit) + floatval($v['fund_amountdue']);
+		}
+	}
+
+	$content = array();
+	$content['customer_totalcredit'] = $customer_totalcredit;
+
+	if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+		return false;
+	}
+
+	return false;
+}
+
 function getTotalRebateAsChild($id=false) {
 	global $appdb;
 
@@ -1425,6 +1455,29 @@ function getStaffFirstUnpaidTransactions($id=false) {
 	}
 
 	return false;
+}
+
+function getCustomerFirstUnpaidCredit($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_fund where fund_type='fundcredit' and fund_userid=$id and fund_paid=0 order by fund_id asc limit 1";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['fund_id'])) {
+		return $result['rows'][0];
+	}
+
+	return false;
+}
+
+function getCustomerTerms($id=false) {
+	return getStaffTerms($id);
 }
 
 function getStaffTerms($id=false) {
@@ -1468,14 +1521,20 @@ function isCriticalLevel($id=false) {
 		return false;
 	}
 
+	//print_r(array('isCriticalLevel'=>'isCriticalLevel','$customer_type'=>$customer_type,'$critical_level'=>$critical_level));
+
 	if(!empty($customer_type)&&$customer_type=='STAFF') {
 		$balance = getStaffBalance($id);
+
+		//print_r(array('$balance'=>$balance));
 
 		if($balance>=$critical_level) {
 			return true;
 		}
 	} else {
 		$balance = getCustomerBalance($id);
+
+		print_r(array('$balance'=>$balance));
 
 		if($balance<=$critical_level) {
 			return true;
@@ -1502,6 +1561,10 @@ function getCriticalLevel($id=false) {
 	}
 
 	return 0;
+}
+
+function getCustomerCreditLimit($id=false) {
+	return getStaffCreditLimit($id);
 }
 
 function getStaffCreditLimit($id=false) {
@@ -1630,6 +1693,44 @@ function getStaffAvailableCredit($id=false) {
 
 	if(!empty($result['rows'][0]['customer_creditlimit'])) {
 		return floatval($result['rows'][0]['customer_creditlimit']) - floatval($result['rows'][0]['customer_staffbalance']);
+	}
+
+	return 0;
+}
+
+function getCustomerAccountType($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_accounttype'])) {
+		return $result['rows'][0]['customer_accounttype'];
+	}
+
+	return 0;
+}
+
+function getCustomerAvailableCredit($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_creditlimit'])) {
+		return floatval($result['rows'][0]['customer_creditlimit']) - floatval($result['rows'][0]['customer_totalcredit']);
 	}
 
 	return 0;
@@ -1810,6 +1911,40 @@ function getCustomerDiscounts($id=false,$provider=false,$simcard=false,$mode=0) 
 
 	if(!empty($allDiscounts)) {
 		return $allDiscounts;
+	}
+
+	return false;
+}
+
+function getCustomerFundTransferDiscountScheme($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_discountfundtransfer'])) {
+		$customer_discountfundtransfer = $result['rows'][0]['customer_discountfundtransfer'];
+		//return $result['rows'][0]['customer_discountfundtransfer'];
+		if(($discountId = getDiscountIDFromDesc($customer_discountfundtransfer))) {
+			$discountList = array();
+			if(($discounts = getDiscounts($discountId))) {
+				//print_r(array('$discounts'=>$discounts));
+				foreach($discounts as $k=>$v) {
+					if(!empty($v['discountlist_type'])&&$v['discountlist_type']==='FUND TRANSFER') {
+						$discountList[] = $v;
+					}
+				}
+				if(!empty($discountList)) {
+					return $discountList;
+				}
+			}
+		}
 	}
 
 	return false;

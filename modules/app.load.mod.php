@@ -1613,7 +1613,7 @@ if(!class_exists('APP_app_load')) {
 				);*/
 
 
-				$params['tbDetails'][] = array(
+				/*$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'DISCOUNT',
 					'name' => 'fund_discount',
@@ -1621,6 +1621,41 @@ if(!class_exists('APP_app_load')) {
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
 					'value' => !empty($params['customerreloadinfo']['fund_discount']) ? $params['customerreloadinfo']['fund_discount'] : 0,
+				);*/
+
+				$params['tbDetails'][] = array(
+					'type' => 'block',
+					'name' => 'discountblock',
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'width' => 350,
+					'list' => array(
+						array(
+							'type' => 'input',
+							'label' => 'DISCOUNT',
+							'name' => 'fund_discount',
+							'readonly' => true,
+							//'required' => !$readonly,
+							'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
+							//'value' => !empty($percent) ? number_format($percent,2) : 0,
+							'value' => !empty($params['customerreloadinfo']['fund_discount']) ? number_format($params['customerreloadinfo']['fund_discount'],2) : '',
+							'inputWidth' => 90,
+						),
+						array(
+							'type' => 'newcolumn',
+							'offset' => 5,
+						),
+						array(
+							'type' => 'input',
+							'name' => 'fund_discountamount',
+							'readonly' => true,
+							//'required' => !$readonly,
+							'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+							//'value' => !empty($discount) ? number_format($discount,2) : 0,
+							'value' => !empty($params['customerreloadinfo']['fund_discountamount']) ? number_format($params['customerreloadinfo']['fund_discountamount'],2) : '',
+							'inputWidth' => 100,
+						),
+					),
 				);
 
 				$params['tbDetails'][] = array(
@@ -2024,7 +2059,7 @@ if(!class_exists('APP_app_load')) {
 				);*/
 
 
-				$params['tbDetails'][] = array(
+				/*$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'DISCOUNT',
 					'name' => 'fund_discount',
@@ -2032,8 +2067,43 @@ if(!class_exists('APP_app_load')) {
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
 					'value' => !empty($params['customerreloadinfo']['fund_discount']) ? $params['customerreloadinfo']['fund_discount'] : 0,
-				);
+				);*/
 
+				$params['tbDetails'][] = array(
+					'type' => 'block',
+					'name' => 'discountblock',
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'width' => 350,
+					'list' => array(
+						array(
+							'type' => 'input',
+							'label' => 'DISCOUNT',
+							'name' => 'fund_discount',
+							'readonly' => true,
+							//'required' => !$readonly,
+							'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
+							//'value' => !empty($percent) ? number_format($percent,2) : 0,
+							'value' => !empty($params['customerreloadinfo']['fund_discount']) ? number_format($params['customerreloadinfo']['fund_discount'],2) : '',
+							'inputWidth' => 90,
+						),
+						array(
+							'type' => 'newcolumn',
+							'offset' => 5,
+						),
+						array(
+							'type' => 'input',
+							'name' => 'fund_discountamount',
+							'readonly' => true,
+							//'required' => !$readonly,
+							'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+							//'value' => !empty($discount) ? number_format($discount,2) : 0,
+							'value' => !empty($params['customerreloadinfo']['fund_discountamount']) ? number_format($params['customerreloadinfo']['fund_discountamount'],2) : '',
+							'inputWidth' => 100,
+						),
+					),
+				);
+				
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'PROCESSING FEE',
@@ -2230,7 +2300,7 @@ if(!class_exists('APP_app_load')) {
 				);*/
 
 
-				$params['tbDetails'][] = array(
+				/*$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'DISCOUNT',
 					'name' => 'fund_discount',
@@ -2238,6 +2308,41 @@ if(!class_exists('APP_app_load')) {
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
 					'value' => !empty($params['customerreloadinfo']['fund_discount']) ? $params['customerreloadinfo']['fund_discount'] : 0,
+				);*/
+
+				$params['tbDetails'][] = array(
+					'type' => 'block',
+					'name' => 'discountblock',
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'width' => 350,
+					'list' => array(
+						array(
+							'type' => 'input',
+							'label' => 'DISCOUNT',
+							'name' => 'fund_discount',
+							'readonly' => true,
+							//'required' => !$readonly,
+							'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
+							//'value' => !empty($percent) ? number_format($percent,2) : 0,
+							'value' => !empty($params['customerreloadinfo']['fund_discount']) ? number_format($params['customerreloadinfo']['fund_discount'],2) : '',
+							'inputWidth' => 90,
+						),
+						array(
+							'type' => 'newcolumn',
+							'offset' => 5,
+						),
+						array(
+							'type' => 'input',
+							'name' => 'fund_discountamount',
+							'readonly' => true,
+							//'required' => !$readonly,
+							'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+							//'value' => !empty($discount) ? number_format($discount,2) : 0,
+							'value' => !empty($params['customerreloadinfo']['fund_discountamount']) ? number_format($params['customerreloadinfo']['fund_discountamount'],2) : '',
+							'inputWidth' => 100,
+						),
+					),
 				);
 
 				$params['tbDetails'][] = array(

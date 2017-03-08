@@ -147,7 +147,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 
 				if(ddata.rows[0].id) {
 
-					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter");
+					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter");
 
 					myGrid.attachEvent("onBeforeSelect", function(new_row,old_row,new_col_index){
 

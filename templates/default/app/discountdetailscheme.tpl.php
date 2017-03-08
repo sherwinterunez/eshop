@@ -105,7 +105,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				myWinObj.myGridDiscountScheme.setSizes();
 			} catch(e) {}
 		}
-		
+
 	}
 
 	function <?php echo $wid.$templatedetailid.$submod; ?>_openwindow_%formval%(rowid) {
@@ -161,7 +161,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				}
 				if(ddata.html) {
 					jQuery("#"+odata.obj.wid).html(ddata.html);
-					//layout_resize_%formval%();								
+					//layout_resize_%formval%();
 				}
 			});
 		});
@@ -182,7 +182,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		var myTabbar = new dhtmlXTabBar("<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
+
 		myTabbar.addTab("tbDetails", "Details");
 		//myTabbar.addTab("tbPayments", "Payments");
 		//myTabbar.addTab("tbMessage", "Message");
@@ -199,7 +199,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "<?php echo $moduleid; ?>"},
-				{type: "hidden", name: "formid", value: "<?php echo $templatedetailid.$submod; ?>"},				
+				{type: "hidden", name: "formid", value: "<?php echo $templatedetailid.$submod; ?>"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
@@ -288,12 +288,12 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			myGridDiscountScheme.addRow(9,"9,,,,");
 			myGridDiscountScheme.addRow(10,"10,,,,");*/
 
-			<?php /* ?>
+			<?php /*
 			myGridDiscountScheme.attachEvent("onCheck", function(rId,cInd,state){
 				var mobileNo = trim(myGridDiscountScheme.cells(rId,1).getValue());
 
 				//showMessage('rId=>'+rId+', cInd=>'+cInd+', state=>'+state+', mobileNo=>'+mobileNo,10000);
-				
+
 				if(state==true&&(cInd==3||cInd==4)) {
 					if(mobileNo=='') {
 						myGridDiscountScheme.cells(rId,cInd).setValue(false);
@@ -303,14 +303,14 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 								if(rId!=id) {
 									myGridDiscountScheme.cells(id,3).setValue(false);
 								}
-							});								
+							});
 						}
 					}
 				}
 			});
-			<?php */ ?>
+			*/ ?>
 
-			<?php /* ?>
+			<?php /*
 			myGridDiscountScheme.attachEvent("onCellChanged", function(rId,cInd,nValue){
 				//showMessage('rId=>'+rId+', cInd=>'+cInd+', nValue=>'+nValue,10000);
 
@@ -339,14 +339,14 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 							}
 						});
 					} else {
-						myGridDiscountScheme.cells(rId,2).setValue('');						
-						myGridDiscountScheme.cells(rId,3).setValue(0);						
-						myGridDiscountScheme.cells(rId,4).setValue(0);						
+						myGridDiscountScheme.cells(rId,2).setValue('');
+						myGridDiscountScheme.cells(rId,3).setValue(0);
+						myGridDiscountScheme.cells(rId,4).setValue(0);
 					}
 				}
 
 			});
-			<?php */ ?>
+			*/ ?>
 
 			myGridDiscountScheme.attachEvent("onEditCell", function(stage,rId,cInd,nValue,oValue){
 				//showMessage('state=>'+stage+', rId=>'+rId+', cInd=>'+cInd+', nValue=>'+nValue+', oValue=>'+oValue,10000);
@@ -379,7 +379,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 						myGridDiscountScheme.selectRowById(ddata.rows[0].id,false,true,true);
 					}*/
 
-					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?> 
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
 					myGridDiscountScheme.forEachRow(function(id){
 						myGridDiscountScheme.cells(id,1).setDisabled(true);
@@ -426,7 +426,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 				},'json');
 
-			} catch(e) { 
+			} catch(e) {
 				console.log('myGridDiscountScheme.parse error: '+e);
 			}
 
@@ -435,7 +435,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?> 
+		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -443,9 +443,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myForm.setItemFocus("scheme_description");
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'save') { ?> 
+		<?php } else if($method==$moduleid.'save') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -453,7 +453,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
@@ -471,7 +471,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		<?php 	} ?>
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
@@ -565,7 +565,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				    //myForm2_%formval%.hideItem(tbId);
 			    }
 			});
- 
+
 		});
 
 		myForm.attachEvent("onBeforeChange", function (name, old_value, new_value){
@@ -615,7 +615,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				odata: {},
 				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval=%formval%",
 			}, function(ddata,odata){
-				if(ddata.html) {					
+				if(ddata.html) {
 					jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 				}
 			});
@@ -633,7 +633,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				}, function(ddata,odata){
 					if(ddata.html) {
 						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
 				});
 			}
@@ -690,7 +690,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			showSaving();
 
@@ -709,7 +709,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				var n = myWinObj.myGridDiscountScheme.cells(id,1).getValue();
 				var o = myWinObj.myGridDiscountScheme.cells(id,2).getValue();
 				var p = myWinObj.myGridDiscountScheme.cells(id,3).getValue();
-				if(m&&n&&o&&p) {
+				if(m&&n) {
 					//extra['itemassignedsim_seq['+id+']'] = m;
 					extra['discountlist_type['+id+']'] = n; //myGridDiscountScheme_%formval%.cells(id,1).getValue();
 					extra['discountlist_provider['+id+']'] = o; //myGridDiscountScheme_%formval%.cells(id,2).getValue();
@@ -768,7 +768,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
-	
+
 							try {
 								if(data.rowid) {
 									layout_resize_%formval%();
@@ -806,7 +806,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=onrowselect&rowid="+rowid+"&formval="+formval+"&wid="+wid,
 				}, function(ddata,odata){
 					if(ddata.html) {
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
 				});
 			} else {
@@ -815,9 +815,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=<?php echo $moduleid; ?>new&rowid=0&formval="+formval+"&wid="+wid,
 				}, function(ddata,odata){
 					if(ddata.html) {
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
-				});				
+				});
 			}
 
 		};
