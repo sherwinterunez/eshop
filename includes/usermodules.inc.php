@@ -2925,25 +2925,46 @@ function _fundCredit($vars=array()) {
 				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
 				sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
 
-				/*unset($content['ledger_credit']);
+/////////////////
 
-				$content['ledger_debit'] = $fund_amountdue;
-				$content['ledger_user'] = $fund_userid;
+				if(($terms = getCustomerTerms($smsinbox_contactsid))) {
 
-				if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
-					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-					die;
+					if(!empty(($unpaidCredit = getCustomerFirstUnpaidCredit($smsinbox_contactsid)))) {
+
+						$currentDate = getDbUnixDate();
+
+						//$dueDate = floatval(86400 * ($terms-1)) + floatval($unpaidCredit['fund_datetimeunix']);
+						$dueDate = floatval(86400 * $terms) + floatval($unpaidCredit['fund_datetimeunix']);
+
+						setCustomerCreditDue($smsinbox_contactsid,$dueDate);
+
+						$bypass = true;
+
+						print_r(array('$customer_availablecredit'=>$customer_availablecredit,'$customer_creditlimit'=>$customer_creditlimit,'$terms'=>$terms,'$unpaidCredit'=>$unpaidCredit));
+						print_r(array('$currentDate'=>$currentDate,'$currentDate2'=>pgDateUnix($currentDate),'$dueDate'=>$dueDate,'$dueDate2'=>pgDateUnix($dueDate)));
+
+						if($currentDate>$dueDate) {
+
+							setCustomerFreeze($smsinbox_contactsid);
+
+							$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+							//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+							//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+							sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+							return false;
+
+							//$retval['return_code'] = 'ERROR';
+							//$retval['return_message'] = 'Your account is currently freezed. Please contact administrator!';
+							//json_encode_return($retval);
+							//die;
+						}
+
+					}
 				}
 
-				computeCustomerBalance($fund_userid);
-
-				$parentBalance = getCustomerBalance($fund_userid);
-
-				$errmsg = smsdt()." ".getNotification('FUND TRANSFER SOURCE NOTIFICATION');
-				$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
-
-				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
-				sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);*/
+/////////////////
 
 			}
 
