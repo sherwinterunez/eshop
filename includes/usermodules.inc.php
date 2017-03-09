@@ -417,6 +417,19 @@ function _eLoadProcessSMS($vars=array()) {
 		return false;
 	}
 
+	if(isFreezeLevel($smsinbox_contactsid)) {
+
+		setCustomerFreeze($smsinbox_contactsid);
+
+		$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+		//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+		//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+		sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+		return false;
+	}
+
 	if(isCriticalLevel($smsinbox_contactsid)) {
 		$errmsg = smsdt()." ".getNotification('CRITICAL LEVEL');
 		//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
@@ -475,10 +488,10 @@ function _eLoadProcessSMS($vars=array()) {
 
 		//return false;
 
-		if(isCriticalLevel($loadtransaction_customerid)) {
-			$errmsg = smsdt()." ".getNotification('CRITICAL LEVEL');
-			sendToGateway($loadtransaction_customernumber,$simhotline,$errmsg);
-		}
+		//if(isCriticalLevel($loadtransaction_customerid)) {
+		//	$errmsg = smsdt()." ".getNotification('CRITICAL LEVEL');
+		//	sendToGateway($loadtransaction_customernumber,$simhotline,$errmsg);
+		//}
 
 		if(!isValidItem($matched['$ITEMCODE'])) {
 			if(!($forregularload=isValidItemForRegularLoad($matched['$ITEMCODE']))) {
@@ -2240,6 +2253,19 @@ function _childReload($vars=array()) {
 			return false;
 		}
 
+		if(isFreezeLevel($smsinbox_contactsid)) {
+
+			setCustomerFreeze($smsinbox_contactsid);
+
+			$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+			//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+			sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+			return false;
+		}
+
 		if(isCriticalLevel($smsinbox_contactsid)) {
 			$errmsg = smsdt()." ".getNotification('CRITICAL LEVEL');
 			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
@@ -2454,6 +2480,19 @@ function _fundTransfer($vars=array()) {
 			return false;
 		}
 
+		if(isFreezeLevel($smsinbox_contactsid)) {
+
+			setCustomerFreeze($smsinbox_contactsid);
+
+			$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+			//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+			sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+			return false;
+		}
+
 		if(isCriticalLevel($smsinbox_contactsid)) {
 			$errmsg = smsdt()." ".getNotification('CRITICAL LEVEL');
 			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
@@ -2655,6 +2694,19 @@ function _fundCredit($vars=array()) {
 		print_r(array('$match'=>$match));
 
 		if(isCustomerFreezed($smsinbox_contactsid)) {
+			$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+			//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+			sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+			return false;
+		}
+
+		if(isFreezeLevel($smsinbox_contactsid)) {
+
+			setCustomerFreeze($smsinbox_contactsid);
+
 			$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
 			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
 
@@ -2936,6 +2988,19 @@ function _customerReload($vars=array()) {
 			return false;
 		}
 
+		if(isFreezeLevel($smsinbox_contactsid)) {
+
+			setCustomerFreeze($smsinbox_contactsid);
+
+			$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+			//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+			sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+			return false;
+		}
+
 		if(isCriticalLevel($smsinbox_contactsid)) {
 			$errmsg = smsdt()." ".getNotification('CRITICAL LEVEL');
 			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
@@ -3156,7 +3221,8 @@ function _customerReload($vars=array()) {
 
 				unset($content['ledger_credit']);
 
-				$content['ledger_debit'] = $fund_amountdue;
+				//$content['ledger_debit'] = $fund_amountdue;
+				$content['ledger_credit'] = $fund_amountdue;
 				$content['ledger_user'] = $fund_userid;
 
 				if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
@@ -3232,6 +3298,18 @@ function _eShopBalance($vars=array()) {
 		$loadtransaction_customerid = $vars['smsinbox']['smsinbox_contactsid'];
 
 		$smscommandskeys = array();
+
+		if(isFreezeLevel($smsinbox_contactsid)) {
+
+			setCustomerFreeze($smsinbox_contactsid);
+
+			$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+			//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+			sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+		}
 
 		if(isCriticalLevel($loadtransaction_customerid)) {
 			$errmsg = smsdt()." ".getNotification('CRITICAL LEVEL');

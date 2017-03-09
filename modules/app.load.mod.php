@@ -1801,6 +1801,16 @@ if(!class_exists('APP_app_load')) {
 							die;
 						}
 
+						if(isFreezeLevel($user_staffid)) {
+
+							setCustomerFreeze($user_staffid);
+
+							$retval['return_code'] = 'ERROR';
+							$retval['return_message'] = 'Your account is currently freezed. Please contact administrator!';
+							json_encode_return($retval);
+							die;
+						}
+
 						if(isCriticalLevel($user_staffid)) {
 							$params['return_code'] = 'ALERT';
 							$params['return_message'] = 'Your account has reached its critical level. Please contact administrator!';

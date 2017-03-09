@@ -1552,6 +1552,63 @@ function getCriticalLevel($id=false) {
 	return 0;
 }
 
+function isFreezeLevel($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$customer_type = getCustomerType($id);
+
+	$freeze_level = getFreezeLevel($id);
+
+	if(!empty($freeze_level)&&is_numeric($freeze_level)) {
+	} else {
+		return false;
+	}
+
+	//print_r(array('isCriticalLevel'=>'isCriticalLevel','$customer_type'=>$customer_type,'$critical_level'=>$critical_level));
+
+	if(!empty($customer_type)&&$customer_type=='STAFF') {
+		$balance = getStaffBalance($id);
+
+		//print_r(array('$balance'=>$balance));
+
+		if($balance>=$freeze_level) {
+			return true;
+		}
+	} else {
+		$balance = getCustomerBalance($id);
+
+		//print_r(array('$balance'=>$balance));
+
+		if($balance<=$freeze_level) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function getFreezeLevel($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_freezelevel'])) {
+		return floatval($result['rows'][0]['customer_freezelevel']);
+	}
+
+	return 0;
+}
+
 function getCustomerCreditLimit($id=false) {
 	return getStaffCreditLimit($id);
 }
