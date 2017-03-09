@@ -290,7 +290,7 @@ if(!class_exists('APP_app_load')) {
 
 						$itemData = getItemData($params['retailinfo']['loadtransaction_item'],$params['retailinfo']['loadtransaction_provider']);
 
-						if(!empty($general_notificationforloadretailcancelled)) {
+						/*if(!empty($general_notificationforloadretailcancelled)) {
 							$noti = explode(',', $general_notificationforloadretailcancelled);
 
 							foreach($noti as $v) {
@@ -302,7 +302,7 @@ if(!class_exists('APP_app_load')) {
 
 								sendToGateway($params['retailinfo']['loadtransaction_customernumber'],$params['retailinfo']['loadtransaction_assignedsim'],$msg);
 							}
-						}
+						}*/
 
 						$customer_type = getCustomerType($params['retailinfo']['loadtransaction_customerid']);
 
@@ -343,26 +343,31 @@ if(!class_exists('APP_app_load')) {
 
 								unset($rcontent['rebate_credit']);
 								unset($rcontent['rebate_id']);
+								unset($rcontent['rebate_balance']);
+								unset($rcontent['rebate_createstamp']);
+								unset($rcontent['rebate_updatestamp']);
 
 								$rcontent['rebate_debit'] = number_format($rebate_credit,3);
 
-								$rebate_balance = getRebateBalance($rebate['rebate_customerid']) - $rebate_credit;
+								//$rebate_balance = getRebateBalance($rebate['rebate_customerid']) - $rebate_credit;
 
-								$rcontent['rebate_balance'] = number_format($rebate_balance,3);
+								//$rcontent['rebate_balance'] = number_format($rebate_balance,3);
 
 								if(!($result = $appdb->insert("tbl_rebate",$rcontent,"rebate_id"))) {
 									return false;
 								}
 
-								$ccontent = array();
-								$ccontent['customer_totalrebate'] = $rcontent['rebate_balance'];
+								//$ccontent = array();
+								//$ccontent['customer_totalrebate'] = $rcontent['rebate_balance'];
 
-								if(!($result = $appdb->update("tbl_customer",$ccontent,"customer_id=".$rebate['rebate_customerid']))) {
-									return false;
-								}
+								//if(!($result = $appdb->update("tbl_customer",$ccontent,"customer_id=".$rebate['rebate_customerid']))) {
+								//	return false;
+								//}
+
+								computeCustomerRebateBalance($rebate['rebate_customerid']);
 
 								$content['ledger_rebate'] = (0 - floatval($rcontent['rebate_debit']));
-								$content['ledger_rebatebalance'] = $rcontent['rebate_balance'];
+								//$content['ledger_rebatebalance'] = $rcontent['rebate_balance'];
 
 							}
 						}
@@ -374,8 +379,24 @@ if(!class_exists('APP_app_load')) {
 
 						if($customer_type=='STAFF') {
 							computeStaffBalance($params['retailinfo']['loadtransaction_customerid']);
+							$balance = getStaffBalance($params['retailinfo']['loadtransaction_customerid']);
 						} else {
 							computeCustomerBalance($params['retailinfo']['loadtransaction_customerid']);
+							$balance = getCustomerBalance($params['retailinfo']['loadtransaction_customerid']);
+						}
+
+						if(!empty($general_notificationforloadretailcancelled)) {
+							$noti = explode(',', $general_notificationforloadretailcancelled);
+
+							foreach($noti as $v) {
+								$msg = getNotificationByID($v);
+								$msg = str_replace('%TEXTCODE%',$params['retailinfo']['loadtransaction_item'],$msg);
+								//$msg = str_replace('%ITEMQUANTITY%',$itemData['item_quantity'],$msg);
+								$msg = str_replace('%ITEMQUANTITY%',$params['retailinfo']['loadtransaction_load'],$msg);
+								$msg = str_replace('%CUSTMOBILENO%',$params['retailinfo']['loadtransaction_recipientnumber'],$msg);
+
+								sendToGateway($params['retailinfo']['loadtransaction_customernumber'],$params['retailinfo']['loadtransaction_assignedsim'],$msg);
+							}
 						}
 
 					} else

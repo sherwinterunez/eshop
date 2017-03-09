@@ -894,7 +894,7 @@ if(!class_exists('APP_app_contact')) {
 					'offset' => $newcolumnoffset,
 				);
 
-				if($customer_type=='STAFF') {
+				if($params['customerinfo']['customer_type']=='STAFF') {
 					$customer_availablecredit = getStaffAvailableCredit($params['customerinfo']['customer_id']);
 				} else {
 					$customer_availablecredit = getCustomerAvailableCredit($params['customerinfo']['customer_id']);

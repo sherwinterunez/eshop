@@ -1129,36 +1129,6 @@ function getCustomerBalance($id=false) {
 	return 0;
 }
 
-/*function computeStaffAvailableCredit($id=false) {
-	global $appdb;
-
-	if(!empty($id)&&is_numeric($id)) {
-	} else return false;
-
-	computeStaffBalance($id);
-
-	$sql = "select * from tbl_customer where customer_id=$id";
-
-	if(!($result = $appdb->query($sql))) {
-		return false;
-	}
-
-	if(!empty($result['rows'][0]['customer_creditlimit'])) {
-		$balance = floatval($result['rows'][0]['customer_creditlimit']) - floatval($result['rows'][0]['customer_staffbalance']);
-
-		$content = array();
-		$content['ledger_balance'] = $balance;
-
-		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=".$id))) {
-			return false;
-		}
-
-		return $balance;
-	}
-
-	return 0;
-}*/
-
 function computeStaffBalance($id=false) {
 	global $appdb;
 
@@ -3923,7 +3893,7 @@ function setGatewayFailedStatus($number=false,$status=0) {
 	$content['gatewaylist_failed'] = $status;
 	$content['gatewaylist_failedstamp'] = 'now()';
 
-	//print_r(array('gatewaylist_failedstamp'=>$content,'$mobileNo'=>$mobileNo));
+	print_r(array('gatewaylist_failedstamp'=>$content,'$mobileNo'=>$mobileNo));
 
 	if(!($result = $appdb->update("tbl_gatewaylist",$content,"gatewaylist_simnumber='$mobileNo'"))) {
 		return false;
@@ -4367,7 +4337,7 @@ function moveToGateway($smsoutboxid=false) {
 
 	$sql = "select * from tbl_smsoutbox where smsoutbox_id=$smsoutboxid";
 
-	pre(array('moveToGateway'=>array('$sql'=>$sql)));
+	//pre(array('moveToGateway'=>array('$sql'=>$sql)));
 
 	if(!($result = $appdb->query($sql))) {
 		return false;
@@ -4384,10 +4354,10 @@ function moveToGateway($smsoutboxid=false) {
 			$gw = getOtherGateways($contactnumber);
 		}
 
-		if(!empty($gw)&&is_array($gw)) {
-		} else {
+		//if(!empty($gw)&&is_array($gw)) {
+		//} else {
 			//$gw = getOtherGateways($contactnumber);
-		}
+		//}
 
 		pre(array('moveToGateway'=>array('$gw'=>$gw)));
 
@@ -4416,7 +4386,8 @@ function moveToGateway($smsoutboxid=false) {
 				if(!empty($result['rows'][0]['smsoutbox_id'])) {
 					continue;
 				} else {
-					$smsoutbox_failed = $result['rows'][0]['smsoutbox_failed'];
+					//$smsoutbox_failed = $result['rows'][0]['smsoutbox_failed'];
+					$smsoutbox_failed = 1;
 					$chosen = $mobileNo;
 					break;
 				}
@@ -4436,8 +4407,7 @@ function moveToGateway($smsoutboxid=false) {
 				}
 
 				return true;
-			}
-
+			} else
 			if(!empty($first)) {
 
 				$content = array();
