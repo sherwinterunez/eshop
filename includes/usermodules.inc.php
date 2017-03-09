@@ -2847,7 +2847,7 @@ function _fundCredit($vars=array()) {
 
 			//return false;
 
-			if($customer_availablecredit>$fund_amount) {
+			if($customer_availablecredit>=$fund_amount) {
 			} else {
 				//print_r(array('$customer_balance'=>$customer_balance,'$loadtransaction_customerid'=>$loadtransaction_customerid));
 
