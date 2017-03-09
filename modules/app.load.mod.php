@@ -403,6 +403,10 @@ if(!class_exists('APP_app_load')) {
 								$receiptno = $params['retailinfo']['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['retailinfo']['loadtransaction_id']));
 							}
 
+							$ledgerBalance = getCustomerBalanceFromLedgerLoadtransactionId($params['retailinfo']['loadtransaction_id']);
+
+							$balance = !empty($ledgerBalance) ? $ledgerBalance : $balance;
+
 							foreach($noti as $v) {
 								$msg = getNotificationByID($v);
 								$msg = str_replace('%TEXTCODE%',$params['retailinfo']['loadtransaction_item'],$msg);
@@ -2103,7 +2107,7 @@ if(!class_exists('APP_app_load')) {
 						),
 					),
 				);
-				
+
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'PROCESSING FEE',

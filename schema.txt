@@ -983,6 +983,7 @@ alter table tbl_rebate add column rebate_loadtransactionid integer NOT NULL DEFA
 
 alter table tbl_options add column options_desc text DEFAULT ''::text NOT NULL;
 
+CREATE UNIQUE INDEX indx_virtualnumber_mobileno ON tbl_virtualnumber USING btree (virtualnumber_mobileno);
 
 
 

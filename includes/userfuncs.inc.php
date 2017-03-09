@@ -1476,6 +1476,25 @@ function getCustomerFirstUnpaidCredit($id=false) {
 	return false;
 }
 
+function getCustomerBalanceFromLedgerLoadtransactionId($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_ledger where ledger_loadtransactionid=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['ledger_id'])) {
+		return floatval($result['rows'][0]['ledger_balance']);
+	}
+
+	return false;
+}
+
 function getCustomerTerms($id=false) {
 	return getStaffTerms($id);
 }

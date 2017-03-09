@@ -2934,6 +2934,217 @@ Mar  8 16:27:35 jjsserver nodejs-server: )
 	return false;
 } // function _fundCredit($vars=array()) {
 
+function _customerReload($vars=array()) {
+	global $appdb;
+
+	if(empty($vars)) {
+		return false;
+	}
+
+	print_r(array('_customerReload'=>$vars));
+
+	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
+
+		if(!empty($vars['smsinbox']['smsinbox_contactsid'])) {
+		} else return false;
+
+		$smsinbox_contactsid = $vars['smsinbox']['smsinbox_contactsid'];
+
+		$smsinbox_message = $vars['smsinbox']['smsinbox_message'];
+
+		$smsinbox_contactnumber = $vars['smsinbox']['smsinbox_contactnumber'];
+
+		$smsinbox_simnumber = $vars['smsinbox']['smsinbox_simnumber'];
+
+		print_r(array('$match'=>$match));
+
+		if(isCustomerFreezed($smsinbox_contactsid)) {
+			$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+			//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+			sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+			return false;
+		}
+
+		if(isCriticalLevel($smsinbox_contactsid)) {
+			$errmsg = smsdt()." ".getNotification('CRITICAL LEVEL');
+			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+			//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+			sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+			//return false;
+		}
+
+		if(!empty($vars['matched']['$AMOUNT'])&&!empty($vars['matched']['$MOBILENUMBER'])) {
+
+			$recepientNumber = $vars['matched']['$MOBILENUMBER'];
+
+			$fund_discount = 0;
+
+			$fund_processingfee = 0;
+
+			$fund_amount = floatval($vars['matched']['$AMOUNT']);
+
+			$fund_amountdue = $fund_amount;
+
+			$recepientId = getCustomerIDByNumber($recepientNumber);
+
+			if(!empty(($discountSchemes = getCustomerFundTransferDiscountScheme($smsinbox_contactsid)))) {
+
+				print_r(array('$discountSchemes'=>$discountSchemes));
+
+				$bypass = false;
+
+				foreach($discountSchemes as $k=>$v) {
+					if(!empty($v['discountlist_rate'])&&$fund_amount>=floatval($v['discountlist_min'])&&$fund_amount<=floatval($v['discountlist_max'])) {
+						$fund_discount = floatval($v['discountlist_rate']);
+						$fund_processingfee = floatval($v['discountlist_fee']);
+						$fund_discountamount = ($fund_discount / 100) * $fund_amount;
+						$totaldiscount =  $fund_discountamount + $fund_processingfee;
+						$fund_amountdue = $fund_amount - $totaldiscount;
+						$bypass = true;
+						break;
+					}
+				}
+
+				if(!$bypass) {
+					foreach($discountSchemes as $k=>$v) {
+						if(!empty($v['discountlist_rate'])) {
+							$fund_discount = floatval($v['discountlist_rate']);
+							$fund_processingfee = floatval($v['discountlist_fee']);
+							$fund_discountamount = ($fund_discount / 100) * $fund_amount;
+							$totaldiscount =  $fund_discountamount + $fund_processingfee;
+							$fund_amountdue = $fund_amount - $totaldiscount;
+							$bypass = true;
+							break;
+						}
+					}
+				}
+			}
+
+			if(!empty($recepientId)) {
+			} else {
+				$errmsg = smsdt()." ".getNotification('$INVALID_SUBSCRIBER');
+
+				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+				sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+				return false;
+			}
+
+			if(getCustomerType($recepientId)==='REGULAR'&&getCustomerType($smsinbox_contactsid)==='STAFF') {
+			} else return false;
+
+			$customer_balance = getCustomerBalance($smsinbox_contactsid);
+
+			if($customer_balance>$fund_amount) {
+			} else {
+				//print_r(array('$customer_balance'=>$customer_balance,'$loadtransaction_customerid'=>$loadtransaction_customerid));
+
+				$errmsg = smsdt()." ".getNotification('$INVALID_ACCOUNT_BALANCE');
+				$errmsg = str_replace('%balance%', number_format($customer_balance,2), $errmsg);
+
+				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+				sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+				return false;
+			}
+
+			print_r(array('$smsinbox_contactsid'=>$smsinbox_contactsid,'$recepientId'=>$recepientId,'$customer_balance'=>$customer_balance));
+
+			return false;
+
+			$fund_datetimeunix = intval(getDbUnixDate());
+
+			$content = array();
+			$content['fund_ymd'] = $fund_ymd = date('Ymd');
+			$content['fund_type'] = 'fundtransfer';
+			$content['fund_amount'] = !empty($fund_amount) ? $fund_amount : 0;
+			$content['fund_amountdue'] = !empty($fund_amountdue) ? $fund_amountdue : 0;
+			$content['fund_discount'] = !empty($fund_discount) ? $fund_discount : 0;
+			$content['fund_discountamount'] = !empty($fund_discountamount) ? $fund_discountamount : 0;
+			$content['fund_processingfee'] = !empty($fund_processingfee) ? $fund_processingfee : 0;
+			$content['fund_datetimeunix'] = !empty($fund_datetimeunix) ? $fund_datetimeunix : time();
+			$content['fund_datetime'] = pgDateUnix($content['fund_datetimeunix']);
+			$content['fund_userid'] = $fund_userid = !empty($smsinbox_contactsid) ? $smsinbox_contactsid : 0;
+			$content['fund_username'] = getCustomerNameByID($content['fund_userid']);
+			$content['fund_usernumber'] = !empty($smsinbox_contactnumber) ? $smsinbox_contactnumber : '';
+			//$content['fund_userpaymentterm'] = !empty($post['fund_userpaymentterm']) ? $post['fund_userpaymentterm'] : '';
+			$content['fund_recepientid'] = $fund_recepientid = !empty($recepientId) ? $recepientId : 0;
+			$content['fund_recepientname'] = getCustomerNameByID($content['fund_recepientid']);
+			$content['fund_recepientnumber'] = !empty($recepientNumber) ? $recepientNumber : '';
+			//$content['fund_recepientpaymentterm'] = !empty($post['fund_recepientpaymentterm']) ? $post['fund_recepientpaymentterm'] : '';
+			$content['fund_status'] = 1;
+
+			if(!($result = $appdb->insert("tbl_fund",$content,"fund_id"))) {
+				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+				die;
+			}
+
+			if(!empty($result['returning'][0]['fund_id'])) {
+				$fund_id = $result['returning'][0]['fund_id'];
+			}
+
+			if(!empty($fund_id)) {
+
+				$receiptno = $fund_ymd . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', $fund_id);
+
+				$content = array();
+				$content['ledger_fundid'] = $fund_id;
+				$content['ledger_credit'] = $fund_amountdue;
+				$content['ledger_type'] = 'FUNDTRANSFER '.$fund_amountdue;
+				$content['ledger_datetimeunix'] = $fund_datetimeunix;
+				$content['ledger_datetime'] = pgDateUnix($fund_datetimeunix);
+				$content['ledger_user'] = $fund_recepientid;
+				$content['ledger_seq'] = '0';
+				$content['ledger_receiptno'] = $receiptno;
+
+				if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
+					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+					die;
+				}
+
+				computeCustomerBalance($fund_recepientid);
+
+				$childBalance = getCustomerBalance($fund_recepientid);
+
+				$errmsg = smsdt()." ".getNotification('FUND TRANSFER RECIPIENT NOTIFICATION');
+				$errmsg = str_replace('%balance%', number_format($childBalance,2), $errmsg);
+
+				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+				sendToGateway($recepientNumber,$smsinbox_simnumber,$errmsg);
+
+				unset($content['ledger_credit']);
+
+				$content['ledger_debit'] = $fund_amountdue;
+				$content['ledger_user'] = $fund_userid;
+
+				if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
+					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+					die;
+				}
+
+				computeCustomerBalance($fund_userid);
+
+				$parentBalance = getCustomerBalance($fund_userid);
+
+				$errmsg = smsdt()." ".getNotification('FUND TRANSFER SOURCE NOTIFICATION');
+				$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+				sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+			}
+
+		}
+
+	}
+
+	return false;
+} // function _customerReload($vars=array()) {
+
 function _eShopVL($vars=array()) {
 	global $appdb;
 
