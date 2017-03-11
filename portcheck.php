@@ -359,6 +359,28 @@ if(trim($localIP)=='') {
 	$localIP = '127.0.0.1';
 }
 
+$timeout = 120;
+
+$timeoutat = time() + $timeout;
+
+$flag = false;
+
+do {
+
+	$localIP = getMyLocalIP();
+
+	if(trim($localIP)=='') {
+		$localIP = '127.0.0.1';
+	} else
+	if(trim($localIP)=='0.0.0.0'||trim($localIP)=='127.0.0.1') {
+	} else {
+		break;
+	}
+
+	sleep(1);
+
+} while ($timeoutat > time());
+
 $appdb->query('delete from tbl_port');
 
 $okport = array();
@@ -367,7 +389,7 @@ $devices = array();
 
 //$appdb->update('tbl_simcard',array('simcard_online'=>0));
 
-$appdb->update('tbl_simcard',array('simcard_online'=>0,'simcard_comport'=>'','simcard_linuxport'=>''));
+$appdb->update('tbl_simcard',array('simcard_online'=>0,'simcard_comport'=>'','simcard_linuxport'=>'','simcard_ipaddress'=>''));
 
 foreach($ports as $dev) {
 	if($mno=portCheck($dev,$localIP)) {

@@ -1239,6 +1239,7 @@ if(!class_exists('APP_app_inventory')) {
 
 					$content['item_regularload'] = !empty($post['item_regularload']) ? 1 : 0;
 					$content['item_regularloaddiscountscheme'] = !empty($post['item_regularloaddiscountscheme']) ? $post['item_regularloaddiscountscheme'] : '';
+					$content['item_regularloadstaffdiscountscheme'] = !empty($post['item_regularloadstaffdiscountscheme']) ? $post['item_regularloadstaffdiscountscheme'] : '';
 					$content['item_threshold'] = !empty($post['item_threshold']) ? $post['item_threshold'] : 0;
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
@@ -1545,6 +1546,16 @@ if(!class_exists('APP_app_inventory')) {
 						'value' => !empty($params['iteminfo']['item_regularloaddiscountscheme']) ? $params['iteminfo']['item_regularloaddiscountscheme'] : '',
 					);
 
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'CUSTOMER',
+					);
+
 				} else {
 
 					$opt = array();
@@ -1582,6 +1593,16 @@ if(!class_exists('APP_app_inventory')) {
 						'options' => $opt,
 					);
 
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'CUSTOMER',
+					);
+
 				}
 
 				$params['tbItem'][] = array(
@@ -1591,6 +1612,98 @@ if(!class_exists('APP_app_inventory')) {
 					'offsetTop' => 5,
 					'list' => $block,
 				);
+
+//////////////////
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 155,
+				);
+
+				if($readonly) {
+
+					$block[] = array(
+						'type' => 'input',
+						//'label' => 'eSHOP SRP',
+						'name' => 'item_regularloadstaffdiscountscheme',
+						'readonly' => $readonly,
+						'inputWidth' => 200,
+						//'disabled' => !empty($params['iteminfo']['item_maintenance']) ? false : true,
+						//'required' => !$readonly,
+						//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+						'value' => !empty($params['iteminfo']['item_regularloadstaffdiscountscheme']) ? $params['iteminfo']['item_regularloadstaffdiscountscheme'] : '',
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'STAFF',
+					);
+
+				} else {
+
+					$opt = array();
+
+					if(!$readonly) {
+						$opt[] = array('text'=>'','value'=>'','selected'=>false);
+					}
+
+					$discountSchemes = getDiscountScheme();
+
+					foreach($discountSchemes as $k=>$v) {
+						$selected = false;
+						if(!empty($params['iteminfo']['item_regularloadstaffdiscountscheme'])&&$params['iteminfo']['item_regularloadstaffdiscountscheme']==$v['discount_desc']) {
+							$selected = true;
+						}
+						if($readonly) {
+							if($selected) {
+								$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']['discount_desc'],'selected'=>$selected);
+							}
+						} else {
+							$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc'],'selected'=>$selected);
+						}
+					}
+
+					$block[] = array(
+						'type' => 'combo',
+						//'label' => 'RESEND DUPLICATE MESSAGE',
+						//'labelWidth' => 210,
+						'inputWidth' => 200,
+						//'comboType' => 'checkbox',
+						'name' => 'item_regularloadstaffdiscountscheme',
+						'readonly' => $readonly,
+						'disabled' => !empty($params['iteminfo']['item_regularload']) ? false : true,
+						//'required' => !$readonly,
+						'options' => $opt,
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'STAFF',
+					);
+
+				}
+
+				$params['tbItem'][] = array(
+					'type' => 'block',
+					'width' => 500,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
+				);
+
+//////////////////
 
 				$params['tbItem'][] = array(
 					'type' => 'checkbox',

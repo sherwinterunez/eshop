@@ -554,8 +554,10 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			if(name=='item_regularload') {
 				if(state) {
 					myForm.enableItem('item_regularloaddiscountscheme');
+					myForm.enableItem('item_regularloadstaffdiscountscheme');
 				} else {
 					myForm.disableItem('item_regularloaddiscountscheme');
+					myForm.disableItem('item_regularloadstaffdiscountscheme');
 				}
 			}
 

@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,7 +24,7 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_app_messaging')) {
 
 	class APP_app_messaging extends APP_Base_Ajax {
-	
+
 		var $desc = 'Messaging';
 
 		var $pathid = 'messaging';
@@ -39,7 +39,7 @@ if(!class_exists('APP_app_messaging')) {
 		function __construct() {
 			$this->init();
 		}
-		
+
 		function __destruct() {
 		}
 
@@ -186,12 +186,12 @@ if(!class_exists('APP_app_messaging')) {
 
 				/*if(!($result = $appdb->query("select * from tbl_customer where customer_deleted=0 and customer_mobileno<>''"))) {
 					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-					die;				
+					die;
 				}*/
 
 				if(!($result = $appdb->query("select * from tbl_virtualnumber where virtualnumber_mobileno<>''"))) {
 					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-					die;				
+					die;
 				}
 
 				if(!empty($result['rows'][0]['virtualnumber_id'])) {
@@ -248,7 +248,7 @@ if(!class_exists('APP_app_messaging')) {
 				if(is_array($groups)&&!empty($groups[0]['group_id'])) {
 
 					if(!empty($arowid)) {
-						$groupNames = getGroupNamesByArrayOfIDs($arowid);						
+						$groupNames = getGroupNamesByArrayOfIDs($arowid);
 					}
 
 					$params['groups'][] = array(
@@ -366,11 +366,11 @@ if(!class_exists('APP_app_messaging')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_messagingmaincompose
 
 		function _form_messagingmainreply($routerid=false,$formid=false) {
@@ -391,18 +391,18 @@ if(!class_exists('APP_app_messaging')) {
 
 				if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_sent'=>1),"smsoutbox_status=4"))) {
 					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-					die;				
+					die;
 				}
 
 				$templatefile = $this->templatefile($routerid,$formid);
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_messagingmainsent
 
 		function _form_messagingmainsim($routerid=false,$formid=false) {
@@ -416,11 +416,11 @@ if(!class_exists('APP_app_messaging')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_messagingmainsim
 
 		function _form_messagingmainoptions($routerid=false,$formid=false) {
@@ -434,11 +434,11 @@ if(!class_exists('APP_app_messaging')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_messagingmainoptions
 
 		function _form_messagingmainsmscommands($routerid=false,$formid=false) {
@@ -452,11 +452,11 @@ if(!class_exists('APP_app_messaging')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_messagingmainsmscommands
 
 		function _form_messagingmainmodemcommands($routerid=false,$formid=false) {
@@ -470,11 +470,11 @@ if(!class_exists('APP_app_messaging')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_messagingmainmodemcommands
 
 		function _form_messagingdetailscompose($routerid=false,$formid=false,$flag=false) {
@@ -498,7 +498,7 @@ if(!class_exists('APP_app_messaging')) {
 								if($this->vars['post']['from']=='inbox') {
 									if(!($result = $appdb->query("select * from tbl_smsinbox where smsinbox_id=".$this->vars['post']['rowid']))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 									//pre(array('$result'=>$result));
@@ -510,7 +510,7 @@ if(!class_exists('APP_app_messaging')) {
 								if($this->vars['post']['from']=='outbox'||$this->vars['post']['from']=='sent') {
 									if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_id=".$this->vars['post']['rowid']))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 									//pre(array('$result'=>$result));
@@ -524,7 +524,7 @@ if(!class_exists('APP_app_messaging')) {
 
 								if(!($result = $appdb->query("select * from tbl_smsinbox where smsinbox_id=".$this->vars['post']['rowid']))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								//pre(array('$result'=>$result));
@@ -543,10 +543,10 @@ if(!class_exists('APP_app_messaging')) {
 						$retval['return_code'] = 'SUCCESS';
 
 						if($this->vars['post']['method']=='messagingsendtooutbox') {
-							$retval['return_message'] = 'SMS successfully sent to Outbox!';							
+							$retval['return_message'] = 'SMS successfully sent to Outbox!';
 						} else
 						if($this->vars['post']['method']=='messagingsendnow') {
-							$retval['return_message'] = 'SMS successfully queued for sending!';														
+							$retval['return_message'] = 'SMS successfully queued for sending!';
 						}
 
 						$smscontent = trim(htmlspecialchars_decode(strip_tags($this->vars['post']['content'])));
@@ -643,13 +643,13 @@ if(!class_exists('APP_app_messaging')) {
 
 						if(!empty($recipients)&&is_array($recipients)) {
 
-							/*$this->udh = array( 
-						        'udh_length'=>'05', //sms udh lenth 05 for 8bit udh, 06 for 16 bit udh 
-						        'identifier'=>'00', //use 00 for 8bit udh, use 08 for 16bit udh 
-						        'header_length'=>'03', //length of header including udh_length & identifier 
-						        'reference'=>'00', //use 2bit 00-ff if 8bit udh, use 4bit 0000-ffff if 16bit udh 
-						        'msg_count'=>1, //sms count 
-						        'msg_part'=>1 //sms part number 
+							/*$this->udh = array(
+						        'udh_length'=>'05', //sms udh lenth 05 for 8bit udh, 06 for 16 bit udh
+						        'identifier'=>'00', //use 00 for 8bit udh, use 08 for 16bit udh
+						        'header_length'=>'03', //length of header including udh_length & identifier
+						        'reference'=>'00', //use 2bit 00-ff if 8bit udh, use 4bit 0000-ffff if 16bit udh
+						        'msg_count'=>1, //sms count
+						        'msg_part'=>1 //sms part number
 					        ); */
 
 							//$sms = new SMS();
@@ -734,15 +734,15 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 
 									// long sms
 
-									/*$smsparts = str_split($smscontent,152); 
+									/*$smsparts = str_split($smscontent,152);
 
-									$smsoutbox_udhref = $this->dechex_str(mt_rand(100,250)); 
+									$smsoutbox_udhref = $this->dechex_str(mt_rand(100,250));
 
-									$smsoutbox_total = $this->dechex_str(count($smsparts)); 
+									$smsoutbox_total = $this->dechex_str(count($smsparts));
 
 									$smsoutbox_part=1;
 
-									foreach($smsparts as $part) { 
+									foreach($smsparts as $part) {
 
 										$smsoutbox_message = $part . ' ';
 
@@ -759,18 +759,18 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 
 										if(!($result = $appdb->insert("tbl_smsoutbox",$content,"smsoutbox_id"))) {
 											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-											die;				
+											die;
 										}
 
 										$smsoutbox_part++;
 
 									}*/
 
-									$smsparts = str_split($smscontent,152); 
+									$smsparts = str_split($smscontent,152);
 
-									$smsoutbox_udhref = dechex_str(mt_rand(100,250)); 
+									$smsoutbox_udhref = dechex_str(mt_rand(100,250));
 
-									$smsoutbox_total = count($smsparts); 
+									$smsoutbox_total = count($smsparts);
 
 									$content = array();
 									$content['smsoutbox_contactid'] = $contactid;
@@ -785,15 +785,15 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 									//$content['smsoutbox_simname'] = $simname;
 									$content['smsoutbox_type'] = 1;
 
-									if($this->vars['post']['messagingsendnow']=='messagingsendnow') {
-										$content['smsoutbox_status'] = 1;										
+									if($this->vars['post']['method']=='messagingsendnow') {
+										$content['smsoutbox_status'] = 1;
 									}
 
 									//pre(array('$content'=>$content));
 
 									if(!($result = $appdb->insert("tbl_smsoutbox",$content,"smsoutbox_id"))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								} else {
@@ -812,14 +812,14 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 									$content['smsoutbox_total'] = 1;
 
 									if($this->vars['post']['method']=='messagingsendnow') {
-										$content['smsoutbox_status'] = 1;										
+										$content['smsoutbox_status'] = 1;
 									}
 
 									//pre(array('$content'=>$content));
 
 									if(!($result = $appdb->insert("tbl_smsoutbox",$content,"smsoutbox_id"))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								}
@@ -841,11 +841,11 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_messagingdetailscompose
 
 		function _form_messagingdetailsreply($routerid=false,$formid=false) {
@@ -872,7 +872,7 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 						if(!empty($this->vars['post']['rowid'])&&is_numeric($this->vars['post']['rowid'])&&$this->vars['post']['rowid']>0) {
 							if(!($result = $appdb->query("select * from tbl_contact where contact_deleted=0 and contact_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['contact_id'])) {
@@ -915,7 +915,7 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 
 								if(!($result = $appdb->update("tbl_contact",$content,"contact_id=".$this->vars['post']['rowid']))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								$ret['rowid'] = $contactid = $this->vars['post']['rowid'];
@@ -923,7 +923,7 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 							} else {
 								if(!($result = $appdb->insert("tbl_contact",$content,"contact_id"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!empty($result['returning'][0]['contact_id'])) {
@@ -973,12 +973,12 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 
 								if(!($result = $appdb->update("tbl_contact",array('contact_deleted'=>1,'contact_updatestamp'=>'now()'),"contact_id in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!($result = $appdb->query("delete from tbl_groupcontact where groupcontact_contactid in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -998,12 +998,12 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 
 							if(!($result = $appdb->update("tbl_contact",array('contact_deleted'=>1),"contact_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!($result = $appdb->query("delete from tbl_groupcontact where groupcontact_contactid=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 						}
@@ -1038,7 +1038,7 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -1068,7 +1068,7 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 
 							if(!($result = $appdb->query("select * from tbl_group where group_deleted=0 and group_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['group_id'])) {
@@ -1079,7 +1079,7 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 
 						if(!($result = $appdb->query("select * from tbl_customer where customer_deleted=0 and customer_mobileno<>''"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['customer_id'])) {
@@ -1088,7 +1088,7 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 							if($this->vars['post']['method']!='messagingnew') {
 								if(!($result = $appdb->query("select * from tbl_groupcontact where groupcontact_groupid=".$this->vars['post']['rowid']))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!empty($result['rows'][0]['groupcontact_id'])) {
@@ -1129,13 +1129,13 @@ select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_portde
 
 							if(!($result = $appdb->query("delete from tbl_groupcontact where groupcontact_groupid=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 /*
 sherwint_sms101=# \d tbl_groupcontact
                                             Table "public.tbl_groupcontact"
-         Column         |           Type           |                             Modifiers                              
+         Column         |           Type           |                             Modifiers
 ------------------------+--------------------------+--------------------------------------------------------------------
  groupcontact_id        | bigint                   | not null default nextval(('tbl_groupcontact_seq'::text)::regclass)
  groupcontact_groupid   | integer                  | not null default 0
@@ -1155,7 +1155,7 @@ Indexes:
 
 								if(!($result = $appdb->insert("tbl_groupcontact",$content,"groupcontact_id"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 							}
@@ -1166,7 +1166,7 @@ Indexes:
 
 							if(!($result = $appdb->update("tbl_group",$content,"group_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 						} else {
@@ -1174,7 +1174,7 @@ Indexes:
 /*
 sherwint_sms101=# \d tbl_group
                                           Table "public.tbl_group"
-      Column       |           Type           |                          Modifiers                          
+      Column       |           Type           |                          Modifiers
 -------------------+--------------------------+-------------------------------------------------------------
  group_id          | bigint                   | not null default nextval(('tbl_group_seq'::text)::regclass)
  group_name        | character varying(30)    | not null default ''::text
@@ -1195,7 +1195,7 @@ Indexes:
 
 								if(!($result = $appdb->insert("tbl_group",$content,"group_id"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!empty($result['returning'][0]['group_id'])) {
@@ -1219,7 +1219,7 @@ Indexes:
 
 											if(!($result = $appdb->insert("tbl_groupcontact",$content,"groupcontact_id"))) {
 												json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-												die;				
+												die;
 											}
 
 										}
@@ -1261,12 +1261,12 @@ Indexes:
 
 								if(!($result = $appdb->query("delete from tbl_groupcontact where groupcontact_groupid in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!($result = $appdb->query("delete from tbl_group where group_id in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -1283,12 +1283,12 @@ Indexes:
 
 							if(!($result = $appdb->query("delete from tbl_groupcontact where groupcontact_groupid=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!($result = $appdb->query("delete from tbl_group where group_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							json_encode_return($retval);
@@ -1322,7 +1322,7 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -1345,7 +1345,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])&&is_numeric($this->vars['post']['rowid'])&&$this->vars['post']['rowid']>0) {
 							if(!($result = $appdb->query("select * from tbl_smsinbox where smsinbox_deleted=0 and smsinbox_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							$rowid = $this->vars['post']['rowid'];
@@ -1356,7 +1356,7 @@ Indexes:
 
 							if(!($result = $appdb->update("tbl_smsinbox",array('smsinbox_unread'=>0),"smsinbox_id=".$rowid))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						}
 					} else
@@ -1385,12 +1385,12 @@ Indexes:
 
 								/*if(!($result = $appdb->update('tbl_smsinbox',array('smsinbox_deleted'=>1),'smsinbox_id in ('.$rowids.')'))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}*/
 
 								if(!($result = $appdb->query('delete from tbl_smsinbox where smsinbox_id in ('.$rowids.')'))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -1407,12 +1407,12 @@ Indexes:
 
 							/*if(!($result = $appdb->update('tbl_smsinbox',array('smsinbox_deleted'=>1),'smsinbox_id='.$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}*/
 
 							if(!($result = $appdb->query('delete from tbl_smsinbox where smsinbox_id='.$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							json_encode_return($retval);
@@ -1428,7 +1428,7 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -1451,7 +1451,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])&&is_numeric($this->vars['post']['rowid'])&&$this->vars['post']['rowid']>0) {
 							if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_deleted=0 and smsoutbox_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['smsoutbox_id'])) {
@@ -1488,7 +1488,7 @@ Indexes:
 
 								if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>1),'smsoutbox_status=0 and smsoutbox_id in ('.$rowids.')'))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -1509,7 +1509,7 @@ Indexes:
 
 						if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>1),'smsoutbox_status=0'))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						json_encode_return($retval);
@@ -1543,7 +1543,7 @@ Indexes:
 
 								if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>0),'smsoutbox_status=1 and smsoutbox_id in ('.$rowids.')'))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -1564,7 +1564,7 @@ Indexes:
 
 						if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>0),'smsoutbox_status=1'))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						json_encode_return($retval);
@@ -1600,7 +1600,7 @@ Indexes:
 
 								if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>1),'smsoutbox_id in ('.$rowids.')'))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -1613,7 +1613,7 @@ Indexes:
 
 							if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>1),'smsoutbox_id='.$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 						}
@@ -1648,12 +1648,12 @@ Indexes:
 
 								/*if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_deleted'=>1),'smsoutbox_id in ('.$rowids.')'))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}*/
 
 								if(!($result = $appdb->query('delete from tbl_smsoutbox where smsoutbox_id in ('.$rowids.')'))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -1670,12 +1670,12 @@ Indexes:
 
 							/*if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_deleted'=>1),'smsoutbox_id='.$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}*/
 
 							if(!($result = $appdb->query('delete from tbl_smsoutbox where smsoutbox_id='.$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							json_encode_return($retval);
@@ -1689,7 +1689,7 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -1712,7 +1712,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])&&is_numeric($this->vars['post']['rowid'])&&$this->vars['post']['rowid']>0) {
 							if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_deleted=0 and smsoutbox_sent=1 and smsoutbox_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['smsoutbox_id'])) {
@@ -1751,14 +1751,14 @@ Indexes:
 
 								//if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_deleted'=>1),'smsoutbox_id in ('.$rowids.')'))) {
 								//	json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								//	die;				
+								//	die;
 								//}
 
 								foreach($arowid as $k=>$rowid) {
 /////
 									if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_id=".$rowid))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 									if(!empty($result['rows'][0]['smsoutbox_id'])) {
@@ -1777,7 +1777,7 @@ Indexes:
 
 										if(!($result = $appdb->insert("tbl_smsoutbox",$content,"smsoutbox_id"))) {
 											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-											die;				
+											die;
 										}
 									}
 /////
@@ -1793,7 +1793,7 @@ Indexes:
 
 							if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['smsoutbox_id'])) {
@@ -1812,7 +1812,7 @@ Indexes:
 
 								if(!($result = $appdb->insert("tbl_smsoutbox",$content,"smsoutbox_id"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />','$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 							}
 						}
@@ -1847,12 +1847,12 @@ Indexes:
 
 								/*if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_deleted'=>1),'smsoutbox_id in ('.$rowids.')'))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}*/
 
 								if(!($result = $appdb->query('delete from tbl_smsoutbox where smsoutbox_id in ('.$rowids.')'))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -1869,12 +1869,12 @@ Indexes:
 
 							/*if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_deleted'=>1),'smsoutbox_id='.$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}*/
 
 							if(!($result = $appdb->query('delete from tbl_smsoutbox where smsoutbox_id='.$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							json_encode_return($retval);
@@ -1887,7 +1887,7 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -1912,7 +1912,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])&&is_numeric($this->vars['post']['rowid'])&&$this->vars['post']['rowid']>0) {
 							if(!($result = $appdb->query("select * from tbl_network where network_deleted=0 and network_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['network_id'])) {
@@ -1954,13 +1954,13 @@ Indexes:
 
 							if(!($result = $appdb->update("tbl_network",$content,"network_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						} else {
 
 							if(!($result = $appdb->insert("tbl_network",$content,"network_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['returning'][0]['network_id'])) {
@@ -2000,7 +2000,7 @@ Indexes:
 
 								if(!($result = $appdb->query("delete from tbl_network where network_id in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -2012,13 +2012,13 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])) {
 							if(!($result = $appdb->query("delete from tbl_network where network_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						}
 
 						json_encode_return($retval);
 						die;
-					}					
+					}
 
 				}
 
@@ -2044,7 +2044,7 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -2065,7 +2065,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])&&is_numeric($this->vars['post']['rowid'])&&$this->vars['post']['rowid']>0) {
 							if(!($result = $appdb->query("select * from tbl_sim where sim_deleted=0 and sim_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['sim_id'])) {
@@ -2097,13 +2097,13 @@ Indexes:
 
 							if(!($result = $appdb->update("tbl_sim",$content,"sim_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						} else {
 
 							if(!($result = $appdb->insert("tbl_sim",$content,"sim_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['returning'][0]['sim_id'])) {
@@ -2144,7 +2144,7 @@ Indexes:
 
 								if(!($result = $appdb->query("delete from tbl_sim where sim_id in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -2156,7 +2156,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])) {
 							if(!($result = $appdb->query("delete from tbl_sim where sim_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						}
 
@@ -2170,7 +2170,7 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -2191,7 +2191,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])&&is_numeric($this->vars['post']['rowid'])&&$this->vars['post']['rowid']>0) {
 							if(!($result = $appdb->query("select * from tbl_port where port_deleted=0 and port_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['port_id'])) {
@@ -2226,13 +2226,13 @@ Indexes:
 
 							if(!($result = $appdb->update("tbl_port",$content,"port_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						} else {
 
 							if(!($result = $appdb->insert("tbl_port",$content,"port_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['returning'][0]['port_id'])) {
@@ -2269,7 +2269,7 @@ Indexes:
 
 								if(!($result = $appdb->query("delete from tbl_port where port_id in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -2281,7 +2281,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])) {
 							if(!($result = $appdb->query("delete from tbl_port where port_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						}
 
@@ -2295,7 +2295,7 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -2320,7 +2320,7 @@ Indexes:
 					} else {
 						if(!($result = $appdb->query("select * from tbl_smsinbox where smsinbox_id=".$this->vars['post']['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['smsinbox_contactsid'])) {
@@ -2338,7 +2338,7 @@ Indexes:
 
 						if(!($result = $appdb->query($sql))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						$params['messages'] = '';
@@ -2364,8 +2364,8 @@ Indexes:
 								if($v['smstype']==1) {
 									$params['messages'] .= '<p>'.$v['contactnumber'].'<br />'.$v['timestamp'].'</p>';
 								} else {
-									$params['messages'] .= '<p>System<br />'.$v['timestamp'].'</p>';									
-								}								
+									$params['messages'] .= '<p>System<br />'.$v['timestamp'].'</p>';
+								}
 							}
 						} else {
 							$params['messages'] = '<blockquote class="example-right">';
@@ -2385,11 +2385,11 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_messagingmiscinbox
 
 		function _form_messagingmisccontacts($routerid=false,$formid=false) {
@@ -2413,7 +2413,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])&&is_numeric($this->vars['post']['rowid'])&&$this->vars['post']['rowid']>0) {
 							if(!($result = $appdb->query("select * from tbl_options where options_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['options_id'])) {
@@ -2444,13 +2444,13 @@ Indexes:
 
 							if(!($result = $appdb->update("tbl_options",$content,"options_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						} else {
 
 							if(!($result = $appdb->insert("tbl_options",$content,"options_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['returning'][0]['options_id'])) {
@@ -2472,7 +2472,7 @@ Indexes:
 
 							if(!($result = $appdb->query("select * from tbl_options where options_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							//pre(array('result'=>$result));
@@ -2485,7 +2485,7 @@ Indexes:
 
 								if(!($result = $appdb->insert("tbl_options",$content,"options_id"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!empty($result['returning'][0]['options_id'])) {
@@ -2498,7 +2498,7 @@ Indexes:
 						json_encode_return($retval);
 						die;
 
-					} else 			
+					} else
 					if($this->vars['post']['method']=='messagingdelete') {
 
 						$retval = array();
@@ -2525,7 +2525,7 @@ Indexes:
 
 								if(!($result = $appdb->query("delete from tbl_options where options_id in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -2537,13 +2537,13 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])) {
 							if(!($result = $appdb->query("delete from tbl_options where options_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						}
 
 						json_encode_return($retval);
 						die;
-					}					
+					}
 
 				}
 
@@ -2551,7 +2551,7 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -2577,7 +2577,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])&&is_numeric($this->vars['post']['rowid'])&&$this->vars['post']['rowid']>0) {
 							if(!($result = $appdb->query("select * from tbl_smscommands where smscommands_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['smscommands_id'])) {
@@ -2945,7 +2945,7 @@ Indexes:
 							if($this->vars['post']['method']=='onrowselect'||$this->vars['post']['method']=='messagingedit') {
 								if(!($result = $appdb->query('select * from tbl_smsactions where smsactions_smscommandsid='.$this->vars['post']['rowid']))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!empty($result['rows'][0]['smsactions_id'])) {
@@ -2963,7 +2963,7 @@ Indexes:
 
 								if(!($result = $appdb->query('select * from tbl_modemcommands order by modemcommands_id asc'))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								//pre(array('$result'=>$result));
@@ -3048,7 +3048,7 @@ Indexes:
 										'readonly' => !$checked,
 										'disabled' => !$checked,
 										'inputWidth' => 404,
-										'options' => $comboOptions,										
+										'options' => $comboOptions,
 									);
 
 								if($readonly) {
@@ -3064,7 +3064,7 @@ Indexes:
 											'width' => 1000,
 											'blockOffset' => 0,
 											'list' => array($chkbox,$newcolumn,$combo)
-										);									
+										);
 								}
 
 								/*$params['sims'][] = array(
@@ -3145,20 +3145,20 @@ Indexes:
 
 						if(isset($this->vars['post']['txt_smscommands_priority'])) {
 							$content['smscommands_priority'] = $this->vars['post']['txt_smscommands_priority'];
-						}						
+						}
 
 						if(!empty($this->vars['post']['rowid'])) {
 							$retval['rowid'] = $this->vars['post']['rowid'];
 
 							if(!($result = $appdb->update("tbl_smscommands",$content,"smscommands_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						} else {
 
 							if(!($result = $appdb->insert("tbl_smscommands",$content,"smscommands_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['returning'][0]['smscommands_id'])) {
@@ -3171,7 +3171,7 @@ Indexes:
 
 						if(!($result = $appdb->query('delete from tbl_smsactions where smsactions_smscommandsid='.$retval['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						for($i=0;$i<10;$i++) {
@@ -3188,7 +3188,7 @@ Indexes:
 
 								if(!($result = $appdb->insert("tbl_smsactions",$content,"smsactions_smscommandsid"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 							}
 						}
@@ -3207,13 +3207,13 @@ Indexes:
 
 							if(!($result = $appdb->update("tbl_options",$content,"options_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						} else {
 
 							if(!($result = $appdb->insert("tbl_options",$content,"options_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['returning'][0]['options_id'])) {
@@ -3235,7 +3235,7 @@ Indexes:
 
 							if(!($result = $appdb->query("select * from tbl_smscommands where smscommands_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							//pre(array('result'=>$result));
@@ -3248,7 +3248,7 @@ Indexes:
 
 								if(!($result = $appdb->insert("tbl_smscommands",$content,"smscommands_id"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!empty($result['returning'][0]['smscommands_id'])) {
@@ -3263,7 +3263,7 @@ Indexes:
 
 							if(!($result = $appdb->query("select * from tbl_smsactions where smsactions_smscommandsid=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['smsactions_id'])) {
@@ -3276,7 +3276,7 @@ Indexes:
 
 									if(!($result = $appdb->insert("tbl_smsactions",$content,"smsactions_id"))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								}
@@ -3288,7 +3288,7 @@ Indexes:
 						json_encode_return($retval);
 						die;
 
-					} else 			
+					} else
 					if($this->vars['post']['method']=='messagingdelete') {
 
 						$retval = array();
@@ -3315,12 +3315,12 @@ Indexes:
 
 								if(!($result = $appdb->query("delete from tbl_smscommands where smscommands_id in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!($result = $appdb->query("delete from tbl_smsactions where smsactions_smscommandsid in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -3332,18 +3332,18 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])) {
 							if(!($result = $appdb->query("delete from tbl_smscommands where smscommands_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!($result = $appdb->query("delete from tbl_smsactions where smsactions_smscommandsid=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						}
 
 						json_encode_return($retval);
 						die;
-					}					
+					}
 
 				}
 
@@ -3351,7 +3351,7 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -3377,7 +3377,7 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])&&is_numeric($this->vars['post']['rowid'])&&$this->vars['post']['rowid']>0) {
 							if(!($result = $appdb->query("select * from tbl_modemcommands where modemcommands_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['modemcommands_id'])) {
@@ -3386,7 +3386,7 @@ Indexes:
 
 								if(!($result = $appdb->query("select * from tbl_atcommands where atcommands_modemcommandsid=".$this->vars['post']['rowid']." order by atcommands_id asc"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!empty($result['rows'][0]['atcommands_id'])) {
@@ -3435,7 +3435,7 @@ Indexes:
 
 						if($this->vars['post']['method']=='messagingedit'||$this->vars['post']['method']=='messagingnew') {
 
-							for($i=0;$i<20;$i++) { // 
+							for($i=0;$i<20;$i++) { //
 
 								for($r=0;$r<3;$r++) {
 
@@ -3490,14 +3490,14 @@ Indexes:
 
 							if(!($result = $appdb->update("tbl_modemcommands",$content,"modemcommands_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 						} else {
 
 							if(!($result = $appdb->insert("tbl_modemcommands",$content,"modemcommands_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['returning'][0]['modemcommands_id'])) {
@@ -3510,7 +3510,7 @@ Indexes:
 
 							if(!($result = $appdb->query("delete from tbl_atcommands where atcommands_modemcommandsid=".$retval['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							foreach($this->vars['post']['txt_atcommands_at'] as $k=>$v) {
@@ -3562,11 +3562,11 @@ Indexes:
 
 								if(!($result = $appdb->insert("tbl_atcommands",$content,"atcommands_id"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								//$atcommands[] = $content;
-								
+
 							}
 						}
 
@@ -3585,13 +3585,13 @@ Indexes:
 
 							if(!($result = $appdb->update("tbl_options",$content,"options_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						} else {
 
 							if(!($result = $appdb->insert("tbl_options",$content,"options_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['returning'][0]['options_id'])) {
@@ -3629,13 +3629,13 @@ Indexes:
 
 								if(!($result = $appdb->query("delete from tbl_modemcommands where modemcommands_id in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 
 								if(!($result = $appdb->query("delete from tbl_atcommands where atcommands_modemcommandsid in (".$rowids.")"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								json_encode_return($retval);
@@ -3647,13 +3647,13 @@ Indexes:
 						if(!empty($this->vars['post']['rowid'])) {
 							if(!($result = $appdb->query("delete from tbl_modemcommands where modemcommands_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 
 							if(!($result = $appdb->query("delete from tbl_atcommands where atcommands_modemcommandsid=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						}
 
@@ -3670,7 +3670,7 @@ Indexes:
 
 							if(!($result = $appdb->query("select * from tbl_modemcommands where modemcommands_id=".$this->vars['post']['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['modemcommands_id'])) {
@@ -3683,7 +3683,7 @@ Indexes:
 
 								if(!($result = $appdb->insert("tbl_modemcommands",$content,"modemcommands_id"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								if(!empty($result['returning'][0]['modemcommands_id'])) {
@@ -3698,7 +3698,7 @@ Indexes:
 
 							if(!($result = $appdb->query("select * from tbl_atcommands where atcommands_modemcommandsid=".$this->vars['post']['rowid']." order by atcommands_id asc"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							if(!empty($result['rows'][0]['atcommands_id'])) {
@@ -3711,7 +3711,7 @@ Indexes:
 
 									if(!($result = $appdb->insert("tbl_atcommands",$content,"atcommands_id"))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 								}
 
@@ -3722,7 +3722,7 @@ Indexes:
 
 						json_encode_return($retval);
 						die;
-					}					
+					}
 
 
 				}
@@ -3731,7 +3731,7 @@ Indexes:
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
@@ -3746,7 +3746,7 @@ Indexes:
 
 			//if(!empty($vars)&&!empty($vars['post'])) {
 			//	$this->vars = $vars;
-			//	$this->post = $vars['post'];				
+			//	$this->post = $vars['post'];
 			//}
 
 			header_json();
@@ -3811,7 +3811,7 @@ Indexes:
 						if($retflag==2) {
 							return $jsonval;
 						}
-					} 
+					}
 
 				} else
 				if( $this->post['action']=='form' && !empty($this->post['formid']) ) {
@@ -3921,7 +3921,7 @@ Indexes:
 					if($this->post['table']=='modemcommands') {
 						if(!($result = $appdb->query("select * from tbl_modemcommands order by modemcommands_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -3939,7 +3939,7 @@ Indexes:
 					if($this->post['table']=='smscommands') {
 						if(!($result = $appdb->query("select * from tbl_smscommands order by smscommands_priority asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -3957,7 +3957,7 @@ Indexes:
 					if($this->post['table']=='options') {
 						if(!($result = $appdb->query("select options_id,options_name,options_value,options_type,options_priority from tbl_options where options_hidden=0 order by options_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -3975,7 +3975,7 @@ Indexes:
 					if($this->post['table']=='network') {
 						if(!($result = $appdb->query("select network_id,network_number,network_name from tbl_network order by network_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -3993,7 +3993,7 @@ Indexes:
 					if($this->post['table']=='port') {
 						if(!($result = $appdb->query("select port_id,port_device,port_name,port_simnumber,port_network,port_desc,case when port_disabled=1 then 'disabled' when port_disabled=0 then 'enabled' end from tbl_port"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['port_id'])) {
@@ -4010,7 +4010,7 @@ Indexes:
 					if($this->post['table']=='sim') {
 						if(!($result = $appdb->query("select sim_id,sim_device,sim_name,sim_number,sim_network,sim_desc,sim_online,sim_ip,case when sim_disabled=1 then 'disabled' when sim_disabled=0 then 'enabled' end from tbl_sim"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['sim_id'])) {
@@ -4026,7 +4026,7 @@ Indexes:
 					if($this->post['table']=='log') {
 						if(!($result = $appdb->query("select log_id,log_text,log_result,log_portid from tbl_log"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['log_id'])) {
@@ -4042,14 +4042,14 @@ Indexes:
 					if($this->post['table']=='inbox') {
 						if(!($result = $appdb->query("select * from tbl_smsinbox where smsinbox_deleted=0 order by smsinbox_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['smsinbox_id'])) {
 							$rows = array();
 
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$v['smsinbox_id'],'data'=>array(0,$v['smsinbox_id'],getCustomerNickByNumber($v['smsinbox_contactnumber']),$v['smsinbox_contactnumber'],getSimNameByNumber($v['smsinbox_simnumber']),$v['smsinbox_message'],getNetworkName($v['smsinbox_contactnumber']),pgDate($v['smsinbox_timestamp'])));
+								$rows[] = array('id'=>$v['smsinbox_id'],'data'=>array(0,$v['smsinbox_id'],getCustomerNickByNumber($v['smsinbox_contactnumber']),$v['smsinbox_contactnumber'],getSimNameByNumber($v['smsinbox_simnumber']),$v['smsinbox_message'],getNetworkName($v['smsinbox_contactnumber']),$v['smsinbox_timestamp']));
 							}
 
 							$retval = array('rows'=>$rows);
@@ -4058,14 +4058,37 @@ Indexes:
 					if($this->post['table']=='outbox') {
 						if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_sent=0 and smsoutbox_deleted=0 order by smsoutbox_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['smsoutbox_id'])) {
 							$rows = array();
 
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$v['smsoutbox_contactnumber'],getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_part'].'/'.$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],$v['smsoutbox_status'],$v['smsoutbox_createstamp'],$v['smsoutbox_sentstamp']));
+
+								if(!empty($v['smsoutbox_type'])) {
+									$smsoutbox_type = 'LONG';
+								} else {
+									$smsoutbox_type = 'SHORT';
+								}
+
+								if($v['smsoutbox_status']==0) {
+									$smsoutbox_status = 'QUEUED';
+								} else
+								if($v['smsoutbox_status']==1) {
+									$smsoutbox_status = 'WAITING';
+								} else
+								if($v['smsoutbox_status']==3) {
+									$smsoutbox_status = 'SENDING';
+								} else
+								if($v['smsoutbox_status']==4) {
+									$smsoutbox_status = 'SENT';
+								} else
+								if($v['smsoutbox_status']==5) {
+									$smsoutbox_status = 'FAILED';
+								}
+
+								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$v['smsoutbox_contactnumber'],getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_part'].'/'.$v['smsoutbox_total'],$smsoutbox_type,$v['smsoutbox_message'],$smsoutbox_status,$v['smsoutbox_createstamp'],$v['smsoutbox_sentstamp']));
 							}
 
 							$retval = array('rows'=>$rows);
@@ -4074,7 +4097,7 @@ Indexes:
 					if($this->post['table']=='sent') {
 						if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_sent!=0 and smsoutbox_deleted=0 order by smsoutbox_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['smsoutbox_id'])) {
@@ -4082,7 +4105,14 @@ Indexes:
 
 							foreach($result['rows'] as $k=>$v) {
 								//$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array($v['smsoutbox_id'],$v['smsoutbox_fromnumber'],$v['smsoutbox_tonumber'],$v['smsoutbox_message'],$v['smsoutbox_network'],$v['smsoutbox_sentstamp']));
-								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$v['smsoutbox_contactnumber'],getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_part'].'/'.$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],$v['smsoutbox_status'],$v['smsoutbox_createstamp'],$v['smsoutbox_sentstamp']));
+
+								if(!empty($v['smsoutbox_type'])) {
+									$smsoutbox_type = 'LONG';
+								} else {
+									$smsoutbox_type = 'SHORT';
+								}
+
+								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$v['smsoutbox_contactnumber'],getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_part'].'/'.$v['smsoutbox_total'],$smsoutbox_type,$v['smsoutbox_message'],$v['smsoutbox_createstamp'],$v['smsoutbox_sentstamp']));
 							}
 
 							$retval = array('rows'=>$rows);
@@ -4091,7 +4121,7 @@ Indexes:
 					if($this->post['table']=='contact') {
 						if(!($result = $appdb->query("select contact_id,contact_number,contact_network,contact_nick,contact_createstamp,contact_updatestamp from tbl_contact where contact_deleted=0 order by contact_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['contact_id'])) {
@@ -4111,7 +4141,7 @@ Indexes:
 									$groups = implode(',', $groups);
 								}
 
-								
+
 								//if(!($groupid = $this->getNetworkGroupID($v['contact_number']))) {
 								//} else {
 								//	$this->insertGroupContact($groupid,$v['contact_id']);
@@ -4128,7 +4158,7 @@ Indexes:
 					if($this->post['table']=='group') {
 						if(!($result = $appdb->query("select group_id,group_name,group_desc,group_timestamp from tbl_group order by group_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['group_id'])) {
@@ -4138,7 +4168,7 @@ Indexes:
 
 								/*if(!($result2 = $appdb->query("select count(groupcontact_id) from tbl_groupcontact where groupcontact_groupid=".$v['group_id']))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.','$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;				
+									die;
 								}
 
 								$memberscount = 0;
@@ -4170,7 +4200,7 @@ Indexes:
 
 			return false;
 		} // router($vars=false,$retflag=false)
-		
+
 	}
 
 	$appappmessaging = new APP_app_messaging;

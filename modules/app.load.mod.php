@@ -251,7 +251,7 @@ if(!class_exists('APP_app_load')) {
 						$content['loadtransaction_refnumber'] = $params['retailinfo']['loadtransaction_refnumber'] = !empty($post['retail_referenceno']) ? $post['retail_referenceno'] : '';
 						$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = !empty($post['retail_simcardbalance']) ? $post['retail_simcardbalance'] : 0;
 						$content['loadtransaction_runningbalance'] = $loadtransaction_runningbalance = !empty($post['retail_runningbalance']) ? $post['retail_runningbalance'] : 0;
-
+						$content['loadtransaction_amount'] = !empty($post['loadtransaction_amountdue']) ? $post['loadtransaction_amountdue'] : 0;
 					}
 
 					// retail_manualdate
@@ -315,12 +315,23 @@ if(!class_exists('APP_app_load')) {
 						$content = array();
 						$content['ledger_loadtransactionid'] = $loadtransaction_id = $params['retailinfo']['loadtransaction_id'];
 
-						if($customer_type=='STAFF') {
+						/*if($customer_type=='STAFF') {
 							//$content['ledger_debit'] = $itemData['item_srp'];
 							$content['ledger_debit'] = $params['retailinfo']['loadtransaction_cost'];
 						} else {
 							//$content['ledger_credit'] = $itemData['item_eshopsrp'];
 							$content['ledger_credit'] = $params['retailinfo']['loadtransaction_amountdue'];
+						}*/
+
+						if($customer_type=='STAFF') {
+							//$content['ledger_debit'] = $itemData['item_srp'];
+							$staffLedger = getStaffLedgerLoadtransactionId($loadtransaction_id);
+
+							$content['ledger_debit'] = $staffLedger['ledger_credit'];
+						} else {
+							//$content['ledger_credit'] = $itemData['item_eshopsrp'];
+							$customerLedger = getCustomerLedgerLoadtransactionId($loadtransaction_id);
+							$content['ledger_credit'] = $customerLedger['ledger_debit'];
 						}
 
 						$content['ledger_type'] = 'REFUND '.$params['retailinfo']['loadtransaction_item'];
@@ -2820,7 +2831,7 @@ if(!class_exists('APP_app_load')) {
 
 					} else
 					if($this->post['table']=='retail') {
-						if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_type='retail' order by loadtransaction_id desc"))) {
+						if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_type='retail' order by loadtransaction_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
@@ -2837,7 +2848,16 @@ if(!class_exists('APP_app_load')) {
 									$receiptno = $v['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($v['loadtransaction_id']));
 								}
 
-								$rows[] = array('id'=>$v['loadtransaction_id'],'data'=>array(0,$v['loadtransaction_id'],pgDate($v['loadtransaction_createstamp']),$receiptno,$v['loadtransaction_provider'],$v['loadtransaction_assignedsim'],$v['loadtransaction_customername'],$v['loadtransaction_recipientnumber'],$v['loadtransaction_item'],number_format($v['loadtransaction_load'],2),number_format($v['loadtransaction_discount'],2),number_format($v['loadtransaction_amountdue'],2),getLoadTransactionStatusString($v['loadtransaction_status'])));
+								$statusString = getLoadTransactionStatusString($v['loadtransaction_status']);
+
+								//pre(array('$v'=>$v));
+
+
+								if($v['loadtransaction_status']==TRN_QUEUED||$v['loadtransaction_status']==TRN_APPROVED||$v['loadtransaction_status']==TRN_SENT||$v['loadtransaction_status']==TRN_PROCESSING) {
+									$statusString = $statusString . ', (' . intval($v['elapsedtime']) . 'sec)';
+								}
+
+								$rows[] = array('id'=>$v['loadtransaction_id'],'data'=>array(0,$v['loadtransaction_id'],pgDate($v['loadtransaction_createstamp']),$receiptno,$v['loadtransaction_provider'],$v['loadtransaction_assignedsim'],$v['loadtransaction_customername'],$v['loadtransaction_recipientnumber'],$v['loadtransaction_item'],number_format($v['loadtransaction_load'],2),number_format($v['loadtransaction_discount'],2),number_format($v['loadtransaction_amountdue'],2),$statusString));
 							}
 
 							$retval = array('rows'=>$rows);

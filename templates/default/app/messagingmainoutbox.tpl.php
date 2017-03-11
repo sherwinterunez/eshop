@@ -34,7 +34,7 @@
 
 		myTab.toolbar.enableOnly(['messagingrefresh']);
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		if(typeof(f)!='undefined'&&typeof(myGrid_%formval%)!='undefined') {
 			try {
@@ -87,7 +87,7 @@
 
 			myGrid.setHeader("#master_checkbox, ID, Recipient, SIM, Part, Type, Message, Status, Date Created, Date Sent");
 
-			myGrid.setInitWidths("50, 50,100,100,50,100,*,80,150,150");
+			myGrid.setInitWidths("50, 50,100,100,60,60,*,80,150,150");
 
 			myGrid.setColAlign("center, center,left,left,center,center,left,left,left,left");
 
@@ -134,9 +134,9 @@
 
 				}
 
-			} catch(e) { 
+			} catch(e) {
 
-				console.log('e => '+e); 
+				console.log('e => '+e);
 
 				$("#formdiv_%formval% #messagingmainoutboxgrid div.objbox").html('<span style="display:block;width:150px;margin:0 auto;"><center>Outbox is empty!</center></span>');
 

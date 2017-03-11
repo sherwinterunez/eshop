@@ -146,13 +146,13 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 	//print_r(array('getAllGateways(2)'=>$agw));
 
-	//$resetGateways = array();
+	$resetGateways = array();
 
 	foreach($agw as $k=>$v) {
 		//if($v>120) {  // 2 minutes
 		if($v>10) {  // 10 seconds
-			if($k==$mobileNo&&isSimEnabled($k)&&isSimOnline($k)&&isGatewayFailed($k)) {
-				//$resetGateways[] = $k;
+			if(isSimEnabled($k)&&isSimOnline($k)&&isGatewayFailed($k)) {
+				$resetGateways[] = $k;
 				setGatewayFailedToFalse($k);
 			}
 		}
@@ -160,15 +160,11 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 /////
 
-	$delay = 30;
-
-/////
-
-	// resend failed messages by moving to other gateways ( smsoutbox_simnumber='$mobileNo' )
+	// resend failed messages by moving to other gateways
 
 	$sendsms = false;
 
-	$limit = 10;
+	$limit = 1;
 
 	//$sql = "select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=5 order by smsoutbox_id asc limit $limit";
 
@@ -193,25 +189,21 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 			foreach($sendsms as $k=>$smsoutbox) {
 
-				if(!empty($smsoutbox['smsoutbox_failed'])&&$smsoutbox['elapsedtime']>$delay) { // 3 minutes
+				if(!empty($smsoutbox['smsoutbox_failed'])&&$smsoutbox['elapsedtime']>30) { // 3 minutes
 					//print_r(array('MOVING SMS SEND FAILED 1'=>array('$smsoutbox'=>$smsoutbox)));
 
-					print_r(array('MOVING SMS SEND FAILED 1'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
-
-					/*if(!in_array($smsoutbox['smsoutbox_simnumber'],$resetGateways)) {
+					if(!in_array($smsoutbox['smsoutbox_simnumber'],$resetGateways)) {
 						if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
 							if(!isGatewayFailed($smsoutbox['smsoutbox_simnumber'])) {
 								setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);
 							}
 						}
-					}*/
+					}
 
-					moveToGateway($smsoutbox['smsoutbox_id'],$mobileNo);
+					moveToGateway($smsoutbox['smsoutbox_id']);
 				} else
-				if(($smsoutbox['smsoutbox_status']==1||$smsoutbox['smsoutbox_status']==3||$smsoutbox['smsoutbox_status']==5)&&$smsoutbox['elapsedtime']>$delay) {
+				if(($smsoutbox['smsoutbox_status']==1||$smsoutbox['smsoutbox_status']==3||$smsoutbox['smsoutbox_status']==5)&&$smsoutbox['elapsedtime']>180) {
 					//print_r(array('MOVING SMS SEND FAILED 2'=>array('$smsoutbox'=>$smsoutbox)));
-
-					print_r(array('MOVING SMS SEND FAILED 2'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
 
 					//if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
 					//	setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);
@@ -223,99 +215,20 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 					//	}
 					//}
 
-					/*if(!in_array($smsoutbox['smsoutbox_simnumber'],$resetGateways)) {
+					if(!in_array($smsoutbox['smsoutbox_simnumber'],$resetGateways)) {
 						if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
 							if(!isGatewayFailed($smsoutbox['smsoutbox_simnumber'])) {
 								setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);
 							}
 						}
-					}*/
+					}
 
-					moveToGateway($smsoutbox['smsoutbox_id'],$mobileNo);
+					moveToGateway($smsoutbox['smsoutbox_id']);
 				}
 			}
 		}
 	}
 
-/////
-/////
-
-	// resend failed messages by moving to other gateways ( smsoutbox_simnumber<>'$mobileNo' )
-
-	$sendsms = false;
-
-	$limit = 1;
-
-	//$sql = "select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=5 order by smsoutbox_id asc limit $limit";
-
-	//$sql = "select *,(extract(epoch from now()) - extract(epoch from smsoutbox_failedstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status in (1,3,5) order by smsoutbox_id asc limit $limit";
-
-	$sql = "select *,(extract(epoch from now()) - extract(epoch from smsoutbox_failedstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_simnumber<>'$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status in (1,3,5) order by smsoutbox_id asc limit $limit";
-
-	//pre(array('$sql'=>$sql));
-
-	if(!($result = $appdb->query($sql))) {
-		//echo "\n0 message. processOutbox done.\n";
-		return false;
-	}
-
-	if(!empty($result['rows'][0]['smsoutbox_id'])) {
-
-		//pre($result['rows']);
-
-		$sendsms = $result['rows'];
-
-		if(!empty($sendsms)&&is_array($sendsms)) {
-
-			foreach($sendsms as $k=>$smsoutbox) {
-
-				if(isSimEnabled($smsoutbox['smsoutbox_simnumber'])&&isSimOnline($smsoutbox['smsoutbox_simnumber'])) {
-					continue;
-				}
-
-				if(!empty($smsoutbox['smsoutbox_failed'])&&$smsoutbox['elapsedtime']>$delay) { // 3 minutes
-					//print_r(array('MOVING SMS SEND FAILED 1'=>array('$smsoutbox'=>$smsoutbox)));
-
-					print_r(array('MOVING SMS SEND FAILED 1'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
-
-					/*if(!in_array($smsoutbox['smsoutbox_simnumber'],$resetGateways)) {
-						if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
-							if(!isGatewayFailed($smsoutbox['smsoutbox_simnumber'])) {
-								setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);
-							}
-						}
-					}*/
-
-					moveToGateway($smsoutbox['smsoutbox_id'],$mobileNo);
-				} else
-				if(($smsoutbox['smsoutbox_status']==1||$smsoutbox['smsoutbox_status']==3||$smsoutbox['smsoutbox_status']==5)&&$smsoutbox['elapsedtime']>$delay) {
-					//print_r(array('MOVING SMS SEND FAILED 2'=>array('$smsoutbox'=>$smsoutbox)));
-
-					print_r(array('MOVING SMS SEND FAILED 2'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
-
-					//if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
-					//	setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);
-					//}
-
-					//if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
-					//	if(!isGatewayFailed($smsoutbox['smsoutbox_simnumber'])) {
-					//		setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);
-					//	}
-					//}
-
-					/*if(!in_array($smsoutbox['smsoutbox_simnumber'],$resetGateways)) {
-						if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
-							if(!isGatewayFailed($smsoutbox['smsoutbox_simnumber'])) {
-								setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);
-							}
-						}
-					}*/
-
-					moveToGateway($smsoutbox['smsoutbox_id'],$mobileNo);
-				}
-			}
-		}
-	}
 
 /////
 
@@ -336,7 +249,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 		return false;
 	}
 
-	if(!empty($result['rows'][0]['smsoutbox_id'])&&!isGatewayFailed($mobileNo)) {
+	if(!empty($result['rows'][0]['smsoutbox_id'])) {
 
 		//print_r(array('$sql'=>$sql));
 
@@ -406,7 +319,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 						if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
 							setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);
 
-							moveToGateway($smsoutbox['smsoutbox_id'],$mobileNo);
+							moveToGateway($smsoutbox['smsoutbox_id']);
 						}
 
 						//if(!empty($v['smsoutbox_promossentid'])) {

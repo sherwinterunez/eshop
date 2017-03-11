@@ -347,7 +347,11 @@ if(!class_exists('APP_app_contact')) {
 					$content['customer_terms'] = !empty($post['customer_terms']) ? $post['customer_terms'] : '';
 					$content['customer_paymentpercentage'] = !empty($post['customer_paymentpercentage']) ? $post['customer_paymentpercentage'] : 100;
 					$content['customer_freezed'] = !empty($post['customer_freezed']) ? 1 : 0;
+					$content['customer_discountcustomerreload'] = !empty($post['customer_discountcustomerreload']) ? $post['customer_discountcustomerreload'] : '';
+					$content['customer_discountfundreload'] = !empty($post['customer_discountfundreload']) ? $post['customer_discountfundreload'] : '';
+					$content['customer_discountchildreload'] = !empty($post['customer_discountchildreload']) ? $post['customer_discountchildreload'] : '';
 					$content['customer_discountfundtransfer'] = !empty($post['customer_discountfundtransfer']) ? $post['customer_discountfundtransfer'] : '';
+					$content['customer_discountretail'] = !empty($post['customer_discountretail']) ? $post['customer_discountretail'] : '';
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
@@ -1028,6 +1032,18 @@ if(!class_exists('APP_app_contact')) {
 						'value' => !empty($params['customerinfo']['customer_discountfundtransfer']) ? $params['customerinfo']['customer_discountfundtransfer'] : '',
 					);
 
+					$params['tbDiscount'][] = array(
+						'type' => 'input',
+						'label' => 'RETAIL',
+						'name' => 'customer_discountretail',
+						'readonly' => $readonly,
+						'inputWidth' => 200,
+						//'disabled' => !empty($params['iteminfo']['item_maintenance']) ? false : true,
+						//'required' => !$readonly,
+						//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+						'value' => !empty($params['customerinfo']['customer_discountretail']) ? $params['customerinfo']['customer_discountretail'] : '',
+					);
+
 				} else {
 
 ////////////////
@@ -1177,6 +1193,45 @@ if(!class_exists('APP_app_contact')) {
 						//'required' => !$readonly,
 						'options' => $opt,
 					);
+
+////////////////
+
+					$opt = array();
+
+					if(!$readonly) {
+						$opt[] = array('text'=>'','value'=>'','selected'=>false);
+					}
+
+					$discountSchemes = getDiscountScheme();
+
+					foreach($discountSchemes as $k=>$v) {
+						$selected = false;
+						if(!empty($params['customerinfo']['customer_discountretail'])&&$params['customerinfo']['customer_discountretail']==$v['discount_desc']) {
+							$selected = true;
+						}
+						if($readonly) {
+							if($selected) {
+								$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']['discount_desc'],'selected'=>$selected);
+							}
+						} else {
+							$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc'],'selected'=>$selected);
+						}
+					}
+
+					$params['tbDiscount'][] = array(
+						'type' => 'combo',
+						'label' => 'RETAIL',
+						//'labelWidth' => 210,
+						'inputWidth' => 200,
+						//'comboType' => 'checkbox',
+						'name' => 'customer_discountretail',
+						'readonly' => $readonly,
+						//'disabled' => !empty($params['iteminfo']['item_regularload']) ? false : true,
+						//'required' => !$readonly,
+						'options' => $opt,
+					);
+
+////////////////
 
 				}
 

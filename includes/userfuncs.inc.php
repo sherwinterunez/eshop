@@ -1465,6 +1465,29 @@ function getCustomerBalanceFromLedgerLoadtransactionId($id=false) {
 	return false;
 }
 
+function getStaffLedgerLoadtransactionId($id=false) {
+	return getCustomerLedgerLoadtransactionId($id);
+}
+
+function getCustomerLedgerLoadtransactionId($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_ledger where ledger_loadtransactionid=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['ledger_id'])) {
+		return $result['rows'][0];
+	}
+
+	return false;
+}
+
 function getCustomerTerms($id=false) {
 	return getStaffTerms($id);
 }
@@ -3600,6 +3623,8 @@ function sendSMS($sms=false,$number=false,$message=false) {
 	if(!empty($sms)&&!empty($number)&&!empty($message)) {
 	} else return false;
 
+	$message = str_replace('|',' ',$message);
+
 	$msg = array();
 
 	$msg['message'] = $message;
@@ -4100,7 +4125,7 @@ function getGateways($contactnumber=false,$mode=1) {
 			$sql = "select * from tbl_gatewaylist where gatewaylist_failed=0 and gatewaylist_gatewayid in ($sql1) order by gatewaylist_seq asc";
 			//$sql = "select * from tbl_gateway where gateway_provider='$netname' order by gateway_id asc limit 1";
 
-			//pre(array('$sql'=>$sql));
+			pre(array('$netname'=>$netname,'$sql'=>$sql));
 
 			if(!($result=$appdb->query($sql))) {
 				return false;
@@ -4255,7 +4280,7 @@ function selectGateway($contactnumber=false) {
 				$first = $mobileNo;
 			}
 
-			$sql = "select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=1 order by smsoutbox_id asc";
+			$sql = "select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status in (1,3,5) order by smsoutbox_id asc";
 
 			//pre(array('$sql'=>$sql));
 
@@ -4384,7 +4409,7 @@ function sendToGateway($contactnumber=false,$simnumber=false,$message=false,$sta
 	return false;
 }
 
-function moveToGateway($smsoutboxid=false) {
+function moveToGateway($smsoutboxid=false,$gatewayno=false) {
 	global $appdb;
 
 	if(!empty($smsoutboxid)&&is_numeric($smsoutboxid)) {
@@ -4456,7 +4481,7 @@ function moveToGateway($smsoutboxid=false) {
 				$content = array();
 				$content['smsoutbox_simnumber'] = $chosen;
 				$content['smsoutbox_status'] = 1;
-				$content['smsoutbox_failed'] = $smsoutbox_failed + 1;
+				//$content['smsoutbox_failed'] = $smsoutbox_failed + 1;
 				$content['smsoutbox_failedstamp'] = 'now()';
 
 				if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=$smsoutboxid"))) {
@@ -4470,7 +4495,7 @@ function moveToGateway($smsoutboxid=false) {
 				$content = array();
 				$content['smsoutbox_simnumber'] = $first;
 				$content['smsoutbox_status'] = 1;
-				$content['smsoutbox_failed'] = $smsoutbox_failed + 1;
+				//$content['smsoutbox_failed'] = $smsoutbox_failed + 1;
 				$content['smsoutbox_failedstamp'] = 'now()';
 
 				if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=$smsoutboxid"))) {
@@ -8348,7 +8373,11 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 	}
 /////
 
-	if(!($result=$appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_status=".TRN_APPROVED." and loadtransaction_assignedsim='$mobileNo' order by loadtransaction_id asc limit 1"))) {
+	//if(!($result=$appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_status=".TRN_APPROVED." and loadtransaction_assignedsim='$mobileNo' order by loadtransaction_id asc limit 1"))) {
+	//	return false;
+	//}
+
+	if(!($result=$appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_status in (".TRN_APPROVED.",".TRN_QUEUED.") and loadtransaction_assignedsim='$mobileNo' order by loadtransaction_id asc limit 1"))) {
 		return false;
 	}
 
@@ -8362,9 +8391,62 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 		$loadtransaction_regularload = $loadtransaction['loadtransaction_regularload'];
 
+		$loadtransaction_item = $loadtransaction['loadtransaction_item'];
+
+		$loadtransaction_provider = $loadtransaction['loadtransaction_provider'];
+
+		$loadtransaction_assignedsim = $loadtransaction['loadtransaction_assignedsim'];
+
 		if(!empty($loadtransaction['loadtransaction_load'])) {
 			$loadtransaction_load = $loadtransaction['loadtransaction_load'];
 		}
+
+		if($loadtransaction_type=='retail'&&$loadtransaction['loadtransaction_status']==TRN_QUEUED&&$loadtransaction['elapsedtime']>=30) {  /// elapsed time
+
+			if(!($simassignment = getItemSimAssign($loadtransaction_item,$loadtransaction_provider))) {
+
+				$simcount = count($simassignment);
+				$sctr = 0;
+
+				if($simcount>1) {
+					do {
+						shuffle($simassignment);
+
+						print_r(array('MOVING ASSIGNED SIM'=>$loadtransaction));
+
+						if($simassignment[0]['itemassignedsim_simnumber']!=$loadtransaction_assignedsim) {
+
+							print_r(array('$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'new sim card'=>$simassignment[0]['itemassignedsim_simnumber']));
+
+							$content = array();
+							$content['loadtransaction_assignedsim'] = $simassignment[0]['itemassignedsim_simnumber'];
+							$content['loadtransaction_status'] = $loadtransaction_status = TRN_APPROVED; // pending
+							$content['loadtransaction_updatestamp'] = 'now()';
+
+							if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+								return false;
+							}
+
+							break;
+						} else {
+							unset($simassignment[0]);
+						}
+						sleep(1);
+						$sctr++;
+					} while($sctr<=$simcount);
+				}
+
+			}
+
+			$content = array();
+			$content['loadtransaction_status'] = $loadtransaction_status = TRN_FAILED; // pending
+			$content['loadtransaction_updatestamp'] = 'now()';
+
+			if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+				return false;
+			}
+
+		/*}
 
 		if($loadtransaction['elapsedtime']>(60*5)) {  /// retail transaction approved more than 5 minutes will be set to failed
 
@@ -8378,7 +8460,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 					return false;
 				}
 
-			}
+			}*/
 
 		} else {
 

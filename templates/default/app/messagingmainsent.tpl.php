@@ -51,7 +51,7 @@
 
 		//myTab.toolbar.enableOnly(['messagingrefresh']);
 
-		//myTab.toolbar.showOnly(myToolbar);	
+		//myTab.toolbar.showOnly(myToolbar);
 
 		if(typeof(f)!='undefined'&&typeof(myGrid_%formval%)!='undefined') {
 			try {
@@ -102,17 +102,17 @@
 
 			myGrid.setImagePath("/codebase/imgs/")
 
-			myGrid.setHeader("#master_checkbox,ID, Recipient, SIM, Part, Type, Message, Status, Date Created, Date Sent");
+			myGrid.setHeader("#master_checkbox,ID, Recipient, SIM, Part, Type, Message, Date Created, Date Sent");
 
-			myGrid.attachHeader("&nbsp;,&nbsp;,#combo_filter,#combo_filter,&nbsp;,&nbsp;,#text_filter,&nbsp;,&nbsp;,&nbsp;");
+			myGrid.attachHeader("&nbsp;,&nbsp;,#combo_filter,#combo_filter,&nbsp;,&nbsp;,#text_filter,&nbsp;,&nbsp;");
 
-			myGrid.setInitWidths("50,50,100,100,50,100,*,80,150,150");
+			myGrid.setInitWidths("50,50,100,100,60,60,*,150,150");
 
-			myGrid.setColAlign("center,center,left,left,center,center,left,left,left,left");
+			myGrid.setColAlign("center,center,left,left,center,center,left,left,left");
 
-			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro");
 
-			myGrid.setColSorting("int,int,str,str,str,str,str,str,str,str");
+			myGrid.setColSorting("int,int,str,str,str,str,str,str,str");
 
 			myGrid.enablePaging(true,100,10,"messagingmainsentgridpagingArea",true,"messagingmainsentgridrecinfoArea");
 
@@ -153,9 +153,9 @@
 					},'json');
 				}
 
-			} catch(e) { 
+			} catch(e) {
 
-				console.log('e => '+e); 
+				console.log('e => '+e);
 
 				$("#formdiv_%formval% #messagingmainsentgrid div.objbox").html('<span style="display:block;width:200px;margin:0 auto;"><center>Sent box is empty!</center></span>');
 

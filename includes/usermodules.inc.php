@@ -559,7 +559,6 @@ function _eLoadProcessSMS($vars=array()) {
 			//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
 			//sendToGateway($loadtransaction_customernumber,$simhotline,$errmsg);
 
-
 			if(!empty($vars['smscommands']['smscommands_checkprovidernotification'])) {
 				$noti = explode(',', $vars['smscommands']['smscommands_checkprovidernotification']);
 
@@ -567,7 +566,6 @@ function _eLoadProcessSMS($vars=array()) {
 					sendToGateway($loadtransaction_customernumber,$simhotline,getNotificationByID($v));
 				}
 			}
-
 
 			return false;
 		}
@@ -597,6 +595,8 @@ function _eLoadProcessSMS($vars=array()) {
 
 		$counter = 0;
 
+		$maxcounter = 5;
+
 		$simcount = count($simassignment);
 
 		$simenable = 0;
@@ -608,6 +608,8 @@ function _eLoadProcessSMS($vars=array()) {
 		$simnobalance = 0;
 
 		do {
+
+			shuffle($simassignment);
 
 			foreach($simassignment as $k=>$assignedsim) {
 
@@ -647,7 +649,11 @@ function _eLoadProcessSMS($vars=array()) {
 
 				if(!empty($result['rows'][0]['loadtransaction_id'])) {
 					$simbusy++;
-					continue;
+
+					if($counter===$maxcounter) {
+					} else {
+						continue;
+					}
 				}
 
 				//if($loadtransaction_provider!=getNetworkName($loadtransaction_assignedsim)) {
@@ -663,11 +669,23 @@ function _eLoadProcessSMS($vars=array()) {
 				$item_threshold = floatval($itemData['item_threshold']);
 				$item_provider = $itemData['item_provider'];
 
+				print_r(array(0=>'CHECKING STAFF DISCOUNT','$loadtransaction_regularload'=>$loadtransaction_regularload,'$customer_type'=>$customer_type,'$itemData'=>$itemData));
+
 				if(!empty($loadtransaction_regularload)) {
 
-					if(!empty($itemData['item_regularloaddiscountscheme'])) {
+					if($customer_type=='STAFF') {
+						if(!empty($itemData['item_regularloadstaffdiscountscheme'])) {
+							$itemregularloaddiscountscheme = $itemData['item_regularloadstaffdiscountscheme'];
+						}
+					} else {
+						if(!empty($itemData['item_regularloaddiscountscheme'])) {
+							$itemregularloaddiscountscheme = $itemData['item_regularloaddiscountscheme'];
+						}
+					}
 
-						if(!empty(($itemDiscount=getItemDiscount($itemData['item_regularloaddiscountscheme'],'RETAIL',$itemData['item_provider'],$loadtransaction_assignedsim)))) {
+					if(!empty($itemregularloaddiscountscheme)) {
+
+						if(!empty(($itemDiscount=getItemDiscount($itemregularloaddiscountscheme,'RETAIL',$itemData['item_provider'],$loadtransaction_assignedsim)))) {
 
 							foreach($itemDiscount as $t=>$d) {
 								$itemDiscountMin = floatval($d['discountlist_min']);
@@ -675,10 +693,7 @@ function _eLoadProcessSMS($vars=array()) {
 
 								if($loadtransaction_regularload>=$itemDiscountMin&&$loadtransaction_regularload<=$itemDiscountMax) {
 									$itemDiscountRate = (100 - floatval($d['discountlist_rate'])) / 100;
-									break;
-								} else
-								if($itemDiscountMin<1&&$itemDiscountMax<1) {
-									$itemDiscountRate = (100 - floatval($d['discountlist_rate'])) / 100;
+									$itemProcessingFee = floatval($d['discountlist_fee']);
 									break;
 								} else {
 									continue;
@@ -686,7 +701,7 @@ function _eLoadProcessSMS($vars=array()) {
 							}
 
 						} else
-						if(!empty(($itemDiscount=getItemDiscount($itemData['item_regularloaddiscountscheme'],'RETAIL',$itemData['item_provider'])))) {
+						if(!empty(($itemDiscount=getItemDiscount($itemregularloaddiscountscheme,'RETAIL',$itemData['item_provider'])))) {
 
 							foreach($itemDiscount as $t=>$d) {
 								if(!empty($d['discountlist_simcard'])) {
@@ -696,10 +711,7 @@ function _eLoadProcessSMS($vars=array()) {
 
 									if($loadtransaction_regularload>=$itemDiscountMin&&$loadtransaction_regularload<=$itemDiscountMax) {
 										$itemDiscountRate = (100 - floatval($d['discountlist_rate'])) / 100;
-										break;
-									} else
-									if($itemDiscountMin<1&&$itemDiscountMax<1) {
-										$itemDiscountRate = (100 - floatval($d['discountlist_rate'])) / 100;
+										$itemProcessingFee = floatval($d['discountlist_fee']);
 										break;
 									} else {
 										continue;
@@ -722,7 +734,7 @@ function _eLoadProcessSMS($vars=array()) {
 						return false;
 					}
 
-					print_r(array('$itemDiscountRate'=>$itemDiscountRate));
+					print_r(array('$itemDiscountRate'=>$itemDiscountRate,'$itemProcessingFee'=>$itemProcessingFee));
 
 					$item_cost = $loadtransaction_regularload * $itemDiscountRate;
 					$item_quantity = $loadtransaction_regularload;
@@ -753,13 +765,14 @@ function _eLoadProcessSMS($vars=array()) {
 
 					$percent = $percent * 100;
 
-					$amountdue = $item_quantity - $discount;
+					$amountdue = ($item_quantity - $discount) + $itemProcessingFee;
 
 					$staff_balance = $staff_balance + $item_srp;
 
 					$content['loadtransaction_discount'] = $discount;
 					$content['loadtransaction_discountpercent'] = $percent;
 					$content['loadtransaction_amountdue'] = $amountdue;
+					$content['loadtransaction_processingfee'] = $itemProcessingFee;
 
 				} else {
 
@@ -781,7 +794,7 @@ function _eLoadProcessSMS($vars=array()) {
 								}
 							}
 
-							if(!$discountBypass) {
+							/*if(!$discountBypass) {
 								foreach($discount as $x=>$z) {
 									//pre(array('$z'=>$z,'discountlist_type'=>$z['discountlist_type'],'$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'discountlist_simcard'=>$z['discountlist_simcard']));
 									if($z['discountlist_type']=='RETAIL') {
@@ -793,7 +806,7 @@ function _eLoadProcessSMS($vars=array()) {
 										break;
 									}
 								}
-							}
+							}*/
 
 						} else
 						if(($discount = getCustomerDiscounts($parentData['customer_parent'],$item_provider))) {
@@ -813,7 +826,7 @@ function _eLoadProcessSMS($vars=array()) {
 								}
 							}
 
-							if(!$discountBypass) {
+							/*if(!$discountBypass) {
 								foreach($discount as $x=>$z) {
 									//pre(array('$z'=>$z,'discountlist_type'=>$z['discountlist_type'],'$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'discountlist_simcard'=>$z['discountlist_simcard']));
 									if($z['discountlist_type']=='RETAIL') {
@@ -825,7 +838,7 @@ function _eLoadProcessSMS($vars=array()) {
 										break;
 									}
 								}
-							}
+							}*/
 
 						}
 					}
@@ -885,6 +898,10 @@ function _eLoadProcessSMS($vars=array()) {
 				$content['loadtransaction_type'] = 'retail';
 				$content['loadtransaction_status'] = TRN_APPROVED;
 				$content['loadtransaction_itemthreshold'] = $item_threshold;
+
+				if($counter===$maxcounter) {
+					$content['loadtransaction_status'] = TRN_QUEUED;
+				}
 
 				if(!empty($loadtransaction_regularload)) {
 					$content['loadtransaction_regularload'] = $loadtransaction_regularload;
@@ -1000,7 +1017,7 @@ function _eLoadProcessSMS($vars=array()) {
 
 			$counter++;
 
-		} while($counter<5);
+		} while($counter<=$maxcounter);
 
 	}
 
@@ -1358,7 +1375,9 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 
 			$loadtransaction_customerid = $content['loadtransaction_customerid'];
 
-			$loadtransaction_id = $result['rows'][0]['loadtransaction_id'];
+			$loadtransaction_type = $content['loadtransaction_type'];
+
+			$loadtransaction_id = $content['loadtransaction_id'];
 
 			print_r(array('$result'=>$content));
 
@@ -1468,7 +1487,43 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 
 				$customer_type = getCustomerType($loadtransaction_customerid);
 
-				$errmsg = smsdt(). ' '.getNotification('$SUCCESSFULLY_LOADED');
+				if($loadtransaction_type=='retail') {
+
+					//$errmsg = smsdt(). ' '.getNotification('LOAD RETAIL COMPLETED');
+					$errmsg = getNotification('LOAD RETAIL COMPLETED');
+
+					// Load request of %TEXTCODE% %ESHOPSRP% to %CUSTMOBILENO% is now complete. Ref:%LRTXNREF% %LRDATETIME% Balance:P%VBALANCE%.
+
+					$errmsg = str_replace('%TEXTCODE%',$content['loadtransaction_item'],$errmsg);
+					$errmsg = str_replace('%ESHOPSRP%',$content['loadtransaction_load'],$errmsg);
+					$errmsg = str_replace('%CUSTMOBILENO%',$content['loadtransaction_recipientnumber'],$errmsg);
+					$errmsg = str_replace('%LRTXNREF%',$content['loadtransaction_refnumber'],$errmsg);
+					$errmsg = str_replace('%LRDATETIME%', pgDateUnix(time()),$errmsg);
+
+					if($customer_type=='STAFF') {
+						$errmsg = str_replace('%VBALANCE%',getStaffBalance($loadtransaction_customerid),$errmsg);
+					} else {
+						$errmsg = str_replace('%VBALANCE%',getCustomerBalance($loadtransaction_customerid),$errmsg);
+					}
+
+				} else {
+
+					$errmsg = smsdt(). ' '.getNotification('$SUCCESSFULLY_LOADED');
+
+					$errmsg = str_replace('%simcard%',$content['loadtransaction_assignedsim'],$errmsg);
+					$errmsg = str_replace('%productcode%',$content['loadtransaction_product'],$errmsg);
+					$errmsg = str_replace('%recipientnumber%',$content['loadtransaction_recipientnumber'],$errmsg);
+					$errmsg = str_replace('%ref%',$content['loadtransaction_refnumber'],$errmsg);
+
+					if($customer_type=='STAFF') {
+						$errmsg = str_replace('%balance%',getStaffBalance($loadtransaction_customerid),$errmsg);
+					} else {
+						$errmsg = str_replace('%balance%',getCustomerBalance($loadtransaction_customerid),$errmsg);
+					}
+
+				}
+
+				/*$errmsg = smsdt(). ' '.getNotification('$SUCCESSFULLY_LOADED');
 
 				$errmsg = str_replace('%simcard%',$content['loadtransaction_assignedsim'],$errmsg);
 				$errmsg = str_replace('%productcode%',$content['loadtransaction_product'],$errmsg);
@@ -1479,7 +1534,7 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 					$errmsg = str_replace('%balance%',getStaffBalance($loadtransaction_customerid),$errmsg);
 				} else {
 					$errmsg = str_replace('%balance%',getCustomerBalance($loadtransaction_customerid),$errmsg);
-				}
+				}*/
 
 				//sendToOutBox($content['loadtransaction_customernumber'],$content['loadtransaction_simhotline'],$errmsg);
 				sendToGateway($content['loadtransaction_customernumber'],$content['loadtransaction_simhotline'],$errmsg);
@@ -2082,7 +2137,7 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 
 					if($smscommands['smscommands_smserrorsettostatus']==TRN_CANCELLED) {
 
-						$itemData = getItemData($loadtransaction_item,$loadtransaction_provider);
+						//$itemData = getItemData($loadtransaction_item,$loadtransaction_provider);
 
 						$receiptno = '';
 
@@ -2095,10 +2150,13 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 
 						if($customer_type=='STAFF') {
 							//$content['ledger_debit'] = $itemData['item_srp'];
-							$content['ledger_debit'] = $loadtransaction['loadtransaction_load'];
+							$staffLedger = getStaffLedgerLoadtransactionId($loadtransaction['loadtransaction_id']);
+
+							$content['ledger_debit'] = $staffLedger['ledger_credit'];
 						} else {
 							//$content['ledger_credit'] = $itemData['item_eshopsrp'];
-							$content['ledger_credit'] = $loadtransaction['loadtransaction_cost'];
+							$customerLedger = getCustomerLedgerLoadtransactionId($loadtransaction['loadtransaction_id']);
+							$content['ledger_credit'] = $customerLedger['ledger_debit'];
 						}
 
 						$content['ledger_type'] = 'REFUND '.$loadtransaction_item;
@@ -2310,7 +2368,7 @@ function _childReload($vars=array()) {
 					}
 				}
 
-				if(!$bypass) {
+				/*if(!$bypass) {
 					foreach($discountSchemes as $k=>$v) {
 						if(!empty($v['discountlist_rate'])) {
 							$fund_discount = floatval($v['discountlist_rate']);
@@ -2322,7 +2380,7 @@ function _childReload($vars=array()) {
 							break;
 						}
 					}
-				}
+				}*/
 			}
 
 			if(isCustomerChild($smsinbox_contactsid,$childId)) {
@@ -2535,7 +2593,7 @@ function _fundTransfer($vars=array()) {
 					}
 				}
 
-				if(!$bypass) {
+				/*if(!$bypass) {
 					foreach($discountSchemes as $k=>$v) {
 						if(!empty($v['discountlist_rate'])) {
 							$fund_discount = floatval($v['discountlist_rate']);
@@ -2547,7 +2605,7 @@ function _fundTransfer($vars=array()) {
 							break;
 						}
 					}
-				}
+				}*/
 			}
 
 			if(!empty($recepientId)) {
@@ -2754,7 +2812,7 @@ function _fundCredit($vars=array()) {
 					}
 				}
 
-				if(!$bypass) {
+				/*if(!$bypass) {
 					foreach($discountSchemes as $k=>$v) {
 						if(!empty($v['discountlist_rate'])) {
 							$fund_discount = floatval($v['discountlist_rate']);
@@ -2766,7 +2824,7 @@ function _fundCredit($vars=array()) {
 							break;
 						}
 					}
-				}
+				}*/
 			}
 
 			/*if(!empty($recepientId)) {
@@ -3064,7 +3122,7 @@ function _customerReload($vars=array()) {
 					}
 				}
 
-				if(!$bypass) {
+				/*if(!$bypass) {
 					foreach($discountSchemes as $k=>$v) {
 						if(!empty($v['discountlist_rate'])) {
 							$fund_discount = floatval($v['discountlist_rate']);
@@ -3076,7 +3134,7 @@ function _customerReload($vars=array()) {
 							break;
 						}
 					}
-				}
+				}*/
 			}
 
 			if(!empty($recepientId)) {

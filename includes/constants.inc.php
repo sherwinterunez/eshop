@@ -1,7 +1,7 @@
 <?php
 //--HEADSTART
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -46,6 +46,7 @@ define('TRN_QUEUED',512);
 define('TRN_INVALID_SIM_COMMANDS',1024);
 define('TRN_CLAIMED',2048);
 define('TRN_DRAFT',4096);
+define('TRN_WAITING',8192);
 
 define('TRNS_APPROVED','APPROVED');
 define('TRNS_PROCESSING','PROCESSING');
@@ -60,6 +61,7 @@ define('TRNS_QUEUED','QUEUED');
 define('TRNS_INVALID_SIM_COMMANDS','INVALID SIM COMMANDS');
 define('TRNS_CLAIMED','CLAIMED');
 define('TRNS_DRAFT','DRAFT');
+define('TRNS_WAITING','WAITING');
 
 $_CONSTANTS['STATUS'] = array(
 		TRN_APPROVED => TRNS_APPROVED,
@@ -74,7 +76,8 @@ $_CONSTANTS['STATUS'] = array(
 		TRN_QUEUED => TRNS_QUEUED,
 		TRN_INVALID_SIM_COMMANDS => TRNS_INVALID_SIM_COMMANDS,
 		TRN_CLAIMED => TRNS_CLAIMED,
-		TRN_DRAFT => TRNS_DRAFT
+		TRN_DRAFT => TRNS_DRAFT,
+		TRN_WAITING => TRNS_WAITING
 	);
 
 /* INCLUDES_END */
