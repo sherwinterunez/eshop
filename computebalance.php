@@ -45,7 +45,7 @@ require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
 date_default_timezone_set('Asia/Manila');
 
-/*pre($_GET);
+pre($_GET);
 
 if(!empty($_GET['id'])&&is_numeric($_GET['id'])&&intval($_GET['id'])>0) {
   $id = intval($_GET['id']);
@@ -55,24 +55,27 @@ if(!empty($_GET['id'])&&is_numeric($_GET['id'])&&intval($_GET['id'])>0) {
   pre(array('$customer_type'=>$customer_type,'$id'=>$id));
 
   if($customer_type=='STAFF') {
-    computeStaffBalance($id);
+    computeStaffBalance2($id);
   } else {
     computeCustomerBalance($id);
+		computeCustomerRebateBalance($id);
+		computeChildRebateBalance($id);
   }
 
-}*/
+}
 
 //$dt = getDbDate();
 
 //pre(array('$dt'=>$dt));
 
+/*
 computeCustomerRebateBalance(5);
 computeCustomerRebateBalance(21);
 
 computeChildRebateBalance(19);
 computeChildRebateBalance(23);
 computeChildRebateBalance(20);
-
+*/
 
 
 //

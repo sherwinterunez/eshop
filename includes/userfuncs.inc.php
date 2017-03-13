@@ -1101,7 +1101,7 @@ function getCustomerChildSettings($id=false,$mode=0) {
 		return false;
 	}
 
-	pre(array('getCustomerChildSettings'=>$result,'$sql'=>$sql));
+	//pre(array('getCustomerChildSettings'=>$result,'$sql'=>$sql));
 
 	if(!empty($result['rows'][0]['childsettings_id'])) {
 		return $result['rows'];
@@ -1135,7 +1135,7 @@ function computeStaffBalance($id=false) {
 	if(!empty($id)&&is_numeric($id)) {
 	} else return false;
 
-	$sql = "select ledger_id,ledger_debit as debit,ledger_credit as credit,(ledger_credit-ledger_debit) as balance from tbl_ledger where ledger_user=$id";
+	$sql = "select ledger_id,ledger_debit as debit,ledger_credit as credit,(ledger_credit-ledger_debit) as balance from tbl_ledger where ledger_user=$id order by ledger_datetimeunix asc";
 
 	if(!($result = $appdb->query($sql))) {
 		return false;
@@ -1157,6 +1157,73 @@ function computeStaffBalance($id=false) {
 			}
 
 		}
+
+		$content = array();
+		$content['customer_staffbalance'] = floatval($balance);
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+			return false;
+		}
+
+		return floatval($balance);
+
+	}
+
+	/*$sql = "select (credit-debit) as total from (select sum(ledger_debit) as debit,sum(ledger_credit) as credit from tbl_ledger where ledger_user=$id) as a";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['total'])) {
+
+		$staffbalance = floatval($result['rows'][0]['total']);
+
+		$content = array();
+		$content['customer_staffbalance'] = $staffbalance;
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+			return false;
+		}
+
+		return $staffbalance;
+	}*/
+
+	return false;
+}
+
+function computeStaffBalance2($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select ledger_id,ledger_debit as debit,ledger_credit as credit,(ledger_credit-ledger_debit) as balance,ledger_datetimeunix from tbl_ledger where ledger_user=$id order by ledger_datetimeunix asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+  //pre(array('$result'=>$result));
+
+	if(!empty($result['rows'][0]['ledger_id'])) {
+		$ledger = $result['rows'];
+		$balance = 0;
+
+		foreach($result['rows'] as $k=>$v) {
+			$balance = floatval($balance) + floatval($v['balance']);
+			$ledger[$k]['running_balance'] = $balance;
+
+			$content = array();
+			$content['ledger_balance'] = $balance;
+
+			if(!($result = $appdb->update("tbl_ledger",$content,"ledger_id=".$ledger[$k]['ledger_id']))) {
+				return false;
+			}
+
+		}
+
+		pre(array('$ledger'=>$ledger));
 
 		$content = array();
 		$content['customer_staffbalance'] = floatval($balance);
@@ -1892,7 +1959,7 @@ function getItemDiscount($desc=false,$type=false,$provider=false,$simcard=false)
 			return false;
 		}
 
-		pre(array('getItemDiscount'=>$result,'$sql'=>$sql));
+		//pre(array('getItemDiscount'=>$result,'$sql'=>$sql));
 
 		if(!empty($result['rows'][0]['discountlist_id'])) {
 			return $result['rows'];
@@ -1915,7 +1982,7 @@ function getDiscountIDFromDesc($desc=false,$mode=0) {
 		return false;
 	}
 
-	pre(array('getDiscountIDFromDesc'=>$result,'$sql'=>$sql));
+	//pre(array('getDiscountIDFromDesc'=>$result,'$sql'=>$sql));
 
 	if(!empty($result['rows'][0]['discount_id'])) {
 		return $result['rows'][0]['discount_id'];
@@ -1936,7 +2003,7 @@ function getDiscounts($id=false,$mode=0) {
 		return false;
 	}
 
-	pre(array('getDiscounts'=>$result,'$sql'=>$sql));
+	//pre(array('getDiscounts'=>$result,'$sql'=>$sql));
 
 	if(!empty($result['rows'][0]['discountlist_id'])) {
 		return $result['rows'];
@@ -3181,7 +3248,7 @@ function isValidItemForRegularLoad($item=false,$active=false) {
 			if(preg_match('/'.$v['item_code'].'(?<REGULARLOAD>\d+)/si',$item,$match)) {
 				if(!empty($v['item_regularload'])) {
 					$match['item'] = $v;
-					print_r(array('isValidItemForRegularLoad'=>$match));
+					//print_r(array('isValidItemForRegularLoad'=>$match));
 					return $match;
 				}
 			}
@@ -3219,7 +3286,7 @@ function isItemMaintenance($item=false,$checkdate=false) {
 
       $curunixdate = getDbUnixDate();
 
-      print_r(array('$curunixdate'=>$curunixdate,'$item_maintenancedaterangefromunix'=>$item_maintenancedaterangefromunix,'$item_maintenancedaterangetounix'=>$item_maintenancedaterangetounix));
+      //print_r(array('$curunixdate'=>$curunixdate,'$item_maintenancedaterangefromunix'=>$item_maintenancedaterangefromunix,'$item_maintenancedaterangetounix'=>$item_maintenancedaterangetounix));
 
       if($curunixdate>=$item_maintenancedaterangefromunix&&$curunixdate<=$item_maintenancedaterangetounix) {
         return true;
@@ -4125,7 +4192,7 @@ function getGateways($contactnumber=false,$mode=1) {
 			$sql = "select * from tbl_gatewaylist where gatewaylist_failed=0 and gatewaylist_gatewayid in ($sql1) order by gatewaylist_seq asc";
 			//$sql = "select * from tbl_gateway where gateway_provider='$netname' order by gateway_id asc limit 1";
 
-			pre(array('$netname'=>$netname,'$sql'=>$sql));
+			//pre(array('$netname'=>$netname,'$sql'=>$sql));
 
 			if(!($result=$appdb->query($sql))) {
 				return false;
@@ -4441,7 +4508,7 @@ function moveToGateway($smsoutboxid=false,$gatewayno=false) {
 			//$gw = getOtherGateways($contactnumber);
 		//}
 
-		pre(array('moveToGateway'=>array('$gw'=>$gw)));
+		//pre(array('moveToGateway'=>array('$gw'=>$gw)));
 
 		if(!empty($gw)&&is_array($gw)) {
 
@@ -4832,24 +4899,24 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 							$FUNC = $FUNC."\r\n";
 						}
 
-						if($debug) print_r(array('$oFUNC'=>$oFUNC,'$FUNC'=>$FUNC,'flat'=>str_replace(chr(26),'(x26)',$sms->tocrlf($FUNC))));
+						//if($debug) print_r(array('$oFUNC'=>$oFUNC,'$FUNC'=>$FUNC,'flat'=>str_replace(chr(26),'(x26)',$sms->tocrlf($FUNC))));
 
 						if($sms->sendMessageReadPort($FUNC, $REGX, $TIMEOUT)) {
 							$result = $sms->getResult();
 							$result['flat'] = $sms->tocrlf($result[0]);
 							$sms->lastresult = $result;
 
-							if($debug) print_r(array('$result'=>$result));
+							//if($debug) print_r(array('$result'=>$result));
 							//print_r(array('$result'=>$result));
 
 							if(!empty($func['regx'][1])&&is_array($func['regx'])) {
 								for($i=1;$i<count($func['regx']);$i++) {
 
-									if($debug) print_r(array('regx'=>$func['regx'][$i]));
+									//if($debug) print_r(array('regx'=>$func['regx'][$i]));
 
 									if(preg_match('/'.$func['regx'][$i].'/s',$result[0],$result)) {
 
-										if($debug) print_r(array('regx'=>$func['regx'][$i],'$result'=>$result));
+										//if($debug) print_r(array('regx'=>$func['regx'][$i],'$result'=>$result));
 
 									} else {
 										$flag = false;
@@ -4861,7 +4928,7 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 							if(!empty($flag)) {
 								//print_r(array('$result'=>$result));
 							} else {
-								if($debug) print_r(array('$repeatCtr'=>$repeatCtr));
+								//if($debug) print_r(array('$repeatCtr'=>$repeatCtr));
 								if(!$repeatCtr) {
 									$break = true;
 									break;
@@ -4880,7 +4947,7 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 									if(isset($func['expectedresult'])) {
 										if(preg_match('/'.$func['expectedresult'].'/s',$gotresult,$match)) {
 
-											if($debug) print_r(array('$repeatCtr'=>$repeatCtr,'$match'=>$match));
+											//if($debug) print_r(array('$repeatCtr'=>$repeatCtr,'$match'=>$match));
 
 											$repeatCtr = 0;
 										} else {
@@ -5045,11 +5112,11 @@ function smsLoadCommandMatched($content=false){
 
 				$regx = '/'.$regstr.'/si';
 
-				print_r(array('regx1'=>$regx,'$str'=>$str));
+				//print_r(array('regx1'=>$regx,'$str'=>$str));
 
 				if(preg_match($regx,$str,$match)) {
 
-					print_r(array('$match1'=>$match));
+					//print_r(array('$match1'=>$match));
 
 					if($matchedctr<2) {
 						$matchedctr = 2;
@@ -5093,11 +5160,11 @@ function smsLoadCommandMatched($content=false){
 
 				$regx = '/'.$regstr.'/si';
 
-				print_r(array('regx2'=>$regx,'$str'=>$str));
+				//print_r(array('regx2'=>$regx,'$str'=>$str));
 
 				if(preg_match($regx,$str,$match)) {
 
-					print_r(array('$match2'=>$match));
+					//print_r(array('$match2'=>$match));
 
 					if($matchedctr<3) {
 						$matchedctr = 3;
@@ -5154,11 +5221,11 @@ function smsLoadCommandMatched($content=false){
 
 				$regx = '/'.$regstr.'/si';
 
-				print_r(array('regx3'=>$regx,'$str'=>$str));
+				//print_r(array('regx3'=>$regx,'$str'=>$str));
 
 				if(preg_match($regx,$str,$match)) {
 
-					print_r(array('$match3'=>$match));
+					//print_r(array('$match3'=>$match));
 
 					if($matchedctr<4) {
 						$matchedctr = 4;
@@ -5485,7 +5552,7 @@ function smsLoadCommandMatched($content=false){
 			if($matched) {
 				$retval = array('mobileNo'=>$content['smsinbox_simnumber'],'regx'=>$regstr,'smscommands'=>$smsc,'smsinbox'=>$content,'matched'=>$allmatched);
 
-				pre(array('$retval'=>$retval));
+				//pre(array('$retval'=>$retval));
 
 				return $retval;
 			}
@@ -5655,12 +5722,12 @@ function smsLoadCommandMatchedA($content=false){
 					$match1 = false;
 					$match2 = false;
 
-					print_r(array('$regx'=>$regx,'$str'=>$str,'$smsc[\'smscommands_key2\']'=>$smsc['smscommands_key2']));
-					print_r(array('$smscommands_key2'=>$smscommands_key2,'$match'=>$match));
+					//print_r(array('$regx'=>$regx,'$str'=>$str,'$smsc[\'smscommands_key2\']'=>$smsc['smscommands_key2']));
+					//print_r(array('$smscommands_key2'=>$smscommands_key2,'$match'=>$match));
 
 					if(preg_match('/'.$smscommands_key2.'\s+/si',$str,$match)) {
 					//	$allmatched[$smsc['smscommands_key2']] = $match[1];
-						print_r(array('preg_match1'=>$match));
+						//print_r(array('preg_match1'=>$match));
 						if(isset($match[1])) {
 							$match1 = $match[1];
 						} else {
@@ -5670,7 +5737,7 @@ function smsLoadCommandMatchedA($content=false){
 
 					if(preg_match('/'.$smscommands_key2.'/si',$str,$match)) {
 					//	$allmatched[$smsc['smscommands_key2']] = $match[1];
-						print_r(array('preg_match2'=>$match));
+						//print_r(array('preg_match2'=>$match));
 						if(isset($match[1])) {
 							$match2 = $match[1];
 						} else {
@@ -8059,7 +8126,7 @@ function smsCommandMatched2($content=false,$commandtype=false){
 
 function processSMS($content=false) {
 
-	pre(array('$content'=>$content));
+	//pre(array('$content'=>$content));
 
 	if(!empty($content)) {
 	} else return false;
@@ -8069,7 +8136,7 @@ function processSMS($content=false) {
 
 	$matched = smsSMSErrorMatched($content);
 
-	pre(array('$matched here'=>$matched));
+	//pre(array('$matched here'=>$matched));
 
 	//if($matched===false) {
 	//	return false;
@@ -8085,7 +8152,7 @@ function processSMS($content=false) {
 
 	$matched = smsExpressionsMatched($content);
 
-	pre(array('$matched here'=>$matched));
+	//pre(array('$matched here'=>$matched));
 
 	//if($matched===false) {
 	//	return false;
@@ -8125,7 +8192,7 @@ function processSMS($content=false) {
 
 	$matched = smsLoadCommandMatched($content);
 
-	pre(array('$matched'=>$matched));
+	//pre(array('$matched'=>$matched));
 
 	//if($matched===false) {
 	//	return false;
@@ -8187,7 +8254,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 				if(isSimNoConfirmationPerformBalanceInquiry($mobileNo)||!empty($loadtransaction['loadtransaction_smserrorid'])) {
 
-					pre(array('isSimNoConfirmationPerformBalanceInquiry'=>$loadtransaction));
+					//pre(array('isSimNoConfirmationPerformBalanceInquiry'=>$loadtransaction));
 
 					if(!($general_balanceinquirytimer = getSimBalanceInquiryTimer($mobileNo))) {
 						//$general_balanceinquirytimer = getOption('$GENERALSETTINGS_BALANCEINQUIRYTIMER',30);
@@ -8233,7 +8300,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 						$bypass = true;
 					}
 
-					pre(array('loadtransaction_balanceinquiry'=>$loadtransaction['loadtransaction_balanceinquiry'],'balanceinquiryelapsed'=>$loadtransaction['balanceinquiryelapsed']));
+					//pre(array('loadtransaction_balanceinquiry'=>$loadtransaction['loadtransaction_balanceinquiry'],'balanceinquiryelapsed'=>$loadtransaction['balanceinquiryelapsed']));
 
 					//$bypass = true;
 
@@ -8362,7 +8429,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 				$content['loadtransaction_status'] = $loadtransaction_status = TRN_PENDING; // pending
 			}
 
-			print_r(array('$content'=>$content));
+			//print_r(array('$content'=>$content));
 		}
 
 		if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
@@ -8403,7 +8470,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 		if($loadtransaction_type=='retail'&&$loadtransaction['loadtransaction_status']==TRN_QUEUED&&$loadtransaction['elapsedtime']>=30) {  /// elapsed time
 
-			if(!($simassignment = getItemSimAssign($loadtransaction_item,$loadtransaction_provider))) {
+			if(!empty(($simassignment = getItemSimAssign($loadtransaction_item,$loadtransaction_provider)))) {
 
 				$simcount = count($simassignment);
 				$sctr = 0;
@@ -8412,11 +8479,11 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 					do {
 						shuffle($simassignment);
 
-						print_r(array('MOVING ASSIGNED SIM'=>$loadtransaction));
+						//print_r(array('MOVING ASSIGNED SIM'=>$loadtransaction));
 
 						if($simassignment[0]['itemassignedsim_simnumber']!=$loadtransaction_assignedsim) {
 
-							print_r(array('$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'new sim card'=>$simassignment[0]['itemassignedsim_simnumber']));
+							//print_r(array('$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'new sim card'=>$simassignment[0]['itemassignedsim_simnumber']));
 
 							$content = array();
 							$content['loadtransaction_assignedsim'] = $simassignment[0]['itemassignedsim_simnumber'];
@@ -8434,16 +8501,34 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 						sleep(1);
 						$sctr++;
 					} while($sctr<=$simcount);
+				} else {
+					print_r(array('$simassignment1'=>$simassignment));
+
+					$content = array();
+					//$content['loadtransaction_assignedsim'] = $simassignment[0]['itemassignedsim_simnumber'];
+					$content['loadtransaction_status'] = $loadtransaction_status = TRN_APPROVED; // pending
+					$content['loadtransaction_updatestamp'] = 'now()';
+
+					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+						return false;
+					}
+
 				}
 
-			}
+			} else {
 
-			$content = array();
-			$content['loadtransaction_status'] = $loadtransaction_status = TRN_FAILED; // pending
-			$content['loadtransaction_updatestamp'] = 'now()';
+				print_r(array('MODEM FUNCTION FAILED! #1','MODEM FUNCTION FAILED! #1','MODEM FUNCTION FAILED! #1','MODEM FUNCTION FAILED! #1'));
 
-			if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
-				return false;
+				print_r(array('$simassignment2'=>$simassignment));
+
+				/*$content = array();
+				$content['loadtransaction_status'] = $loadtransaction_status = TRN_FAILED; // pending
+				$content['loadtransaction_updatestamp'] = 'now()';
+
+				if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+					return false;
+				}*/
+
 			}
 
 		/*}
@@ -8461,6 +8546,8 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 				}
 
 			}*/
+
+			return false;
 
 		} else {
 
@@ -8519,7 +8606,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 			$loadtransaction = $result['rows'][0];
 
-			print_r(array('$loadtransaction2'=>$loadtransaction));
+			//print_r(array('$loadtransaction2'=>$loadtransaction));
 
 			if(!($result = $appdb->query("select * from tbl_modemcommands where modemcommands_name='".$loadtransaction['loadtransaction_simcommand']."'"))) {
 				return false;
@@ -8625,6 +8712,8 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 				//if($content['loadtransaction_attempt']>2) {
 
+					print_r(array('MODEM FUNCTION FAILED!','MODEM FUNCTION FAILED!','MODEM FUNCTION FAILED!','MODEM FUNCTION FAILED!'));
+
 					$content['loadtransaction_status'] = $loadtransaction_status = TRN_FAILED; // not successful
 
 
@@ -8660,7 +8749,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 						$content['loadtransaction_type'] = 'balance';
 						$content['loadtransaction_status'] = TRN_APPROVED;
 
-						pre(array('$content'=>$content));
+						//pre(array('$content'=>$content));
 
 						if(!($result = $appdb->insert("tbl_loadtransaction",$content,"loadtransaction_id"))) {
 							return false;
@@ -8721,7 +8810,7 @@ function doSMSCommands2($sms=false,$mobileNo=false) {
 		if($result['rows'][0]['elapsedtime']>60) {  /// 60 seconds
 			$content['loadtransaction_completed'] = 5; // pending
 
-			print_r(array('$content'=>$content));
+			//print_r(array('$content'=>$content));
 		}
 
 		if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$result['rows'][0]['loadtransaction_id']))) {
@@ -8739,7 +8828,7 @@ function doSMSCommands2($sms=false,$mobileNo=false) {
 
 		$loadtransaction = $result['rows'][0];
 
-		print_r(array('$loadtransaction'=>$loadtransaction));
+		//print_r(array('$loadtransaction'=>$loadtransaction));
 
 		$content = array();
 		$content['smsinbox_message'] = $loadtransaction['loadtransaction_keyword'];
@@ -8750,7 +8839,7 @@ function doSMSCommands2($sms=false,$mobileNo=false) {
 			return false;
 		}
 
-		print_r(array('$matched'=>$matched));
+		//print_r(array('$matched'=>$matched));
 
 		if($matched) {
 
@@ -8892,7 +8981,7 @@ function doModemCommands($sms=false,$mobileNo=false) {
 		return false;
 	}
 
-	print_r(array('$result'=>$result));
+	//print_r(array('$result'=>$result));
 
 	if(!empty($result['rows'][0]['modemcommands_id'])) {
 		$validModemCommands = $result['rows'][0]['modemcommands_id'];
@@ -8952,7 +9041,7 @@ function doModemCommands($sms=false,$mobileNo=false) {
 
 			}
 
-			print_r(array('history'=>$sms->getHistory()));
+			//print_r(array('history'=>$sms->getHistory()));
 
 		}
 

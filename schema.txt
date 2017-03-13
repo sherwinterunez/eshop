@@ -967,6 +967,8 @@ alter table tbl_customer add column customer_discountfundreload text DEFAULT '':
 alter table tbl_customer add column customer_discountchildreload text DEFAULT ''::text NOT NULL;
 alter table tbl_customer add column customer_totalcredit numeric NOT NULL DEFAULT 0;
 alter table tbl_customer add column customer_discountretail text DEFAULT ''::text NOT NULL;
+alter table tbl_customer add column customer_creditnotificationdate text DEFAULT ''::text NOT NULL;
+alter table tbl_customer add column customer_creditnotificationdateunix integer NOT NULL DEFAULT 0;
 
 ---------------------------------------------------------------------
 
@@ -987,6 +989,8 @@ alter table tbl_options add column options_desc text DEFAULT ''::text NOT NULL;
 
 CREATE UNIQUE INDEX indx_virtualnumber_mobileno ON tbl_virtualnumber USING btree (virtualnumber_mobileno);
 
+---------------------------------------------------------------------
 
+select loadtransaction_id as id,loadtransaction_load as load,loadtransaction_amountdue as amountdue,loadtransaction_amount as amount,loadtransaction_cost as cost,loadtransaction_discount as discount,loadtransaction_discountpercent as discountpercent,loadtransaction_processingfee as processingfee from tbl_loadtransaction where loadtransaction_id=3190;
 
 ---------------------------------------------------------------------

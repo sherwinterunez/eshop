@@ -882,6 +882,21 @@ if(!class_exists('APP_app_contact')) {
 					'value' => !empty($params['customerinfo']['customer_creditlimit']) ? $params['customerinfo']['customer_creditlimit'] : '',
 				);
 
+				if(!empty($params['customerinfo']['customer_type'])&&$params['customerinfo']['customer_type']=='STAFF') {
+
+					/*$params['tbCustomer'][] = array(
+						'type' => 'input',
+						'label' => 'CREDIT BALANCE',
+						'name' => 'customer_creditbalance',
+						'readonly' => true,
+						'hidden' => $accounttypecash,
+						'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+						//'required' => !$readonly,
+						'value' => !empty($params['customerinfo']['customer_creditbalance']) ? $params['customerinfo']['customer_creditbalance'] : '',
+					);*/
+
+			} else {
+
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
 					'label' => 'CREDIT BALANCE',
@@ -890,8 +905,10 @@ if(!class_exists('APP_app_contact')) {
 					'hidden' => $accounttypecash,
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_creditbalance']) ? $params['customerinfo']['customer_creditbalance'] : '',
+					'value' => !empty($params['customerinfo']['customer_totalcredit']) ? $params['customerinfo']['customer_totalcredit'] : '',
 				);
+
+			}
 
 				$params['tbCustomer'][] = array(
 					'type' => 'newcolumn',
@@ -960,6 +977,49 @@ if(!class_exists('APP_app_contact')) {
 					'value' => !empty($params['customerinfo']['customer_creditdue']) ? $params['customerinfo']['customer_creditdue'] : '',
 				);
 
+				if($readonly) {
+					$params['tbCustomer'][] = array(
+						'type' => 'input',
+						'label' => 'CREDIT NOTIFICATION',
+						'name' => 'customer_creditnotificationdate',
+						'readonly' => true,
+						'hidden' => $accounttypecash,
+						//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+						//'required' => !$readonly,
+						'value' => !empty($params['customerinfo']['customer_creditnotificationdate']) ? $params['customerinfo']['customer_creditnotificationdate'] : '',
+					);
+				} else {
+					$params['tbCustomer'][] = array(
+						'type' => 'calendar',
+						'label' => 'CREDIT NOTIFICATION',
+						'name' => 'customer_creditnotificationdate',
+						'readonly' => $readonly,
+						'hidden' => $accounttypecash,
+						'enableTime' => true,
+						'enableTodayButton' => true,
+						'calendarPosition' => 'right',
+						'dateFormat' => '%m-%d-%Y %H:%i',
+						//'required' => !$readonly,
+						'value' => !empty($params['customerinfo']['customer_creditnotificationdate']) ? $params['customerinfo']['customer_creditnotificationdate'] : '',
+					);
+				}
+
+/*
+$block[] = array(
+	'type' => 'calendar',
+	'label' => 'DATE RANGE',
+	'name' => 'item_maintenancedaterangefrom',
+	'readonly' => true,
+	//'required' => !$readonly,
+	'inputWidth' => 120,
+	'enableTime' => true,
+	'enableTodayButton' => true,
+	'calendarPosition' => 'right',
+	'dateFormat' => '%m-%d-%Y %H:%i',
+	'validate' => "NotEmpty",
+	'value' => !empty($params['iteminfo']['item_maintenancedaterangefrom']) ? $params['iteminfo']['item_maintenancedaterangefrom'] : '',
+);
+*/
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
 					'label' => 'PAYMENT PERCENTAGE',
@@ -4230,7 +4290,7 @@ if(!class_exists('APP_app_contact')) {
 									}
 								}
 
-								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],pgDateUnix($v['ledger_datetimeunix']),$v['ledger_receiptno'],$v['ledger_type'],$mobileNo,$v['ledger_debit'],$v['ledger_credit'],$v['ledger_balance'],$v['ledger_rebate'],$v['ledger_rebatebalance']));
+								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],($k+1),pgDateUnix($v['ledger_datetimeunix']),$v['ledger_receiptno'],$v['ledger_type'],$mobileNo,$v['ledger_debit'],$v['ledger_credit'],$v['ledger_balance'],$v['ledger_rebate'],$v['ledger_rebatebalance']));
 							}
 						}
 

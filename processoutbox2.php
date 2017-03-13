@@ -196,7 +196,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 				if(!empty($smsoutbox['smsoutbox_failed'])&&$smsoutbox['elapsedtime']>$delay) { // 3 minutes
 					//print_r(array('MOVING SMS SEND FAILED 1'=>array('$smsoutbox'=>$smsoutbox)));
 
-					print_r(array('MOVING SMS SEND FAILED 1'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
+					//print_r(array('MOVING SMS SEND FAILED 1'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
 
 					/*if(!in_array($smsoutbox['smsoutbox_simnumber'],$resetGateways)) {
 						if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
@@ -211,7 +211,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 				if(($smsoutbox['smsoutbox_status']==1||$smsoutbox['smsoutbox_status']==3||$smsoutbox['smsoutbox_status']==5)&&$smsoutbox['elapsedtime']>$delay) {
 					//print_r(array('MOVING SMS SEND FAILED 2'=>array('$smsoutbox'=>$smsoutbox)));
 
-					print_r(array('MOVING SMS SEND FAILED 2'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
+					//print_r(array('MOVING SMS SEND FAILED 2'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
 
 					//if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
 					//	setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);
@@ -276,7 +276,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 				if(!empty($smsoutbox['smsoutbox_failed'])&&$smsoutbox['elapsedtime']>$delay) { // 3 minutes
 					//print_r(array('MOVING SMS SEND FAILED 1'=>array('$smsoutbox'=>$smsoutbox)));
 
-					print_r(array('MOVING SMS SEND FAILED 1'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
+					//print_r(array('MOVING SMS SEND FAILED 1'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
 
 					/*if(!in_array($smsoutbox['smsoutbox_simnumber'],$resetGateways)) {
 						if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
@@ -291,7 +291,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 				if(($smsoutbox['smsoutbox_status']==1||$smsoutbox['smsoutbox_status']==3||$smsoutbox['smsoutbox_status']==5)&&$smsoutbox['elapsedtime']>$delay) {
 					//print_r(array('MOVING SMS SEND FAILED 2'=>array('$smsoutbox'=>$smsoutbox)));
 
-					print_r(array('MOVING SMS SEND FAILED 2'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
+					//print_r(array('MOVING SMS SEND FAILED 2'=>array('$smsoutbox'=>$smsoutbox['smsoutbox_id'])));
 
 					//if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
 					//	setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);
@@ -401,7 +401,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 						$smsoutbox = $v;
 
-						print_r(array('SMS SEND FAILED'=>array('$smsoutbox'=>$smsoutbox)));
+						//print_r(array('SMS SEND FAILED'=>array('$smsoutbox'=>$smsoutbox)));
 
 						if(isGateway($smsoutbox['smsoutbox_simnumber'])) {
 							setGatewayFailedToTrue($smsoutbox['smsoutbox_simnumber']);

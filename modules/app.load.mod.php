@@ -334,17 +334,20 @@ if(!class_exists('APP_app_load')) {
 							$content['ledger_credit'] = $customerLedger['ledger_debit'];
 						}
 
+						$ledger_datetimeunix = intval(getDbUnixDate());
+
 						$content['ledger_type'] = 'REFUND '.$params['retailinfo']['loadtransaction_item'];
-						$content['ledger_datetime'] = pgDateUnix(time());
+						$content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
+						$content['ledger_datetimeunix'] = $ledger_datetimeunix;
 						$content['ledger_user'] = $params['retailinfo']['loadtransaction_customerid'];
 						$content['ledger_seq'] = '0';
 						$content['ledger_receiptno'] = $receiptno;
 
-						$content['ledger_datetimeunix'] = date2timestamp($content['ledger_datetime'], getOption('$DISPLAY_DATE_FORMAT','r'));
+						//$content['ledger_datetimeunix'] = date2timestamp($content['ledger_datetime'], getOption('$DISPLAY_DATE_FORMAT','r'));
 
 						if(!empty(($rebate = getRebateByLoadTransactionId($loadtransaction_id)))) {
 
-							print_r(array('$rebate'=>$rebate));
+							//print_r(array('$rebate'=>$rebate));
 
 							if(!empty($rebate['rebate_credit'])) {
 
@@ -393,6 +396,7 @@ if(!class_exists('APP_app_load')) {
 							$balance = getStaffBalance($params['retailinfo']['loadtransaction_customerid']);
 						} else {
 							computeCustomerBalance($params['retailinfo']['loadtransaction_customerid']);
+							computeChildRebateBalance($params['retailinfo']['loadtransaction_customerid']);
 							$balance = getCustomerBalance($params['retailinfo']['loadtransaction_customerid']);
 						}
 
@@ -405,6 +409,7 @@ if(!class_exists('APP_app_load')) {
 								//$msg = str_replace('%ITEMQUANTITY%',$itemData['item_quantity'],$msg);
 								$msg = str_replace('%ITEMQUANTITY%',$params['retailinfo']['loadtransaction_load'],$msg);
 								$msg = str_replace('%CUSTMOBILENO%',$params['retailinfo']['loadtransaction_recipientnumber'],$msg);
+								$msg = str_replace('%balance%',number_format($balance,2),$msg);
 
 								sendToGateway($params['retailinfo']['loadtransaction_customernumber'],$params['retailinfo']['loadtransaction_assignedsim'],$msg);
 							}

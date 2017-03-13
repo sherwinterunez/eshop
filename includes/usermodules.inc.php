@@ -511,7 +511,7 @@ function _eLoadProcessSMS($vars=array()) {
 
 		if(isItemMaintenance($matched['$ITEMCODE'],true)) {
 
-			print_r(array('Item Maintenance Mode!'=>$matched['$ITEMCODE']));
+			//print_r(array('Item Maintenance Mode!'=>$matched['$ITEMCODE']));
 
 			$item = getItemData($matched['$ITEMCODE']);
 
@@ -576,7 +576,7 @@ function _eLoadProcessSMS($vars=array()) {
 			if(!empty(($customer_balance = getCustomerBalance($loadtransaction_customerid)))) {
 			} else {
 
-				print_r(array('$customer_balance'=>$customer_balance,'$loadtransaction_customerid'=>$loadtransaction_customerid));
+				//print_r(array('$customer_balance'=>$customer_balance,'$loadtransaction_customerid'=>$loadtransaction_customerid));
 
 				$errmsg = smsdt()." ".getNotification('$INVALID_ACCOUNT_BALANCE');
 				$errmsg = str_replace('%balance%', number_format($customer_balance,2), $errmsg);
@@ -669,7 +669,10 @@ function _eLoadProcessSMS($vars=array()) {
 				$item_threshold = floatval($itemData['item_threshold']);
 				$item_provider = $itemData['item_provider'];
 
-				print_r(array(0=>'CHECKING STAFF DISCOUNT','$loadtransaction_regularload'=>$loadtransaction_regularload,'$customer_type'=>$customer_type,'$itemData'=>$itemData));
+				$itemDiscountRate = 1;
+				$itemProcessingFee = 0;
+
+				//print_r(array(0=>'CHECKING STAFF DISCOUNT','$loadtransaction_regularload'=>$loadtransaction_regularload,'$customer_type'=>$customer_type,'$itemData'=>$itemData));
 
 				if(!empty($loadtransaction_regularload)) {
 
@@ -729,18 +732,19 @@ function _eLoadProcessSMS($vars=array()) {
 					//$temp_discount = 0.954;
 					//$item_cost = $loadtransaction_regularload * $temp_discount;
 
-					if(!empty($itemDiscountRate)) {
-					} else {
-						return false;
-					}
+					//if(!empty($itemDiscountRate)) {
+					//} else {
+					//	return false;
+					//}
 
-					print_r(array('$itemDiscountRate'=>$itemDiscountRate,'$itemProcessingFee'=>$itemProcessingFee));
+					//print_r(array('$itemDiscountRate'=>$itemDiscountRate,'$itemProcessingFee'=>$itemProcessingFee));
 
 					$item_cost = $loadtransaction_regularload * $itemDiscountRate;
 					$item_quantity = $loadtransaction_regularload;
 					$item_srp = $loadtransaction_regularload;
 					$item_eshopsrp = $item_cost;
-				}
+
+				} // if(!empty($loadtransaction_regularload)) {
 
 				$simBalance = floatval(getSimBalance($loadtransaction_assignedsim));
 
@@ -758,16 +762,22 @@ function _eLoadProcessSMS($vars=array()) {
 
 				if($customer_type=='STAFF') {
 
+					// STAFF
+
 					$percent = $item_quantity - $item_cost;
 					$percent = $percent / $item_quantity;
 
 					$discount = $item_quantity * $percent;
 
+					$discount = floatval(number_format($discount,2,'.',''));
+
 					$percent = $percent * 100;
 
-					$amountdue = ($item_quantity - $discount) + $itemProcessingFee;
-
-					$staff_balance = $staff_balance + $item_srp;
+					if(!empty($loadtransaction_regularload)) {
+						$amountdue = $item_srp = $loadtransaction_regularload + $itemProcessingFee;
+					} else {
+						$amountdue = $item_srp;
+					}
 
 					$content['loadtransaction_discount'] = $discount;
 					$content['loadtransaction_discountpercent'] = $percent;
@@ -775,6 +785,8 @@ function _eLoadProcessSMS($vars=array()) {
 					$content['loadtransaction_processingfee'] = $itemProcessingFee;
 
 				} else {
+
+					// CUSTOMER
 
 					if(($parentData=getCustomerParent($loadtransaction_customerid))&&!empty($parentData['customer_parent'])) {
 						if(($discount = getCustomerDiscounts($parentData['customer_parent'],$item_provider,$loadtransaction_assignedsim))) {
@@ -786,7 +798,7 @@ function _eLoadProcessSMS($vars=array()) {
 								//pre(array('$z'=>$z,'discountlist_type'=>$z['discountlist_type'],'$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'discountlist_simcard'=>$z['discountlist_simcard']));
 								if($z['discountlist_type']=='RETAIL'&&$item_quantity>=floatval($z['discountlist_min'])&&$item_quantity<=floatval($z['discountlist_max'])) {
 
-									$content['loadtransaction_processingfee'] = number_format($z['discountlist_fee'],2);
+									//$content['loadtransaction_processingfee'] = number_format($z['discountlist_fee'],2);
 									$content['loadtransaction_rebatediscount'] = number_format($z['discountlist_rate'],2);
 									$content['loadtransaction_rebateparent'] = $parentData['customer_parent'];
 									$discountBypass = true;
@@ -818,7 +830,7 @@ function _eLoadProcessSMS($vars=array()) {
 								//pre(array('$z'=>$z,'discountlist_type'=>$z['discountlist_type'],'$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'discountlist_simcard'=>$z['discountlist_simcard']));
 								if($z['discountlist_type']=='RETAIL'&&$item_quantity>=floatval($z['discountlist_min'])&&$item_quantity<=floatval($z['discountlist_max'])) {
 
-									$content['loadtransaction_processingfee'] = number_format($z['discountlist_fee'],2);
+									//$content['loadtransaction_processingfee'] = number_format($z['discountlist_fee'],2);
 									$content['loadtransaction_rebatediscount'] = number_format($z['discountlist_rate'],2);
 									$content['loadtransaction_rebateparent'] = $parentData['customer_parent'];
 									$discountBypass = true;
@@ -843,16 +855,23 @@ function _eLoadProcessSMS($vars=array()) {
 						}
 					}
 
-					$percent = $item_quantity - $item_cost;
+					$percent = $item_quantity - $item_eshopsrp;
+
 					$percent = $percent / $item_quantity;
 
 					$discount = $item_quantity * $percent;
 
+					$discount = floatval(number_format($discount,2,'.',''));
+
 					$percent = $percent * 100;
 
-					$amountdue = $item_quantity - $discount;
+					if(!empty($loadtransaction_regularload)) {
+						$amountdue = ($item_quantity - $discount) + $itemProcessingFee;
+					} else {
+						$amountdue = $item_eshopsrp + $itemProcessingFee;
+					}
 
-					print_r(array('$amountdue'=>$amountdue,'$customer_balance'=>$customer_balance));
+					//print_r(array('$amountdue'=>$amountdue,'$customer_balance'=>$customer_balance));
 
 					if($amountdue>$customer_balance) {
 						$errmsg = smsdt()." ".getNotification('$INVALID_ACCOUNT_BALANCE');
@@ -865,9 +884,9 @@ function _eLoadProcessSMS($vars=array()) {
 
 					$customer_balance = floatval($customer_balance) - floatval($amountdue);
 
-					if(!empty($content['loadtransaction_processingfee'])) {
-						$amountdue = $amountdue - floatval($content['loadtransaction_processingfee']);
-					}
+					//if(!empty($content['loadtransaction_processingfee'])) {
+					//	$amountdue = $amountdue + floatval($content['loadtransaction_processingfee']);
+					//}
 
 					if(!empty($content['loadtransaction_rebatediscount'])&&!empty($content['loadtransaction_rebateparent'])) {
 						$loadtransaction_rebateamount = floatval($content['loadtransaction_rebatediscount']/100) * floatval($amountdue);
@@ -877,8 +896,9 @@ function _eLoadProcessSMS($vars=array()) {
 					$content['loadtransaction_discount'] = $discount;
 					$content['loadtransaction_discountpercent'] = $percent;
 					$content['loadtransaction_amountdue'] = $amountdue;
+					$content['loadtransaction_processingfee'] = $itemProcessingFee;
 
-				}
+				} // if($customer_type=='STAFF') {
 
 ////////////////////////////////
 
@@ -976,11 +996,14 @@ function _eLoadProcessSMS($vars=array()) {
 					if($customer_type=='STAFF') {
 						$content['ledger_credit'] = $item_srp;
 					} else {
-						$content['ledger_debit'] = $item_eshopsrp;
+						$content['ledger_debit'] = $amountdue; //$item_eshopsrp;
 					}
 
+					$ledger_datetimeunix = intval(getDbUnixDate());
+
 					$content['ledger_type'] = 'RETAIL '.$loadtransaction_item;
-					$content['ledger_datetime'] = pgDateUnix(time());
+					$content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
+					$content['ledger_datetimeunix'] = $ledger_datetimeunix;
 					$content['ledger_user'] = $loadtransaction_customerid;
 					$content['ledger_seq'] = '0';
 					$content['ledger_receiptno'] = $receiptno;
@@ -989,9 +1012,6 @@ function _eLoadProcessSMS($vars=array()) {
 						$content['ledger_rebate'] = $rebate_credit;
 						//$content['ledger_rebatebalance'] = $rebate_balance;
 					}
-
-
-					$content['ledger_datetimeunix'] = date2timestamp($content['ledger_datetime'], getOption('$DISPLAY_DATE_FORMAT','r'));
 
 					if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -1436,7 +1456,12 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 							$content['loadtransaction_status'] = TRN_PENDING;
 						} else {
 							$content['loadtransaction_cost'] = $content['loadtransaction_amountdue'] = floatval($content['loadtransaction_amount']);
-							$content['loadtransaction_discount'] = floatval($content['loadtransaction_load']) - floatval($content['loadtransaction_amount']);
+
+							$discount = floatval($content['loadtransaction_load']) - floatval($content['loadtransaction_amount']);
+
+							$discount = floatval(number_format($discount,2,'.',''));
+
+							$content['loadtransaction_discount'] = $discount;
 
 							$ledgerContent = array();
 
@@ -2066,7 +2091,7 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 
 		//$loadtransaction_customerid = $vars['smsinbox']['smsinbox_contactsid'];
 
-		print_r(array('$match'=>$match));
+		//print_r(array('$match'=>$match));
 
 		$where = '1=1';
 
@@ -2080,13 +2105,13 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 
 		$sql = "select *,(extract(epoch from now()) - extract(epoch from loadtransaction_balanceinquirystamp)) as balanceinquiryelapsed from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_invalid=0 and loadtransaction_type='retail' order by loadtransaction_id asc limit 1";
 
-		print_r(array('$sql'=>$sql));
+		//print_r(array('$sql'=>$sql));
 
 		if(!($result = $appdb->query($sql))) {
 			return false;
 		}
 
-		print_r(array('$result'=>$result));
+		//print_r(array('$result'=>$result));
 
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
@@ -2159,17 +2184,18 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 							$content['ledger_credit'] = $customerLedger['ledger_debit'];
 						}
 
+						$ledger_datetimeunix = intval(getDbUnixDate()) + 1;
+
 						$content['ledger_type'] = 'REFUND '.$loadtransaction_item;
-						$content['ledger_datetime'] = pgDateUnix(time());
+						$content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
+						$content['ledger_datetimeunix'] = $ledger_datetimeunix;
 						$content['ledger_user'] = $loadtransaction_customerid;
 						$content['ledger_seq'] = '0';
 						$content['ledger_receiptno'] = $receiptno;
 
-						$content['ledger_datetimeunix'] = date2timestamp($content['ledger_datetime'], getOption('$DISPLAY_DATE_FORMAT','r'));
-
 						if(!empty(($rebate = getRebateByLoadTransactionId($loadtransaction_id)))) {
 
-							print_r(array('$rebate'=>$rebate));
+							//print_r(array('$rebate'=>$rebate));
 
 							if(!empty($rebate['rebate_credit'])) {
 
@@ -2208,7 +2234,7 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 							}
 						}
 
-						sleep(1);
+						//sleep(1);
 
 						if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -2221,6 +2247,23 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 							computeCustomerBalance($loadtransaction_customerid);
 							computeChildRebateBalance($loadtransaction_customerid);
 						}
+
+						$general_notificationforloadretailcancelled = getOption('$GENERALSETTINGS_NOTIFICATIONFORLOADRETAILCANCELLED',false);
+
+						if(!empty($general_notificationforloadretailcancelled)) {
+							$noti = explode(',', $general_notificationforloadretailcancelled);
+
+							foreach($noti as $v) {
+								$msg = getNotificationByID($v);
+								$msg = str_replace('%TEXTCODE%',$loadtransaction_item,$msg);
+								//$msg = str_replace('%ITEMQUANTITY%',$itemData['item_quantity'],$msg);
+								$msg = str_replace('%ITEMQUANTITY%',$loadtransaction['loadtransaction_load'],$msg);
+								$msg = str_replace('%CUSTMOBILENO%',$loadtransaction['loadtransaction_recipientnumber'],$msg);
+
+								sendToGateway($loadtransaction['loadtransaction_customernumber'],$loadtransaction['loadtransaction_assignedsim'],$msg);
+							}
+						}
+
 					}
 
 /////
@@ -2245,7 +2288,7 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 						$content['loadtransaction_type'] = 'balance';
 						$content['loadtransaction_status'] = TRN_APPROVED;
 
-						pre(array('$content'=>$content));
+						//pre(array('$content'=>$content));
 
 						if(!($result = $appdb->insert("tbl_loadtransaction",$content,"loadtransaction_id"))) {
 							return false;
@@ -2860,7 +2903,7 @@ function _fundCredit($vars=array()) {
 
 						if(!empty(($unpaidCredit = getCustomerFirstUnpaidCredit($smsinbox_contactsid)))) {
 
-							$currentDate = getDbUnixDate();
+							$currentDate = intval(getDbUnixDate());
 
 							//$dueDate = floatval(86400 * ($terms-1)) + floatval($unpaidCredit['fund_datetimeunix']);
 							$dueDate = floatval(86400 * $terms) + floatval($unpaidCredit['fund_datetimeunix']);
@@ -2989,7 +3032,7 @@ function _fundCredit($vars=array()) {
 
 					if(!empty(($unpaidCredit = getCustomerFirstUnpaidCredit($smsinbox_contactsid)))) {
 
-						$currentDate = getDbUnixDate();
+						$currentDate = intval(getDbUnixDate());
 
 						//$dueDate = floatval(86400 * ($terms-1)) + floatval($unpaidCredit['fund_datetimeunix']);
 						$dueDate = floatval(86400 * $terms) + floatval($unpaidCredit['fund_datetimeunix']);
@@ -3167,7 +3210,7 @@ function _customerReload($vars=array()) {
 
 						if(!empty(($unpaidTran = getStaffFirstUnpaidTransactions($user_staffid)))) {
 
-							$currentDate = getDbUnixDate();
+							$currentDate = intval(getDbUnixDate());
 
 							$unpaidDate = pgDateUnix($unpaidTran['ledger_datetimeunix'],'m-d-Y') . ' 23:59';
 
