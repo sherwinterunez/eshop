@@ -2243,12 +2243,16 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 
 						if($customer_type=='STAFF') {
 							computeStaffBalance($loadtransaction_customerid);
+							$balance = getStaffBalance($loadtransaction_customerid);
 						} else {
 							computeCustomerBalance($loadtransaction_customerid);
 							computeChildRebateBalance($loadtransaction_customerid);
+							$balance = getCustomerBalance($loadtransaction_customerid);
 						}
 
 						$general_notificationforloadretailcancelled = getOption('$GENERALSETTINGS_NOTIFICATIONFORLOADRETAILCANCELLED',false);
+
+						print_r(array('AUTO CANCEL'=>'AUTO CANCEL','$general_notificationforloadretailcancelled'=>$general_notificationforloadretailcancelled));
 
 						if(!empty($general_notificationforloadretailcancelled)) {
 							$noti = explode(',', $general_notificationforloadretailcancelled);
@@ -2259,6 +2263,7 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 								//$msg = str_replace('%ITEMQUANTITY%',$itemData['item_quantity'],$msg);
 								$msg = str_replace('%ITEMQUANTITY%',$loadtransaction['loadtransaction_load'],$msg);
 								$msg = str_replace('%CUSTMOBILENO%',$loadtransaction['loadtransaction_recipientnumber'],$msg);
+								$msg = str_replace('%balance%',number_format($balance,2),$msg);
 
 								sendToGateway($loadtransaction['loadtransaction_customernumber'],$loadtransaction['loadtransaction_assignedsim'],$msg);
 							}
