@@ -2887,7 +2887,19 @@ function _fundCredit($vars=array()) {
 
 			//getCustomerAvailableCredit
 
-			if(getCustomerType($smsinbox_contactsid)==='REGULAR'&&getCustomerAccountType($smsinbox_contactsid)==='CREDIT') {
+			if(computeCustomerCreditDue($smsinbox_contactsid)) {
+
+				$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+				//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+				sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+				return false;
+
+			}
+
+			/*if(getCustomerType($smsinbox_contactsid)==='REGULAR'&&getCustomerAccountType($smsinbox_contactsid)==='CREDIT') {
 			} else return false;
 
 			//getCustomerFirstUnpaidCredit($smsinbox_contactsid);
@@ -2947,7 +2959,7 @@ function _fundCredit($vars=array()) {
 					unsetCustomerCreditDue($smsinbox_contactsid);
 				}
 
-			}
+			}*/
 
 			print_r(array('$customer_availablecredit'=>$customer_availablecredit,'$customer_creditlimit'=>$customer_creditlimit,'$terms'=>$terms,'$unpaidCredit'=>$unpaidCredit));
 
@@ -3033,7 +3045,12 @@ function _fundCredit($vars=array()) {
 
 /////////////////
 
-				if(($terms = getCustomerTerms($smsinbox_contactsid))) {
+				if(computeCustomerCreditDue($smsinbox_contactsid)) {
+					$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+					sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+				}
+
+				/*if(($terms = getCustomerTerms($smsinbox_contactsid))) {
 
 					if(!empty(($unpaidCredit = getCustomerFirstUnpaidCredit($smsinbox_contactsid)))) {
 
@@ -3068,7 +3085,7 @@ function _fundCredit($vars=array()) {
 						}
 
 					}
-				}
+				}*/
 
 /////////////////
 

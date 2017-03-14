@@ -222,7 +222,7 @@ if(!class_exists('APP_app_load')) {
 					$readonly = false;
 				}
 
-				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='loadedit'||$post['method']=='loadapproved'||$post['method']=='loadmanually'||$post['method']=='loadcancelled'||$post['method']=='loadhold'||$post['method']=='loadsave')) {
+				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='loadedit'||$post['method']=='loadapproved'||$post['method']=='loadmanually'||$post['method']=='loadcancelled'||$post['method']=='loadhold'||$post['method']=='loadsave'||$post['method']=='loadtransfer')) {
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 						if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -243,6 +243,28 @@ if(!class_exists('APP_app_load')) {
 
 					$content = array();
 					$content['loadtransaction_status'] = $loadtransaction_status = !empty($post['retail_status']) ? $post['retail_status'] : 0;
+
+					if(!empty($post['retail_newassignedsimcard'])&&!empty($post['retail_assignedsimcard'])&&$post['retail_newassignedsimcard']!=$post['retail_assignedsimcard']) {
+
+						if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+							if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id=".$post['rowid']))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!empty($result['rows'][0]['loadtransaction_id'])) {
+								if(intval($result['rows'][0]['loadtransaction_status'])!=intval($post['retail_oldstatus'])) {
+									$retval = array();
+									$retval['error_code'] = '1567';
+									$retval['error_message'] = 'Load Retail Status has Already Changed. Cannot Move Right Now!';
+									json_encode_return($retval);
+									die;
+								}
+							}
+						}
+
+						$content['loadtransaction_assignedsim'] = $post['retail_newassignedsimcard'];
+					}
 
 					if(!empty($content['loadtransaction_status'])&&$content['loadtransaction_status']==TRN_COMPLETED_MANUALLY) {
 
@@ -654,14 +676,89 @@ if(!class_exists('APP_app_load')) {
 					'value' => !empty($params['retailinfo']['loadtransaction_amountdue']) ? $params['retailinfo']['loadtransaction_amountdue'] : 0,
 				);
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'ASSIGNED SIM',
-					'name' => 'retail_assignedsimcard',
-					'readonly' => true,
-					//'required' => !$readonly,
-					'value' => !empty($params['retailinfo']['loadtransaction_assignedsim']) ? $params['retailinfo']['loadtransaction_assignedsim'] : '',
-				);
+				//
+
+				//if(!empty($params['retailinfo']['loadtransaction_status'])&&$params['retailinfo']['loadtransaction_status']==TRN_QUEUED) {
+
+				if($post['method']=='loadtransfer') {
+
+					//$sims = getAllSims(3);
+
+					if(!empty(($simassignment = getItemSimAssign($params['retailinfo']['loadtransaction_item'],$params['retailinfo']['loadtransaction_provider'])))) {
+
+						//pre(array('$simassignment'=>$simassignment));
+
+						$opt = array();
+
+						foreach($simassignment as $v) {
+							$selected = false;
+							if(!empty($params['retailinfo']['loadtransaction_assignedsim'])&&$params['retailinfo']['loadtransaction_assignedsim']==$v['itemassignedsim_simnumber']) {
+								$selected = true;
+							}
+							//if($selected) {
+							//	$opt[] = array('text'=>$v['itemassignedsim_simnumber'],'value'=>$v['itemassignedsim_simnumber'],'selected'=>$selected);
+							//} else {
+								$opt[] = array('text'=>$v['itemassignedsim_simnumber'],'value'=>$v['itemassignedsim_simnumber'],'selected'=>$selected);
+							//}
+						}
+
+						$params['tbDetails'][] = array(
+							'type' => 'combo',
+							'label' => 'ASSIGNED SIM',
+							'name' => 'retail_newassignedsimcard',
+							'readonly' => true,
+							//'inputWidth' => 200,
+							//'required' => !$readonly,
+							'options' => $opt,
+						);
+
+						$params['tbDetails'][] = array(
+							'type' => 'hidden',
+							//'label' => 'NEW ASSIGNED SIM',
+							'name' => 'retail_assignedsimcard',
+							//'readonly' => true,
+							//'inputWidth' => 200,
+							//'required' => !$readonly,
+							//'options' => $opt,
+							'value' => !empty($params['retailinfo']['loadtransaction_assignedsim']) ? $params['retailinfo']['loadtransaction_assignedsim'] : '',
+						);
+
+						$params['tbDetails'][] = array(
+							'type' => 'hidden',
+							//'label' => 'NEW ASSIGNED SIM',
+							'name' => 'retail_oldstatus',
+							//'readonly' => true,
+							//'inputWidth' => 200,
+							//'required' => !$readonly,
+							//'options' => $opt,
+							'value' => !empty($params['retailinfo']['loadtransaction_status']) ? $params['retailinfo']['loadtransaction_status'] : 0,
+						);
+
+					} else {
+
+						$params['tbDetails'][] = array(
+							'type' => 'input',
+							'label' => 'ASSIGNED SIM',
+							'name' => 'retail_assignedsimcard',
+							'readonly' => true,
+							//'required' => !$readonly,
+							'value' => !empty($params['retailinfo']['loadtransaction_assignedsim']) ? $params['retailinfo']['loadtransaction_assignedsim'] : '',
+						);
+
+					}
+
+				} else {
+
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'ASSIGNED SIM',
+						'name' => 'retail_assignedsimcard',
+						'readonly' => true,
+						//'required' => !$readonly,
+						'value' => !empty($params['retailinfo']['loadtransaction_assignedsim']) ? $params['retailinfo']['loadtransaction_assignedsim'] : '',
+					);
+
+				}
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
@@ -672,7 +769,7 @@ if(!class_exists('APP_app_load')) {
 					'value' => !empty($params['retailinfo']['loadtransaction_cashier']) ? $params['retailinfo']['loadtransaction_cashier'] : '',
 				);
 
-				if($post['method']=='loadapproved') {
+				if($post['method']=='loadapproved'||$post['method']=='loadtransfer') {
 
 					$params['tbDetails'][] = array(
 						'type' => 'input',

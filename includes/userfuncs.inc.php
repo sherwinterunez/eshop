@@ -1722,6 +1722,81 @@ function getStaffCreditLimit($id=false) {
 	return 0;
 }
 
+function computeCustomerCreditDue($smsinbox_contactsid=false) {
+	global $appdb;
+
+	if(!empty($smsinbox_contactsid)&&is_numeric($smsinbox_contactsid)) {
+	} else return false;
+
+	$customer_type = getCustomerType($smsinbox_contactsid);
+
+	$customer_accounttype = getCustomerAccountType($smsinbox_contactsid);
+
+	//print_r(array('$smsinbox_contactsid'=>$smsinbox_contactsid,'$customer_type'=>$customer_type,'$customer_accounttype'=>$customer_accounttype));
+
+	if($customer_type=='REGULAR'&&$customer_accounttype=='CREDIT') {
+	} else return false;
+
+	$customer_balance = getCustomerBalance($smsinbox_contactsid);
+
+	$customer_availablecredit = getCustomerAvailableCredit($smsinbox_contactsid);
+
+	$customer_creditlimit = getCustomerCreditLimit($smsinbox_contactsid);
+
+	//print_r(array('$smsinbox_contactsid'=>$smsinbox_contactsid,'$customer_type'=>$customer_type,'$customer_accounttype'=>$customer_accounttype,'$customer_balance'=>$customer_balance,'$customer_availablecredit'=>$customer_availablecredit,'$customer_creditlimit'=>$customer_creditlimit));
+
+	if($customer_availablecredit!==$customer_creditlimit) {
+
+		if(($terms = getCustomerTerms($smsinbox_contactsid))) {
+
+			if(!empty(($unpaidCredit = getCustomerFirstUnpaidCredit($smsinbox_contactsid)))) {
+
+				$currentDate = intval(getDbUnixDate());
+
+				//$dueDate = floatval(86400 * ($terms-1)) + floatval($unpaidCredit['fund_datetimeunix']);
+				$dueDate = floatval(86400 * $terms) + floatval($unpaidCredit['fund_datetimeunix']);
+
+				setCustomerCreditDue($smsinbox_contactsid,$dueDate);
+
+				$bypass = true;
+
+				//print_r(array('$customer_availablecredit'=>$customer_availablecredit,'$customer_creditlimit'=>$customer_creditlimit,'$terms'=>$terms,'$unpaidCredit'=>$unpaidCredit));
+				//print_r(array('$currentDate'=>$currentDate,'$currentDate2'=>pgDateUnix($currentDate),'$dueDate'=>$dueDate,'$dueDate2'=>pgDateUnix($dueDate)));
+
+				if($currentDate>$dueDate) {
+
+					setCustomerFreeze($smsinbox_contactsid);
+
+					/*
+					$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
+					//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+
+					//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+					sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+
+					return false;
+
+					//$retval['return_code'] = 'ERROR';
+					//$retval['return_message'] = 'Your account is currently freezed. Please contact administrator!';
+					//json_encode_return($retval);
+					//die;
+					*/
+
+					return true;
+				}
+
+			}
+		}
+	}
+
+	if(!empty($bypass)) {
+	} else {
+		unsetCustomerCreditDue($smsinbox_contactsid);
+	}
+
+	return false;
+}
+
 function unsetCustomerCreditDue($id=false) {
 	global $appdb;
 
@@ -1744,11 +1819,61 @@ function setCustomerCreditDue($id=false,$due=false) {
 	if(!empty($id)&&is_numeric($id)&&!empty($due)&&is_numeric($due)) {
 	} else return false;
 
-	$content = array();
-	$content['customer_creditdue'] = pgDateUnix($due);
+	$sql = "select * from tbl_customer where customer_id=$id";
 
-	if(!($result = $appdb->update('tbl_customer',$content,"customer_id=$id"))) {
+	if(!($result = $appdb->query($sql))) {
 		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_id'])) {
+
+		$customer = $result['rows'][0];
+
+		$customer_creditnotibeforedue = !empty($customer['customer_creditnotibeforedue']) ? $customer['customer_creditnotibeforedue'] : 180;
+		$customer_creditnotiafterdue = !empty($customer['customer_creditnotiafterdue']) ? $customer['customer_creditnotiafterdue'] : 1440;
+
+		$customer_creditdue = pgDateUnix($due);
+		$customer_creditdueunix = $due;
+		$customer_creditnotibeforedueunix = $due - ($customer_creditnotibeforedue * 60);
+		$customer_creditnotiafterdueunix = $due + ($customer_creditnotiafterdue * 60);
+
+		$currentunixdate = intval(getDbUnixDate());
+
+		if($customer['customer_creditdue']!=$customer_creditdue||$customer['customer_creditdueunix']!=$customer_creditdueunix||$customer['customer_creditnotibeforedueunix']!=$customer_creditnotibeforedueunix) {
+
+			$content = array();
+			$content['customer_creditdue'] = $customer_creditdue;
+			$content['customer_creditdueunix'] = $customer_creditdueunix;
+			$content['customer_creditnotibeforedueunix'] = $customer_creditnotibeforedueunix;
+			$content['customer_creditnotiafterdueunix'] = $customer_creditnotiafterdueunix;
+			$content['customer_creditnotibeforeduenotified'] = 0;
+			$content['customer_creditnotiafterduenotified'] = 0;
+			$content['customer_creditduenotified'] = 0;
+
+			if(!($result = $appdb->update('tbl_customer',$content,"customer_id=$id"))) {
+				return false;
+			}
+
+		}
+
+		if($currentunixdate>$customer['customer_creditnotiafterdueunix']) {
+
+			$customer_creditnotiafterdueunix = $customer['customer_creditnotiafterdueunix'];
+
+			do {
+				$customer_creditnotiafterdueunix = $customer_creditnotiafterdueunix + ($customer_creditnotiafterdue * 60);
+			} while($currentunixdate>$customer_creditnotiafterdueunix);
+
+			$content = array();
+			$content['customer_creditnotiafterdueunix'] = $customer_creditnotiafterdueunix;
+			$content['customer_creditnotiafterduenotified'] = 0;
+
+			if(!($result = $appdb->update('tbl_customer',$content,"customer_id=$id"))) {
+				return false;
+			}
+
+		}
+
 	}
 
 	return true;

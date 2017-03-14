@@ -831,6 +831,62 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		    //myForm.setItemValue('customer_parent', 'hello, sherwin!');
 		});*/
 
+///////////////////////////////////
+
+		var customer_creditnotibeforeduemsgopt = <?php echo json_encode($params['customer_creditnotibeforeduemsgopt']); ?>
+
+		var dhxCombo1 = myForm.getCombo('customer_creditnotibeforeduemsg');
+
+		dhxCombo1.setTemplate({
+			input: '#notificationvalue#',
+			columns: [
+				{header: "&nbsp;",  width:  41, 		option: "#checkbox#"}, // column for checkboxes
+				{header: "NOTIFICATION", width:  1000, css: "capital", option: "#notificationvalue#"},
+			]
+		});
+
+		dhxCombo1.addOption(customer_creditnotibeforeduemsgopt.opts);
+	    dhxCombo1.setComboText(customer_creditnotibeforeduemsgopt.value);
+	    dhxCombo1.setComboValue(customer_creditnotibeforeduemsgopt.value);
+
+		dhxCombo1.attachEvent("onClose", function(){
+			var checked = dhxCombo1.getChecked();
+		    dhxCombo1.setComboText(checked);
+		    dhxCombo1.setComboValue(checked);
+		});
+
+		dhxCombo1.attachEvent("onBlur", function(){
+		});
+
+///////////////////////////////////
+
+		var customer_creditnotiafterduemsgopt = <?php echo json_encode($params['customer_creditnotiafterduemsgopt']); ?>
+
+		var dhxCombo2 = myForm.getCombo('customer_creditnotiafterduemsg');
+
+		dhxCombo2.setTemplate({
+			input: '#notificationvalue#',
+			columns: [
+				{header: "&nbsp;",  width:  41, 		option: "#checkbox#"}, // column for checkboxes
+				{header: "NOTIFICATION", width:  1000, css: "capital", option: "#notificationvalue#"},
+			]
+		});
+
+		dhxCombo2.addOption(customer_creditnotiafterduemsgopt.opts);
+			dhxCombo2.setComboText(customer_creditnotiafterduemsgopt.value);
+			dhxCombo2.setComboValue(customer_creditnotiafterduemsgopt.value);
+
+		dhxCombo2.attachEvent("onClose", function(){
+			var checked = dhxCombo2.getChecked();
+				dhxCombo2.setComboText(checked);
+				dhxCombo2.setComboValue(checked);
+		});
+
+		dhxCombo2.attachEvent("onBlur", function(){
+		});
+
+///////////////////////////////////
+
 		myWinToolbar.showOnly(myToolbar);
 
 		<?php } else if($method==$moduleid.'save') { ?>

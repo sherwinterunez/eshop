@@ -969,6 +969,20 @@ alter table tbl_customer add column customer_totalcredit numeric NOT NULL DEFAUL
 alter table tbl_customer add column customer_discountretail text DEFAULT ''::text NOT NULL;
 alter table tbl_customer add column customer_creditnotificationdate text DEFAULT ''::text NOT NULL;
 alter table tbl_customer add column customer_creditnotificationdateunix integer NOT NULL DEFAULT 0;
+alter table tbl_customer add column customer_creditnotibeforedue integer NOT NULL DEFAULT 180;
+alter table tbl_customer add column customer_creditnotiafterdue integer NOT NULL DEFAULT 1440;
+alter table tbl_customer add column customer_creditnotibeforeduemsg text DEFAULT '88'::text NOT NULL;
+alter table tbl_customer add column customer_creditnotiafterduemsg text DEFAULT '89'::text NOT NULL;
+alter table tbl_customer add column customer_creditdueunix integer NOT NULL DEFAULT 0;
+alter table tbl_customer add column customer_creditnotibeforedueunix integer NOT NULL DEFAULT 0;
+alter table tbl_customer add column customer_creditnotiafterdueunix integer NOT NULL DEFAULT 0;
+alter table tbl_customer add column customer_creditnotibeforeduenotified integer NOT NULL DEFAULT 0;
+alter table tbl_customer add column customer_creditnotiafterduenotified integer NOT NULL DEFAULT 0;
+alter table tbl_customer add column customer_creditduenotified integer NOT NULL DEFAULT 0;
+
+alter table tbl_customer drop column customer_creditnotibeforeduemsg;
+alter table tbl_customer drop column customer_creditnotiafterduemsg;
+alter table tbl_customer drop column customer_creditnotiafterdue;
 
 ---------------------------------------------------------------------
 
@@ -991,6 +1005,6 @@ CREATE UNIQUE INDEX indx_virtualnumber_mobileno ON tbl_virtualnumber USING btree
 
 ---------------------------------------------------------------------
 
-select loadtransaction_id as id,loadtransaction_load as load,loadtransaction_amountdue as amountdue,loadtransaction_amount as amount,loadtransaction_cost as cost,loadtransaction_discount as discount,loadtransaction_discountpercent as discountpercent,loadtransaction_processingfee as processingfee from tbl_loadtransaction where loadtransaction_id=3190;
+select loadtransaction_id as id,loadtransaction_load as load,loadtransaction_amountdue as amountdue,loadtransaction_amount as amount,loadtransaction_cost as cost,loadtransaction_discount as discount,loadtransaction_discountpercent as discountpercent,loadtransaction_processingfee as processingfee,loadtransaction_status as status from tbl_loadtransaction where loadtransaction_id=3190;
 
 ---------------------------------------------------------------------

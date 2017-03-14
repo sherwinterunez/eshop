@@ -251,6 +251,32 @@ function doInit() {
 
   portCheck();
 
+  cron();
+}
+
+function cron(dev,sim,ip) {
+
+    if(debug) console.log("cron.php  running...");
+
+    console.log("cron.php  running...");
+
+    phpfpm.run('cron.php', function(err, output, phpErrors)
+    {
+        if (err == 99) console.error('PHPFPM server error');
+
+        if(debug) console.log("cron.php done.");
+
+        console.log("cron.php done.");
+
+        console.log(output);
+
+        setTimeout(function(){
+          cron();
+        }, 60000);
+
+        if (phpErrors) console.error(phpErrors);
+    });
+
 }
 
 function portCheck() {

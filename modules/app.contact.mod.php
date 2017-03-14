@@ -352,6 +352,10 @@ if(!class_exists('APP_app_contact')) {
 					$content['customer_discountchildreload'] = !empty($post['customer_discountchildreload']) ? $post['customer_discountchildreload'] : '';
 					$content['customer_discountfundtransfer'] = !empty($post['customer_discountfundtransfer']) ? $post['customer_discountfundtransfer'] : '';
 					$content['customer_discountretail'] = !empty($post['customer_discountretail']) ? $post['customer_discountretail'] : '';
+					$content['customer_creditnotibeforedue'] = !empty($post['customer_creditnotibeforedue']) ? $post['customer_creditnotibeforedue'] : 180;
+					$content['customer_creditnotiafterdue'] = !empty($post['customer_creditnotiafterdue']) ? $post['customer_creditnotiafterdue'] : 1440;
+					$content['customer_creditnotibeforeduemsg'] = !empty($post['customer_creditnotibeforeduemsg']) ? $post['customer_creditnotibeforeduemsg'] : 88;
+					$content['customer_creditnotiafterduemsg'] = !empty($post['customer_creditnotiafterduemsg']) ? $post['customer_creditnotiafterduemsg'] : 89;
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
@@ -363,6 +367,8 @@ if(!class_exists('APP_app_contact')) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
+
+						computeCustomerCreditDue($retval['rowid']);
 
 					} else {
 
@@ -977,7 +983,7 @@ if(!class_exists('APP_app_contact')) {
 					'value' => !empty($params['customerinfo']['customer_creditdue']) ? $params['customerinfo']['customer_creditdue'] : '',
 				);
 
-				if($readonly) {
+				/*if($readonly) {
 					$params['tbCustomer'][] = array(
 						'type' => 'input',
 						'label' => 'CREDIT NOTIFICATION',
@@ -1002,7 +1008,170 @@ if(!class_exists('APP_app_contact')) {
 						//'required' => !$readonly,
 						'value' => !empty($params['customerinfo']['customer_creditnotificationdate']) ? $params['customerinfo']['customer_creditnotificationdate'] : '',
 					);
+				}*/
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'NOTI BEFORE DUE (minutes)',
+					'name' => 'customer_creditnotibeforedue',
+					'readonly' => $readonly,
+					'hidden' => $accounttypecash,
+					'inputWidth' => 70,
+					'numeric' => true,
+					//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_creditnotibeforedue']) ? $params['customerinfo']['customer_creditnotibeforedue'] : '',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				if($readonly) {
+
+					$block[] = array(
+						'type' => 'input',
+						'name' => 'customer_creditnotibeforeduemsg',
+						'readonly' => $readonly,
+						'inputWidth' => 125,
+						'value' => !empty($params['customerinfo']['customer_creditnotibeforeduemsg']) ? $params['customerinfo']['customer_creditnotibeforeduemsg'] : '',
+					);
+
+				} else {
+
+					$opt = array();
+
+					$allNotifications = getAllNotifications();
+
+					$customer_creditnotibeforeduemsg = !empty($params['customerinfo']['customer_creditnotibeforeduemsg']) ? $params['customerinfo']['customer_creditnotibeforeduemsg'] : '';
+
+					$lnotification = explode(',', $customer_creditnotibeforeduemsg);
+
+					//pre(array('$lnotification'=>$lnotification));
+
+					foreach($allNotifications as $k=>$v) {
+						$checked = false;
+
+						if(in_array($v['notification_id'],$lnotification)) {
+							$checked = true;
+						}
+
+						$opt[] = array('value'=>$v['notification_id'],'checked'=>$checked,'text'=>array(
+							'notificationvalue' => !empty($v['notification_value']) ? $v['notification_value'] : ' '
+						));
+					}
+
+					$params['customer_creditnotibeforeduemsgopt'] = array(
+						'opts'=>$opt,
+						'value'=>!empty($customer_creditnotibeforeduemsg) ? $customer_creditnotibeforeduemsg : ''
+					);
+
+					$block[] = array(
+						'type' => 'combo',
+						//'label' => 'RESEND DUPLICATE MESSAGE',
+						//'labelWidth' => 210,
+						'inputWidth' => 125,
+						'comboType' => 'checkbox',
+						'name' => 'customer_creditnotibeforeduemsg',
+						'readonly' => $readonly,
+						//'required' => !$readonly,
+						'options' => array(),
+					);
+
 				}
+
+				$params['tbCustomer'][] = array(
+					'type' => 'block',
+					'width' => 350,
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'list' => $block,
+				);
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'NOTI AFTER DUE (every minutes)',
+					'name' => 'customer_creditnotiafterdue',
+					'readonly' => $readonly,
+					'hidden' => $accounttypecash,
+					'inputWidth' => 70,
+					'numeric' => true,
+					//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_creditnotiafterdue']) ? $params['customerinfo']['customer_creditnotiafterdue'] : '',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				if($readonly) {
+
+					$block[] = array(
+						'type' => 'input',
+						'name' => 'customer_creditnotiafterduemsg',
+						'readonly' => $readonly,
+						'inputWidth' => 125,
+						'value' => !empty($params['customerinfo']['customer_creditnotiafterduemsg']) ? $params['customerinfo']['customer_creditnotiafterduemsg'] : '',
+					);
+
+				} else {
+
+					$opt = array();
+
+					$allNotifications = getAllNotifications();
+
+					$customer_creditnotiafterduemsg = !empty($params['customerinfo']['customer_creditnotiafterduemsg']) ? $params['customerinfo']['customer_creditnotiafterduemsg'] : '';
+
+					$lnotification = explode(',', $customer_creditnotiafterduemsg);
+
+					//pre(array('$lnotification'=>$lnotification));
+
+					foreach($allNotifications as $k=>$v) {
+						$checked = false;
+
+						if(in_array($v['notification_id'],$lnotification)) {
+							$checked = true;
+						}
+
+						$opt[] = array('value'=>$v['notification_id'],'checked'=>$checked,'text'=>array(
+							'notificationvalue' => !empty($v['notification_value']) ? $v['notification_value'] : ' '
+						));
+					}
+
+					$params['customer_creditnotiafterduemsgopt'] = array(
+						'opts'=>$opt,
+						'value'=>!empty($customer_creditnotiafterduemsg) ? $customer_creditnotiafterduemsg : ''
+					);
+
+					$block[] = array(
+						'type' => 'combo',
+						//'label' => 'RESEND DUPLICATE MESSAGE',
+						//'labelWidth' => 210,
+						'inputWidth' => 125,
+						'comboType' => 'checkbox',
+						'name' => 'customer_creditnotiafterduemsg',
+						'readonly' => $readonly,
+						//'required' => !$readonly,
+						'options' => array(),
+					);
+
+				}
+
+				$params['tbCustomer'][] = array(
+					'type' => 'block',
+					'width' => 350,
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'list' => $block,
+				);
+
 
 /*
 $block[] = array(
