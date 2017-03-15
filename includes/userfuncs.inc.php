@@ -265,10 +265,16 @@ function getAllContacts($contactsonly=false) {
 	return false;
 }
 
-function getAllCustomers($contactsonly=false) {
+function getAllCustomers($contactsonly=false,$ord=false) {
 	global $appdb;
 
-	$sql = "select * from tbl_customer where customer_deleted=0";
+	$order = '';
+
+	if(!empty($ord)) {
+		$order = 'order by '.$ord;
+	}
+
+	$sql = "select * from tbl_customer where customer_deleted=0 $order";
 
 	if(!($result = $appdb->query($sql))) {
 		return false;

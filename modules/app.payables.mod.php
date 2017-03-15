@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,7 +24,7 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_app_payables')) {
 
 	class APP_app_payables extends APP_Base_Ajax {
-	
+
 		var $desc = 'Payables';
 
 		var $pathid = 'payables';
@@ -39,7 +39,7 @@ if(!class_exists('APP_app_payables')) {
 		function __construct() {
 			$this->init();
 		}
-		
+
 		function __destruct() {
 		}
 
@@ -77,11 +77,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesmainsupplier
 
 		function _form_payablesmainpurchaseorder($routerid=false,$formid=false) {
@@ -97,11 +97,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesmainpurchaseorder
 
 		function _form_payablesmainreceivedstocks($routerid=false,$formid=false) {
@@ -117,11 +117,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesmainreceivedstocks
 
 		function _form_payablesmaindisbursement($routerid=false,$formid=false) {
@@ -137,11 +137,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesmaindisbursement
 
 		function _form_payablesmainvoucher($routerid=false,$formid=false) {
@@ -157,11 +157,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesmainvoucher
 
 		function _form_payablesmainpayment($routerid=false,$formid=false) {
@@ -177,11 +177,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesmainpayment
 
 		function _form_payablesdetailsupplier($routerid=false,$formid=false) {
@@ -326,11 +326,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesdetailsupplier
 
 		function _form_payablesdetailpurchaseorder($routerid=false,$formid=false) {
@@ -352,7 +352,7 @@ if(!class_exists('APP_app_payables')) {
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 						if(!($result = $appdb->query("select * from tbl_purchaseorder where purchaseorder_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['purchaseorder_id'])) {
@@ -372,7 +372,7 @@ if(!class_exists('APP_app_payables')) {
 					/*
 					if(!($result = $appdb->query("select *,(extract(epoch from '".$post['scheduler_schedule']."'::timestamptz) - extract(epoch from now())) as delaytime from tbl_scheduler where scheduler_id=".$post['rowid']))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-						die;				
+						die;
 					}
 					*/
 
@@ -394,14 +394,14 @@ if(!class_exists('APP_app_payables')) {
 
 						if(!($result = $appdb->update("tbl_purchaseorder",$content,"purchaseorder_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 					} else {
 
 						if(!($result = $appdb->insert("tbl_purchaseorder",$content,"purchaseorder_id"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['returning'][0]['purchaseorder_id'])) {
@@ -438,7 +438,7 @@ if(!class_exists('APP_app_payables')) {
 
 							if(!($result = $appdb->query("delete from tbl_purchaseorder where purchaseorder_id in (".$rowids.")"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							json_encode_return($retval);
@@ -450,13 +450,13 @@ if(!class_exists('APP_app_payables')) {
 					if(!empty($post['rowid'])) {
 						if(!($result = $appdb->query("delete from tbl_purchaseorder where purchaseorder_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 					}
 
 					json_encode_return($retval);
 					die;
-				} 
+				}
 
 				$params['hello'] = 'Hello, Sherwin!';
 
@@ -606,7 +606,7 @@ if(!class_exists('APP_app_payables')) {
 						'name' => 'purchaseorder_status',
 						'readonly' => true,
 						//'required' => !$readonly,
-						'value' => getLoadTransactionStatusString($params['purchaseorderinfo']['purchaseorder_status']), 
+						'value' => getLoadTransactionStatusString($params['purchaseorderinfo']['purchaseorder_status']),
 					);
 
 				} else {
@@ -681,11 +681,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesdetailpurchaseorder
 
 		function _form_payablesdetailreceivedstocks($routerid=false,$formid=false) {
@@ -707,7 +707,7 @@ if(!class_exists('APP_app_payables')) {
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 						if(!($result = $appdb->query("select * from tbl_stock where stock_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['stock_id'])) {
@@ -825,11 +825,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesdetailreceivedstocks
 
 		function _form_payablesdetaildisbursement($routerid=false,$formid=false) {
@@ -974,11 +974,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesdetaildisbursement
 
 		function _form_payablesdetailvoucher($routerid=false,$formid=false) {
@@ -1123,11 +1123,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesdetailvoucher
 
 		function _form_payablesdetailpayment($routerid=false,$formid=false) {
@@ -1149,7 +1149,7 @@ if(!class_exists('APP_app_payables')) {
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 						if(!($result = $appdb->query("select * from tbl_payment where payment_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['payment_id'])) {
@@ -1171,28 +1171,28 @@ if(!class_exists('APP_app_payables')) {
 		myTabbar.addTab("tbTransactions", "Transactions");
 */
 
-				$documentno = '';
+				$receiptno = '';
 
 				if(!empty($params['paymentinfo']['payment_id'])&&!empty($params['paymentinfo']['payment_ymd'])) {
-					$documentno = $params['paymentinfo']['payment_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['paymentinfo']['payment_id']));
+					$receiptno = $params['paymentinfo']['payment_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['paymentinfo']['payment_id']));
 				}
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
-					'label' => 'DOCUMENT NO',
-					'name' => 'payment_documentno',
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'label' => 'RECEIPT NO',
+					'name' => 'payment_receiptno',
+					'readonly' => true,
+					//'required' => !$readonly,
 					//'labelAlign' => $position,
-					'value' => $documentno,
+					'value' => $receiptno,
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
-					'label' => 'DATE/TIME',
-					'name' => 'payment_date',
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'label' => 'RECEIPT DATE/TIME',
+					'name' => 'payment_datetime',
+					'readonly' => true,
+					//'required' => !$readonly,
 					'value' => !empty($params['paymentinfo']['payment_createstamp']) ? pgDate($params['paymentinfo']['payment_createstamp']) : '',
 				);
 
@@ -1202,7 +1202,7 @@ if(!class_exists('APP_app_payables')) {
 
 					$params['tbDetails'][] = array(
 						'type' => 'input',
-						'label' => 'CUSTOMER',
+						'label' => 'CUSTOMER NAME',
 						'name' => 'payment_customer',
 						'readonly' => true,
 						//'required' => !$readonly,
@@ -1211,12 +1211,12 @@ if(!class_exists('APP_app_payables')) {
 				} else {
 					$params['tbDetails'][] = array(
 						'type' => 'combo',
-						'label' => 'PARENT',
+						'label' => 'CUSTOMER NAME',
 						'name' => 'payment_customer',
 						'readonly' => $readonly,
 						//'readonly' => true,
 						//'comboType' => 'checkbox',
-						//'required' => !$readonly,
+						'required' => !$readonly,
 						//'value' => !empty($params['customerinfo']['customer_parent']) ? $params['customerinfo']['customer_parent'] : '',
 						'options' => array(), //$opt,
 					);
@@ -1226,9 +1226,9 @@ if(!class_exists('APP_app_payables')) {
 					'type' => 'input',
 					'label' => 'STATUS',
 					'name' => 'payment_status',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => !empty($params['paymentinfo']['payment_status']) ? getLoadTransactionStatusString($params['paymentinfo']['payment_status']) : '',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => !empty($params['paymentinfo']['payment_status']) ? getLoadTransactionStatusString($params['paymentinfo']['payment_status']) : 'DRAFT',
 				);
 
 				$params['tbDetails'][] = array(
@@ -1238,17 +1238,17 @@ if(!class_exists('APP_app_payables')) {
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
-					'label' => 'TOTAL AMOUNT DUE',
+					'label' => 'AMOUNT DUE',
 					'name' => 'payment_totalamountdue',
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'readonly' => true,
+					//'required' => !$readonly,
 					'inputMask' => array('alias'=>'currency','prefix'=>'','digits'=>2,'autoUnmask'=>true),
 					'value' => !empty($params['paymentinfo']['payment_totalamountdue']) ? $params['paymentinfo']['payment_totalamountdue'] : '',
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
-					'label' => 'TOTAL AMOUNT PAID',
+					'label' => 'AMOUNT PAID',
 					'name' => 'payment_totalamountpaid',
 					'readonly' => $readonly,
 					'required' => !$readonly,
@@ -1260,8 +1260,8 @@ if(!class_exists('APP_app_payables')) {
 					'type' => 'input',
 					'label' => 'BALANCE',
 					'name' => 'payment_balance',
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'readonly' => true,
+					//'required' => !$readonly,
 					'inputMask' => array('alias'=>'currency','prefix'=>'','digits'=>2,'autoUnmask'=>true),
 					'value' => !empty($params['paymentinfo']['payment_balance']) ? $params['paymentinfo']['payment_balance'] : '',
 				);
@@ -1286,11 +1286,11 @@ if(!class_exists('APP_app_payables')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_payablesdetailpayment
 
 		function router() {
@@ -1358,7 +1358,7 @@ if(!class_exists('APP_app_payables')) {
 						if($retflag==2) {
 							return $jsonval;
 						}
-					} 
+					}
 
 				} else
 				if( $this->post['action']=='form' && !empty($this->post['formid']) ) {
@@ -1473,7 +1473,7 @@ if(!class_exists('APP_app_payables')) {
 					if($this->post['table']=='modemcommands') {
 						if(!($result = $appdb->query("select * from tbl_modemcommands order by modemcommands_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -1491,7 +1491,7 @@ if(!class_exists('APP_app_payables')) {
 					if($this->post['table']=='receivedstocks') {
 						if(!($result = $appdb->query("select * from tbl_stock order by stock_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -1512,7 +1512,7 @@ if(!class_exists('APP_app_payables')) {
 					if($this->post['table']=='payment') {
 						if(!($result = $appdb->query("select * from tbl_payment order by payment_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -1533,7 +1533,7 @@ if(!class_exists('APP_app_payables')) {
 					if($this->post['table']=='purchaseorder') {
 						if(!($result = $appdb->query("select * from tbl_purchaseorder order by purchaseorder_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -1568,7 +1568,7 @@ if(!class_exists('APP_app_payables')) {
 					if($this->post['table']=='simcard') {
 						if(!($result = $appdb->query("select * from tbl_stocksimcard where stocksimcard_id=".$this->post['rowid']." order by stocksimcard_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -1601,7 +1601,7 @@ if(!class_exists('APP_app_payables')) {
 					if($this->post['table']=='purchaseordersimcard') {
 						if(!($result = $appdb->query("select * from tbl_purchaseordersimcard where purchaseordersimcard_purchaseorderid=".$this->post['rowid']." order by purchaseordersimcard_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -1627,11 +1627,29 @@ if(!class_exists('APP_app_payables')) {
 
 						while($ctr<=10) {
 							$rows[] = array('id'=>$ctr,'simnames'=>array('options'=>$simnames),'data'=>array($ctr,'','','','','','',''));
-							$ctr++;								
+							$ctr++;
 						}
 
 						$retval = array('rows'=>$rows);
 
+					} else
+					if($this->post['table']=='document') {
+						if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$this->post['rowid']." order by ledger_datetimeunix asc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						$rows = array();
+
+						pre(array('$result'=>$result['rows']));
+
+						if(!empty($result['rows'][0]['ledger_id'])) {
+							foreach($result['rows'] as $k=>$v) {
+								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_datetime'],0));
+							}
+						}
+
+						$retval = array('rows'=>$rows);
 					}
 
 					$jsonval = json_encode($retval,JSON_OBJECT_AS_ARRAY);
@@ -1650,7 +1668,7 @@ if(!class_exists('APP_app_payables')) {
 
 			return false;
 		} // router($vars=false,$retflag=false)
-		
+
 	}
 
 	$appapppayables = new APP_app_payables;

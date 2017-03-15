@@ -583,6 +583,7 @@ if(!class_exists('APP_app_contact')) {
 				$params['tbChild'] = array();
 				$params['tbChildRebate'] = array();
 				$params['tbTransaction'] = array();
+				$params['tbCreditTransaction'] = array();
 
 				$custid = '';
 
@@ -1705,6 +1706,14 @@ $block[] = array(
 					'inputWidth' => 450,
 					'inputHeight' => 200,
 					'className' => 'customer_transaction_'.$post['formval'],
+				);
+
+				$params['tbCreditTransaction'][] = array(
+					'type' => 'container',
+					'name' => 'customer_credittransaction',
+					'inputWidth' => 450,
+					'inputHeight' => 200,
+					'className' => 'customer_credittransaction_'.$post['formval'],
 				);
 
 				$templatefile = $this->templatefile($routerid,$formid);

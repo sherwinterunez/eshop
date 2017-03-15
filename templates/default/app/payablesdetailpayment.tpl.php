@@ -114,7 +114,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				myWinObj.myDissectionGrid.setSizes();
 			} catch(e) {}
 		}
-		
+
 	}
 
 	function <?php echo $wid.$templatedetailid.$submod; ?>_openwindow_%formval%(rowid) {
@@ -170,7 +170,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				}
 				if(ddata.html) {
 					jQuery("#"+odata.obj.wid).html(ddata.html);
-					//layout_resize_%formval%();								
+					//layout_resize_%formval%();
 				}
 			});
 		});
@@ -191,7 +191,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		var myTabbar = new dhtmlXTabBar("<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
+
 		myTabbar.addTab("tbDetails", "Details");
 		myTabbar.addTab("tbDocuments", "Payable Documents");
 		myTabbar.addTab("tbDissection", "Payment Dissection");
@@ -209,7 +209,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "<?php echo $moduleid; ?>"},
-				{type: "hidden", name: "formid", value: "<?php echo $templatedetailid.$submod; ?>"},				
+				{type: "hidden", name: "formid", value: "<?php echo $templatedetailid.$submod; ?>"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
@@ -282,7 +282,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				if(ddata.rows) {
 					myDocumentGrid.parse(ddata,function(){
 
-					},'json');	
+					},'json');
 				}
 			} catch(e) {
 				console.log(e);
@@ -326,7 +326,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				if(ddata.rows) {
 					myDissectionGrid.parse(ddata,function(){
 
-					},'json');	
+					},'json');
 				}
 			} catch(e) {
 				console.log(e);
@@ -336,7 +336,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?> 
+		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -344,9 +344,84 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		//myForm.setItemFocus("txt_optionsname");
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'save') { ?> 
+///////////////////////////////////
+
+		var dhxCombo = myForm.getCombo("payment_customer");
+
+		dhxCombo.setTemplate({
+			input: '#customerlastname# #customerfirstname#',
+			columns: [
+				/*{header: "&nbsp;",  width:  41, 		option: "#checkbox#"}, */ // column for checkboxes
+				{header: "MOBILE NO", width:  150, css: "capital", option: "#customermobileno#"},
+				{header: "LAST NAME", width:  150, css: "capital", option: "#customerlastname#"},
+				{header: "FIRST NAME", width:  150, css: "capital", option: "#customerfirstname#"},
+				{header: "MIDDLE NAME", width:  150, css: "capital", option: "#customermiddlename#"},
+				{header: "CUSTOMER TYPE", width:  150, css: "capital", option: "#customertype#"},
+				{header: "ACCOUNT TYPE", width:  150, css: "capital", option: "#customeraccounttype#"},
+			]
+		});
+
+/*
+<?php
+		$opt = array();
+		//$opt[] = array('value'=>1,'text'=>array('one'=>'one1','two'=>'two1','three'=>'three1'),'checked'=>true);
+		//$opt[] = array('value'=>2,'text'=>array('one'=>'one2','two'=>'two2','three'=>'three2'));
+		//$opt[] = array('value'=>3,'text'=>array('one'=>'one3','two'=>'two3','three'=>'three3'));
+		//$opt[] = array('value'=>4,'text'=>array('one'=>'one4','two'=>'two4','three'=>'three4'));
+		//$opt[] = array('value'=>5,'text'=>array('one'=>'one5','two'=>'two5','three'=>'three5'));
+
+		$allParents = getAllCustomers(false,'customer_lastname asc');
+
+		//pre(array('allParents'=>$allParents));
+
+		foreach($allParents as $k=>$v) {
+			//if($k!=$vars['post']['rowid']) {
+				//unset($allParents[$k]);
+				$selected = false;
+
+				if($v['customer_id']==$vars['params']['customerinfo']['customer_parent']) {
+					$selected = true;
+				}
+
+				$opt[] = array('value'=>$v['customer_id'],'selected'=>$selected,'text'=>array(
+					'customermobileno' => !empty($v['customer_mobileno']) ? $v['customer_mobileno'] : ' ',
+					'customerfirstname' => !empty($v['customer_firstname']) ? $v['customer_firstname'] : ' ',
+					'customerlastname' => !empty($v['customer_lastname']) ? $v['customer_lastname'] : ' ',
+					'customermiddlename' => !empty($v['customer_middlename']) ? $v['customer_middlename'] : ' ',
+					'customertype' => !empty($v['customer_type']) ? $v['customer_type'] : ' ',
+					'customeraccounttype' => !empty($v['customer_accounttype']) ? $v['customer_accounttype'] : ' '
+				));
+			//}
+		}
+
+		//pre(array('allParents'=>$allParents));
+?>
+*/
+
+		dhxCombo.addOption(<?php echo json_encode($opt); ?>);
+
+		dhxCombo.enableFilteringMode(true);
+
+		dhxCombo.attachEvent("onClose", function(){
+		    //your code here
+		    //alert('combo closed!');
+		    //dhxCombo.setComboText('hello, sherwin!');
+		    //dhxCombo.setComboValue('hello, sherwin!');
+		    //myForm.setItemValue('customer_parent', 'hello, sherwin!');
+		    //alert(myForm.getItemValue('customer_parent'));
+		});
+
+		/*dhxCombo.attachEvent("onBlur", function(){
+		    //your code here
+		    //alert('combo closed!');
+		    //myForm.setItemValue('customer_parent', 'hello, sherwin!');
+		});*/
+
+///////////////////////////////////
+
+		<?php } else if($method==$moduleid.'save') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -354,7 +429,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
@@ -372,7 +447,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		<?php 	} ?>
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
@@ -466,7 +541,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				    //myForm2_%formval%.hideItem(tbId);
 			    }
 			});
- 
+
 		});
 
 		myForm.attachEvent("onBeforeChange", function (name, old_value, new_value){
@@ -478,6 +553,65 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		    //showMessage("onChange: ["+name+"] "+name.length+" / {"+value+"} "+value.length,5000);
 
 			myChanged_%formval% = true;
+
+		});
+
+		myForm.attachEvent("onBlur", function (name, value){
+
+			//myChanged_%formval% = true;
+
+			var value = myForm.getItemValue('payment_customer');
+
+			showMessage("onBlur: ["+name+"] ["+value+"]",5000);
+
+			if(typeof(value)=='numeric') {
+			} else return false;
+
+			if(name=='payment_customer'&&value>0) {
+
+				myTab.postData('/'+settings.router_id+'/json/', {
+					odata: {},
+					pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=document&rowid="+value+"&formval=%formval%",
+				}, function(ddata,odata){
+
+					if(typeof(myWinObj.myDocumentGrid)!='null'&&typeof(myWinObj.myDocumentGrid)!='undefined'&&myWinObj.myDocumentGrid!=null) {
+						try {
+							myWinObj.myDocumentGrid.destructor();
+							myWinObj.myDocumentGrid = null;
+						} catch(e) {
+							console.log(e);
+						}
+					}
+
+					var myDocumentGrid = myWinObj.myDocumentGrid = new dhtmlXGridObject(myForm.getContainer('payment_documents'));
+
+					myDocumentGrid.setImagePath("/codebase/imgs/")
+
+					myDocumentGrid.setHeader("Document No., Date, Amount Due");
+
+					myDocumentGrid.setInitWidths("*,*,*");
+
+					myDocumentGrid.setColAlign("left,left,right");
+
+					myDocumentGrid.setColTypes("ro,ro,ro");
+
+					myDocumentGrid.setColSorting("str,str,str");
+
+					myDocumentGrid.init();
+
+					try {
+						if(ddata.rows) {
+							myDocumentGrid.parse(ddata,function(){
+
+							},'json');
+						}
+					} catch(e) {
+						console.log(e);
+					}
+
+				});
+
+			}
 
 		});
 
@@ -516,7 +650,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				odata: {},
 				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval=%formval%",
 			}, function(ddata,odata){
-				if(ddata.html) {					
+				if(ddata.html) {
 					jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 				}
 			});
@@ -534,7 +668,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				}, function(ddata,odata){
 					if(ddata.html) {
 						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
 				});
 			}
@@ -587,7 +721,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			//var myForm = myForm2_%formval%;
 
 			//var txt_optionnumber = parseInt($("#messagingdetailsoptionsdetailsform_%formval% input[name='txt_optionnumber']").val());
-			
+
 			//if(isNaN(txt_optionnumber)) {
 			//	txt_optionnumber = '';
 			//}
@@ -598,7 +732,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			showSaving();
 
@@ -655,7 +789,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
-	
+
 							try {
 								if(data.rowid) {
 									layout_resize_%formval%();
@@ -693,7 +827,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=onrowselect&rowid="+rowid+"&formval="+formval+"&wid="+wid,
 				}, function(ddata,odata){
 					if(ddata.html) {
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
 				});
 			} else {
@@ -702,9 +836,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=<?php echo $moduleid; ?>new&rowid=0&formval="+formval+"&wid="+wid,
 				}, function(ddata,odata){
 					if(ddata.html) {
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
-				});				
+				});
 			}
 
 		};

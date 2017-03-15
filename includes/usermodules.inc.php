@@ -2887,6 +2887,9 @@ function _fundCredit($vars=array()) {
 
 			//getCustomerAvailableCredit
 
+			if(getCustomerType($smsinbox_contactsid)==='REGULAR'&&getCustomerAccountType($smsinbox_contactsid)==='CREDIT') {
+			} else return false;
+
 			if(computeCustomerCreditDue($smsinbox_contactsid)) {
 
 				$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');

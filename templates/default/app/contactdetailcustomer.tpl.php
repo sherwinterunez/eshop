@@ -115,6 +115,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_transaction_%formval% .dhxform_container").height(dim[1]-150);
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_transaction_%formval% .dhxform_container").width(dim[0]-54);
 
+    $("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_credittransaction_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_credittransaction_%formval% .dhxform_container").width(dim[0]-54);
+
 		if(typeof(myWinObj.myGridVirtualNumbers)!='undefined') {
 			try {
 				myWinObj.myGridVirtualNumbers.setSizes();
@@ -148,6 +151,12 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		if(typeof(myWinObj.myGridTransaction)!='undefined') {
 			try {
 				myWinObj.myGridTransaction.setSizes();
+			} catch(e) {}
+		}
+
+    if(typeof(myWinObj.myGridCreditTransaction)!='undefined') {
+			try {
+				myWinObj.myGridCreditTransaction.setSizes();
 			} catch(e) {}
 		}
 
@@ -240,6 +249,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		myTabbar.addTab("tbDownline", "Downline");
 		myTabbar.addTab("tbDownlineRebate", "Downline Rebate Settings");
 		myTabbar.addTab("tbTransaction", "Transaction");
+		myTabbar.addTab("tbCreditTransaction", "Credit Transaction");
 
 		myTabbar.tabs("tbCustomer").setActive();
 
@@ -269,6 +279,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			{type: "block", name: "tbChild", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbChild']); ?>},
 			{type: "block", name: "tbChildRebate", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbChildRebate']); ?>},
 			{type: "block", name: "tbTransaction", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbTransaction']); ?>},
+			{type: "block", name: "tbCreditTransaction", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbCreditTransaction']); ?>},
 			{type: "label", label: ""}
 		];
 
@@ -304,6 +315,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		myForm.hideItem('tbChild');
 		myForm.hideItem('tbChildRebate');
 		myForm.hideItem('tbTransaction');
+		myForm.hideItem('tbCreditTransaction');
 
 ///////////////////////////////////
 
@@ -471,7 +483,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 				<?php } ?>
 
-				<?php /* ?>
+				<?php /*
 				if(ddata.rows.length>0) {
 
 					for(var i=0;i<ddata.rows.length;i++) {
@@ -487,7 +499,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 						}
 					}
 				}
-				<?php */ ?>
+				*/ ?>
 
 			},'json');
 
@@ -743,6 +755,55 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			try {
 				myGridTransaction.parse(ddata,function(){
+
+
+				},'json');
+			} catch(e) {
+				console.log(e);
+			}
+
+		});
+
+///////////////////////////////////
+
+		myTab.postData('/'+settings.router_id+'/json/', {
+			odata: {},
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=credittransaction&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
+		}, function(ddata,odata){
+
+			if(typeof(myWinObj.myGridCreditTransaction)!='null'&&typeof(myWinObj.myGridCreditTransaction)!='undefined'&&myWinObj.myGridCreditTransaction!=null) {
+				try {
+					myWinObj.myGridCreditTransaction.destructor();
+					myWinObj.myGridCreditTransaction = null;
+				} catch(e) {
+					console.log(e);
+				}
+			}
+
+			var myGridCreditTransaction = myWinObj.myGridCreditTransaction = new dhtmlXGridObject(myForm.getContainer('customer_credittransaction'));
+
+			myGridCreditTransaction.setImagePath("/codebase/imgs/")
+
+			myGridCreditTransaction.setHeader("ID, SEQ, Date/Time, Receipt No., Transaction Type, Customer Mobile, Debit, Credit, Balance, Rebate, Rebate Balance, &nbsp;");
+
+			myGridCreditTransaction.setInitWidths("70,70,120,120,130,110,100,100,100,100,110,*");
+
+			myGridCreditTransaction.setColAlign("center,center,center,left,left,left,right,right,right,right,right,left");
+
+			myGridCreditTransaction.setColTypes("ro,ro,ro,ro,ro,ro,ron,ron,ron,ron,ron,ro");
+
+			myGridCreditTransaction.setColSorting("int,int,str,str,str,str,str,str,str,str,str,str");
+
+			myGridCreditTransaction.setNumberFormat("0,000.00",6);
+			myGridCreditTransaction.setNumberFormat("0,000.00",7);
+			myGridCreditTransaction.setNumberFormat("0,000.00",8);
+			myGridCreditTransaction.setNumberFormat("0,000.000",9);
+			myGridCreditTransaction.setNumberFormat("0,000.000",10);
+
+			myGridCreditTransaction.init();
+
+			try {
+				myGridCreditTransaction.parse(ddata,function(){
 
 
 				},'json');
