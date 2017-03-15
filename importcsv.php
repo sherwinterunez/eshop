@@ -164,7 +164,7 @@ foreach($lines as $k=>$v) {
   $content['fund_amountdue'] = $fund_amountdue = !empty($content['fund_amount']) ? $content['fund_amount'] : 0;
   //$content['fund_discount'] = !empty($post['fund_discount']) ? $post['fund_discount'] : 0;
   //$content['fund_processingfee'] = !empty($post['fund_processingfee']) ? $post['fund_processingfee'] : 0;
-  $content['fund_datetimeunix'] = $fund_datetimeunix = getDbUnixDate();
+  $content['fund_datetimeunix'] = $fund_datetimeunix = intval(getDbUnixDate());
   $content['fund_datetime'] = pgDateUnix($content['fund_datetimeunix']);
   $content['fund_userid'] = $fund_userid = $staffId;
   $content['fund_username'] = getCustomerNameByID($content['fund_userid']);
