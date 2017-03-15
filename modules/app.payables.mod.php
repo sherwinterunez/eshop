@@ -1645,7 +1645,7 @@ if(!class_exists('APP_app_payables')) {
 								die;
 							}
 						} else {
-							if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$this->post['rowid']." order by ledger_datetimeunix asc"))) {
+							if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>0 and ledger_refunded=0 order by ledger_datetimeunix asc"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
