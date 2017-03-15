@@ -591,7 +591,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 					myDocumentGrid.setImagePath("/codebase/imgs/")
 
-					myDocumentGrid.setHeader("Document No., Date, Amount Due, &nsbp;");
+					myDocumentGrid.setHeader("Document No., Date, Amount Due, ");
 
 					myDocumentGrid.setInitWidths("150,150,150,*");
 
