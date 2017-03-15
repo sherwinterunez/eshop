@@ -183,6 +183,7 @@ function portCheck($dev=false,$localIP=false) {
 				//print_r(array('$res'=>$res));
 				$mobileNo = '0'.$res[2].$res[3];
 				$mobileNetwork = getNetworkName($mobileNo);
+				break;
 			}
 		}
 
@@ -198,7 +199,9 @@ function portCheck($dev=false,$localIP=false) {
 		$mobileNo = 'UNKNOWN';
 	} else {
 		//print_r($sms->history);
-		return false;
+		$sms->clearHistory();
+		$mobileNo = 'UNKNOWN';
+		//return false;
 		//die('An error has occured!');
 	}
 
@@ -256,7 +259,11 @@ function portCheck($dev=false,$localIP=false) {
 	}
 */
 
-	$sql = 'select * from tbl_simcard where simcard_number=\''.$mobileNo.'\'';
+	if($mobileNo=='UNKNOWN') {
+		$sql = "select * from tbl_simcard where simcard_number='$mobileNo' and simcard_linuxport='$dev'";
+	} else {
+		$sql = "select * from tbl_simcard where simcard_number='$mobileNo'";
+	}
 
 	if(!($result=$appdb->query($sql))) {
 		return false;
@@ -269,7 +276,13 @@ function portCheck($dev=false,$localIP=false) {
 	$comport = '';
 
 	if(preg_match('/.+?(\d+)/si',$dev,$match)) {
-		$comport = 'COM'.(intval($match[1])+1);
+		$portno = intval($match[1])+1;
+
+		if($portno<10) {
+			$comport = 'COM0'.$portno;
+		} else {
+			$comport = 'COM'.$portno;
+		}
 	}
 
 	if(!empty($result['rows'][0]['simcard_id'])) {
@@ -309,7 +322,6 @@ function portCheck($dev=false,$localIP=false) {
 	if(!empty($portid)) {
 		$appdb->update('tbl_port',array('port_simnumber'=>$mobileNo),'port_id='.$portid);
 	}
-
 
 	//echo "\nSending done.\n";
 

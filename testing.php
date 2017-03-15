@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -26,12 +26,12 @@ if(defined('ANNOUNCE')) {
 	echo "\n<!-- loaded: ".__FILE__." -->\n";
 }
 
-define('INCLUDE_PATH', ABS_PATH . 'includes/');
+//define('INCLUDE_PATH', ABS_PATH . 'includes/');
 
-//require_once(ABS_PATH.'includes/index.php');
+require_once(ABS_PATH.'includes/index.php');
 //require_once(ABS_PATH.'modules/index.php');
 
-require_once(INCLUDE_PATH.'config.inc.php');
+/*require_once(INCLUDE_PATH.'config.inc.php');
 require_once(INCLUDE_PATH.'miscfunctions.inc.php');
 require_once(INCLUDE_PATH.'functions.inc.php');
 require_once(INCLUDE_PATH.'errors.inc.php');
@@ -41,12 +41,10 @@ require_once(INCLUDE_PATH.'pdu.inc.php');
 require_once(INCLUDE_PATH.'pdufactory.inc.php');
 require_once(INCLUDE_PATH.'utf8.inc.php');
 require_once(INCLUDE_PATH.'sms.inc.php');
-require_once(INCLUDE_PATH.'userfuncs.inc.php');
+require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
-print_r(array('STATUS_RETRIEVESMS'=>setOption('STATUS_RETRIEVESMS','1','SETTING',true)));
+date_default_timezone_set('Asia/Manila');
 
+//print_r(array('STATUS_RETRIEVESMS'=>setOption('STATUS_RETRIEVESMS','1','SETTING',true)));
 
-
-
-
-
+print_r(array('hello'=>'world'));
