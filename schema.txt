@@ -910,6 +910,7 @@ alter table tbl_ledger add column ledger_staff integer NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_staffpaid integer NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_rebate numeric NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_rebatebalance numeric NOT NULL DEFAULT 0;
+alter table tbl_ledger add column ledger_refunded integer NOT NULL DEFAULT 0;
 
 ALTER TABLE tbl_ledger ALTER COLUMN ledger_loadtransactionid TYPE numeric;
 

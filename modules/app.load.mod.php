@@ -350,10 +350,13 @@ if(!class_exists('APP_app_load')) {
 							$staffLedger = getStaffLedgerLoadtransactionId($loadtransaction_id);
 
 							$content['ledger_debit'] = $staffLedger['ledger_credit'];
+							$ledgerRefundId = $staffLedger['ledger_id'];
 						} else {
 							//$content['ledger_credit'] = $itemData['item_eshopsrp'];
 							$customerLedger = getCustomerLedgerLoadtransactionId($loadtransaction_id);
+
 							$content['ledger_credit'] = $customerLedger['ledger_debit'];
+							$ledgerRefundId = $customerLedger['ledger_id'];
 						}
 
 						$ledger_datetimeunix = intval(getDbUnixDate());
@@ -411,6 +414,15 @@ if(!class_exists('APP_app_load')) {
 						if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
+						}
+
+						if(!empty($ledgerRefundId)) {
+							$content = array();
+							$content['ledger_refunded'] = 1;
+
+							if(!($result = $appdb->update("tbl_ledger",$content,"ledger_id=".$ledgerRefundId))) {
+								return false;
+							}
 						}
 
 						if($customer_type=='STAFF') {
