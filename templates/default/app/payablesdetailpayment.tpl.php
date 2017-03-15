@@ -562,7 +562,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			var value = myForm.getItemValue('payment_customer');
 
-			showMessage("onBlur: ["+name+"] ["+value+"]",5000);
+			showMessage("onBlur: ["+name+"] ["+value+"] "+typeof(value),5000);
 
 			if(typeof(value)=='numeric') {
 			} else return false;
