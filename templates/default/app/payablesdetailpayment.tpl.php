@@ -571,6 +571,12 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			if(typeof(value)!='undefined') {
 			} else return false;
 
+			if(name=='payment_customer') {
+				myForm.setItemValue('payment_totalamountdue',0);
+				myForm.setItemValue('payment_totalamountpaid',0);
+				myForm.setItemValue('payment_balance',0);
+			}
+
 			if(name=='payment_customer'&&parseInt(value)>0) {
 
 				myTab.postData('/'+settings.router_id+'/json/', {
