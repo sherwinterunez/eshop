@@ -1091,6 +1091,10 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 					myForm.showItem('customer_availablecredit');
 					myForm.showItem('customer_terms');
 					myForm.showItem('customer_creditdue');
+          myForm.showItem('customer_creditnotibeforedue');
+          myForm.showItem('customer_creditnotibeforeduemsg');
+          myForm.showItem('customer_creditnotiafterdue');
+          myForm.showItem('customer_creditnotiafterduemsg');
 				} else
 				if(value=='CASH') {
 					myForm.hideItem('customer_creditlimit');
@@ -1099,6 +1103,10 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 					myForm.hideItem('customer_availablecredit');
 					myForm.hideItem('customer_terms');
 					myForm.hideItem('customer_creditdue');
+          myForm.hideItem('customer_creditnotibeforedue');
+          myForm.hideItem('customer_creditnotibeforeduemsg');
+          myForm.hideItem('customer_creditnotiafterdue');
+          myForm.hideItem('customer_creditnotiafterduemsg');
 				}
 			}
 
