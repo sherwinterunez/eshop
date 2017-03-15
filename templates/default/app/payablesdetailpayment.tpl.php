@@ -577,6 +577,14 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				myForm.setItemValue('payment_balance',0);
 			}
 
+			if(name=='payment_totalamountpaid') {
+				var balance = parseFloat(myForm.getItemValue('payment_totalamountdue')) - parseFloat(myForm.getItemValue('payment_totalamountpaid'));
+
+				if(balance) {
+					myForm.setItemValue('payment_balance',balance);
+				}
+			}
+
 			if(name=='payment_customer'&&parseInt(value)>0) {
 
 				myTab.postData('/'+settings.router_id+'/json/', {
