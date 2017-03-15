@@ -572,9 +572,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			} else return false;
 
 			if(name=='payment_customer') {
-				myForm.setItemValue('payment_totalamountdue',0);
-				myForm.setItemValue('payment_totalamountpaid',0);
-				myForm.setItemValue('payment_balance',0);
+				myForm.setItemValue('payment_totalamountdue',parseFloat(0)));
+				myForm.setItemValue('payment_totalamountpaid',parseFloat(0));
+				myForm.setItemValue('payment_balance',parseFloat(0));
 			}
 
 			if(name=='payment_totalamountpaid') {

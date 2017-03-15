@@ -1163,6 +1163,72 @@ if(!class_exists('APP_app_payables')) {
 					$retval['return_code'] = 'SUCCESS';
 					$retval['return_message'] = 'Payment successfully saved!';
 
+/*
+sherwint_eshop=# \d tbl_payment
+                                              Table "public.tbl_payment"
+          Column           |           Type           |                           Modifiers
+---------------------------+--------------------------+---------------------------------------------------------------
+ payment_id                | bigint                   | not null default nextval(('tbl_payment_seq'::text)::regclass)
+ payment_ymd               | text                     | not null default ''::text
+ payment_dateunix          | integer                  | not null default 0
+ payment_loadtransactionid | integer                  | not null default 0
+ payment_customerid        | integer                  | not null default 0
+ payment_customername      | text                     | not null default ''::text
+ payment_customernumber    | text                     | not null default ''::text
+ payment_totalamountdue    | numeric                  | not null default 0
+ payment_totalamountpaid   | numeric                  | not null default 0
+ payment_balance           | numeric                  | not null default 0
+ payment_status            | integer                  | not null default 0
+ payment_type              | text                     | not null default ''::text
+ payment_branch            | text                     | not null default ''::text
+ payment_active            | integer                  | not null default 0
+ payment_deleted           | integer                  | not null default 0
+ payment_flag              | integer                  | not null default 0
+ payment_createstamp       | timestamp with time zone | default now()
+ payment_updatestamp       | timestamp with time zone | default now()
+Indexes:
+    "tbl_payment_primary_key" PRIMARY KEY, btree (payment_id)
+
+sherwint_eshop=#
+*/
+
+					$content = array();
+					$content['payment_ymd'] = date('Ymd');
+					//$content['payment_loadtransactionid'] = $loadtransaction_id;
+					$content['payment_status'] = TRN_POSTED;
+					$content['payment_customerid'] = !empty($post['payment_customer']) ? $post['payment_customer'] : 0;
+					$content['payment_customername'] = !empty($content['payment_customerid']) ? getCustomerNameByID($content['payment_customerid']) : '';
+					$content['payment_customernumber'] = !empty($content['payment_customerid']) ? getCustomerNumber($content['payment_customerid']) : '';
+					$content['payment_totalamountdue'] = !empty($post['payment_totalamountdue']) ? $post['payment_totalamountdue'] : 0;
+					$content['payment_totalamountpaid'] = !empty($post['payment_totalamountpaid']) ? $post['payment_totalamountpaid'] : 0;
+					$content['payment_balance'] = !empty($post['payment_balance']) ? $post['payment_balance'] : 0;
+
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+
+						$retval['rowid'] = $post['rowid'];
+
+						unset($content['payment_ymd']);
+
+						$content['payment_updatestamp'] = 'now()';
+
+						if(!($result = $appdb->update("tbl_payment",$content,"payment_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+					} else {
+
+						if(!($result = $appdb->insert("tbl_payment",$content,"payment_id"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['returning'][0]['payment_id'])) {
+							$retval['rowid'] = $result['returning'][0]['payment_id'];
+						}
+
+					}
+
 					json_encode_return($retval);
 					die;
 
