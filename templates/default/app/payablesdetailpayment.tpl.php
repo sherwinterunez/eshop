@@ -601,6 +601,8 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 					myDocumentGrid.setColSorting("str,str,str,str");
 
+					myDocumentGrid.setNumberFormat("0,000.00",2);
+
 					myDocumentGrid.init();
 
 					try {
