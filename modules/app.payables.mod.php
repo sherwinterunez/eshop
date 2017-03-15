@@ -1656,12 +1656,14 @@ if(!class_exists('APP_app_payables')) {
 						//pre(array('$result'=>$result));
 
 						if(!empty($result['rows'][0]['ledger_id'])) {
+							$amountdue = 0;
 							foreach($result['rows'] as $k=>$v) {
+								$amountdue = $amountdue + floatval($v['ledger_credit']);
 								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$v['ledger_credit']));
 							}
 						}
 
-						$retval = array('rows'=>$rows);
+						$retval = array('rows'=>$rows,'amountdue'=>$amountdue);
 					}
 
 					$jsonval = json_encode($retval,JSON_OBJECT_AS_ARRAY);

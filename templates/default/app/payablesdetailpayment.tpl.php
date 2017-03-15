@@ -610,6 +610,10 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 							myDocumentGrid.parse(ddata,function(){
 
 							},'json');
+
+							if(ddata.amountdue) {
+								myForm.setItemValue('payment_totalamountdue',ddata.amountdue);
+							}
 						}
 					} catch(e) {
 						console.log(e);
