@@ -662,6 +662,8 @@ function _eLoadProcessSMS($vars=array()) {
 
 				$itemData = getItemData($loadtransaction_item,$itemProvider);
 
+				print_r(array('$itemData'=>$itemData));
+
 				$item_cost = floatval($itemData['item_cost']);
 				$item_quantity = floatval($itemData['item_quantity']);
 				$item_srp = floatval($itemData['item_srp']);
@@ -1420,10 +1422,10 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 			//}
 
 			if(!empty($match['BALANCE'])) {
-				$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = floatval($match['BALANCE']);
+				$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = floatval(str_replace(',','',$match['BALANCE']));
 
 				$newbal = array();
-				$newbal['simcard_balance'] = floatval($match['BALANCE']);
+				$newbal['simcard_balance'] = floatval(str_replace(',','',$match['BALANCE']));
 
 				if(!($result = $appdb->update("tbl_simcard",$newbal,"simcard_number='".$loadtransaction_assignedsim."'"))) {
 					return false;
