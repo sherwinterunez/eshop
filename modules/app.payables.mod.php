@@ -1641,7 +1641,7 @@ if(!class_exists('APP_app_payables')) {
 
 						$rows = array();
 
-						pre(array('$result'=>$result));
+						//pre(array('$result'=>$result));
 
 						if(!empty($result['rows'][0]['ledger_id'])) {
 							foreach($result['rows'] as $k=>$v) {

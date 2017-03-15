@@ -278,6 +278,8 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myDocumentGrid.init();
 
+			<?php if(!empty($vars['post']['rowid'])) { ?>
+
 			try {
 				if(ddata.rows) {
 					myDocumentGrid.parse(ddata,function(){
@@ -287,6 +289,8 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			} catch(e) {
 				console.log(e);
 			}
+
+			<?php } ?>
 
 		});
 
