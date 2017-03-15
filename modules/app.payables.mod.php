@@ -1199,9 +1199,19 @@ sherwint_eshop=#
 					$content['payment_customerid'] = !empty($post['payment_customer']) ? $post['payment_customer'] : 0;
 					$content['payment_customername'] = !empty($content['payment_customerid']) ? getCustomerNameByID($content['payment_customerid']) : '';
 					$content['payment_customernumber'] = !empty($content['payment_customerid']) ? getCustomerNumber($content['payment_customerid']) : '';
-					$content['payment_totalamountdue'] = !empty($post['payment_totalamountdue']) ? $post['payment_totalamountdue'] : 0;
-					$content['payment_totalamountpaid'] = !empty($post['payment_totalamountpaid']) ? $post['payment_totalamountpaid'] : 0;
-					$content['payment_balance'] = !empty($post['payment_balance']) ? $post['payment_balance'] : 0;
+					$content['payment_totalamountdue'] = !empty($post['payment_totalamountdue']) ? floatval($post['payment_totalamountdue']) : 0;
+					$content['payment_totalamountpaid'] = !empty($post['payment_totalamountpaid']) ? floatval($post['payment_totalamountpaid']) : 0;
+					$content['payment_balance'] = !empty($post['payment_balance']) ? floatval($post['payment_balance']) : 0;
+
+					if(!empty($content['payment_totalamountpaid'])) {
+					} else {
+						$retval = array();
+						$retval['error_code'] = 56786;
+						$retval['error_message'] = 'Amount paid cannot be empty!';
+
+						json_encode_return($retval);
+						die;
+					}
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
@@ -1247,7 +1257,6 @@ sherwint_eshop=#
 
 					json_encode_return($retval);
 					die;
-
 				}
 
 				$params['hello'] = 'Hello, Sherwin!';
