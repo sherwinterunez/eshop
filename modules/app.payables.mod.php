@@ -1156,6 +1156,16 @@ if(!class_exists('APP_app_payables')) {
 							$params['paymentinfo'] = $result['rows'][0];
 						}
 					}
+				} else
+				if(!empty($post['method'])&&$post['method']=='payablessave') {
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Payment successfully saved!';
+
+					json_encode_return($retval);
+					die;
+
 				}
 
 				$params['hello'] = 'Hello, Sherwin!';
