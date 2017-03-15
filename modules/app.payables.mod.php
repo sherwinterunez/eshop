@@ -1224,7 +1224,23 @@ sherwint_eshop=#
 						}
 
 						if(!empty($result['returning'][0]['payment_id'])) {
-							$retval['rowid'] = $result['returning'][0]['payment_id'];
+							$retval['rowid'] = $sid = $result['returning'][0]['payment_id'];
+
+							if(!($result=$appdb->query("select extract(epoch from payment_createstamp) as dateunix from tbl_payment where payment_id=".$sid))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!empty($result['rows'][0]['dateunix'])) {
+
+								$cupdate = array();
+								$cupdate['payment_dateunix'] = $result['rows'][0]['dateunix'];
+
+								if(!($appdb->update("tbl_payment",$cupdate,"payment_id=".$sid))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
+							}
 						}
 
 					}
@@ -1326,6 +1342,7 @@ sherwint_eshop=#
 					'type' => 'input',
 					'label' => 'AMOUNT PAID',
 					'name' => 'payment_totalamountpaid',
+					'validate' => 'NotEmpty',
 					'readonly' => $readonly,
 					'required' => !$readonly,
 					'inputMask' => array('alias'=>'currency','prefix'=>'','digits'=>2,'autoUnmask'=>true),
