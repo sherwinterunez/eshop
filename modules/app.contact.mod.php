@@ -1036,6 +1036,7 @@ if(!class_exists('APP_app_contact')) {
 					$block[] = array(
 						'type' => 'input',
 						'name' => 'customer_creditnotibeforeduemsg',
+						'hidden' => $accounttypecash,
 						'readonly' => $readonly,
 						'inputWidth' => 125,
 						'value' => !empty($params['customerinfo']['customer_creditnotibeforeduemsg']) ? $params['customerinfo']['customer_creditnotibeforeduemsg'] : '',
@@ -1078,6 +1079,7 @@ if(!class_exists('APP_app_contact')) {
 						'comboType' => 'checkbox',
 						'name' => 'customer_creditnotibeforeduemsg',
 						'readonly' => $readonly,
+						'hidden' => $accounttypecash,
 						//'required' => !$readonly,
 						'options' => array(),
 					);
@@ -1118,6 +1120,7 @@ if(!class_exists('APP_app_contact')) {
 						'type' => 'input',
 						'name' => 'customer_creditnotiafterduemsg',
 						'readonly' => $readonly,
+						'hidden' => $accounttypecash,
 						'inputWidth' => 125,
 						'value' => !empty($params['customerinfo']['customer_creditnotiafterduemsg']) ? $params['customerinfo']['customer_creditnotiafterduemsg'] : '',
 					);
@@ -1159,6 +1162,7 @@ if(!class_exists('APP_app_contact')) {
 						'comboType' => 'checkbox',
 						'name' => 'customer_creditnotiafterduemsg',
 						'readonly' => $readonly,
+						'hidden' => $accounttypecash,
 						//'required' => !$readonly,
 						'options' => array(),
 					);
