@@ -3711,6 +3711,12 @@ function getLoadTransactionStatusString($status=0) {
 		} else
 		if($status==TRN_DRAFT) {
 			return TRNS_DRAFT;
+		} else
+		if($status==TRN_WAITING) {
+			return TRNS_WAITING;
+		} else
+		if($status==TRN_POSTED) {
+			return TRNS_POSTED;
 		}
 	}
 
