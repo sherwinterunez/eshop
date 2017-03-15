@@ -564,10 +564,10 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			showMessage("onBlur: ["+name+"] ["+value+"] "+typeof(value),5000);
 
-			if(typeof(value)=='numeric') {
+			if(typeof(value)!='undefined') {
 			} else return false;
 
-			if(name=='payment_customer'&&value>0) {
+			if(name=='payment_customer'&&parseInt(value)>0) {
 
 				myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {},
