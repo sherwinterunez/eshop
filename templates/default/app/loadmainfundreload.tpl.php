@@ -73,7 +73,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 
 		myTab.toolbar.enableOnly(myToolbar);
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 ///////////////
 
@@ -161,7 +161,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 					});*/
 
 					myGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
-						layout_resize_%formval%();								
+						layout_resize_%formval%();
 					});
 
 					myGrid.attachEvent("onRowDblClicked", function(rowId,cellIndex){
@@ -211,7 +211,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 								}
 								if(ddata.html) {
 									jQuery("#"+odata.obj.wid).html(ddata.html);
-									//layout_resize_%formval%();								
+									//layout_resize_%formval%();
 								}
 							});
 						});
@@ -224,7 +224,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 						}, function(ddata,odata){
 							if(ddata.html) {
 								jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-								layout_resize_%formval%();								
+								layout_resize_%formval%();
 							}
 						});*/
 
@@ -239,7 +239,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 							myGrid.selectRowById(ddata.rows[0].id,false,true,true);
 						}
 
-						<?php /* ?>
+						<?php /*
 						if(ddata.rows.length>0) {
 
 							for(var i=0;i<ddata.rows.length;i++) {
@@ -255,30 +255,30 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 								}
 							}
 						}
-						<?php */ ?>
+						*/ ?>
 
 					},'json');
 				}
 
-			} catch(e) { 
+			} catch(e) {
 
 				//alert(typeof(rowId));
 
-				console.log('e => '+e); 
+				console.log('e => '+e);
 
 				jQuery("#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>grid div.objbox").html('<span style="display:block;width:150px;margin:0 auto;"><center>Data not yet available!</center></span>');
 
 				layout_resize_%formval%();
 
-				/*myTab.postData('/'+settings.router_id+'/json/', {
+				<?php /*myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {},
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=nodata&formval=%formval%",
 				}, function(ddata,odata){
 					if(ddata.html) {
 						jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-						layout_resize_%formval%();						
+						layout_resize_%formval%();
 					}
-				});*/
+				});*/ ?>
 
 			}
 
@@ -345,7 +345,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 					}
 					if(ddata.html) {
 						jQuery("#"+odata.obj.wid).html(ddata.html);
-						//layout_resize_%formval%();								
+						//layout_resize_%formval%();
 					}
 				});
 			});
@@ -354,11 +354,11 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 				odata: {wid:wid},
 				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval="+formval+"&wid="+wid,
 			}, function(ddata,odata){
-				if(ddata.html) {					
+				if(ddata.html) {
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 					if(ddata.html) {
 						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
 				}
 			});*/

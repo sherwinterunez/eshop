@@ -256,7 +256,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 							myGrid.selectRowById(ddata.rows[0].id,false,true,true);
 						}
 
-						<?php /* ?>
+						<?php /*
 						if(ddata.rows.length>0) {
 
 							for(var i=0;i<ddata.rows.length;i++) {
@@ -272,7 +272,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 								}
 							}
 						}
-						<?php */ ?>
+						*/ ?>
 
 					},'json');
 				}
@@ -285,7 +285,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 
 				jQuery("#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>grid div.objbox").html('<span style="display:block;width:150px;margin:0 auto;"><center>Data not yet available!</center></span>');
 
-				myTab.postData('/'+settings.router_id+'/json/', {
+				<?php /*myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {},
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=nodata&formval=%formval%",
 				}, function(ddata,odata){
@@ -293,7 +293,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 						jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 						layout_resize_%formval%();
 					}
-				});
+				});*/ ?>
 
 			}
 
