@@ -1640,7 +1640,7 @@ if(!class_exists('APP_app_payables')) {
 						$where = '';
 
 						if($customer_type=='REGULAR') {
-							if(!($result = $appdb->query("select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=".$this->post['rowid']." and a.ledger_fundid=b.fund_id order by a.ledger_datetimeunix asc"))) {
+							if(!($result = $appdb->query("select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=".$this->post['rowid']." and a.ledger_fundid=b.fund_id and b.fund_type='fundcredit' order by a.ledger_datetimeunix asc"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
