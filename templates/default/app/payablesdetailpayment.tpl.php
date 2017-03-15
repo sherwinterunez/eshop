@@ -591,17 +591,17 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 					myDocumentGrid.setImagePath("/codebase/imgs/")
 
-					myDocumentGrid.setHeader("Document No., Date, Amount Due, ");
+					myDocumentGrid.setHeader("Document No., Date, Description, Amount Due, ");
 
-					myDocumentGrid.setInitWidths("150,150,150,*");
+					myDocumentGrid.setInitWidths("150,150,300,150,*");
 
-					myDocumentGrid.setColAlign("left,left,right,left");
+					myDocumentGrid.setColAlign("left,left,left,right,left");
 
-					myDocumentGrid.setColTypes("ro,ro,ron,ro");
+					myDocumentGrid.setColTypes("ro,ro,ro,ron,ro");
 
-					myDocumentGrid.setColSorting("str,str,str,str");
+					myDocumentGrid.setColSorting("str,str,str,str,str");
 
-					myDocumentGrid.setNumberFormat("0,000.00",2);
+					myDocumentGrid.setNumberFormat("0,000.00",3);
 
 					myDocumentGrid.init();
 
