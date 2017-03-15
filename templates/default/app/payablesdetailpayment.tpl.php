@@ -599,7 +599,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 					myDocumentGrid.setColTypes("ro,ro,ron,ro");
 
-					myDocumentGrid.setColSorting("str,str,int,str");
+					myDocumentGrid.setColSorting("str,str,str,str");
 
 					myDocumentGrid.setNumberFormat("0,000.00",2);
 
