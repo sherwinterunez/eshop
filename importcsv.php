@@ -45,7 +45,7 @@ require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
 date_default_timezone_set('Asia/Manila');
 
-$lines = file('linuxeshop.csv');
+$lines = file('listofcustomer3152017A.csv');
 
 //pre(array('$lines'=>$lines));
 
@@ -155,7 +155,7 @@ foreach($lines as $k=>$v) {
 
   }
 
-  $staffId = 22;
+  $staffId = 26;
 
   $content = array();
   $content['fund_ymd'] = $fund_ymd = date('Ymd');

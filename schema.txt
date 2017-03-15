@@ -1008,4 +1008,11 @@ CREATE UNIQUE INDEX indx_virtualnumber_mobileno ON tbl_virtualnumber USING btree
 
 select loadtransaction_id as id,loadtransaction_load as load,loadtransaction_amountdue as amountdue,loadtransaction_amount as amount,loadtransaction_cost as cost,loadtransaction_discount as discount,loadtransaction_discountpercent as discountpercent,loadtransaction_processingfee as processingfee,loadtransaction_status as status from tbl_loadtransaction where loadtransaction_id=3190;
 
+select * from tbl_ledger where ledger_receiptno in (select ledger_receiptno from tbl_ledger where ledger_type ilike '%refund%' and ledger_receiptno<>'') and ledger_id not in (select ledger_id from tbl_ledger where ledger_type ilike '%refund%')
+
+update tbl_ledger set ledger_refunded=1 where ledger_receiptno in (select ledger_receiptno from tbl_ledger where ledger_type ilike '%refund%' and ledger_receiptno<>'') and ledger_id not in (select ledger_id from tbl_ledger where ledger_type ilike '%refund%')
+
+
+select ledger_id,ledger_receiptno from tbl_ledger where ledger_type ilike '%refund%';
+
 ---------------------------------------------------------------------
