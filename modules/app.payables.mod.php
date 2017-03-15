@@ -1657,7 +1657,7 @@ if(!class_exists('APP_app_payables')) {
 
 						if(!empty($result['rows'][0]['ledger_id'])) {
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_datetime'],$v['ledger_credit']));
+								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_datetime'],number_format($v['ledger_credit'],2)));
 							}
 						}
 
