@@ -1298,8 +1298,8 @@ sherwint_eshop=#
 										}
 
 										$paid['unpaid'] = 0;
-										$paid['balance0'] = $tcompute;
-										$paid['balance'] = floatval($tcompute);
+										$paid['balance0'] = round($tcompute,2);
+										$paid['balance'] = round(floatval($tcompute),2);
 
 										$payment_totalamountpaid = floatval($tcompute);
 
@@ -1315,8 +1315,8 @@ sherwint_eshop=#
 										}
 
 										$paid['unpaid'] = 1;
-										$paid['balance0'] = $tcompute;
-										$paid['balance'] = floatval($tcompute);
+										$paid['balance0'] = round($tcompute,2);
+										$paid['balance'] = round(floatval($tcompute),2);
 
 										$ledgerpaid[$v['ledger_id']] = $paid;
 
