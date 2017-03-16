@@ -1274,7 +1274,7 @@ sherwint_eshop=#
 								$ledgerpaid = array();
 								$paydocs = array();
 
-								pre(array('$payment_totalamountpaid'=>$payment_totalamountpaid));
+								//pre(array('$payment_totalamountpaid'=>$payment_totalamountpaid));
 
 								//$amountdue = 0;
 								foreach($result['rows'] as $k=>$v) {
@@ -1329,8 +1329,8 @@ sherwint_eshop=#
 									//$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$v['ledger_credit']));
 								}
 
-								pre(array('$ledgerpaid'=>$ledgerpaid));
-								pre(array('$paydocs'=>$paydocs));
+								//pre(array('$ledgerpaid'=>$ledgerpaid));
+								//pre(array('$paydocs'=>$paydocs));
 
 								if(!empty($ledgerpaid)) {
 									foreach($ledgerpaid as $k=>$v) {
