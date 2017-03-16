@@ -276,6 +276,10 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myDocumentGrid.setColSorting("int,str,str,str,int,int,int,str");
 
+			myDocumentGrid.setNumberFormat("0,000.00",4);
+			myDocumentGrid.setNumberFormat("0,000.00",5);
+			myDocumentGrid.setNumberFormat("0,000.00",6);
+
 			myDocumentGrid.init();
 
 			<?php if(!empty($vars['post']['rowid'])) { ?>
