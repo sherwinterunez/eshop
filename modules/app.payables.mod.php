@@ -1283,6 +1283,7 @@ sherwint_eshop=#
 										$paid = array();
 										$paid['credit'] = floatval($v['ledger_credit']);
 										$paid['paid'] = $paid['credit'];
+										$paid['balance'] = $tcompute;
 
 										$payment_totalamountpaid = $tcompute;
 
@@ -1291,6 +1292,7 @@ sherwint_eshop=#
 										$paid = array();
 										$paid['credit'] = floatval($v['ledger_credit']);
 										$paid['paid'] = $payment_totalamountpaid;
+										$paid['balance'] = $tcompute;
 
 										$ledgerpaid[$v['ledger_id']] = $paid;
 
