@@ -1274,7 +1274,7 @@ sherwint_eshop=#
 								$ledgerpaid = array();
 								$paydocs = array();
 
-								pre(array('$payment_totalamountpaid'=>$payment_totalamountpaid));
+								//pre(array('$payment_totalamountpaid'=>$payment_totalamountpaid));
 
 								//$amountdue = 0;
 								foreach($result['rows'] as $k=>$v) {
@@ -1312,8 +1312,10 @@ sherwint_eshop=#
 
 										if(!empty($v['ledger_paid'])) {
 											$paid['paid'] = round(floatval($payment_totalamountpaid),2) + round(floatval($v['ledger_paid']),2);
+											$paid['ipay'] = round(floatval($payment_totalamountpaid),2);
 										} else {
 											$paid['paid'] = round(floatval($payment_totalamountpaid),2);
+											//$paid['ipay'] = round(floatval($payment_totalamountpaid),2);
 										}
 
 										$paid['unpaid'] = 1;
@@ -1329,8 +1331,8 @@ sherwint_eshop=#
 									//$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$v['ledger_credit']));
 								}
 
-								pre(array('$ledgerpaid'=>$ledgerpaid));
-								pre(array('$paydocs'=>$paydocs));
+								//pre(array('$ledgerpaid'=>$ledgerpaid));
+								//pre(array('$paydocs'=>$paydocs));
 
 								if(!empty($ledgerpaid)) {
 									foreach($ledgerpaid as $k=>$v) {
@@ -1382,7 +1384,11 @@ sherwint_eshop=#
 										//$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
 
 										if(!empty($paydocs[$k]['ledger_paid'])) {
-											$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid']; //$paymentdocument_balance; //
+											if(!empty($ledgerpaid[$k]['ipay'])) {
+												$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['ipay']; //$paymentdocument_balance; //
+											} else {
+												$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid']; //$paymentdocument_balance; //
+											}
 											$content['paymentdocument_balance'] = 0;
 										} else {
 											$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
