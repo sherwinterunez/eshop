@@ -1272,6 +1272,7 @@ sherwint_eshop=#
 							if(!empty($payment_totalamountpaid)&&!empty($result['rows'][0]['ledger_id'])) {
 
 								$ledgerpaid = array();
+								$paydocs = array();
 
 								pre(array('$payment_totalamountpaid'=>$payment_totalamountpaid));
 
@@ -1304,6 +1305,7 @@ sherwint_eshop=#
 										$payment_totalamountpaid = $tcompute;
 
 										$ledgerpaid[$v['ledger_id']] = $paid;
+										$paydocs[$v['ledger_id']] = $v;
 									} else {
 										$paid = array();
 										$paid['credit'] = round(floatval($ledger_credit),2);
@@ -1319,6 +1321,7 @@ sherwint_eshop=#
 										$paid['balance'] = $tcompute;
 
 										$ledgerpaid[$v['ledger_id']] = $paid;
+										$paydocs[$v['ledger_id']] = $v;
 
 										break;
 									}

@@ -2403,7 +2403,7 @@ function getSimCardPinByNumber($contactnumber=false) {
 	if(($res=parseMobileNo($contactnumber))) {
 		$contactnumber = '0'.$res[2].$res[3];
 
-		$sql = "select * from tbl_simcard where simcard_number=$contactnumber";
+		$sql = "select * from tbl_simcard where simcard_number='$contactnumber'";
 
 		//pre(array('$sql'=>$sql));
 

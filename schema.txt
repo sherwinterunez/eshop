@@ -899,30 +899,20 @@ DROP TABLE IF EXISTS tbl_paymentdocument;
 CREATE TABLE tbl_paymentdocument (
     paymentdocument_id bigint DEFAULT nextval(('tbl_paymentdocument_seq'::text)::regclass) NOT NULL,
     paymentdocument_ledgerid integer NOT NULL DEFAULT 0,
-    paymentdocument_debit numeric NOT NULL DEFAULT 0,
-    paymentdocument_credit numeric NOT NULL DEFAULT 0,
-    paymentdocument_balance numeric NOT NULL DEFAULT 0,
     paymentdocument_desc text DEFAULT ''::text NOT NULL,
-    paymentdocument_type text DEFAULT ''::text NOT NULL,
     paymentdocument_datetime text DEFAULT ''::text NOT NULL,
     paymentdocument_datetimeunix integer NOT NULL DEFAULT 0,
-    paymentdocument_user integer NOT NULL DEFAULT 0,
-    paymentdocument_seq integer NOT NULL DEFAULT 0,
+    paymentdocument_receiptno text DEFAULT ''::text NOT NULL,
+    paymentdocument_staffid integer NOT NULL DEFAULT 0,
+    paymentdocument_amountdue numeric NOT NULL DEFAULT 0,
+    paymentdocument_amountpaid numeric NOT NULL DEFAULT 0,
+    paymentdocument_balance numeric NOT NULL DEFAULT 0,
     paymentdocument_active integer NOT NULL DEFAULT 0,
     paymentdocument_deleted integer NOT NULL DEFAULT 0,
     paymentdocument_flag integer NOT NULL DEFAULT 0,
     paymentdocument_status integer NOT NULL DEFAULT 0,
     paymentdocument_createstamp timestamp with time zone DEFAULT now(),
-    paymentdocument_updatestamp timestamp with time zone DEFAULT now(),
-    paymentdocument_loadtransactionid integer NOT NULL DEFAULT 0,
-    paymentdocument_fundid integer NOT NULL DEFAULT 0,
-    paymentdocument_receiptno text DEFAULT ''::text NOT NULL,
-    paymentdocument_adjustmentid integer NOT NULL DEFAULT 0,
-    paymentdocument_staff integer NOT NULL DEFAULT 0,
-    paymentdocument_staffpaid integer NOT NULL DEFAULT 0,
-    paymentdocument_rebate numeric NOT NULL DEFAULT 0,
-    paymentdocument_rebatebalance numeric NOT NULL DEFAULT 0,
-    paymentdocument_refunded integer NOT NULL DEFAULT 0
+    paymentdocument_updatestamp timestamp with time zone DEFAULT now()
 );
 
 ALTER TABLE ONLY tbl_paymentdocument ADD CONSTRAINT tbl_paymentdocument_primary_key PRIMARY KEY (paymentdocument_id);
@@ -955,7 +945,7 @@ alter table tbl_ledger add column ledger_staffpaid integer NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_rebate numeric NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_rebatebalance numeric NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_refunded integer NOT NULL DEFAULT 0;
-alter table tbl_ledger add column ledger_unpaid numeric NOT NULL DEFAULT 0;
+alter table tbl_ledger add column ledger_unpaid numeric NOT NULL DEFAULT 1;
 alter table tbl_ledger add column ledger_paid numeric NOT NULL DEFAULT 0;
 
 ALTER TABLE tbl_ledger ALTER COLUMN ledger_loadtransactionid TYPE numeric;
@@ -967,6 +957,8 @@ ALTER TABLE tbl_ledger ALTER COLUMN ledger_loadtransactionid TYPE integer;
 ALTER TABLE tbl_ledger ALTER COLUMN ledger_loadtransactionid SET DEFAULT 0;
 
 ALTER TABLE tbl_ledger ALTER COLUMN ledger_loadtransactionid DROP DEFAULT;
+
+ALTER TABLE tbl_ledger DROP COLUMN ledger_unpaid;
 
 ---------------------------------------------------------------------
 
