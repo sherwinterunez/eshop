@@ -1374,11 +1374,12 @@ sherwint_eshop=#
 
 										if(!empty($paydocs[$k]['ledger_paid'])) {
 											$content['paymentdocument_amountpaid'] = $paymentdocument_balance; //$ledgerpaid[$k]['paid'];
+											$content['paymentdocument_balance'] = 0;
 										} else {
 											$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
+											$content['paymentdocument_balance'] = round(floatval($paymentdocument_balance),2) - round(floatval($ledgerpaid[$k]['paid']),2);
 										}
 
-										$content['paymentdocument_balance'] = 0;
 
 										if(!($result = $appdb->insert("tbl_paymentdocument",$content,"paymentdocument_id"))) {
 											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
