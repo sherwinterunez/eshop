@@ -1329,8 +1329,8 @@ sherwint_eshop=#
 									//$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$v['ledger_credit']));
 								}
 
-								//pre(array('$ledgerpaid'=>$ledgerpaid));
-								//pre(array('$paydocs'=>$paydocs));
+								pre(array('$ledgerpaid'=>$ledgerpaid));
+								pre(array('$paydocs'=>$paydocs));
 
 								if(!empty($ledgerpaid)) {
 									foreach($ledgerpaid as $k=>$v) {
@@ -1343,6 +1343,14 @@ sherwint_eshop=#
 											die;
 										}
 
+										$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']),2);
+										$paymentdocument_amountpaid = $v['paid'];
+
+										if(!empty($paydocs[$k]['ledger_paid'])) {
+											$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']) - floatval($paydocs[$k]['ledger_paid']),2);
+											$paymentdocument_amountpaid = $paydocs[$k]['ledger_paid'];
+										}
+
 										$content = array();
 										$content['paymentdocument_paymentid'] = $retval['rowid'];
 										$content['paymentdocument_ledgerid'] = $paydocs[$k]['ledger_id'];
@@ -1351,8 +1359,8 @@ sherwint_eshop=#
 										$content['paymentdocument_datetimeunix'] = $paydocs[$k]['ledger_datetimeunix'];
 										$content['paymentdocument_receiptno'] = $paydocs[$k]['ledger_receiptno'];
 										//$content['paymentdocument_staffid'] = $paydocs[$k]['ledger_receiptno'];
-										$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
-										$content['paymentdocument_amountpaid'] = $paydocs[$k]['ledger_paid'];
+										$content['paymentdocument_amountdue'] = $paymentdocument_amountdue;
+										$content['paymentdocument_amountpaid'] = $paymentdocument_amountpaid;
 										$content['paymentdocument_balance'] = $paymentdocument_balance = round(floatval($content['paymentdocument_amountdue']),2) - round(floatval($content['paymentdocument_amountpaid']),2);
 
 										if(!($result = $appdb->insert("tbl_paymentdocument",$content,"paymentdocument_id"))) {
