@@ -1353,7 +1353,7 @@ sherwint_eshop=#
 										//$content['paymentdocument_staffid'] = $paydocs[$k]['ledger_receiptno'];
 										$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
 										$content['paymentdocument_amountpaid'] = $paydocs[$k]['ledger_paid'];
-										$content['paymentdocument_balance'] = round(floatval($content['paymentdocument_amountdue']),2) - round(floatval($content['paymentdocument_amountpaid']),2);
+										$content['paymentdocument_balance'] = $paymentdocument_balance = round(floatval($content['paymentdocument_amountdue']),2) - round(floatval($content['paymentdocument_amountpaid']),2);
 
 										if(!($result = $appdb->insert("tbl_paymentdocument",$content,"paymentdocument_id"))) {
 											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -1371,7 +1371,7 @@ sherwint_eshop=#
 										$content['paymentdocument_receiptno'] = $paydocs[$k]['ledger_receiptno'];
 										//$content['paymentdocument_staffid'] = $paydocs[$k]['ledger_receiptno'];
 										//$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
-										$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
+										$content['paymentdocument_amountpaid'] = $paymentdocument_balance; //$ledgerpaid[$k]['paid'];
 										$content['paymentdocument_balance'] = 0;
 
 										if(!($result = $appdb->insert("tbl_paymentdocument",$content,"paymentdocument_id"))) {
