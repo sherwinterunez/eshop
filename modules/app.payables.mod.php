@@ -1329,8 +1329,8 @@ sherwint_eshop=#
 									//$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$v['ledger_credit']));
 								}
 
-								pre(array('$ledgerpaid'=>$ledgerpaid));
-								pre(array('$paydocs'=>$paydocs));
+								//pre(array('$ledgerpaid'=>$ledgerpaid));
+								//pre(array('$paydocs'=>$paydocs));
 
 								if(!empty($ledgerpaid)) {
 									foreach($ledgerpaid as $k=>$v) {
@@ -1371,7 +1371,13 @@ sherwint_eshop=#
 										$content['paymentdocument_receiptno'] = $paydocs[$k]['ledger_receiptno'];
 										//$content['paymentdocument_staffid'] = $paydocs[$k]['ledger_receiptno'];
 										//$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
-										$content['paymentdocument_amountpaid'] = $paymentdocument_balance; //$ledgerpaid[$k]['paid'];
+
+										if(!empty($paydocs[$k]['ledger_paid'])) {
+											$content['paymentdocument_amountpaid'] = $paymentdocument_balance; //$ledgerpaid[$k]['paid'];
+										} else {
+											$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
+										}
+
 										$content['paymentdocument_balance'] = 0;
 
 										if(!($result = $appdb->insert("tbl_paymentdocument",$content,"paymentdocument_id"))) {
