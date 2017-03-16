@@ -1079,7 +1079,7 @@ if(!class_exists('APP_app_inventory')) {
 
 				foreach($modemcommands as $v) {
 					$selected = false;
-					if(!empty($params['simcardinfo']['simcard_failedbalanceinquirysimcommand'])&&$params['simcardinfo']['simcard_failedbalanceinquirysimcommand']==$v) {
+					if(!empty($params['simcardinfo']['simcard_noconfirmationbalanceinquirysimcommand'])&&$params['simcardinfo']['simcard_noconfirmationbalanceinquirysimcommand']==$v) {
 						$selected = true;
 					}
 					if($readonly) {
