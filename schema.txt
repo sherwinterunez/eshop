@@ -899,6 +899,7 @@ DROP TABLE IF EXISTS tbl_paymentdocument;
 CREATE TABLE tbl_paymentdocument (
     paymentdocument_id bigint DEFAULT nextval(('tbl_paymentdocument_seq'::text)::regclass) NOT NULL,
     paymentdocument_ledgerid integer NOT NULL DEFAULT 0,
+    paymentdocument_paymentid integer NOT NULL DEFAULT 0,
     paymentdocument_desc text DEFAULT ''::text NOT NULL,
     paymentdocument_datetime text DEFAULT ''::text NOT NULL,
     paymentdocument_datetimeunix integer NOT NULL DEFAULT 0,

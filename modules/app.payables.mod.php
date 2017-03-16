@@ -1344,6 +1344,7 @@ sherwint_eshop=#
 										}
 
 										$content = array();
+										$content['paymentdocument_paymentid'] = $retval['rowid'];
 										$content['paymentdocument_ledgerid'] = $paydocs[$k]['ledger_id'];
 										$content['paymentdocument_desc'] = $paydocs[$k]['ledger_type'];
 										$content['paymentdocument_datetime'] = $paydocs[$k]['ledger_datetime'];
