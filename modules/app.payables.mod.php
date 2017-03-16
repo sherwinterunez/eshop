@@ -1288,7 +1288,13 @@ sherwint_eshop=#
 									if($tcompute>=0) {
 										$paid = array();
 										$paid['credit'] = floatval($ledger_credit);
-										$paid['paid'] = floatval($paid['credit']);
+
+										if(!empty($v['ledger_paid'])) {
+											$paid['paid'] = floatval($paid['credit']) + floatval($v['ledger_paid']);
+										} else {
+											$paid['paid'] = floatval($paid['credit']);
+										}
+
 										$paid['unpaid'] = 0;
 										$paid['balance'] = floatval($tcompute);
 
@@ -1298,7 +1304,13 @@ sherwint_eshop=#
 									} else {
 										$paid = array();
 										$paid['credit'] = floatval($ledger_credit);
-										$paid['paid'] = floatval($payment_totalamountpaid);
+
+										if(!empty($v['ledger_paid'])) {
+											$paid['paid'] = floatval($payment_totalamountpaid) + floatval($v['ledger_paid']);
+										} else {
+											$paid['paid'] = floatval($payment_totalamountpaid);
+										}
+
 										$paid['unpaid'] = 1;
 										$paid['balance'] = floatval($tcompute);
 
