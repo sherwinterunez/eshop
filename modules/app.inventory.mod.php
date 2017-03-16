@@ -537,7 +537,7 @@ if(!class_exists('APP_app_inventory')) {
 								$loadtransaction_runningbalance = ($loadtransaction_runningbalance + $in);
 								$loadtransaction_runningbalance = ($loadtransaction_runningbalance - $out);
 
-								pre(array('$loadtransaction_id'=>$v['loadtransaction_id'],'$in'=>$in,'$out'=>$out,'$loadtransaction_runningbalance'=>$loadtransaction_runningbalance));
+								//pre(array('$loadtransaction_id'=>$v['loadtransaction_id'],'$in'=>$in,'$out'=>$out,'$loadtransaction_runningbalance'=>$loadtransaction_runningbalance));
 							}
 
 							$content = array();
