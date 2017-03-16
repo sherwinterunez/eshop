@@ -483,7 +483,11 @@ if(!class_exists('APP_app_inventory')) {
 					}
 
 					if(!empty($loadtransaction_createstampunix)) {
-						if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_createstampunix>=$loadtransaction_createstampunix and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_createstampunix asc"))) {
+						/*if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_createstampunix>=$loadtransaction_createstampunix and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_createstampunix asc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}*/
+						if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_createstampunix>=$loadtransaction_createstampunix and loadtransaction_assignedsim='$loadtransaction_assignedsim' and loadtransaction_status in (TRN_COMPLETED_MANUALLY,TRN_COMPLETED) order by loadtransaction_createstampunix asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
