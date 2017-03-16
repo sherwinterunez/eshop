@@ -1283,6 +1283,7 @@ sherwint_eshop=#
 										$paid = array();
 										$paid['credit'] = floatval($v['ledger_credit']);
 										$paid['paid'] = $paid['credit'];
+										$paid['unpaid'] = 0;
 										$paid['balance'] = $tcompute;
 
 										$payment_totalamountpaid = $tcompute;
@@ -1292,6 +1293,7 @@ sherwint_eshop=#
 										$paid = array();
 										$paid['credit'] = floatval($v['ledger_credit']);
 										$paid['paid'] = $payment_totalamountpaid;
+										$paid['unpaid'] = 1;
 										$paid['balance'] = $tcompute;
 
 										$ledgerpaid[$v['ledger_id']] = $paid;
@@ -1303,6 +1305,18 @@ sherwint_eshop=#
 								}
 
 								pre(array('$ledgerpaid'=>$ledgerpaid));
+
+								if(!empty($ledgerpaid)) {
+									foreach($ledgerpaid as $k=>$v) {
+										$cupdate = array();
+										$cupdate['ledger_paid'] = $v['paid'];
+
+										if(!($result = $appdb->update("tbl_ledger",$cupdate,"ledger_id=".$k))) {
+											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+											die;
+										}
+									}
+								}
 
 							}
 
