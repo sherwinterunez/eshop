@@ -1344,7 +1344,8 @@ sherwint_eshop=#
 										}
 
 										if(!empty($paydocs[$k]['ledger_paid'])) {
-											$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']) - floatval($paydocs[$k]['ledger_paid']),2);
+											//$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']) - floatval($paydocs[$k]['ledger_paid']),2);
+											$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']),2);
 											$paymentdocument_amountpaid = $paydocs[$k]['ledger_paid'];
 										} else {
 											$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']),2);
