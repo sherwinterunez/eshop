@@ -1258,12 +1258,12 @@ sherwint_eshop=#
 							$customer_type = getCustomerType($payment_customerid);
 
 							if($customer_type=='REGULAR') {
-								if(!($result = $appdb->query("select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=".$payment_customerid." and a.ledger_fundid=b.fund_id and b.fund_type='fundcredit' order by a.ledger_datetimeunix asc"))) {
+								if(!($result = $appdb->query("select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=".$payment_customerid." and a.ledger_unpaid=1 and a.ledger_fundid=b.fund_id and b.fund_type='fundcredit' order by a.ledger_datetimeunix asc"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 									die;
 								}
 							} else {
-								if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>0 and ledger_refunded=0 order by ledger_datetimeunix asc"))) {
+								if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 									die;
 								}
@@ -1282,19 +1282,19 @@ sherwint_eshop=#
 									if($tcompute>=0) {
 										$paid = array();
 										$paid['credit'] = floatval($v['ledger_credit']);
-										$paid['paid'] = $paid['credit'];
+										$paid['paid'] = floatval($paid['credit']);
 										$paid['unpaid'] = 0;
-										$paid['balance'] = $tcompute;
+										$paid['balance'] = floatval($tcompute);
 
-										$payment_totalamountpaid = $tcompute;
+										$payment_totalamountpaid = floatval($tcompute);
 
 										$ledgerpaid[$v['ledger_id']] = $paid;
 									} else {
 										$paid = array();
 										$paid['credit'] = floatval($v['ledger_credit']);
-										$paid['paid'] = $payment_totalamountpaid;
+										$paid['paid'] = floatval($payment_totalamountpaid);
 										$paid['unpaid'] = 1;
-										$paid['balance'] = $tcompute;
+										$paid['balance'] = floatval($tcompute);
 
 										$ledgerpaid[$v['ledger_id']] = $paid;
 
@@ -1310,6 +1310,7 @@ sherwint_eshop=#
 									foreach($ledgerpaid as $k=>$v) {
 										$cupdate = array();
 										$cupdate['ledger_paid'] = $v['paid'];
+										$cupdate['ledger_unpaid'] = $v['unpaid'];
 
 										if(!($result = $appdb->update("tbl_ledger",$cupdate,"ledger_id=".$k))) {
 											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
