@@ -1817,12 +1817,12 @@ sherwint_eshop=#
 						$customer_type = getCustomerType($this->post['rowid']);
 
 						if($customer_type=='REGULAR') {
-							if(!($result = $appdb->query("select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=".$this->post['rowid']." and a.ledger_fundid=b.fund_id and b.fund_type='fundcredit' order by a.ledger_datetimeunix asc"))) {
+							if(!($result = $appdb->query("select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=".$this->post['rowid']." and a.ledger_unpaid=1 and a.ledger_fundid=b.fund_id and b.fund_type='fundcredit' order by a.ledger_datetimeunix asc"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
 						} else {
-							if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>0 and ledger_refunded=0 order by ledger_datetimeunix asc"))) {
+							if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
@@ -1835,8 +1835,14 @@ sherwint_eshop=#
 						if(!empty($result['rows'][0]['ledger_id'])) {
 							$amountdue = 0;
 							foreach($result['rows'] as $k=>$v) {
-								$amountdue = $amountdue + floatval($v['ledger_credit']);
-								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$v['ledger_credit']));
+								$ledger_credit = floatval($v['ledger_credit']);
+
+								if(!empty($v['ledger_paid'])) {
+									$ledger_credit = floatval($ledger_credit) - floatval($v['ledger_paid']);
+								}
+
+								$amountdue = $amountdue + $ledger_credit;
+								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$ledger_credit));
 							}
 						}
 
