@@ -1279,44 +1279,44 @@ sherwint_eshop=#
 								foreach($result['rows'] as $k=>$v) {
 									//$amountdue = $amountdue + floatval($v['ledger_credit']);
 
-									$ledger_credit = floatval($v['ledger_credit']);
+									$ledger_credit = round(floatval($v['ledger_credit']),2);
 
 									if(!empty($v['ledger_paid'])) {
-										$ledger_credit = floatval($v['ledger_credit']) - floatval($v['ledger_paid']);
+										$ledger_credit = round(floatval($v['ledger_credit']) - floatval($v['ledger_paid']),2);
 									}
 
-									$tcompute = $payment_totalamountpaid - $ledger_credit;
+									$tcompute = round(floatval($payment_totalamountpaid - $ledger_credit),2);
 
 									if($tcompute>=0) {
 										$paid = array();
-										$paid['credit'] = floatval($ledger_credit);
+										$paid['credit'] = $ledger_credit;
 
 										if(!empty($v['ledger_paid'])) {
-											$paid['paid'] = floatval($paid['credit']) + floatval($v['ledger_paid']);
+											$paid['paid'] = $paid['credit'] + round(floatval($v['ledger_paid']),2);
 										} else {
-											$paid['paid'] = floatval($paid['credit']);
+											$paid['paid'] = $paid['credit'];
 										}
 
 										$paid['unpaid'] = 0;
-										$paid['balance0'] = round($tcompute,2);
-										$paid['balance'] = round(floatval($tcompute),2);
+										//$paid['balance0'] = round($tcompute,2);
+										$paid['balance'] = $tcompute;
 
-										$payment_totalamountpaid = floatval($tcompute);
+										$payment_totalamountpaid = $tcompute;
 
 										$ledgerpaid[$v['ledger_id']] = $paid;
 									} else {
 										$paid = array();
-										$paid['credit'] = floatval($ledger_credit);
+										$paid['credit'] = $ledger_credit;
 
 										if(!empty($v['ledger_paid'])) {
-											$paid['paid'] = floatval($payment_totalamountpaid) + floatval($v['ledger_paid']);
+											$paid['paid'] = round(floatval($payment_totalamountpaid),2) + round(floatval($v['ledger_paid']),2);
 										} else {
-											$paid['paid'] = floatval($payment_totalamountpaid);
+											$paid['paid'] = round(floatval($payment_totalamountpaid),2);
 										}
 
 										$paid['unpaid'] = 1;
-										$paid['balance0'] = round($tcompute,2);
-										$paid['balance'] = round(floatval($tcompute),2);
+										//$paid['balance0'] = round($tcompute,2);
+										$paid['balance'] = $tcompute;
 
 										$ledgerpaid[$v['ledger_id']] = $paid;
 
