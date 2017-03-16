@@ -2026,7 +2026,7 @@ if(!class_exists('APP_app_load')) {
 
 					$retval = array();
 					$retval['return_code'] = 'SUCCESS';
-					$retval['return_message'] = 'Fund reload successfully saved!';
+					$retval['return_message'] = 'Customer reload successfully saved!';
 
 					$content = array();
 					$content['fund_ymd'] = $fund_ymd = date('Ymd');
@@ -2043,7 +2043,7 @@ if(!class_exists('APP_app_load')) {
 					$content['fund_userpaymentterm'] = !empty($post['fund_userpaymentterm']) ? $post['fund_userpaymentterm'] : '';
 					$content['fund_recepientid'] = $fund_recepientid = !empty($post['fund_recepientid']) ? $post['fund_recepientid'] : 0;
 					$content['fund_recepientname'] = getCustomerNameByID($content['fund_recepientid']);
-					$content['fund_recepientnumber'] = !empty($post['fund_recepientnumber']) ? $post['fund_recepientnumber'] : '';
+					$content['fund_recepientnumber'] = $fund_recepientnumber = !empty($post['fund_recepientnumber']) ? $post['fund_recepientnumber'] : '';
 					$content['fund_recepientpaymentterm'] = !empty($post['fund_recepientpaymentterm']) ? $post['fund_recepientpaymentterm'] : '';
 					$content['fund_status'] = 1;
 
@@ -2093,7 +2093,7 @@ if(!class_exists('APP_app_load')) {
 						$content['ledger_credit'] = $fund_amountdue;
 						$content['ledger_type'] = 'CUSTOMERRELOAD '.$fund_amountdue;
 						$content['ledger_datetimeunix'] = $fund_datetimeunix;
-						$content['ledger_datetime'] = pgDateUnix($fund_datetimeunix);
+						$content['ledger_datetime'] = $ledger_datetime = pgDateUnix($fund_datetimeunix);
 						$content['ledger_user'] = $fund_recepientid;
 						$content['ledger_seq'] = '0';
 						$content['ledger_receiptno'] = $receiptno;
@@ -2105,6 +2105,26 @@ if(!class_exists('APP_app_load')) {
 
 						computeCustomerBalance($fund_recepientid);
 
+						$fundBalance = getCustomerBalance($fund_recepientid);
+
+						if(!empty(($gateways = getGateways($fund_recepientnumber)))) {
+
+							//shuffle($gateways);
+
+							foreach($gateways as $gw=>$v) {
+								$errmsg = getNotification('CUSTOMER RELOAD');
+								$errmsg = str_replace('%VAMOUNT%', number_format($fund_amountdue,2), $errmsg);
+								$errmsg = str_replace('%VBALANCE%', number_format($fundBalance,2), $errmsg);
+								$errmsg = str_replace('%FRRECEIPTNO%', $receiptno, $errmsg);
+								$errmsg = str_replace('%DATETIME%', $ledger_datetime, $errmsg);
+
+								// You have received %VAMOUNT% credits. Your current VFUND is P%VBALANCE%. Tx: %FRRECEIPTNO% as of %DATETIME% Thank you.
+
+								sendToGateway($fund_recepientnumber,$gw,$errmsg);
+								break;
+							}
+						}
+
 						$content['ledger_user'] = $user_staffid;
 
 						if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
@@ -2113,6 +2133,8 @@ if(!class_exists('APP_app_load')) {
 						}
 
 						computeStaffBalance($user_staffid);
+
+
 					}
 
 					json_encode_return($retval);
