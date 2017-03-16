@@ -1330,6 +1330,7 @@ sherwint_eshop=#
 								}
 
 								pre(array('$ledgerpaid'=>$ledgerpaid));
+								pre(array('$paydocs'=>$paydocs));
 
 								if(!empty($ledgerpaid)) {
 									foreach($ledgerpaid as $k=>$v) {
@@ -1341,6 +1342,9 @@ sherwint_eshop=#
 											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 											die;
 										}
+
+										//$content = array();
+										//$content['paymentdocument_ledgerid'] = $paydocs[$k];
 									}
 								}
 
