@@ -1343,8 +1343,21 @@ sherwint_eshop=#
 											die;
 										}
 
-										//$content = array();
-										//$content['paymentdocument_ledgerid'] = $paydocs[$k];
+										$content = array();
+										$content['paymentdocument_ledgerid'] = $paydocs[$k]['ledger_id'];
+										$content['paymentdocument_desc'] = $paydocs[$k]['ledger_type'];
+										$content['paymentdocument_datetime'] = $paydocs[$k]['ledger_datetime'];
+										$content['paymentdocument_datetimeunix'] = $paydocs[$k]['ledger_datetimeunix'];
+										$content['paymentdocument_receiptno'] = $paydocs[$k]['ledger_receiptno'];
+										//$content['paymentdocument_staffid'] = $paydocs[$k]['ledger_receiptno'];
+										$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
+										$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
+										$content['paymentdocument_balance'] = 0;
+
+										if(!($result = $appdb->insert("tbl_paymentdocument",$content,"paymentdocument_id"))) {
+											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+											die;
+										}
 									}
 								}
 
