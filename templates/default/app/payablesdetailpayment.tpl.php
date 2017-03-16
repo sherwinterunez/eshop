@@ -250,7 +250,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=document&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=documentgrid&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
 		}, function(ddata,odata){
 
 			if(typeof(myWinObj.myDocumentGrid)!='null'&&typeof(myWinObj.myDocumentGrid)!='undefined'&&myWinObj.myDocumentGrid!=null) {
@@ -266,15 +266,15 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myDocumentGrid.setImagePath("/codebase/imgs/")
 
-			myDocumentGrid.setHeader("Document No., Date, Amount Due");
+			myDocumentGrid.setHeader("ID, Receipt No., Date, Description, Amount Due, Amount Paid, Balance, ");
 
-			myDocumentGrid.setInitWidths("*,*,*");
+			myDocumentGrid.setInitWidths("70,100,100,300,100,100,100,*");
 
-			myDocumentGrid.setColAlign("left,left,right");
+			myDocumentGrid.setColAlign("center,left,center,left,right,right,right,left");
 
-			myDocumentGrid.setColTypes("ro,ro,ro");
+			myDocumentGrid.setColTypes("ro,ro,ro,ro,ron,ron,ron,ro");
 
-			myDocumentGrid.setColSorting("str,str,str");
+			myDocumentGrid.setColSorting("int,str,str,str,int,int,int,str");
 
 			myDocumentGrid.init();
 

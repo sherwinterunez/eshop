@@ -1904,6 +1904,26 @@ sherwint_eshop=#
 						}
 
 						$retval = array('rows'=>$rows,'amountdue'=>$amountdue);
+					} else
+					if($this->post['table']=='documentgrid') {
+
+						if(!($result = $appdb->query("select * from tbl_paymentdocument where paymentdocument_paymentid=".$this->post['rowid']." order by paymentdocument_id asc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						$rows = array();
+
+						//pre(array('$result'=>$result));
+
+						if(!empty($result['rows'][0]['paymentdocument_id'])) {
+							foreach($result['rows'] as $k=>$v) {
+								$rows[] = array('id'=>$v['paymentdocument_id'],'data'=>array($v['paymentdocument_id'],$v['paymentdocument_receiptno'],$v['paymentdocument_datetime'],$v['paymentdocument_desc'],$v['paymentdocument_amountdue'],$v['paymentdocument_amountpaid'],$v['paymentdocument_balance']));
+							}
+						}
+
+						$retval = array('rows'=>$rows);
+
 					}
 
 					$jsonval = json_encode($retval,JSON_OBJECT_AS_ARRAY);
