@@ -1389,7 +1389,7 @@ sherwint_eshop=#
 											} else {
 												$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid']; //$paymentdocument_balance; //
 											}
-											$content['paymentdocument_balance'] = 0;
+											$content['paymentdocument_balance'] = round(floatval($paymentdocument_balance),2) - round(floatval($content['paymentdocument_amountpaid']),2);
 										} else {
 											$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
 											$content['paymentdocument_balance'] = round(floatval($paymentdocument_balance),2) - round(floatval($ledgerpaid[$k]['paid']),2);
