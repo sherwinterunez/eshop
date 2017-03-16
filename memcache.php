@@ -57,8 +57,8 @@ if(!empty($memcache)) {
 
   $key = sha1($customer_id.$keyword);
 
-  if(!$memcache->add($key, time(), 5)) {
-    print_r(array('error'=>'key already exists!'));    
+  if(!$memcache->add($key, time(), false, 5)) {
+    print_r(array('error'=>'key already exists!'));
   }
 } else {
   print_r(array('error'=>'memcached'));
