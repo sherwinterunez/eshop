@@ -2049,6 +2049,8 @@ if(!class_exists('APP_app_load')) {
 					$content['fund_recepientpaymentterm'] = !empty($post['fund_recepientpaymentterm']) ? $post['fund_recepientpaymentterm'] : '';
 					$content['fund_status'] = 1;
 
+					pre(array('$content'=>$content));
+
 					if(!empty($customer_type)&&$customer_type=='STAFF') {
 						$content['fund_staffid'] = $user_staffid;
 					}
