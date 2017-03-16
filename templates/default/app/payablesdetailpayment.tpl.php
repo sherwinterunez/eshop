@@ -268,7 +268,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myDocumentGrid.setHeader("ID, Receipt No., Date, Description, Amount Due, Amount Paid, Balance, ");
 
-			myDocumentGrid.setInitWidths("70,100,100,300,100,100,100,*");
+			myDocumentGrid.setInitWidths("70,120,120,200,120,120,120,*");
 
 			myDocumentGrid.setColAlign("center,left,center,left,right,right,right,left");
 
