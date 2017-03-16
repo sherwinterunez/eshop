@@ -1343,12 +1343,12 @@ sherwint_eshop=#
 											die;
 										}
 
-										$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']),2);
-										$paymentdocument_amountpaid = $v['paid'];
-
 										if(!empty($paydocs[$k]['ledger_paid'])) {
 											$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']) - floatval($paydocs[$k]['ledger_paid']),2);
 											$paymentdocument_amountpaid = $paydocs[$k]['ledger_paid'];
+										} else {
+											$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']),2);
+											$paymentdocument_amountpaid = 0; //$v['paid'];											
 										}
 
 										$content = array();
