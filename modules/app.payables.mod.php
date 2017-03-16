@@ -1277,11 +1277,17 @@ sherwint_eshop=#
 								foreach($result['rows'] as $k=>$v) {
 									//$amountdue = $amountdue + floatval($v['ledger_credit']);
 
-									$tcompute = $payment_totalamountpaid - floatval($v['ledger_credit']);
+									$ledger_credit = floatval($v['ledger_credit']);
+
+									if(!empty($v['ledger_paid'])) {
+										$ledger_credit = floatval($v['ledger_credit']) - floatval($v['ledger_paid']);
+									}
+
+									$tcompute = $payment_totalamountpaid - $ledger_credit;
 
 									if($tcompute>=0) {
 										$paid = array();
-										$paid['credit'] = floatval($v['ledger_credit']);
+										$paid['credit'] = floatval($ledger_credit);
 										$paid['paid'] = floatval($paid['credit']);
 										$paid['unpaid'] = 0;
 										$paid['balance'] = floatval($tcompute);
@@ -1291,7 +1297,7 @@ sherwint_eshop=#
 										$ledgerpaid[$v['ledger_id']] = $paid;
 									} else {
 										$paid = array();
-										$paid['credit'] = floatval($v['ledger_credit']);
+										$paid['credit'] = floatval($ledger_credit);
 										$paid['paid'] = floatval($payment_totalamountpaid);
 										$paid['unpaid'] = 1;
 										$paid['balance'] = floatval($tcompute);
