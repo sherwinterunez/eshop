@@ -1348,7 +1348,7 @@ sherwint_eshop=#
 											$paymentdocument_amountpaid = $paydocs[$k]['ledger_paid'];
 										} else {
 											$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']),2);
-											$paymentdocument_amountpaid = 0; //$v['paid'];											
+											$paymentdocument_amountpaid = 0; //$v['paid'];
 										}
 
 										$content = array();
@@ -1381,7 +1381,7 @@ sherwint_eshop=#
 										//$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
 
 										if(!empty($paydocs[$k]['ledger_paid'])) {
-											$content['paymentdocument_amountpaid'] = $paymentdocument_balance; //$ledgerpaid[$k]['paid'];
+											$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid']; //$paymentdocument_balance; //
 											$content['paymentdocument_balance'] = 0;
 										} else {
 											$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
