@@ -883,6 +883,50 @@ CREATE TABLE tbl_stafftransaction (
 
 ALTER TABLE ONLY tbl_stafftransaction ADD CONSTRAINT tbl_stafftransaction_primary_key PRIMARY KEY (fund_id);
 
+-- tbl_paymentdocument
+
+DROP SEQUENCE IF EXISTS tbl_paymentdocument_seq CASCADE;
+
+CREATE SEQUENCE tbl_paymentdocument_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_paymentdocument;
+
+CREATE TABLE tbl_paymentdocument (
+    paymentdocument_id bigint DEFAULT nextval(('tbl_paymentdocument_seq'::text)::regclass) NOT NULL,
+    paymentdocument_ledgerid integer NOT NULL DEFAULT 0,
+    paymentdocument_debit numeric NOT NULL DEFAULT 0,
+    paymentdocument_credit numeric NOT NULL DEFAULT 0,
+    paymentdocument_balance numeric NOT NULL DEFAULT 0,
+    paymentdocument_desc text DEFAULT ''::text NOT NULL,
+    paymentdocument_type text DEFAULT ''::text NOT NULL,
+    paymentdocument_datetime text DEFAULT ''::text NOT NULL,
+    paymentdocument_datetimeunix integer NOT NULL DEFAULT 0,
+    paymentdocument_user integer NOT NULL DEFAULT 0,
+    paymentdocument_seq integer NOT NULL DEFAULT 0,
+    paymentdocument_active integer NOT NULL DEFAULT 0,
+    paymentdocument_deleted integer NOT NULL DEFAULT 0,
+    paymentdocument_flag integer NOT NULL DEFAULT 0,
+    paymentdocument_status integer NOT NULL DEFAULT 0,
+    paymentdocument_createstamp timestamp with time zone DEFAULT now(),
+    paymentdocument_updatestamp timestamp with time zone DEFAULT now(),
+    paymentdocument_loadtransactionid integer NOT NULL DEFAULT 0,
+    paymentdocument_fundid integer NOT NULL DEFAULT 0,
+    paymentdocument_receiptno text DEFAULT ''::text NOT NULL,
+    paymentdocument_adjustmentid integer NOT NULL DEFAULT 0,
+    paymentdocument_staff integer NOT NULL DEFAULT 0,
+    paymentdocument_staffpaid integer NOT NULL DEFAULT 0,
+    paymentdocument_rebate numeric NOT NULL DEFAULT 0,
+    paymentdocument_rebatebalance numeric NOT NULL DEFAULT 0,
+    paymentdocument_refunded integer NOT NULL DEFAULT 0
+);
+
+ALTER TABLE ONLY tbl_paymentdocument ADD CONSTRAINT tbl_paymentdocument_primary_key PRIMARY KEY (paymentdocument_id);
+
 ---------------------------------------------------------------------
 
 

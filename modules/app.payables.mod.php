@@ -1196,11 +1196,11 @@ sherwint_eshop=#
 					$content['payment_ymd'] = date('Ymd');
 					//$content['payment_loadtransactionid'] = $loadtransaction_id;
 					$content['payment_status'] = TRN_POSTED;
-					$content['payment_customerid'] = !empty($post['payment_customer']) ? $post['payment_customer'] : 0;
+					$content['payment_customerid'] = $payment_customerid = !empty($post['payment_customer']) ? $post['payment_customer'] : 0;
 					$content['payment_customername'] = !empty($content['payment_customerid']) ? getCustomerNameByID($content['payment_customerid']) : '';
 					$content['payment_customernumber'] = !empty($content['payment_customerid']) ? getCustomerNumber($content['payment_customerid']) : '';
 					$content['payment_totalamountdue'] = !empty($post['payment_totalamountdue']) ? floatval($post['payment_totalamountdue']) : 0;
-					$content['payment_totalamountpaid'] = !empty($post['payment_totalamountpaid']) ? floatval($post['payment_totalamountpaid']) : 0;
+					$content['payment_totalamountpaid'] = $payment_totalamountpaid = !empty($post['payment_totalamountpaid']) ? floatval($post['payment_totalamountpaid']) : 0;
 					$content['payment_balance'] = !empty($post['payment_balance']) ? floatval($post['payment_balance']) : 0;
 
 					if(!empty($content['payment_totalamountpaid'])) {
@@ -1215,7 +1215,7 @@ sherwint_eshop=#
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
-						$retval['rowid'] = $post['rowid'];
+						/*$retval['rowid'] = $post['rowid'];
 
 						unset($content['payment_ymd']);
 
@@ -1224,7 +1224,7 @@ sherwint_eshop=#
 						if(!($result = $appdb->update("tbl_payment",$content,"payment_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
-						}
+						}*/
 
 					} else {
 
@@ -1251,6 +1251,60 @@ sherwint_eshop=#
 									die;
 								}
 							}
+						}
+
+						if(!empty($payment_customerid)&&!empty($retval['rowid'])) {
+
+							$customer_type = getCustomerType($payment_customerid);
+
+							if($customer_type=='REGULAR') {
+								if(!($result = $appdb->query("select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=".$payment_customerid." and a.ledger_fundid=b.fund_id and b.fund_type='fundcredit' order by a.ledger_datetimeunix asc"))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
+							} else {
+								if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>0 and ledger_refunded=0 order by ledger_datetimeunix asc"))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
+							}
+
+							if(!empty($payment_totalamountpaid)&&!empty($result['rows'][0]['ledger_id'])) {
+
+								$ledgerpaid = array();
+
+								//$amountdue = 0;
+								foreach($result['rows'] as $k=>$v) {
+									//$amountdue = $amountdue + floatval($v['ledger_credit']);
+
+									$tcompute = $payment_totalamountpaid - floatval($v['ledger_credit']);
+
+									if($tcompute>=0) {
+										$paid = array();
+										$paid['credit'] = floatval($v['ledger_credit']);
+										$paid['paid'] = $paid['credit'];
+
+										$payment_totalamountpaid = $tcompute;
+
+										$ledgerpaid[$v['ledger_id']] = $paid;
+									} else {
+										$paid = array();
+										$paid['credit'] = floatval($v['ledger_credit']);
+										$paid['paid'] = $payment_totalamountpaid;
+
+										$ledgerpaid[$v['ledger_id']] = $paid;
+
+										break;
+									}
+
+									//$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$v['ledger_credit']));
+								}
+
+								pre(array('$ledgerpaid'=>$ledgerpaid));
+
+							}
+
+
 						}
 
 					}
@@ -1738,8 +1792,6 @@ sherwint_eshop=#
 					if($this->post['table']=='document') {
 
 						$customer_type = getCustomerType($this->post['rowid']);
-
-						$where = '';
 
 						if($customer_type=='REGULAR') {
 							if(!($result = $appdb->query("select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=".$this->post['rowid']." and a.ledger_fundid=b.fund_id and b.fund_type='fundcredit' order by a.ledger_datetimeunix asc"))) {
