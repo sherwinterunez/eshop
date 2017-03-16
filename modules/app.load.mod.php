@@ -274,6 +274,8 @@ if(!class_exists('APP_app_load')) {
 						$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = !empty($post['retail_simcardbalance']) ? $post['retail_simcardbalance'] : 0;
 						$content['loadtransaction_runningbalance'] = $loadtransaction_runningbalance = !empty($post['retail_runningbalance']) ? $post['retail_runningbalance'] : 0;
 						$content['loadtransaction_amount'] = !empty($post['loadtransaction_amountdue']) ? $post['loadtransaction_amountdue'] : 0;
+
+						pre(array('$content'=>$content));
 					}
 
 					// retail_manualdate
