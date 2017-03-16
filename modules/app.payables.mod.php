@@ -1352,6 +1352,25 @@ sherwint_eshop=#
 										$content['paymentdocument_receiptno'] = $paydocs[$k]['ledger_receiptno'];
 										//$content['paymentdocument_staffid'] = $paydocs[$k]['ledger_receiptno'];
 										$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
+										//$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
+										$content['paymentdocument_balance'] = 0;
+
+										if(!($result = $appdb->insert("tbl_paymentdocument",$content,"paymentdocument_id"))) {
+											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+											die;
+										}
+
+										$paymentdocument_datetimeunix = intval(getDbUnixDate());
+
+										$content = array();
+										$content['paymentdocument_paymentid'] = $retval['rowid'];
+										$content['paymentdocument_ledgerid'] = $paydocs[$k]['ledger_id'];
+										$content['paymentdocument_desc'] = 'PAYMENT';
+										$content['paymentdocument_datetime'] = pgDateUnix($paymentdocument_datetimeunix);
+										$content['paymentdocument_datetimeunix'] = $paymentdocument_datetimeunix;
+										$content['paymentdocument_receiptno'] = $paydocs[$k]['ledger_receiptno'];
+										//$content['paymentdocument_staffid'] = $paydocs[$k]['ledger_receiptno'];
+										//$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
 										$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
 										$content['paymentdocument_balance'] = 0;
 
@@ -1359,6 +1378,7 @@ sherwint_eshop=#
 											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 											die;
 										}
+
 									}
 								}
 
