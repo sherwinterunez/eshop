@@ -1207,7 +1207,7 @@ sherwint_eshop=#
 					} else {
 						$retval = array();
 						$retval['error_code'] = 56786;
-						$retval['error_message'] = 'Amount paid cannot be empty!';
+						$retval['error_message'] = 'Amount paid cannot be zero!';
 
 						json_encode_return($retval);
 						die;
