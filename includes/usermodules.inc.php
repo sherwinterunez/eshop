@@ -446,15 +446,50 @@ function _eLoadProcessSMS($vars=array()) {
 
 		//print_r(array('$match'=>$match));
 
+		$general_resendtimer = getOption('$GENERALSETTINGS_RESENDTIMER',3600);
+
+		print_r(array('CHECKING FOR DUPLICATE REQUEST'=>'CHECKING FOR DUPLICATE REQUEST','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$general_resendtimer'=>$general_resendtimer));
+
+		$memcache = new Memcache;
+
+		if(!$memcache->connect('127.0.0.1', 11211, 5)) {
+		  unset($memcache);
+		}
+
+		if(!empty($memcache)) {
+		  $key = sha1($loadtransaction_customerid.$loadtransaction_keyword);
+
+		  if(!$memcache->add($key, time(), false, $general_resendtimer)) {
+
+				print_r(array('CONFIRMED DUPLICATE REQUEST!'=>'CONFIRMED DUPLICATE REQUEST!','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$loadtransaction_customerid'=>$loadtransaction_customerid,'$loadtransaction_customername'=>getCustomerNameByID($loadtransaction_customerid),'BY'=>'MEMCACHED'));
+
+				$general_resendduplicatenotification = getOption('$GENERALSETTINGS_RESENDDUPLICATENOTIFICATION',false);
+
+				if(!empty($general_resendduplicatenotification)) {
+
+					$noti = explode(',', $general_resendduplicatenotification);
+
+					foreach($noti as $v) {
+
+						$errmsg = smsdt()." ".getNotificationByID($v);
+						$errmsg = str_replace('%minutes%', ($general_resendtimer/60), $errmsg);
+
+						sendToGateway($loadtransaction_customernumber,$simhotline,$errmsg);
+
+					}
+				}
+
+				return false;
+		  }
+		} else {
+		  print_r(array('ERROR'=>'MEMCACHED'));
+		}
+
 		$sql = "SELECT *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime FROM tbl_loadtransaction WHERE loadtransaction_customerid=$loadtransaction_customerid AND loadtransaction_keyword='$loadtransaction_keyword' ORDER BY loadtransaction_id DESC LIMIT 1";
 
 		if(!($result=$appdb->query($sql))) {
 			return false;
 		}
-
-		$general_resendtimer = getOption('$GENERALSETTINGS_RESENDTIMER',1800);
-
-		print_r(array('CHECKING FOR DUPLICATE REQUEST'=>'CHECKING FOR DUPLICATE REQUEST','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$general_resendtimer'=>$general_resendtimer));
 
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
