@@ -47,4 +47,16 @@ date_default_timezone_set('Asia/Manila');
 
 //print_r(array('STATUS_RETRIEVESMS'=>setOption('STATUS_RETRIEVESMS','1','SETTING',true)));
 
-print_r(array('hello'=>'world'));
+//print_r(array('hello'=>'world'));
+
+$str = 'ESHOP  RL  AT10     09493621618'."\r\r\r\r\r\r\r\r\n\n\n\n\n\n\r\n\r\n\r\n\r\n\r\n"."f1";
+
+$str = clearDoubleSpace($str);
+
+$str = clearcrlf2($str);
+
+//$str = str_replace(' ','*',$str);
+
+pre(array('$str'=>'['.$str.']'));
+
+///

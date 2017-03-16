@@ -400,7 +400,7 @@ function _eLoadProcessSMS($vars=array()) {
 	}
 
 	if(!empty($vars['smsinbox']['smsinbox_message'])) {
-		$loadtransaction_keyword = strtoupper($vars['smsinbox']['smsinbox_message']);
+		$loadtransaction_keyword = strtoupper(clearcrlf2(clearDoubleSpace($vars['smsinbox']['smsinbox_message'])));
 	} else {
 		return false;
 	}
@@ -452,11 +452,19 @@ function _eLoadProcessSMS($vars=array()) {
 			return false;
 		}
 
+		$general_resendtimer = getOption('$GENERALSETTINGS_RESENDTIMER',1800);
+
+		print_r(array('CHECKING FOR DUPLICATE REQUEST'=>'CHECKING FOR DUPLICATE REQUEST','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$general_resendtimer'=>$general_resendtimer));
+
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
-			$general_resendtimer = getOption('$GENERALSETTINGS_RESENDTIMER',1800);
+			print_r(array('THIS IS A DUPLICATE REQUEST?'=>'THIS IS A DUPLICATE REQUEST?','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']'));
 
 			if($result['rows'][0]['elapsedtime']<$general_resendtimer) {  /// 30 minutes in seconds
+
+				$duplicate_elapsedtime = $result['rows'][0]['elapsedtime'];
+
+				print_r(array('CONFIRMED DUPLICATE REQUEST!'=>'CONFIRMED DUPLICATE REQUEST!','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$duplicate_elapsedtime'=>$duplicate_elapsedtime));
 
 				$general_resendduplicatenotification = getOption('$GENERALSETTINGS_RESENDDUPLICATENOTIFICATION',false);
 
@@ -479,6 +487,8 @@ function _eLoadProcessSMS($vars=array()) {
 
 			}
 		}
+
+		print_r(array('NOT A DUPLICATE REQUEST?'=>'NOT A DUPLICATE REQUEST?','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$duplicate_elapsedtime'=>!empty($duplicate_elapsedtime)?$duplicate_elapsedtime:0));
 
 		$customer_type = getCustomerType($loadtransaction_customerid);
 
