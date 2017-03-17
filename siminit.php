@@ -193,12 +193,31 @@ function modemInit($dev=false,$mobileNo=false,$ip='',$baud=115200,$simMenu=false
 	}
 
 	if($simMenu) {
-		if($sms->sendMessageOk("AT+STSF=2,\"5FFFFFFF7F\",3,0\r\n")) {
-			print_r($sms->history);
-			$sms->clearHistory();
+
+		if($sms->sendMessageReadPort("AT+CGMI\r\n", "Sierra(.+?)\r\n",2)) {
+
+			$result = $sms->getResult();
+			print_r(array('$result'=>$result));
+
+			if($sms->sendMessageOk("AT+STSF=2,\"FFFFFFFF7F01005F3E\",3,0\r\n")) {
+				print_r($sms->history);
+				$sms->clearHistory();
+			} else {
+				print_r($sms->history);
+				die('5.1An error has occured!');
+			}
 		} else {
-			print_r($sms->history);
-			die('5.1An error has occured!');
+			if($sms->sendMessageOk("AT+STSF=2,\"5FFFFFFF7F\",3,0\r\n")) {
+
+				$result = $sms->getResult();
+				print_r(array('$result'=>$result));
+
+				print_r($sms->history);
+				$sms->clearHistory();
+			} else {
+				print_r($sms->history);
+				die('5.1An error has occured!');
+			}
 		}
 
 		if($sms->sendMessageOk("AT+STSF=1\r\n")) {
