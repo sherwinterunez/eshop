@@ -98,6 +98,13 @@ if(!class_exists('APP_Login')) {
 			return false;
 		}
 
+		function getStaffID() {
+			if(!empty($_SESSION['USER']['user_staffid'])) {
+				return $_SESSION['USER']['user_staffid'];
+			}
+			return false;
+		}
+
 		function getUserData() {
 			global $appdb;
 

@@ -1200,7 +1200,7 @@ sherwint_eshop=#
 					$content['payment_customername'] = !empty($content['payment_customerid']) ? getCustomerNameByID($content['payment_customerid']) : '';
 					$content['payment_customernumber'] = !empty($content['payment_customerid']) ? getCustomerNumber($content['payment_customerid']) : '';
 					$content['payment_totalamountdue'] = !empty($post['payment_totalamountdue']) ? floatval($post['payment_totalamountdue']) : 0;
-					$content['payment_totalamountpaid'] = $payment_totalamountpaid = !empty($post['payment_totalamountpaid']) ? floatval($post['payment_totalamountpaid']) : 0;
+					$content['payment_totalamountpaid'] = $payment_totalamountpaid = $totalamountpaid = !empty($post['payment_totalamountpaid']) ? floatval($post['payment_totalamountpaid']) : 0;
 					$content['payment_balance'] = !empty($post['payment_balance']) ? floatval($post['payment_balance']) : 0;
 
 					if(!empty($content['payment_totalamountpaid'])) {
@@ -1452,6 +1452,7 @@ sherwint_eshop=#
 									$content = array();
 									$content['fund_ymd'] = $fund_ymd = date('Ymd');
 									$content['fund_type'] = 'payment';
+									$content['fund_payment'] = $totalamountpaid;
 									//$content['fund_amount'] = !empty($fund_amount) ? $fund_amount : 0;
 									//$content['fund_amountdue'] = !empty($fund_amountdue) ? $fund_amountdue : 0;
 									//$content['fund_discount'] = !empty($fund_discount) ? $fund_discount : 0;
@@ -1460,10 +1461,10 @@ sherwint_eshop=#
 									$content['fund_datetimeunix'] = !empty($fund_datetimeunix) ? $fund_datetimeunix : time();
 									$content['fund_datetime'] = pgDateUnix($content['fund_datetimeunix']);
 
-									$content['fund_userid'] = $fund_userid = !empty($smsinbox_contactsid) ? $smsinbox_contactsid : 0;
-									$content['fund_username'] = getCustomerNameByID($content['fund_userid']);
-									$content['fund_usernumber'] = !empty($smsinbox_contactnumber) ? $smsinbox_contactnumber : '';
-									
+									$content['fund_userid'] = $applogin->getStaffID();
+									$content['fund_username'] = !empty($content['fund_userid']) ? getCustomerNameByID($content['fund_userid']) : '';
+									$content['fund_usernumber'] = !empty($content['fund_userid']) ? getCustomerNumber($content['fund_userid']) : '';
+
 									//$content['fund_userpaymentterm'] = !empty($post['fund_userpaymentterm']) ? $post['fund_userpaymentterm'] : '';
 									$content['fund_recepientid'] = $payment_customerid;
 									$content['fund_recepientname'] = getCustomerNameByID($payment_customerid);
