@@ -1461,7 +1461,11 @@ sherwint_eshop=#
 									$content['fund_datetimeunix'] = !empty($fund_datetimeunix) ? $fund_datetimeunix : time();
 									$content['fund_datetime'] = pgDateUnix($content['fund_datetimeunix']);
 
-									$content['fund_userid'] = $applogin->getStaffID();
+									//$content['fund_userid'] = $applogin->getStaffID();
+									//$content['fund_username'] = !empty($content['fund_userid']) ? getCustomerNameByID($content['fund_userid']) : '';
+									//$content['fund_usernumber'] = !empty($content['fund_userid']) ? getCustomerNumber($content['fund_userid']) : '';
+
+									$content['fund_userid'] = $payment_customerid;
 									$content['fund_username'] = !empty($content['fund_userid']) ? getCustomerNameByID($content['fund_userid']) : '';
 									$content['fund_usernumber'] = !empty($content['fund_userid']) ? getCustomerNumber($content['fund_userid']) : '';
 

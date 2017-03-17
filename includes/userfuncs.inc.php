@@ -1438,7 +1438,9 @@ function computeCustomerAvailableCredit($id=false) {
 	if(!empty($id)&&is_numeric($id)) {
 	} else return false;
 
-	$sql = "select * from tbl_fund where fund_type='fundcredit' and fund_userid=$id and fund_paid=0 order by fund_id asc";
+	//$sql = "select * from tbl_fund where fund_type='fundcredit' and fund_userid=$id and fund_paid=0 order by fund_id asc";
+
+	$sql = "select * from tbl_fund where fund_type in ('fundcredit','payment') and fund_userid=$id and fund_paid=0 order by fund_id asc";
 
 	if(!($result = $appdb->query($sql))) {
 		return false;
