@@ -1328,11 +1328,11 @@ sherwint_eshop=#
 										$ledgerpaid[$v['ledger_id']] = $paid;
 										$paydocs[$v['ledger_id']] = $v;
 
-										break;
+										//break;
 									}
 
 									//$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$v['ledger_credit']));
-								}
+								} // foreach($result['rows'] as $k=>$v) {
 
 								//pre(array('$ledgerpaid'=>$ledgerpaid));
 								//pre(array('$paydocs'=>$paydocs));
