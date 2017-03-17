@@ -1276,6 +1276,8 @@ sherwint_eshop=#
 
 								//pre(array('$payment_totalamountpaid'=>$payment_totalamountpaid));
 
+								log_notice(array('$payment_totalamountpaid'=>$payment_totalamountpaid));
+
 								//$amountdue = 0;
 								foreach($result['rows'] as $k=>$v) {
 									//$amountdue = $amountdue + floatval($v['ledger_credit']);
@@ -1336,7 +1338,9 @@ sherwint_eshop=#
 
 								if(!empty($ledgerpaid)) {
 									foreach($ledgerpaid as $k=>$v) {
-										trigger_error(prebuf(array('$ledgerpaid['.$k.']'=>$v)));
+
+										log_notice(array('$ledgerpaid['.$k.']'=>$v));
+
 										$cupdate = array();
 										$cupdate['ledger_paid'] = $v['paid'];
 										$cupdate['ledger_unpaid'] = $v['unpaid'];

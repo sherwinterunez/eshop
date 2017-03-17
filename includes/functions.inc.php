@@ -965,6 +965,14 @@ function toFloat($num=false,$round=0) {
 	return 0;
 }
 
+function log_notice($str=false) {
+	if(!empty($str)) {
+		return trigger_error(prebuf($str));
+	}
+
+	return false;
+}
+
 timer_start();
 
 /* INCLUDES_END */
