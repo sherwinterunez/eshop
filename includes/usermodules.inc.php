@@ -1667,10 +1667,10 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 			}
 
 			if(!empty($match['BALANCE'])) {
-				$content['loadtransaction_simcardbalance'] = $match['BALANCE'];
+				$content['loadtransaction_simcardbalance'] = str_replace(',','',$match['BALANCE']);
 
 				$newbal = array();
-				$newbal['simcard_balance'] = $match['BALANCE'];
+				$newbal['simcard_balance'] = $content['loadtransaction_simcardbalance']; //$match['BALANCE'];
 
 				if(!($result = $appdb->update("tbl_simcard",$newbal,"simcard_number='".$loadtransaction_assignedsim."'"))) {
 					return false;
