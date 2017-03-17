@@ -8294,7 +8294,7 @@ function processSMS($content=false) {
 
 	$matched = smsSMSErrorMatched($content);
 
-	//pre(array('$matched here'=>$matched));
+	pre(array('smsSMSErrorMatched'=>$matched));
 
 	//if($matched===false) {
 	//	return false;
@@ -8310,7 +8310,7 @@ function processSMS($content=false) {
 
 	$matched = smsExpressionsMatched($content);
 
-	//pre(array('$matched here'=>$matched));
+	pre(array('smsExpressionsMatched'=>$matched));
 
 	//if($matched===false) {
 	//	return false;
