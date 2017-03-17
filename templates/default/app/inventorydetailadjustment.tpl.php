@@ -204,11 +204,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
 			]},
-			//{type: "block", name: "tbItem", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbItem']); ?>},
 			{type: "block", name: "tbDetails", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDetails']); ?>},
-			//{type: "block", name: "tbSimcommands", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbSimcommands']); ?>},
-			//{type: "block", name: "tbSmsexpression", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbSmsexpression']); ?>},
-			//{type: "block", name: "tbSmserror", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbSmserror']); ?>},
 			{type: "label", label: ""},
 			{type: "label", label: ""}
 		];
@@ -526,7 +522,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			if($k!=$vars['post']['rowid']&&!empty($v['simcard_number'])) {
 				$selected = false;
 
-				if($v['simcard_id']==$vars['params']['adjustmentinfo']['adjustment_simcardassignment']) {
+				if(!empty($vars['params']['adjustmentinfo']['adjustment_simcardassignment'])&&$v['simcard_id']==$vars['params']['adjustmentinfo']['adjustment_simcardassignment']) {
 					$selected = true;
 				}
 
