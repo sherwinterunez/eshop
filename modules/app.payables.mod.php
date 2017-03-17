@@ -1344,13 +1344,15 @@ sherwint_eshop=#
 
 										log_notice(array('$ledgerpaid['.$k.']'=>$v));
 
-										$cupdate = array();
-										$cupdate['ledger_paid'] = $v['paid'];
-										$cupdate['ledger_unpaid'] = $v['unpaid'];
+										if($v['paid']>0) {
+											$cupdate = array();
+											$cupdate['ledger_paid'] = $v['paid'];
+											$cupdate['ledger_unpaid'] = $v['unpaid'];
 
-										if(!($result = $appdb->update("tbl_ledger",$cupdate,"ledger_id=".$k))) {
-											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-											die;
+											if(!($result = $appdb->update("tbl_ledger",$cupdate,"ledger_id=".$k))) {
+												json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+												die;
+											}
 										}
 
 										if(!empty($paydocs[$k]['ledger_paid'])) {
@@ -1379,37 +1381,39 @@ sherwint_eshop=#
 											die;
 										}
 
-										$paymentdocument_datetimeunix = intval(getDbUnixDate());
+										if($v['paid']>0) {
+											$paymentdocument_datetimeunix = intval(getDbUnixDate());
 
-										$content = array();
-										$content['paymentdocument_paymentid'] = $retval['rowid'];
-										$content['paymentdocument_ledgerid'] = $paydocs[$k]['ledger_id'];
-										$content['paymentdocument_desc'] = 'PAYMENT';
-										$content['paymentdocument_datetime'] = pgDateUnix($paymentdocument_datetimeunix);
-										$content['paymentdocument_datetimeunix'] = $paymentdocument_datetimeunix;
-										$content['paymentdocument_receiptno'] = $paydocs[$k]['ledger_receiptno'];
-										//$content['paymentdocument_staffid'] = $paydocs[$k]['ledger_receiptno'];
-										//$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
+											$content = array();
+											$content['paymentdocument_paymentid'] = $retval['rowid'];
+											$content['paymentdocument_ledgerid'] = $paydocs[$k]['ledger_id'];
+											$content['paymentdocument_desc'] = 'PAYMENT';
+											$content['paymentdocument_datetime'] = pgDateUnix($paymentdocument_datetimeunix);
+											$content['paymentdocument_datetimeunix'] = $paymentdocument_datetimeunix;
+											$content['paymentdocument_receiptno'] = $paydocs[$k]['ledger_receiptno'];
+											//$content['paymentdocument_staffid'] = $paydocs[$k]['ledger_receiptno'];
+											//$content['paymentdocument_amountdue'] = $paydocs[$k]['ledger_credit'];
 
-										if(!empty($paydocs[$k]['ledger_paid'])) {
-											if(!empty($ledgerpaid[$k]['ipay'])) {
-												$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['ipay']; //$paymentdocument_balance; //
+											if(!empty($paydocs[$k]['ledger_paid'])) {
+												if(!empty($ledgerpaid[$k]['ipay'])) {
+													$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['ipay']; //$paymentdocument_balance; //
+												} else {
+													$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid']; //$paymentdocument_balance; //
+												}
+												$content['paymentdocument_balance'] = round(floatval($paymentdocument_balance),2) - round(floatval($content['paymentdocument_amountpaid']),2);
 											} else {
-												$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid']; //$paymentdocument_balance; //
+												$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
+												$content['paymentdocument_balance'] = round(floatval($paymentdocument_balance),2) - round(floatval($ledgerpaid[$k]['paid']),2);
 											}
-											$content['paymentdocument_balance'] = round(floatval($paymentdocument_balance),2) - round(floatval($content['paymentdocument_amountpaid']),2);
-										} else {
-											$content['paymentdocument_amountpaid'] = $ledgerpaid[$k]['paid'];
-											$content['paymentdocument_balance'] = round(floatval($paymentdocument_balance),2) - round(floatval($ledgerpaid[$k]['paid']),2);
-										}
 
 
-										if(!($result = $appdb->insert("tbl_paymentdocument",$content,"paymentdocument_id"))) {
-											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-											die;
-										}
+											if(!($result = $appdb->insert("tbl_paymentdocument",$content,"paymentdocument_id"))) {
+												json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+												die;
+											}
+										} // if($v['paid']>0) {
 
-									}
+									} // foreach($ledgerpaid as $k=>$v) {
 								}
 
 							}

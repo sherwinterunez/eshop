@@ -308,7 +308,7 @@ function portCheck() {
 
         var obj = JSON.parse(output);
 
-        //console.log(obj);
+        console.log(obj);
 
       } catch(e) {
         console.log(e);
