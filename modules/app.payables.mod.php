@@ -1282,20 +1282,21 @@ sherwint_eshop=#
 								foreach($result['rows'] as $k=>$v) {
 									//$amountdue = $amountdue + floatval($v['ledger_credit']);
 
-									$ledger_credit = round(floatval($v['ledger_credit']),2);
+									$ledger_credit = toFloat($v['ledger_credit'],2);
 
 									if(!empty($v['ledger_paid'])) {
-										$ledger_credit = round(floatval($v['ledger_credit']) - floatval($v['ledger_paid']),2);
+										$ledger_credit = toFloat($v['ledger_credit'],2) - toFloat($v['ledger_paid'],2);
 									}
 
-									$tcompute = round(floatval($payment_totalamountpaid - $ledger_credit),2);
+									$tcompute = toFloat(($payment_totalamountpaid - $ledger_credit),2);
 
 									if($tcompute>=0) {
 										$paid = array();
-										$paid['credit'] = round(floatval($ledger_credit),2);
+										$paid['credit'] = toFloat($ledger_credit,2);
 
 										if(!empty($v['ledger_paid'])) {
-											$paid['paid'] = $paid['credit'] + round(floatval($v['ledger_paid']),2);
+											$paid['paid'] = $paid['credit'] + toFloat($v['ledger_paid'],2);
+											$paid['ipay'] = $paid['credit'];
 										} else {
 											$paid['paid'] = $paid['credit'];
 										}
