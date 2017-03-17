@@ -948,6 +948,7 @@ alter table tbl_ledger add column ledger_rebatebalance numeric NOT NULL DEFAULT 
 alter table tbl_ledger add column ledger_refunded integer NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_unpaid numeric NOT NULL DEFAULT 1;
 alter table tbl_ledger add column ledger_paid numeric NOT NULL DEFAULT 0;
+alter table tbl_ledger add column ledger_paymentid integer NOT NULL DEFAULT 0;
 
 ALTER TABLE tbl_ledger ALTER COLUMN ledger_loadtransactionid TYPE numeric;
 

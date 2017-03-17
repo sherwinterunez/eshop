@@ -1193,7 +1193,7 @@ sherwint_eshop=#
 */
 
 					$content = array();
-					$content['payment_ymd'] = date('Ymd');
+					$content['payment_ymd'] = $payment_ymd = date('Ymd');
 					//$content['payment_loadtransactionid'] = $loadtransaction_id;
 					$content['payment_status'] = TRN_POSTED;
 					$content['payment_customerid'] = $payment_customerid = !empty($post['payment_customer']) ? $post['payment_customer'] : 0;
@@ -1415,15 +1415,9 @@ sherwint_eshop=#
 
 										} else {
 
-											//if(!empty($paydocs[$k]['ledger_paid'])) {
-												//$paymentdocument_amountdue = round(floatval($paydocs[$k]['ledger_credit']) - floatval($paydocs[$k]['ledger_paid']),2);
-												//$paymentdocument_amountdue = toFloat($paydocs[$k]['ledger_credit'],2);
-												//$paymentdocument_amountpaid = $paydocs[$k]['ledger_paid'];
-											//} else {
-												$paymentdocument_amountdue = toFloat($paydocs[$k]['ledger_credit'],2);
-												$paymentdocument_amountpaid = 0; //$v['paid'];
-												$paymentdocument_balance = toFloat($paymentdocument_balance + $paymentdocument_amountdue,2);
-											//}
+											$paymentdocument_amountdue = toFloat($paydocs[$k]['ledger_credit'],2);
+											$paymentdocument_amountpaid = 0; //$v['paid'];
+											$paymentdocument_balance = toFloat($paymentdocument_balance + $paymentdocument_amountdue,2);
 
 											$content = array();
 											$content['paymentdocument_paymentid'] = $retval['rowid'];
@@ -1447,41 +1441,70 @@ sherwint_eshop=#
 									} // foreach($ledgerpaid as $k=>$v) {
 
 //////////////
-									$fund_datetimeunix = intval(getDbUnixDate());
 
-									$content = array();
-									$content['fund_ymd'] = $fund_ymd = date('Ymd');
-									$content['fund_type'] = 'payment';
-									$content['fund_payment'] = toFloat($totalamountpaid,2);
-									//$content['fund_amount'] = !empty($fund_amount) ? $fund_amount : 0;
-									//$content['fund_amountdue'] = !empty($fund_amountdue) ? $fund_amountdue : 0;
-									//$content['fund_discount'] = !empty($fund_discount) ? $fund_discount : 0;
-									//$content['fund_discountamount'] = !empty($fund_discountamount) ? $fund_discountamount : 0;
-									//$content['fund_processingfee'] = !empty($fund_processingfee) ? $fund_processingfee : 0;
-									$content['fund_datetimeunix'] = !empty($fund_datetimeunix) ? $fund_datetimeunix : time();
-									$content['fund_datetime'] = pgDateUnix($content['fund_datetimeunix']);
+									if($customer_type=='REGULAR') {
 
-									//$content['fund_userid'] = $applogin->getStaffID();
-									//$content['fund_username'] = !empty($content['fund_userid']) ? getCustomerNameByID($content['fund_userid']) : '';
-									//$content['fund_usernumber'] = !empty($content['fund_userid']) ? getCustomerNumber($content['fund_userid']) : '';
+										$fund_datetimeunix = intval(getDbUnixDate());
 
-									$content['fund_userid'] = $payment_customerid;
-									$content['fund_username'] = !empty($content['fund_userid']) ? getCustomerNameByID($content['fund_userid']) : '';
-									$content['fund_usernumber'] = !empty($content['fund_userid']) ? getCustomerNumber($content['fund_userid']) : '';
+										$content = array();
+										$content['fund_ymd'] = $fund_ymd = date('Ymd');
+										$content['fund_type'] = 'payment';
+										$content['fund_payment'] = toFloat($totalamountpaid,2);
+										//$content['fund_amount'] = !empty($fund_amount) ? $fund_amount : 0;
+										//$content['fund_amountdue'] = !empty($fund_amountdue) ? $fund_amountdue : 0;
+										//$content['fund_discount'] = !empty($fund_discount) ? $fund_discount : 0;
+										//$content['fund_discountamount'] = !empty($fund_discountamount) ? $fund_discountamount : 0;
+										//$content['fund_processingfee'] = !empty($fund_processingfee) ? $fund_processingfee : 0;
+										$content['fund_datetimeunix'] = !empty($fund_datetimeunix) ? $fund_datetimeunix : time();
+										$content['fund_datetime'] = pgDateUnix($content['fund_datetimeunix']);
 
-									//$content['fund_userpaymentterm'] = !empty($post['fund_userpaymentterm']) ? $post['fund_userpaymentterm'] : '';
-									$content['fund_recepientid'] = $payment_customerid;
-									$content['fund_recepientname'] = getCustomerNameByID($payment_customerid);
-									$content['fund_recepientnumber'] = getCustomerNumber($payment_customerid);
-									//$content['fund_recepientpaymentterm'] = !empty($post['fund_recepientpaymentterm']) ? $post['fund_recepientpaymentterm'] : '';
-									$content['fund_status'] = 1;
+										//$content['fund_userid'] = $applogin->getStaffID();
+										//$content['fund_username'] = !empty($content['fund_userid']) ? getCustomerNameByID($content['fund_userid']) : '';
+										//$content['fund_usernumber'] = !empty($content['fund_userid']) ? getCustomerNumber($content['fund_userid']) : '';
 
-									if(!($result = $appdb->insert("tbl_fund",$content,"fund_id"))) {
-										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;
+										$content['fund_userid'] = $payment_customerid;
+										$content['fund_username'] = !empty($content['fund_userid']) ? getCustomerNameByID($content['fund_userid']) : '';
+										$content['fund_usernumber'] = !empty($content['fund_userid']) ? getCustomerNumber($content['fund_userid']) : '';
+
+										//$content['fund_userpaymentterm'] = !empty($post['fund_userpaymentterm']) ? $post['fund_userpaymentterm'] : '';
+										$content['fund_recepientid'] = $payment_customerid;
+										$content['fund_recepientname'] = getCustomerNameByID($payment_customerid);
+										$content['fund_recepientnumber'] = getCustomerNumber($payment_customerid);
+										//$content['fund_recepientpaymentterm'] = !empty($post['fund_recepientpaymentterm']) ? $post['fund_recepientpaymentterm'] : '';
+										$content['fund_status'] = 1;
+
+										if(!($result = $appdb->insert("tbl_fund",$content,"fund_id"))) {
+											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+											die;
+										}
+
+										computeCustomerAvailableCredit($payment_customerid);
+
+									} else {
+
+										$ledger_datetimeunix = intval(getDbUnixDate());
+
+										$receiptno = $payment_ymd . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', $retval['rowid']);
+
+										$content = array();
+										$content['ledger_paymentid'] = $retval['rowid'];
+										$content['ledger_debit'] = toFloat($totalamountpaid,2);;
+										$content['ledger_type'] = 'PAYMENT';
+										$content['ledger_datetimeunix'] = $ledger_datetimeunix;
+										$content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
+										$content['ledger_user'] = $payment_customerid;
+										$content['ledger_seq'] = '0';
+										$content['ledger_receiptno'] = $receiptno;
+
+										if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
+											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+											die;
+										}
+
+										computeStaffBalance($payment_customerid);
+
 									}
 
-									computeCustomerAvailableCredit($payment_customerid);
 //////////////
 								} // if(!empty($ledgerpaid)) {
 
