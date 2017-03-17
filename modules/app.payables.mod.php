@@ -1445,7 +1445,38 @@ sherwint_eshop=#
 										} // if($v['paid']>0) {
 
 									} // foreach($ledgerpaid as $k=>$v) {
-								}
+
+//////////////
+									$fund_datetimeunix = intval(getDbUnixDate());
+
+									$content = array();
+									$content['fund_ymd'] = $fund_ymd = date('Ymd');
+									$content['fund_type'] = 'payment';
+									//$content['fund_amount'] = !empty($fund_amount) ? $fund_amount : 0;
+									//$content['fund_amountdue'] = !empty($fund_amountdue) ? $fund_amountdue : 0;
+									//$content['fund_discount'] = !empty($fund_discount) ? $fund_discount : 0;
+									//$content['fund_discountamount'] = !empty($fund_discountamount) ? $fund_discountamount : 0;
+									//$content['fund_processingfee'] = !empty($fund_processingfee) ? $fund_processingfee : 0;
+									$content['fund_datetimeunix'] = !empty($fund_datetimeunix) ? $fund_datetimeunix : time();
+									$content['fund_datetime'] = pgDateUnix($content['fund_datetimeunix']);
+
+									$content['fund_userid'] = $fund_userid = !empty($smsinbox_contactsid) ? $smsinbox_contactsid : 0;
+									$content['fund_username'] = getCustomerNameByID($content['fund_userid']);
+									$content['fund_usernumber'] = !empty($smsinbox_contactnumber) ? $smsinbox_contactnumber : '';
+									
+									//$content['fund_userpaymentterm'] = !empty($post['fund_userpaymentterm']) ? $post['fund_userpaymentterm'] : '';
+									$content['fund_recepientid'] = $payment_customerid;
+									$content['fund_recepientname'] = getCustomerNameByID($payment_customerid);
+									$content['fund_recepientnumber'] = getCustomerNumber($payment_customerid);
+									//$content['fund_recepientpaymentterm'] = !empty($post['fund_recepientpaymentterm']) ? $post['fund_recepientpaymentterm'] : '';
+									$content['fund_status'] = 1;
+
+									if(!($result = $appdb->insert("tbl_fund",$content,"fund_id"))) {
+										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+										die;
+									}
+//////////////
+								} // if(!empty($ledgerpaid)) {
 
 							}
 

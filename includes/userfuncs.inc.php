@@ -3759,6 +3759,18 @@ function setSimNumber($dev,$mobileNo,$ip='') {
 	AT+CPBS="SM"
 	*/
 
+	/*
+	AT+CPBS="ON"
+	AT+CPBW=1,"09771307238",129,""
+	AT+CPBS="SM"
+	*/
+
+	/*
+	AT+CPBS="ON"
+	AT+CPBW=1,"09092701100",129,""
+	AT+CPBS="SM"
+	*/
+
 	if($sms->sendMessageReadPort("AT+CPBS=\"ON\"\r\n", "OK\r\n")&&$sms->sendMessageReadPort("AT+CPBW=1,\"$mobileNo\",129,\"\"\r\n", "OK\r\n")&&$sms->sendMessageReadPort("AT+CPBS=\"SM\"\r\n", "OK\r\n")) {
 
 	}

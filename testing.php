@@ -59,9 +59,11 @@ $str = clearcrlf2($str);
 
 pre(array('$str'=>'['.$str.']'));*/
 
-$num = '1,234,344.00554564';
+//$num = '1,234,344.00554564';
 
-pre(array('toFloat'=>toFloat($num,3)));
+//pre(array('toFloat'=>toFloat($num,3)));
+
+pre(array('$_SESSION'=>$_SESSION));
 
 
 ///
