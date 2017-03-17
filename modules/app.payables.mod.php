@@ -1328,6 +1328,8 @@ sherwint_eshop=#
 										$ledgerpaid[$v['ledger_id']] = $paid;
 										$paydocs[$v['ledger_id']] = $v;
 
+										$payment_totalamountpaid = $tcompute;
+
 										//break;
 									}
 
