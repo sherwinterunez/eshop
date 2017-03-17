@@ -330,7 +330,22 @@ if(!class_exists('APP_app_inventory')) {
 					$content['simcard_stopprocessingloadcommand'] = !empty($post['simcard_stopprocessingloadcommand']) ? 1 : 0;
 					$content['simcard_timelapsedforlatesms'] = !empty($post['simcard_timelapsedforlatesms']) ? $post['simcard_timelapsedforlatesms'] : 60;
 
+					$dontbypass = true;
+
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+
+//////////
+
+							if(!($result = $appdb->query("select * from tbl_simcard where simcard_id=".$post['rowid']))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!empty($result['rows'][0]['simcard_id'])&&$sim_number==$result['rows'][0]['simcard_number']&&$sim_device==$result['rows'][0]['simcard_linuxport']) {
+								$dontbypass = false;
+							}
+
+//////////
 
 						$retval['rowid'] = $post['rowid'];
 
@@ -383,7 +398,7 @@ if(!class_exists('APP_app_inventory')) {
 						}
 					}
 
-					if(!empty($sim_device)&&!empty($sim_number)) {
+					if(!empty($dontbypass)&&!empty($sim_device)&&!empty($sim_number)) {
 
 						$curl = new MyCurl;
 
