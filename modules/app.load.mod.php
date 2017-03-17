@@ -3038,9 +3038,16 @@ if(!class_exists('APP_app_load')) {
 								die;
 							}
 						} else {
-							$userid = $applogin->getUserID();
+							//$userid = $applogin->getUserID();
 
-							if(!($result = $appdb->query("select * from tbl_fund where fund_type='customerreload' and fund_userid=$userid order by fund_id desc"))) {
+							/*if(!($result = $appdb->query("select * from tbl_fund where fund_type='customerreload' and fund_userid=$userid order by fund_id desc"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}*/
+
+							$fund_staffid = $applogin->getStaffID();
+
+							if(!($result = $appdb->query("select * from tbl_fund where fund_type='customerreload' and fund_staffid=$fund_staffid order by fund_id desc"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}

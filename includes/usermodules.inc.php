@@ -1469,6 +1469,8 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 			if(!empty($match['BALANCE'])) {
 				$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = floatval(str_replace(',','',$match['BALANCE']));
 
+				$previousBalance = getSimBalance($loadtransaction_assignedsim);
+
 				$newbal = array();
 				$newbal['simcard_balance'] = floatval(str_replace(',','',$match['BALANCE']));
 
