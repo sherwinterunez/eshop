@@ -1451,6 +1451,7 @@ function computeCustomerAvailableCredit($id=false) {
 	if(!empty($result['rows'][0]['fund_id'])) {
 		foreach($result['rows'] as $k=>$v) {
 			$customer_totalcredit = floatval($customer_totalcredit) + floatval($v['fund_amountdue']);
+			$customer_totalcredit = floatval($customer_totalcredit) - floatval($v['fund_payment']);
 		}
 	}
 
