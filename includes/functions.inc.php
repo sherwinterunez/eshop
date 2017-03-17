@@ -946,6 +946,25 @@ function clearcrlf2($str=false) {
 	return false;
 }
 
+function toFloat($num=false,$round=2) {
+	if(!empty($num)) {
+		$num = str_replace(',','',$num);
+
+		$num = clearDoubleSpace($num);
+
+		$num = clearcrlf2($num);
+
+		$num = floatval($num);
+
+		if(!empty($round)) {
+			$num = round($num,$round);
+		}
+
+		return $num;
+	}
+	return 0;
+}
+
 timer_start();
 
 /* INCLUDES_END */
