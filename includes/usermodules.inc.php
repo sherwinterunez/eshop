@@ -1575,8 +1575,10 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 					$errmsg = str_replace('%LRDATETIME%', pgDateUnix(time()),$errmsg);
 
 					if($customer_type=='STAFF') {
+						computeStaffBalance($loadtransaction_customerid);
 						$errmsg = str_replace('%VBALANCE%',getStaffBalance($loadtransaction_customerid),$errmsg);
 					} else {
+						computeCustomerBalance($loadtransaction_customerid);
 						$errmsg = str_replace('%VBALANCE%',getCustomerBalance($loadtransaction_customerid),$errmsg);
 					}
 
@@ -1590,8 +1592,10 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 					$errmsg = str_replace('%ref%',$content['loadtransaction_refnumber'],$errmsg);
 
 					if($customer_type=='STAFF') {
+						computeStaffBalance($loadtransaction_customerid);
 						$errmsg = str_replace('%balance%',getStaffBalance($loadtransaction_customerid),$errmsg);
 					} else {
+						computeCustomerBalance($loadtransaction_customerid);
 						$errmsg = str_replace('%balance%',getCustomerBalance($loadtransaction_customerid),$errmsg);
 					}
 
