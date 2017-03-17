@@ -1,6 +1,7 @@
 
 PGDUMP=`which pg_dump`
 TAR=`which tar`
+GZIP=`which gzip`
 BACKUP_DIR=/srv/backup/
 CURDATE=`date +\%Y-\%m-\%d-\%H-\%M`
 DBNAME=sherwint_eshop
@@ -8,9 +9,8 @@ IPADD=127.0.0.1
 USERNAME=sherwint_sherwin
 SQLFILE=$BACKUP_DIR$DBNAME"-"$CURDATE.sql
 TGZFILE=$BACKUP_DIR$DBNAME"-"$CURDATE.sql.tgz
+GZFILE=$BACKUP_DIR$DBNAME"-"$CURDATE.sql.gz
 DOPG="$PGDUMP -h $IPADD -U $USERNAME -c $DBNAME > $SQLFILE"
 DOTAR="$TAR czvf $TGZFILE $SQLFILE"
 echo $DOPG
-$PGDUMP -h $IPADD -U $USERNAME -c $DBNAME > $SQLFILE
-echo $DOTAR
-$TAR czvf $TGZFILE $SQLFILE
+$PGDUMP -h $IPADD -U $USERNAME -c $DBNAME | $GZIP > $GZFILE
