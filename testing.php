@@ -61,7 +61,7 @@ pre(array('$str'=>'['.$str.']'));*/
 
 $num = '1,234,344.00554564';
 
-pre(array('toFloat'=>toFloat($num)));
+pre(array('toFloat'=>toFloat($num,3)));
 
 
 ///

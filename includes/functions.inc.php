@@ -946,7 +946,7 @@ function clearcrlf2($str=false) {
 	return false;
 }
 
-function toFloat($num=false,$round=2) {
+function toFloat($num=false,$round=0) {
 	if(!empty($num)) {
 		$num = str_replace(',','',$num);
 
