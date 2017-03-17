@@ -3407,7 +3407,7 @@ function _customerReload($vars=array()) {
 				$content['ledger_credit'] = $fund_amountdue;
 				$content['ledger_type'] = 'CUSTOMERRELOAD '.$fund_amountdue;
 				$content['ledger_datetimeunix'] = $fund_datetimeunix;
-				$content['ledger_datetime'] = pgDateUnix($fund_datetimeunix);
+				$content['ledger_datetime'] = $ledger_datetime = pgDateUnix($fund_datetimeunix);
 				$content['ledger_user'] = $fund_recepientid;
 				$content['ledger_seq'] = '0';
 				$content['ledger_receiptno'] = $receiptno;
@@ -3421,11 +3421,31 @@ function _customerReload($vars=array()) {
 
 				$childBalance = getCustomerBalance($fund_recepientid);
 
-				$errmsg = smsdt()." ".getNotification('FUND TRANSFER RECIPIENT NOTIFICATION');
+				/*$errmsg = smsdt()." ".getNotification('FUND TRANSFER RECIPIENT NOTIFICATION');
 				$errmsg = str_replace('%balance%', number_format($childBalance,2), $errmsg);
 
 				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
-				sendToGateway($recepientNumber,$smsinbox_simnumber,$errmsg);
+				sendToGateway($recepientNumber,$smsinbox_simnumber,$errmsg);*/
+
+				//$fundBalance = getCustomerBalance($fund_recepientid);
+
+				if(!empty(($gateways = getGateways($recepientNumber)))) {
+
+					//shuffle($gateways);
+
+					foreach($gateways as $gw=>$v) {
+						$errmsg = getNotification('CUSTOMER RELOAD');
+						$errmsg = str_replace('%VAMOUNT%', number_format($fund_amountdue,2), $errmsg);
+						$errmsg = str_replace('%VBALANCE%', number_format($childBalance,2), $errmsg);
+						$errmsg = str_replace('%FRRECEIPTNO%', $receiptno, $errmsg);
+						$errmsg = str_replace('%DATETIME%', $ledger_datetime, $errmsg);
+
+						// You have received %VAMOUNT% credits. Your current VFUND is P%VBALANCE%. Tx: %FRRECEIPTNO% as of %DATETIME% Thank you.
+
+						sendToGateway($recepientNumber,$gw,$errmsg);
+						break;
+					}
+				}
 
 				unset($content['ledger_credit']);
 
