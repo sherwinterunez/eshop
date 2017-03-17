@@ -389,7 +389,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				//unset($allParents[$k]);
 				$selected = false;
 
-				if($v['customer_id']==$vars['params']['customerinfo']['customer_parent']) {
+				if($v['customer_id']==$vars['params']['paymentinfo']['payment_customerid']) {
 					$selected = true;
 				}
 
