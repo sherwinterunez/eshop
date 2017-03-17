@@ -290,7 +290,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			if($k!=$vars['post']['rowid']) {
 				$selected = false;
 
-				if($v['loadtransaction_id']==$vars['params']['adjustmentinfo']['adjustment_customerreceipt']) {
+				if(!empty($vars['params']['adjustmentinfo']['adjustment_customerreceipt'])&&$v['loadtransaction_id']==$vars['params']['adjustmentinfo']['adjustment_customerreceipt']) {
 					$selected = true;
 				}
 
@@ -425,7 +425,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			if($k!=$vars['post']['rowid']) {
 				$selected = false;
 
-				if($v['customer_id']==$vars['params']['customerinfo']['customer_parent']) {
+				if(!empty($vars['params']['adjustmentinfo']['adjustment_customerid'])&&$v['customer_id']==$vars['params']['adjustmentinfo']['adjustment_customerid']) {
 					$selected = true;
 				}
 
