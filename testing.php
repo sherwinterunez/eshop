@@ -63,6 +63,8 @@ pre(array('$str'=>'['.$str.']'));*/
 
 //pre(array('toFloat'=>toFloat($num,3)));
 
+$appsession->start();
+
 pre(array('$_SESSION'=>$_SESSION));
 
 
