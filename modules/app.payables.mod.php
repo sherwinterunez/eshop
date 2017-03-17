@@ -1452,7 +1452,7 @@ sherwint_eshop=#
 									$content = array();
 									$content['fund_ymd'] = $fund_ymd = date('Ymd');
 									$content['fund_type'] = 'payment';
-									$content['fund_payment'] = $totalamountpaid;
+									$content['fund_payment'] = toFloat($totalamountpaid,2);
 									//$content['fund_amount'] = !empty($fund_amount) ? $fund_amount : 0;
 									//$content['fund_amountdue'] = !empty($fund_amountdue) ? $fund_amountdue : 0;
 									//$content['fund_discount'] = !empty($fund_discount) ? $fund_discount : 0;
