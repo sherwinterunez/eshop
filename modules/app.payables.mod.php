@@ -1336,6 +1336,7 @@ sherwint_eshop=#
 
 								if(!empty($ledgerpaid)) {
 									foreach($ledgerpaid as $k=>$v) {
+										trigger_error(prebuf(array('$ledgerpaid['.$k.']'=>$v)));
 										$cupdate = array();
 										$cupdate['ledger_paid'] = $v['paid'];
 										$cupdate['ledger_unpaid'] = $v['unpaid'];
