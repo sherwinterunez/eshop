@@ -122,9 +122,14 @@ if(!empty($result['rows'][0]['customer_id'])) {
 
     }
 
-    if(computeCustomerCreditDue($v['customer_id'])) {
+		$customer_type = getCustomerType($customer_id);
 
-    }
+		if($customer_type=='STAFF') {
+			computeStaffCreditDue($customer_id);
+		} else {
+			computeCustomerCreditDue($customer_id);
+		}
+
   }
 }
 
