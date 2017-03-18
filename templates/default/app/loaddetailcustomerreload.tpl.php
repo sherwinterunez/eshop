@@ -28,7 +28,7 @@ if(!empty($vars['post']['wid'])) {
 
 //$myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto',$moduleid.'filter');
 
-$myToolbar = array($moduleid.'refresh');
+$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh');
 
 /*if(!empty($vars['params']['optionsinfo']['options_name'])) {
 	$options_name = $vars['params']['optionsinfo']['options_name'];
