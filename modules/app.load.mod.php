@@ -2030,22 +2030,49 @@ if(!class_exists('APP_app_load')) {
 					$retval['return_code'] = 'SUCCESS';
 					$retval['return_message'] = 'Customer reload successfully saved!';
 
+					$fund_amount = $fund_amountdue = !empty($post['fund_amount']) ? $post['fund_amount'] : 0;
+					$fund_discount = 0;
+					$fund_processingfee = 0;
+
+					$fund_recepientid = !empty($post['fund_recepientid']) ? $post['fund_recepientid'] : 0;
+
+					if(!empty(($discountSchemes = getStaffCustomerReloadDiscountScheme($fund_recepientid)))) {
+
+						print_r(array('$discountSchemes'=>$discountSchemes));
+
+						$bypass = false;
+
+						foreach($discountSchemes as $k=>$v) {
+							if(!empty($v['discountlist_rate'])&&$fund_amount>=floatval($v['discountlist_min'])&&$fund_amount<=floatval($v['discountlist_max'])) {
+								$fund_discount = floatval($v['discountlist_rate']);
+								$fund_processingfee = floatval($v['discountlist_fee']);
+								$fund_discountamount = ($fund_discount / 100) * $fund_amount;
+								$totaldiscount =  $fund_discountamount + $fund_processingfee;
+								$fund_amountdue = $fund_amount - $totaldiscount;
+								$bypass = true;
+								break;
+							}
+						}
+					} // if(!empty(($discountSchemes = getStaffCustomerReloadDiscountScheme($recepientId)))) {
+
+					$fund_datetimeunix = intval(getDbUnixDate());
+
 					$content = array();
 					$content['fund_ymd'] = $fund_ymd = date('Ymd');
 					$content['fund_type'] = 'customerreload';
-					$content['fund_amount'] = !empty($post['fund_amount']) ? $post['fund_amount'] : 0;
-					$content['fund_amountdue'] = $fund_amountdue = !empty($post['fund_amountdue']) ? $post['fund_amountdue'] : 0;
-					$content['fund_discount'] = !empty($post['fund_discount']) ? $post['fund_discount'] : 0;
-					$content['fund_processingfee'] = !empty($post['fund_processingfee']) ? $post['fund_processingfee'] : 0;
-					$content['fund_datetimeunix'] = $fund_datetimeunix = !empty($post['fund_datetimeunix']) ? $post['fund_datetimeunix'] : time();
-					$content['fund_datetime'] = pgDateUnix($content['fund_datetimeunix']);
+					$content['fund_amount'] = $fund_amount;
+					$content['fund_amountdue'] = $fund_amountdue;
+					$content['fund_discount'] = $fund_discount;
+					$content['fund_processingfee'] = $fund_processingfee;
+					$content['fund_datetimeunix'] = $fund_datetimeunix;
+					$content['fund_datetime'] = pgDateUnix($fund_datetimeunix);
 					$content['fund_userid'] = $fund_userid = !empty($post['fund_userid']) ? $post['fund_userid'] : 0;
 					$content['fund_username'] = !empty($post['fund_username']) ? $post['fund_username'] : '';
 					$content['fund_usernumber'] = !empty($post['fund_usernumber']) ? $post['fund_usernumber'] : '';
 					$content['fund_userpaymentterm'] = !empty($post['fund_userpaymentterm']) ? $post['fund_userpaymentterm'] : '';
-					$content['fund_recepientid'] = $fund_recepientid = !empty($post['fund_recepientid']) ? $post['fund_recepientid'] : 0;
-					$content['fund_recepientname'] = getCustomerNameByID($content['fund_recepientid']);
-					$content['fund_recepientnumber'] = $fund_recepientnumber = !empty($post['fund_recepientnumber']) ? $post['fund_recepientnumber'] : '';
+					$content['fund_recepientid'] = $fund_recepientid;
+					$content['fund_recepientname'] = getCustomerNameByID($fund_recepientid);
+					$content['fund_recepientnumber'] = $fund_recepientnumber = getCustomerNumber($fund_recepientid);
 					$content['fund_recepientpaymentterm'] = !empty($post['fund_recepientpaymentterm']) ? $post['fund_recepientpaymentterm'] : '';
 					$content['fund_status'] = 1;
 
@@ -2342,7 +2369,8 @@ if(!class_exists('APP_app_load')) {
 					'name' => 'fund_username',
 					'readonly' => true,
 					//'required' => !$readonly,
-					'value' => $applogin->fullname(),
+					//'value' => $applogin->fullname(),
+					'value' => !empty($params['customerreloadinfo']['fund_username']) ? $params['customerreloadinfo']['fund_username'] : $applogin->fullname(),
 				);
 
 				$params['tbDetails'][] = array(
