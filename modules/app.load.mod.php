@@ -2367,9 +2367,9 @@ if(!class_exists('APP_app_load')) {
 
 				if(!empty($fund_username)) {
 				} else {
-					$fund_username = !empty($params['customerreloadinfo']['fund_username']) ? $params['customerreloadinfo']['fund_username'] : $applogin->fullname()
+					$fund_username = !empty($params['customerreloadinfo']['fund_username']) ? $params['customerreloadinfo']['fund_username'] : $applogin->fullname();
 				}
-				
+
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'USER',
