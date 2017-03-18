@@ -1770,6 +1770,8 @@ function computeStaffCreditDue($smsinbox_contactsid=false) {
 
 					setCustomerCreditDue($smsinbox_contactsid,$dueDate);
 
+					$bypass = true;
+
 					//pre(array('$unpaidStamp'=>$unpaidStamp,'$unpaidDate'=>$unpaidDate,'ledger_datetimeunix'=>$unpaidTran['ledger_datetimeunix'],'ledger_datetimeunix2'=>pgDateUnix($unpaidTran['ledger_datetimeunix']),'$dueDate'=>$dueDate,'$dueDate2'=>pgDateUnix($dueDate),'$currentDate'=>$currentDate,'$currentDate2'=>pgDateUnix($currentDate),'$unpaidTran'=>$unpaidTran));
 
 					if($currentDate>$dueDate) {
@@ -1790,7 +1792,11 @@ function computeStaffCreditDue($smsinbox_contactsid=false) {
 			//pre(array('$terms'=>$terms));
 		}
 
-		unsetCustomerCreditDue($smsinbox_contactsid);
+		if(!empty($bypass)) {
+		} else {
+			unsetCustomerCreditDue($smsinbox_contactsid);
+			setCustomerUnFreeze($smsinbox_contactsid);
+		}
 
 	}
 
@@ -1867,6 +1873,7 @@ function computeCustomerCreditDue($smsinbox_contactsid=false) {
 	if(!empty($bypass)) {
 	} else {
 		unsetCustomerCreditDue($smsinbox_contactsid);
+		setCustomerUnFreeze($smsinbox_contactsid);
 	}
 
 	return false;
