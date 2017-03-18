@@ -2363,6 +2363,13 @@ if(!class_exists('APP_app_load')) {
 					'value' => $applogin->getUserID(),
 				);
 
+				$fund_username = !empty($params['customerreloadinfo']['fund_staffid']) ? getCustomerNameByID($params['customerreloadinfo']['fund_staffid']) : '';
+
+				if(!empty($fund_username)) {
+				} else {
+					$fund_username = !empty($params['customerreloadinfo']['fund_username']) ? $params['customerreloadinfo']['fund_username'] : $applogin->fullname()
+				}
+				
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'USER',
@@ -2370,7 +2377,7 @@ if(!class_exists('APP_app_load')) {
 					'readonly' => true,
 					//'required' => !$readonly,
 					//'value' => $applogin->fullname(),
-					'value' => !empty($params['customerreloadinfo']['fund_username']) ? $params['customerreloadinfo']['fund_username'] : $applogin->fullname(),
+					'value' => $fund_username,
 				);
 
 				$params['tbDetails'][] = array(
