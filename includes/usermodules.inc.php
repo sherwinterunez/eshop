@@ -2390,6 +2390,7 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 
 } // function _eLoadSMSErrorProcessSMS($vars=array()) {
 
+// _childReload = Child Reload
 function _childReload($vars=array()) {
 	global $appdb;
 
@@ -2617,6 +2618,7 @@ function _childReload($vars=array()) {
 
 } // function _childReload($vars=array()) {
 
+// _fundTransfer = Fund Transfer
 function _fundTransfer($vars=array()) {
 	global $appdb;
 
@@ -2706,20 +2708,7 @@ function _fundTransfer($vars=array()) {
 					}
 				}
 
-				/*if(!$bypass) {
-					foreach($discountSchemes as $k=>$v) {
-						if(!empty($v['discountlist_rate'])) {
-							$fund_discount = floatval($v['discountlist_rate']);
-							$fund_processingfee = floatval($v['discountlist_fee']);
-							$fund_discountamount = ($fund_discount / 100) * $fund_amount;
-							$totaldiscount =  $fund_discountamount + $fund_processingfee;
-							$fund_amountdue = $fund_amount - $totaldiscount;
-							$bypass = true;
-							break;
-						}
-					}
-				}*/
-			}
+			} // if(!empty(($discountSchemes = getCustomerFundTransferDiscountScheme($smsinbox_contactsid)))) {
 
 			if(!empty($recepientId)) {
 			} else {
@@ -2840,6 +2829,7 @@ function _fundTransfer($vars=array()) {
 
 } // function _fundTransfer($vars=array()) {
 
+// _fundCredit == Fund reload
 function _fundCredit($vars=array()) {
 	global $appdb;
 
@@ -2907,7 +2897,7 @@ function _fundCredit($vars=array()) {
 
 			$fund_amountdue = $fund_amount;
 
-			if(!empty(($discountSchemes = getCustomerFundTransferDiscountScheme($smsinbox_contactsid)))) {
+			if(!empty(($discountSchemes = getCustomerFundCreditdDiscountScheme($smsinbox_contactsid)))) {
 
 				print_r(array('$discountSchemes'=>$discountSchemes));
 
@@ -2924,21 +2914,7 @@ function _fundCredit($vars=array()) {
 						break;
 					}
 				}
-
-				/*if(!$bypass) {
-					foreach($discountSchemes as $k=>$v) {
-						if(!empty($v['discountlist_rate'])) {
-							$fund_discount = floatval($v['discountlist_rate']);
-							$fund_processingfee = floatval($v['discountlist_fee']);
-							$fund_discountamount = ($fund_discount / 100) * $fund_amount;
-							$totaldiscount =  $fund_discountamount + $fund_processingfee;
-							$fund_amountdue = $fund_amount - $totaldiscount;
-							$bypass = true;
-							break;
-						}
-					}
-				}*/
-			}
+			} // if(!empty(($discountSchemes = getCustomerFundCreditdDiscountScheme($smsinbox_contactsid)))) {
 
 			/*if(!empty($recepientId)) {
 			} else {
@@ -3166,6 +3142,7 @@ function _fundCredit($vars=array()) {
 	return false;
 } // function _fundCredit($vars=array()) {
 
+// _customerReload == Customer Reload
 function _customerReload($vars=array()) {
 	global $appdb;
 
@@ -3237,7 +3214,7 @@ function _customerReload($vars=array()) {
 
 			$recepientId = getCustomerIDByNumber($recepientNumber);
 
-			if(!empty(($discountSchemes = getCustomerFundTransferDiscountScheme($smsinbox_contactsid)))) {
+			if(!empty(($discountSchemes = getStaffCustomerReloadDiscountScheme($recepientId)))) {
 
 				print_r(array('$discountSchemes'=>$discountSchemes));
 
@@ -3254,21 +3231,7 @@ function _customerReload($vars=array()) {
 						break;
 					}
 				}
-
-				/*if(!$bypass) {
-					foreach($discountSchemes as $k=>$v) {
-						if(!empty($v['discountlist_rate'])) {
-							$fund_discount = floatval($v['discountlist_rate']);
-							$fund_processingfee = floatval($v['discountlist_fee']);
-							$fund_discountamount = ($fund_discount / 100) * $fund_amount;
-							$totaldiscount =  $fund_discountamount + $fund_processingfee;
-							$fund_amountdue = $fund_amount - $totaldiscount;
-							$bypass = true;
-							break;
-						}
-					}
-				}*/
-			}
+			} // if(!empty(($discountSchemes = getStaffCustomerReloadDiscountScheme($recepientId)))) {
 
 			if(!empty($recepientId)) {
 			} else {

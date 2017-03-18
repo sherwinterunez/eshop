@@ -2293,7 +2293,7 @@ function getCustomerFundTransferDiscountScheme($id=false) {
 	return false;
 }
 
-function getCustomerFundReloadDiscountScheme($id=false) {
+function getCustomerFundCreditdDiscountScheme($id=false) {
 	global $appdb;
 
 	if(!empty($id)&&is_numeric($id)) {
