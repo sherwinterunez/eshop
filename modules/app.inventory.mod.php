@@ -3833,7 +3833,7 @@ if($readonly) {
 									} else
 									if($v['loadtransaction_type']=='retail') {
 										$prefix = 'RL';
-										$out = $v['loadtransaction_amountdue'];
+										$out = $v['loadtransaction_amount'];
 									} else
 									if($v['loadtransaction_type']=='adjustment') {
 										$prefix = 'EADJ';
