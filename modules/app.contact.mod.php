@@ -1218,17 +1218,19 @@ $block[] = array(
 
 				if($readonly) {
 
-					$params['tbDiscount'][] = array(
-						'type' => 'input',
-						'label' => 'CUSTOMER RELOAD',
-						'name' => 'customer_discountcustomerreload',
-						'readonly' => $readonly,
-						'inputWidth' => 200,
-						//'disabled' => !empty($params['iteminfo']['item_maintenance']) ? false : true,
-						//'required' => !$readonly,
-						//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-						'value' => !empty($params['customerinfo']['customer_discountcustomerreload']) ? $params['customerinfo']['customer_discountcustomerreload'] : '',
-					);
+					if(!empty($params['customerinfo']['customer_type'])&&$params['customerinfo']['customer_type']=='STAFF') {
+						$params['tbDiscount'][] = array(
+							'type' => 'input',
+							'label' => 'CUSTOMER RELOAD',
+							'name' => 'customer_discountcustomerreload',
+							'readonly' => $readonly,
+							'inputWidth' => 200,
+							//'disabled' => !empty($params['iteminfo']['item_maintenance']) ? false : true,
+							//'required' => !$readonly,
+							//'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+							'value' => !empty($params['customerinfo']['customer_discountcustomerreload']) ? $params['customerinfo']['customer_discountcustomerreload'] : '',
+						);
+					}
 
 					$params['tbDiscount'][] = array(
 						'type' => 'input',
@@ -1282,40 +1284,44 @@ $block[] = array(
 
 ////////////////
 
-					$opt = array();
+					if(!empty($params['customerinfo']['customer_type'])&&$params['customerinfo']['customer_type']=='STAFF') {
 
-					if(!$readonly) {
-						$opt[] = array('text'=>'','value'=>'','selected'=>false);
-					}
+						$opt = array();
 
-					$discountSchemes = getDiscountScheme();
-
-					foreach($discountSchemes as $k=>$v) {
-						$selected = false;
-						if(!empty($params['customerinfo']['customer_discountcustomerreload'])&&$params['customerinfo']['customer_discountcustomerreload']==$v['discount_desc']) {
-							$selected = true;
+						if(!$readonly) {
+							$opt[] = array('text'=>'','value'=>'','selected'=>false);
 						}
-						if($readonly) {
-							if($selected) {
-								$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']['discount_desc'],'selected'=>$selected);
+
+						$discountSchemes = getDiscountScheme();
+
+						foreach($discountSchemes as $k=>$v) {
+							$selected = false;
+							if(!empty($params['customerinfo']['customer_discountcustomerreload'])&&$params['customerinfo']['customer_discountcustomerreload']==$v['discount_desc']) {
+								$selected = true;
 							}
-						} else {
-							$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc'],'selected'=>$selected);
+							if($readonly) {
+								if($selected) {
+									$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']['discount_desc'],'selected'=>$selected);
+								}
+							} else {
+								$opt[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc'],'selected'=>$selected);
+							}
 						}
-					}
 
-					$params['tbDiscount'][] = array(
-						'type' => 'combo',
-						'label' => 'CUSTOMER RELOAD',
-						//'labelWidth' => 210,
-						'inputWidth' => 200,
-						//'comboType' => 'checkbox',
-						'name' => 'customer_discountcustomerreload',
-						'readonly' => $readonly,
-						//'disabled' => !empty($params['iteminfo']['item_regularload']) ? false : true,
-						//'required' => !$readonly,
-						'options' => $opt,
-					);
+						$params['tbDiscount'][] = array(
+							'type' => 'combo',
+							'label' => 'CUSTOMER RELOAD',
+							//'labelWidth' => 210,
+							'inputWidth' => 200,
+							//'comboType' => 'checkbox',
+							'name' => 'customer_discountcustomerreload',
+							'readonly' => $readonly,
+							//'disabled' => !empty($params['iteminfo']['item_regularload']) ? false : true,
+							//'required' => !$readonly,
+							'options' => $opt,
+						);
+						
+					}
 
 ////////////////
 
