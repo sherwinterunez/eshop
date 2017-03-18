@@ -5282,7 +5282,7 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 
 											//if($debug) print_r(array('$repeatCtr'=>$repeatCtr,'$match'=>$match));
 
-											log_notice(array('$repeatCtr'=>$repeatCtr,'$match'=>$match);
+											log_notice(array('$repeatCtr'=>$repeatCtr,'$match'=>$match));
 
 											$repeatCtr = 0;
 										} else {
