@@ -1061,4 +1061,8 @@ select ledger_id,ledger_receiptno from tbl_ledger where ledger_type ilike '%refu
 
 delete from tbl_payment where payment_id>1; delete from tbl_paymentdocument;  update tbl_ledger set ledger_unpaid=1; update tbl_ledger set ledger_paid=0;
 
+select * from tbl_ledger where ledger_user=135 and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc
+
+select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=135 and a.ledger_unpaid=1 and a.ledger_fundid=b.fund_id and a.ledger_credit>0 order by a.ledger_datetimeunix asc
+
 ---------------------------------------------------------------------
