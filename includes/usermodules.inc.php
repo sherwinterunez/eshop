@@ -27,51 +27,56 @@ function _SendSMS($vars=array()) {
 	if(!empty($vars)) {
 	} else return false;
 
+	if(!empty($vars['matched'])) {
+		$matched = $vars['matched'];
+	} else {
+		return false;
+	}
+
 	print_r(array('$vars'=>$vars));
 
-	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
+	//print_r(array('$smscommands'=>$vars['smscommands']));
 
-		print_r(array('$smscommands'=>$vars['smscommands']));
+	//print_r(array('$matched'=>$matched));
 
-		print_r(array('$match'=>$match));
+	//$smsinbox_contactnumber = $vars['smsinbox']['smsinbox_contactnumber'];
 
-		//$smsinbox_contactnumber = $vars['smsinbox']['smsinbox_contactnumber'];
+	//$nickname = trim($match[1]);
 
-		//$nickname = trim($match[1]);
+	if(!empty($vars['smsinbox']['smsinbox_contactsid'])) {
+	} else {
+		return false;
+	}
 
-		if(!empty($vars['smsinbox']['smsinbox_contactsid'])) {
-		} else {
-			return false;
-		}
+	if(getSimIdByNumber($vars['smsinbox']['smsinbox_contactnumber'])) {
+		return false;
+	}
 
-		if(getSimIdByNumber($vars['smsinbox']['smsinbox_contactnumber'])) {
-			return false;
-		}
+	for($i=0;$i<10;$i++) {
 
-		for($i=0;$i<10;$i++) {
+		//print_r(array('$i'=>$i));
 
-			//print_r(array('$i'=>$i));
+		if(!empty($vars['smscommands']['smscommands_notification'.$i])) {
 
-			if(!empty($vars['smscommands']['smscommands_notification'.$i])) {
+			$noti = explode(',',$vars['smscommands']['smscommands_notification'.$i]);
 
-				$noti = explode(',',$vars['smscommands']['smscommands_notification'.$i]);
+			pre(array('$noti'=>$noti));
 
-				pre(array('$noti'=>$noti));
-
-				foreach($noti as $v) {
-					sendToGateway($vars['smsinbox']['smsinbox_contactnumber'],$vars['smsinbox']['smsinbox_simnumber'],getNotificationByID($v));
-
-				}
-
-				//$msg = str_replace('%nickname%',$nickname,$msg);
-
-				//print_r(array('$msg'=>$msg));
-
-				//sendToOutBox($vars['smsinbox']['smsinbox_contactnumber'],$vars['smsinbox']['smsinbox_simnumber'],$msg);
+			foreach($noti as $v) {
+				sendToGateway($vars['smsinbox']['smsinbox_contactnumber'],$vars['smsinbox']['smsinbox_simnumber'],getNotificationByID($v));
 
 			}
+
+			//$msg = str_replace('%nickname%',$nickname,$msg);
+
+			//print_r(array('$msg'=>$msg));
+
+			//sendToOutBox($vars['smsinbox']['smsinbox_contactnumber'],$vars['smsinbox']['smsinbox_simnumber'],$msg);
+
 		}
 	}
+
+	return true;
 }
 
 function _SendSMStoMobileNumber($vars=array()) {
