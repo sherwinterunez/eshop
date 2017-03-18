@@ -2464,7 +2464,7 @@ function _childReload($vars=array()) {
 
 			//print_r(array('$childId'=>$childId));
 
-			if(!empty(($discountSchemes = getCustomerFundTransferDiscountScheme($smsinbox_contactsid)))) {
+			if(!empty(($discountSchemes = getCustomerChildReloadDiscountScheme($smsinbox_contactsid)))) {
 
 				print_r(array('$discountSchemes'=>$discountSchemes));
 
@@ -2481,21 +2481,7 @@ function _childReload($vars=array()) {
 						break;
 					}
 				}
-
-				/*if(!$bypass) {
-					foreach($discountSchemes as $k=>$v) {
-						if(!empty($v['discountlist_rate'])) {
-							$fund_discount = floatval($v['discountlist_rate']);
-							$fund_processingfee = floatval($v['discountlist_fee']);
-							$fund_discountamount = ($fund_discount / 100) * $fund_amount;
-							$totaldiscount =  $fund_discountamount + $fund_processingfee;
-							$fund_amountdue = $fund_amount - $totaldiscount;
-							$bypass = true;
-							break;
-						}
-					}
-				}*/
-			}
+			} // if(!empty(($discountSchemes = getCustomerChildReloadDiscountScheme($smsinbox_contactsid)))) {
 
 			if(isCustomerChild($smsinbox_contactsid,$childId)) {
 			} else {
@@ -2916,18 +2902,6 @@ function _fundCredit($vars=array()) {
 				}
 			} // if(!empty(($discountSchemes = getCustomerFundCreditdDiscountScheme($smsinbox_contactsid)))) {
 
-			/*if(!empty($recepientId)) {
-			} else {
-				$errmsg = smsdt()." ".getNotification('$INVALID_SUBSCRIBER');
-
-				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
-				sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
-
-				return false;
-			}*/
-
-			//getCustomerAvailableCredit
-
 			if(getCustomerType($smsinbox_contactsid)==='REGULAR'&&getCustomerAccountType($smsinbox_contactsid)==='CREDIT') {
 			} else return false;
 
@@ -2943,71 +2917,7 @@ function _fundCredit($vars=array()) {
 
 			}
 
-			/*if(getCustomerType($smsinbox_contactsid)==='REGULAR'&&getCustomerAccountType($smsinbox_contactsid)==='CREDIT') {
-			} else return false;
-
-			//getCustomerFirstUnpaidCredit($smsinbox_contactsid);
-
-			$customer_accounttype = getCustomerAccountType($smsinbox_contactsid);
-
-			$customer_balance = getCustomerBalance($smsinbox_contactsid);
-
-			$customer_availablecredit = getCustomerAvailableCredit($smsinbox_contactsid);
-
-			$customer_creditlimit = getCustomerCreditLimit($smsinbox_contactsid);
-
-			if(!empty($customer_availablecredit)&&!empty($customer_creditlimit)) {
-
-				if($customer_availablecredit!==$customer_creditlimit) {
-
-					if(($terms = getCustomerTerms($smsinbox_contactsid))) {
-
-						if(!empty(($unpaidCredit = getCustomerFirstUnpaidCredit($smsinbox_contactsid)))) {
-
-							$currentDate = intval(getDbUnixDate());
-
-							//$dueDate = floatval(86400 * ($terms-1)) + floatval($unpaidCredit['fund_datetimeunix']);
-							$dueDate = floatval(86400 * $terms) + floatval($unpaidCredit['fund_datetimeunix']);
-
-							setCustomerCreditDue($smsinbox_contactsid,$dueDate);
-
-							$bypass = true;
-
-							print_r(array('$customer_availablecredit'=>$customer_availablecredit,'$customer_creditlimit'=>$customer_creditlimit,'$terms'=>$terms,'$unpaidCredit'=>$unpaidCredit));
-							print_r(array('$currentDate'=>$currentDate,'$currentDate2'=>pgDateUnix($currentDate),'$dueDate'=>$dueDate,'$dueDate2'=>pgDateUnix($dueDate)));
-
-							if($currentDate>$dueDate) {
-
-								setCustomerFreeze($smsinbox_contactsid);
-
-								$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
-								//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
-
-								//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
-								sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
-
-								return false;
-
-								//$retval['return_code'] = 'ERROR';
-								//$retval['return_message'] = 'Your account is currently freezed. Please contact administrator!';
-								//json_encode_return($retval);
-								//die;
-							}
-
-						}
-					}
-				}
-
-				if(!empty($bypass)) {
-				} else {
-					unsetCustomerCreditDue($smsinbox_contactsid);
-				}
-
-			}*/
-
 			print_r(array('$customer_availablecredit'=>$customer_availablecredit,'$customer_creditlimit'=>$customer_creditlimit,'$terms'=>$terms,'$unpaidCredit'=>$unpaidCredit));
-
-			//return false;
 
 			if($customer_availablecredit>=$fund_amount) {
 			} else {
@@ -3093,43 +3003,6 @@ function _fundCredit($vars=array()) {
 					$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
 					sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
 				}
-
-				/*if(($terms = getCustomerTerms($smsinbox_contactsid))) {
-
-					if(!empty(($unpaidCredit = getCustomerFirstUnpaidCredit($smsinbox_contactsid)))) {
-
-						$currentDate = intval(getDbUnixDate());
-
-						//$dueDate = floatval(86400 * ($terms-1)) + floatval($unpaidCredit['fund_datetimeunix']);
-						$dueDate = floatval(86400 * $terms) + floatval($unpaidCredit['fund_datetimeunix']);
-
-						setCustomerCreditDue($smsinbox_contactsid,$dueDate);
-
-						$bypass = true;
-
-						print_r(array('$customer_availablecredit'=>$customer_availablecredit,'$customer_creditlimit'=>$customer_creditlimit,'$terms'=>$terms,'$unpaidCredit'=>$unpaidCredit));
-						print_r(array('$currentDate'=>$currentDate,'$currentDate2'=>pgDateUnix($currentDate),'$dueDate'=>$dueDate,'$dueDate2'=>pgDateUnix($dueDate)));
-
-						if($currentDate>$dueDate) {
-
-							setCustomerFreeze($smsinbox_contactsid);
-
-							$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
-							//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
-
-							//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
-							sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
-
-							return false;
-
-							//$retval['return_code'] = 'ERROR';
-							//$retval['return_message'] = 'Your account is currently freezed. Please contact administrator!';
-							//json_encode_return($retval);
-							//die;
-						}
-
-					}
-				}*/
 
 /////////////////
 
