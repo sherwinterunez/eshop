@@ -557,7 +557,7 @@ if(!class_exists('APP_app_inventory')) {
 
 							$content = array();
 
-							$content['loadtransaction_runningbalance'] = $loadtransaction_runningbalance;
+							$content['loadtransaction_runningbalance'] = toFloat($loadtransaction_runningbalance,2);
 
 							//pre(array('$content'=>$content,'$in'=>$in,'$out'=>$out,'$loadtransaction_runningbalance'=>$loadtransaction_runningbalance));
 
