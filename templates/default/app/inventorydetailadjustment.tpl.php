@@ -519,7 +519,8 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		$allSims = getAllSims(0,true);
 
 		foreach($allSims as $k=>$v) {
-			if($k!=$vars['post']['rowid']&&!empty($v['simcard_number'])) {
+			//if($k!=$vars['post']['rowid']&&!empty($v['simcard_number'])) {
+			if(!empty($v['simcard_number'])) {
 				$selected = false;
 
 				if(!empty($vars['params']['adjustmentinfo']['adjustment_simcardassignment'])&&$v['simcard_id']==$vars['params']['adjustmentinfo']['adjustment_simcardassignment']) {
