@@ -132,7 +132,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'pause',$module
 
 			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ron,ro,ro,ro");
 
-			myGrid.setColSorting("int,int,str,str,str,str,str,str,str,str,str,str,str");
+			myGrid.setColSorting("int,int,str,str,str,str,str,str,str,int,str,str,str");
 
 			myGrid.setNumberFormat("0,000.00",9);
 

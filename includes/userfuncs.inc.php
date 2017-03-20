@@ -9020,6 +9020,13 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 				$atsc[] = $t;
 			}
 
+			$receiptno = '';
+
+			if(!empty($loadtransaction['loadtransaction_id'])&&!empty($loadtransaction['loadtransaction_ymd'])) {
+				$receiptno = $loadtransaction['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($loadtransaction['loadtransaction_id']));
+			}
+
+			pre(array('loadtransaction receiptno'=>$receiptno,'doSMSCommands'=>$loadtransaction,'$loadtransaction_load'=>!empty($loadtransaction_load)?$loadtransaction_load:false));
 			pre(array('$atsc'=>$atsc));
 
 			$content = array();
