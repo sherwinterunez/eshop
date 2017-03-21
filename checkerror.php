@@ -82,7 +82,7 @@ function checkError($dev=false,$mobileNo=false,$ip='') {
 		//return false;
 	}
 
-	$sms->atgt();
+	//$sms->atgt();
 
 	if(getOption('STATUS_SIMERROR',false)) {
 		//pre(array('$dev'=>$dev,'$mobileNo'=>$mobileNo,'$ip'=>$ip,'STATUS_SIMERROR'=>getOption('STATUS_SIMERROR',false)));
