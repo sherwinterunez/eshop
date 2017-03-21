@@ -86,6 +86,8 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 
 	//atLog('retrieve started','retrievesms',$dev,$mobileNo,$ip,logdt());
 
+  $sms->atgt();
+
 	if(!$sms->at()) {
 		$em = 'Retrieve failed (AT)';
 		atLog($em,'retrievesms',$dev,$mobileNo,$ip,logdt());

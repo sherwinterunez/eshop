@@ -265,6 +265,10 @@ if(!class_exists('SMS')) {
 	    	return at_at($this);
 	    }
 
+			public function atgt() {
+	    	return at_atgt($this);
+	    }
+
 	    public function cnum() {
 	    	return at_cnum($this);
 	    }

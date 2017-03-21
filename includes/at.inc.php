@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -69,6 +69,33 @@ function at_at($sms){
 				'regx' => array("OK\r\n"),
 				'timeout' => 2,
 		);
+
+	return $sms->modemFunction($simfunctions);
+}
+
+function at_atgt($sms){
+
+	$simfunctions = array();
+
+	$simfunctions[] = array(
+				'command' => 'AT',
+				'regx' => array("\>\r\n"),
+				'timeout' => 2,
+		);
+
+	if($sms->modemFunction($simfunctions)) {
+
+		$simfunctions = array();
+
+		$simfunctions[] = array(
+					'command' => 'AT',
+					'regx' => array("$CTRLZ"),
+					'timeout' => 2,
+			);
+
+	} else {
+		return true;
+	}
 
 	return $sms->modemFunction($simfunctions);
 }

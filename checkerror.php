@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -82,19 +82,21 @@ function checkError($dev=false,$mobileNo=false,$ip='') {
 		//return false;
 	}
 
+	$sms->atgt();
+
 	if(getOption('STATUS_SIMERROR',false)) {
-		//pre(array('$dev'=>$dev,'$mobileNo'=>$mobileNo,'$ip'=>$ip,'STATUS_SIMERROR'=>getOption('STATUS_SIMERROR',false)));	
+		//pre(array('$dev'=>$dev,'$mobileNo'=>$mobileNo,'$ip'=>$ip,'STATUS_SIMERROR'=>getOption('STATUS_SIMERROR',false)));
 		echo 'STATUS_SIMERROR';
 	} else
 	if(($aterrorctr=getOption('STATUS_AT_ERROR_'.$mobileNo,false))) {
-		//pre(array('$dev'=>$dev,'$mobileNo'=>$mobileNo,'$ip'=>$ip,'STATUS_SIMERROR'=>getOption('STATUS_SIMERROR',false)));	
+		//pre(array('$dev'=>$dev,'$mobileNo'=>$mobileNo,'$ip'=>$ip,'STATUS_SIMERROR'=>getOption('STATUS_SIMERROR',false)));
 
 		if($aterrorctr>10) {
 			setSetting('STATUS_SIMERROR','1');
 			echo 'STATUS_SIMERROR';
-			setSetting('STATUS_AT_ERROR_'.$mobileNo,'0');		
+			setSetting('STATUS_AT_ERROR_'.$mobileNo,'0');
 		} else {
-			setSetting('STATUS_MODEMINIT_'.$_GET['sim'],2);		
+			setSetting('STATUS_MODEMINIT_'.$_GET['sim'],2);
 		}
 
 		//$sms->sendMessageOk("AT+CFUN=1\r\n",1);
@@ -128,6 +130,3 @@ if(!empty($_GET['dev'])&&!empty($_GET['sim'])&&!empty($_GET['ip'])&&isSimEnabled
 		setSetting('STATUS_CHECKERROR_'.$_GET['sim'],'0');
 	}
 }
-
-
-
