@@ -33,8 +33,6 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 </div>
 <script>
 
-	var myToolbar = <?php echo json_encode($myToolbar); ?>;
-
 	var myTab = srt.getTabUsingFormVal('%formval%');
 
 	myTab.layout.cells('c').collapse();
@@ -60,6 +58,8 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 	jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html('<div id="<?php echo $templatedetailid; ?>"></div>');
 
 	function <?php echo $templatemainid.$submod; ?>grid_%formval%(f) {
+
+		var myToolbar = <?php echo json_encode($myToolbar); ?>;
 
 		var myTab = srt.getTabUsingFormVal('%formval%');
 
