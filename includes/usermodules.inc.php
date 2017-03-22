@@ -416,8 +416,15 @@ function _eLoadProcessSMS($vars=array()) {
 		return false;
 	}
 
-	if(preg_match('/'.$regx.'/si',$loadtransaction_keyword,$keymatch)) {
-		print_r(array('$keymatch'=>$keymatch,'$loadtransaction_keyword'=>$loadtransaction_keyword));
+	if(preg_match('/'.$regx.'/si',$loadtransaction_keyword,$keymatch)&&!empty($keymatch[0])) {
+		$keymatch[0] = strtoupper(clearcrlf2(clearDoubleSpace($keymatch[0])));
+
+		if($keymatch[0]!=$loadtransaction_keyword) {
+			print_r(array('$keymatch'=>$keymatch,'$loadtransaction_keyword'=>$loadtransaction_keyword));
+			$errmsg = getNotification('GENERAL INVALID SYNTAX');
+			sendToGateway($loadtransaction_customernumber,$simhotline,$errmsg);
+			return false;
+		}
 	}
 
 	//if(!empty($matched)&&!empty($matched['$KEY_RETAIL'])&&!empty($matched['$ITEMCODE'])&&!empty($matched['$MOBILENUMBER'])) {
