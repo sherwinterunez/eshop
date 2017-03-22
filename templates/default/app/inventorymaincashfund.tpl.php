@@ -33,8 +33,6 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 </div>
 <script>
 
-	var myToolbar = <?php echo json_encode($myToolbar); ?>;
-
 	var myTab = srt.getTabUsingFormVal('%formval%');
 
 	myTab.layout.cells('c').collapse();
@@ -61,6 +59,8 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 	function <?php echo $templatemainid.$submod; ?>grid_%formval%(f) {
 
+		var myToolbar = <?php echo json_encode($myToolbar); ?>;
+
 		var myTab = srt.getTabUsingFormVal('%formval%');
 
 		myChanged_%formval% = false;
@@ -73,7 +73,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 		myTab.toolbar.enableOnly(myToolbar);
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 ///////////////
 
@@ -138,16 +138,16 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 			//myGrid.setNumberFormat("0,000.00",5);
 
-			/*myGrid._in_header_stat_sum = function(tag,index,data){       
-			    var calck=function(){                              
-			        var sum=0;                                     
+			/*myGrid._in_header_stat_sum = function(tag,index,data){
+			    var calck=function(){
+			        var sum=0;
 			        this.forEachRow(function(id){
-			        	console.log(id,this.cellById(id,index).getValue());                   
-			            sum+=this.cellById(id,index).getValue()*1;     
+			        	console.log(id,this.cellById(id,index).getValue());
+			            sum+=this.cellById(id,index).getValue()*1;
 			        })
 			    return this._aplNF(sum,0);
 			    }
-			    this._stat_in_header(tag,calck,index,data);            
+			    this._stat_in_header(tag,calck,index,data);
 			}
 
 			myGrid.attachFooter(", , , , ,#stat_sum");*/
@@ -179,7 +179,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 					});*/
 
 					myGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
-						layout_resize_%formval%();								
+						layout_resize_%formval%();
 
 						/*myTab.toolbar.disableAll();
 
@@ -189,7 +189,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 						}, function(ddata,odata){
 							if(ddata.html) {
 								jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-								layout_resize_%formval%();								
+								layout_resize_%formval%();
 							}
 						});*/
 
@@ -242,7 +242,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 								}
 								if(ddata.html) {
 									jQuery("#"+odata.obj.wid).html(ddata.html);
-									//layout_resize_%formval%();								
+									//layout_resize_%formval%();
 								}
 							});
 						});
@@ -255,7 +255,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 						}, function(ddata,odata){
 							if(ddata.html) {
 								jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-								layout_resize_%formval%();								
+								layout_resize_%formval%();
 							}
 						});*/
 
@@ -291,15 +291,15 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 					},'json');
 				}
 
-			} catch(e) { 
+			} catch(e) {
 
 				//alert(typeof(rowId));
 
-				console.log('e => '+e); 
+				console.log('e => '+e);
 
 				jQuery("#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>grid div.objbox").html('<span style="display:block;width:150px;margin:0 auto;"><center>Data not yet available!</center></span>');
 
-				layout_resize_%formval%();						
+				layout_resize_%formval%();
 
 				/*myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {},
@@ -307,7 +307,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 				}, function(ddata,odata){
 					if(ddata.html) {
 						jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-						layout_resize_%formval%();						
+						layout_resize_%formval%();
 					}
 				});*/
 
@@ -376,7 +376,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 					}
 					if(ddata.html) {
 						jQuery("#"+odata.obj.wid).html(ddata.html);
-						//layout_resize_%formval%();								
+						//layout_resize_%formval%();
 					}
 				});
 			});
@@ -385,11 +385,11 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 				odata: {wid:wid},
 				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval="+formval+"&wid="+wid,
 			}, function(ddata,odata){
-				if(ddata.html) {					
+				if(ddata.html) {
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 					if(ddata.html) {
 						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-						jQuery("#"+odata.wid).html(ddata.html);						
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
 				}
 			});*/
