@@ -378,6 +378,12 @@ function _eLoadProcessSMS($vars=array()) {
 		return false;
 	}
 
+	if(!empty($vars['regx'])) {
+		$regx = $vars['regx'];
+	} else {
+		return false;
+	}
+
 	$smscommands_checkprovider = false;
 
 	if(!empty($vars['smscommands']['smscommands_checkprovider'])) {
@@ -408,6 +414,10 @@ function _eLoadProcessSMS($vars=array()) {
 		$loadtransaction_keyword = strtoupper(clearcrlf2(clearDoubleSpace($vars['smsinbox']['smsinbox_message'])));
 	} else {
 		return false;
+	}
+
+	if(preg_match('/'.$regx.'/si',$loadtransaction_keyword,$keymatch)) {
+		print_r(array('$keymatch'=>$keymatch,'$loadtransaction_keyword'=>$loadtransaction_keyword));
 	}
 
 	//if(!empty($matched)&&!empty($matched['$KEY_RETAIL'])&&!empty($matched['$ITEMCODE'])&&!empty($matched['$MOBILENUMBER'])) {
