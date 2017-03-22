@@ -420,7 +420,7 @@ function _eLoadProcessSMS($vars=array()) {
 		$keymatch[0] = strtoupper(clearcrlf2(clearDoubleSpace($keymatch[0])));
 
 		if($keymatch[0]!=$loadtransaction_keyword) {
-			print_r(array('$keymatch'=>$keymatch,'$loadtransaction_keyword'=>$loadtransaction_keyword));
+			print_r(array('$keyerror'=>$keymatch,'$loadtransaction_keyword'=>$loadtransaction_keyword));
 			$errmsg = getNotification('GENERAL INVALID SYNTAX');
 			sendToGateway($loadtransaction_customernumber,$simhotline,$errmsg);
 			return false;
