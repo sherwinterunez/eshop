@@ -94,7 +94,7 @@ function at_atgt($sms){
 			);
 
 	} else {
-		return true;
+		return false;
 	}
 
 	return $sms->modemFunction($simfunctions);
