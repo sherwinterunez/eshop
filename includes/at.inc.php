@@ -88,9 +88,7 @@ function at_atgt($sms){
 		$simfunctions = array();
 
 		$simfunctions[] = array(
-					'command' => 'AT',
-					'regx' => array('$CTRLZ'),
-					'timeout' => 2,
+					'command' => '$CTRLZ',
 			);
 
 	} else {
