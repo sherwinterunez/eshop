@@ -67,8 +67,14 @@ pre(array('$str'=>'['.$str.']'));*/
 
 //pre(array('$_SESSION'=>$_SESSION));
 
-$smsinbox_contactsid = 136;
+//$smsinbox_contactsid = 136;
 
-computeStaffCreditDue2($smsinbox_contactsid);
+//computeStaffCreditDue2($smsinbox_contactsid);
+
+$fund_recepientid = 73;
+
+$discountSchemes = getStaffCustomerReloadDiscountScheme($fund_recepientid);
+
+pre(array('$discountSchemes'=>$discountSchemes));
 
 ///
