@@ -1822,13 +1822,13 @@ function computeStaffCreditDue2($smsinbox_contactsid=false) {
 
 		$creditLimit = getStaffCreditLimit($smsinbox_contactsid);
 
-		pre(array('$smsinbox_contactsid'=>$smsinbox_contactsid,'$availableCredit'=>$availableCredit,'$creditLimit'=>$creditLimit));
-
 		if($availableCredit!=$creditLimit) {
 
 			if(($terms = getStaffTerms($smsinbox_contactsid))) {
 
 				if(!empty(($unpaidTran = getStaffFirstUnpaidTransactions($smsinbox_contactsid)))) {
+
+					pre(array('$unpaidTran'=>$unpaidTran,'$terms'=>$terms,'$smsinbox_contactsid'=>$smsinbox_contactsid,'$availableCredit'=>$availableCredit,'$creditLimit'=>$creditLimit));
 
 					$currentDate = getDbUnixDate();
 
