@@ -1824,7 +1824,11 @@ function computeStaffCreditDue2($smsinbox_contactsid=false) {
 
 		if($availableCredit!=$creditLimit) {
 
+			pre(array('$smsinbox_contactsid'=>$smsinbox_contactsid,'$availableCredit'=>$availableCredit,'$creditLimit'=>$creditLimit));
+
 			if(($terms = getStaffTerms($smsinbox_contactsid))) {
+
+				pre(array('$terms'=>$terms,'$smsinbox_contactsid'=>$smsinbox_contactsid,'$availableCredit'=>$availableCredit,'$creditLimit'=>$creditLimit));
 
 				if(!empty(($unpaidTran = getStaffFirstUnpaidTransactions($smsinbox_contactsid)))) {
 
