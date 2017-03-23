@@ -1490,9 +1490,11 @@ function getStaffFirstUnpaidTransactions($id=false) {
 	if(!empty($id)&&is_numeric($id)) {
 	} else return false;
 
-	$sql = "select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=$id and a.ledger_unpaid=1 and a.ledger_fundid=b.fund_id and a.ledger_credit>0 order by a.ledger_datetimeunix asc limit 1";
+	//$sql = "select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=$id and a.ledger_unpaid=1 and a.ledger_fundid=b.fund_id and a.ledger_credit>0 order by a.ledger_datetimeunix asc limit 1";
 
 	//$sql = "select * from tbl_ledger where ledger_user=$id and ledger_staffpaid=0 order by ledger_datetimeunix asc limit 1";
+
+	$sql = "select * from tbl_ledger where ledger_user=136 and ledger_unpaid=1 and ledger_credit>0 and ledger_refunded=0 order by ledger_datetimeunix asc limit 1";
 
 	if(!($result = $appdb->query($sql))) {
 		return false;
