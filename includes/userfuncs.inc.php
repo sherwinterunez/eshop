@@ -2391,7 +2391,7 @@ function getCustomerFundCreditdDiscountScheme($id=false) {
 			if(($discounts = getDiscounts($discountId))) {
 				//print_r(array('$discounts'=>$discounts));
 				foreach($discounts as $k=>$v) {
-					if(!empty($v['discountlist_type'])&&$v['discountlist_type']==='FUND TRANSFER') {
+					if(!empty($v['discountlist_type'])&&$v['discountlist_type']==='FUND CREDIT') {
 						$discountList[] = $v;
 					}
 				}
@@ -2425,7 +2425,7 @@ function getCustomerChildReloadDiscountScheme($id=false) {
 			if(($discounts = getDiscounts($discountId))) {
 				//print_r(array('$discounts'=>$discounts));
 				foreach($discounts as $k=>$v) {
-					if(!empty($v['discountlist_type'])&&$v['discountlist_type']==='FUND TRANSFER') {
+					if(!empty($v['discountlist_type'])&&$v['discountlist_type']==='CHILD RELOAD') {
 						$discountList[] = $v;
 					}
 				}
@@ -2459,7 +2459,7 @@ function getStaffCustomerReloadDiscountScheme($id=false) {
 			if(($discounts = getDiscounts($discountId))) {
 				//print_r(array('$discounts'=>$discounts));
 				foreach($discounts as $k=>$v) {
-					if(!empty($v['discountlist_type'])&&$v['discountlist_type']==='FUND TRANSFER') {
+					if(!empty($v['discountlist_type'])&&$v['discountlist_type']==='CUSTOMER RELOAD') {
 						$discountList[] = $v;
 					}
 				}
@@ -2492,11 +2492,17 @@ function getStaffCustomerReloadDiscountScheme2($id=false) {
 
 		//return $result['rows'][0]['customer_discountfundtransfer'];
 		if(($discountId = getDiscountIDFromDesc($customer_discountcustomerreload))) {
+
+			pre(array('$discountId'=>$discountId));
+
 			$discountList = array();
+
 			if(($discounts = getDiscounts($discountId))) {
-				//print_r(array('$discounts'=>$discounts));
+
+				print_r(array('$discounts'=>$discounts));
+
 				foreach($discounts as $k=>$v) {
-					if(!empty($v['discountlist_type'])&&$v['discountlist_type']==='FUND TRANSFER') {
+					if(!empty($v['discountlist_type'])&&$v['discountlist_type']==='CUSTOMER RELOAD') {
 						$discountList[] = $v;
 					}
 				}
