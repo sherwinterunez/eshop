@@ -73,7 +73,7 @@ pre(array('$str'=>'['.$str.']'));*/
 
 $fund_recepientid = 73;
 
-$discountSchemes = getStaffCustomerReloadDiscountScheme($fund_recepientid);
+$discountSchemes = getStaffCustomerReloadDiscountScheme2($fund_recepientid);
 
 pre(array('$discountSchemes'=>$discountSchemes));
 

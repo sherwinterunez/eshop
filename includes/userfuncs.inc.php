@@ -2473,6 +2473,43 @@ function getStaffCustomerReloadDiscountScheme($id=false) {
 	return false;
 }
 
+function getStaffCustomerReloadDiscountScheme2($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_customer where customer_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_discountcustomerreload'])) {
+		$customer_discountcustomerreload = $result['rows'][0]['customer_discountcustomerreload'];
+
+		pre(array('$customer_discountcustomerreload'=>$customer_discountcustomerreload));
+
+		//return $result['rows'][0]['customer_discountfundtransfer'];
+		if(($discountId = getDiscountIDFromDesc($customer_discountcustomerreload))) {
+			$discountList = array();
+			if(($discounts = getDiscounts($discountId))) {
+				//print_r(array('$discounts'=>$discounts));
+				foreach($discounts as $k=>$v) {
+					if(!empty($v['discountlist_type'])&&$v['discountlist_type']==='FUND TRANSFER') {
+						$discountList[] = $v;
+					}
+				}
+				if(!empty($discountList)) {
+					return $discountList;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
 function getCustomerFundTransferDiscount($id=false) {
 	global $appdb;
 
