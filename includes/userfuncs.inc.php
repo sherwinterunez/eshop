@@ -1803,6 +1803,78 @@ function computeStaffCreditDue($smsinbox_contactsid=false) {
 	return false;
 }
 
+function computeStaffCreditDue2($smsinbox_contactsid=false) {
+	global $appdb;
+
+	if(!empty($smsinbox_contactsid)&&is_numeric($smsinbox_contactsid)) {
+	} else return false;
+
+	$customer_type = getCustomerType($smsinbox_contactsid);
+
+	$customer_accounttype = getCustomerAccountType($smsinbox_contactsid);
+
+	//print_r(array('$smsinbox_contactsid'=>$smsinbox_contactsid,'$customer_type'=>$customer_type,'$customer_accounttype'=>$customer_accounttype));
+
+	if($customer_type=='STAFF') {
+	} else return false;
+
+	if(($availableCredit = getStaffAvailableCredit($smsinbox_contactsid))) {
+
+		$creditLimit = getStaffCreditLimit($smsinbox_contactsid);
+
+		pre(array('$smsinbox_contactsid'=>$smsinbox_contactsid,'$availableCredit'=>$availableCredit,'$creditLimit'=>$creditLimit));
+
+		if($availableCredit!=$creditLimit) {
+
+			if(($terms = getStaffTerms($smsinbox_contactsid))) {
+
+				if(!empty(($unpaidTran = getStaffFirstUnpaidTransactions($smsinbox_contactsid)))) {
+
+					$currentDate = getDbUnixDate();
+
+					$unpaidDate = pgDateUnix($unpaidTran['ledger_datetimeunix'],'m-d-Y') . ' 23:59';
+
+					$unpaidStamp = date2timestamp($unpaidDate, getOption('$DISPLAY_DATE_FORMAT','r'));
+
+					//$dueDate = floatval(86400 * ($terms-1)) + floatval($unpaidTran['ledger_datetimeunix']);
+
+					$dueDate = floatval(86400 * ($terms-1)) + $unpaidStamp;
+
+					setCustomerCreditDue($smsinbox_contactsid,$dueDate);
+
+					$bypass = true;
+
+					//pre(array('$unpaidStamp'=>$unpaidStamp,'$unpaidDate'=>$unpaidDate,'ledger_datetimeunix'=>$unpaidTran['ledger_datetimeunix'],'ledger_datetimeunix2'=>pgDateUnix($unpaidTran['ledger_datetimeunix']),'$dueDate'=>$dueDate,'$dueDate2'=>pgDateUnix($dueDate),'$currentDate'=>$currentDate,'$currentDate2'=>pgDateUnix($currentDate),'$unpaidTran'=>$unpaidTran));
+
+					if($currentDate>$dueDate) {
+
+						setCustomerFreeze($smsinbox_contactsid);
+
+						return true;
+
+						//$retval['return_code'] = 'ERROR';
+						//$retval['return_message'] = 'Your account is currently freezed. Please contact administrator!';
+						//json_encode_return($retval);
+						//die;
+					}
+				}
+
+			}
+
+			//pre(array('$terms'=>$terms));
+		}
+
+		if(!empty($bypass)) {
+		} else {
+			unsetCustomerCreditDue($smsinbox_contactsid);
+			setCustomerUnFreeze($smsinbox_contactsid);
+		}
+
+	}
+
+	return false;
+}
+
 function computeCustomerCreditDue($smsinbox_contactsid=false) {
 	global $appdb;
 

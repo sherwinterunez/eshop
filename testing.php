@@ -63,9 +63,12 @@ pre(array('$str'=>'['.$str.']'));*/
 
 //pre(array('toFloat'=>toFloat($num,3)));
 
-$appsession->start();
+//$appsession->start();
 
-pre(array('$_SESSION'=>$_SESSION));
+//pre(array('$_SESSION'=>$_SESSION));
 
+$smsinbox_contactsid = 136;
+
+computeStaffCreditDue2($smsinbox_contactsid);
 
 ///
