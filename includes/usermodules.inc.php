@@ -515,9 +515,9 @@ function _eLoadProcessSMS($vars=array()) {
 
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
-			print_r(array('THIS IS A DUPLICATE REQUEST?'=>'THIS IS A DUPLICATE REQUEST?','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']'));
+			print_r(array('THIS IS A DUPLICATE REQUEST?'=>'THIS IS A DUPLICATE REQUEST?','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','elapsedtime'=>$result['rows'][0]['elapsedtime'],'$general_resendtimer'=>$general_resendtimer));
 
-			if($result['rows'][0]['elapsedtime']<$general_resendtimer) {  /// 30 minutes in seconds
+			if(intval($result['rows'][0]['elapsedtime'])<intval($general_resendtimer)) {  /// 30 minutes in seconds
 
 				$duplicate_elapsedtime = $result['rows'][0]['elapsedtime'];
 
