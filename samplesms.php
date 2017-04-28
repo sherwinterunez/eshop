@@ -56,7 +56,7 @@ function sampleSMS() {
 
 	//$message = 'KEYLIST';
 
-	$message = "AIRTIME DEALER 09182799988\r\n";
+	$message = "AIRTIME DEALER 09182799988 F1\r\n";
 
 	$content = array();
 	$content['smsinbox_contactsid'] = 138;
