@@ -3236,7 +3236,8 @@ function generateReferralCode() {
 	return false;
 }
 
-function parseMobileNo($mno=false,$regx = '^(\d+)(\d{3})(\d{7})$') {
+//function parseMobileNo($mno=false,$regx = '^(\d+)(\d{3})(\d{7})$') {
+function parseMobileNo($mno=false,$regx = '(\d+)(\d{3})(\d{7})$') {
 	if(!empty($mno)) {
 	} else return false;
 
