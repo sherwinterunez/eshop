@@ -353,7 +353,8 @@ if(!class_exists('APP_app_load')) {
 
 							$content['ledger_debit'] = $staffLedger['ledger_credit'];
 							$ledgerRefundId = $staffLedger['ledger_id'];
-						} else {
+						} else
+						if($customer_type=='REGULAR') {
 							//$content['ledger_credit'] = $itemData['item_eshopsrp'];
 							$customerLedger = getCustomerLedgerLoadtransactionId($loadtransaction_id);
 
@@ -430,7 +431,8 @@ if(!class_exists('APP_app_load')) {
 						if($customer_type=='STAFF') {
 							computeStaffBalance($params['retailinfo']['loadtransaction_customerid']);
 							$balance = getStaffBalance($params['retailinfo']['loadtransaction_customerid']);
-						} else {
+						} else
+						if($customer_type=='REGULAR') {
 							computeCustomerBalance($params['retailinfo']['loadtransaction_customerid']);
 							computeChildRebateBalance($params['retailinfo']['loadtransaction_customerid']);
 							$balance = getCustomerBalance($params['retailinfo']['loadtransaction_customerid']);
@@ -466,7 +468,8 @@ if(!class_exists('APP_app_load')) {
 
 							if($customer_type=='STAFF') {
 								$balance = getStaffBalance($params['retailinfo']['loadtransaction_customerid']);
-							} else {
+							} else
+							if($customer_type=='REGULAR') {
 								$balance = getCustomerBalance($params['retailinfo']['loadtransaction_customerid']);
 							}
 

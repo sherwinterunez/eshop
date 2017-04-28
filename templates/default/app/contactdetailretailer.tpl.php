@@ -17,7 +17,15 @@ if($method==$moduleid.'new'||$method==$moduleid.'edit') {
 	$readonly = false;
 }
 
-$myToolbar = array($moduleid.'new',$moduleid.'edit',$moduleid.'delete',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh');
+if(!empty($vars['post']['wid'])) {
+	$wid = $vars['post']['wid'];
+} else {
+	die('Invalid Window ID');
+}
+
+//$myToolbar = array($moduleid.'new',$moduleid.'edit',$moduleid.'delete',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh');
+
+$myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh');
 
 /*if(!empty($vars['params']['optionsinfo']['options_name'])) {
 	$options_name = $vars['params']['optionsinfo']['options_name'];
@@ -36,7 +44,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 <?php pre(array('$vars'=>$vars)); ?>
 -->
 <style>
-	#formdiv_%formval% #<?php echo $templatedetailid.$submod; ?> {
+	#<?php echo $wid; ?> #<?php echo $wid.$templatedetailid.$submod; ?> {
 		display: block;
 		height: auto;
 		width: 100%;
@@ -45,27 +53,27 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		margin: 0;
 		overflow: hidden;
 	}
-	#formdiv_%formval% #<?php echo $templatedetailid.$submod; ?> #<?php echo $templatedetailid.$submod; ?>tabform_%formval% {
+	#<?php echo $wid; ?> #<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval% {
 		display: block;
 		/*border: 1px solid #f00;*/
 		border; none;
 		height: 29px;
 	}
-	#formdiv_%formval% #<?php echo $templatedetailid.$submod; ?>detailsform_%formval% {
+	#<?php echo $wid; ?> #<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% {
 		padding: 10px;
 		/*border: 1px solid #f00;*/
-		overflow: hidden;
-		overflow-y: scroll;
+		overflow: auto;
+		/*overflow-y: scroll;*/
 	}
-	#formdiv_%formval% .dhxtabbar_base_dhx_skyblue div.dhx_cell_tabbar div.dhx_cell_cont_tabbar {
+	#<?php echo $wid; ?> .dhxtabbar_base_dhx_skyblue div.dhx_cell_tabbar div.dhx_cell_cont_tabbar {
 		display: none;
 	}
-	#formdiv_%formval% .dhxtabbar_base_dhx_skyblue div.dhxtabbar_tabs {
+	#<?php echo $wid; ?> .dhxtabbar_base_dhx_skyblue div.dhxtabbar_tabs {
 		border-top: none;
 		border-left: none;
 		border-right: none;
 	}
-	#formdiv_%formval% .cls_bottomspace {
+	#<?php echo $wid; ?> .cls_bottomspace {
 		display: block;
 		/*height: 500px;*/
 		border: 1px solid #f00;
@@ -73,40 +81,196 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 	}
 </style>
 <div id="<?php echo $templatedetailid; ?>">
-	<div id="<?php echo $templatedetailid.$submod; ?>" class="navbar-default-bg">
-		<div id="<?php echo $templatedetailid.$submod; ?>tabform_%formval%"></div>
-		<div id="<?php echo $templatedetailid.$submod; ?>detailsform_%formval%"></div>
+	<div id="<?php echo $wid.$templatedetailid.$submod; ?>" class="navbar-default-bg">
+		<div id="<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval%"></div>
+		<div id="<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%"></div>
 		<br style="clear:both;" />
 	</div>
 </div>
 <script>
 
-	function <?php echo $templatedetailid.$submod; ?>_%formval%() {
+	function <?php echo $wid.$templatedetailid.$submod; ?>_resize_%formval%(myWinObj) {
+		var dim = myWinObj.getDimension();
+
+		//console.log('DIM: '+dim);
+
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%").height(dim[1]-123);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%").width(dim[0]-36);
+
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_setting_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_setting_%formval% .dhxform_container").width(dim[0]-54);
+
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_assignedsim_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_assignedsim_%formval% .dhxform_container").width(dim[0]-54);
+
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_upline_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_upline_%formval% .dhxform_container").width(dim[0]-54);
+
+		if(typeof(myWinObj.myGridAssignedSim)!='undefined') {
+			try {
+				myWinObj.myGridAssignedSim.setSizes();
+			} catch(e) {}
+		}
+
+		if(typeof(myWinObj.myGridUpline)!='undefined') {
+			try {
+				myWinObj.myGridUpline.setSizes();
+			} catch(e) {}
+		}
+
+		<?php /*$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_downline_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_downline_%formval% .dhxform_container").width(dim[0]-54);
+
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_downlinesettings_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_downlinesettings_%formval% .dhxform_container").width(dim[0]-54);
+
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_child_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_child_%formval% .dhxform_container").width(dim[0]-54);
+
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_childsettings_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_childsettings_%formval% .dhxform_container").width(dim[0]-54);
+
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_transaction_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_transaction_%formval% .dhxform_container").width(dim[0]-54);
+
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_credittransaction_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .customer_credittransaction_%formval% .dhxform_container").width(dim[0]-54);
+
+		if(typeof(myWinObj.myGridVirtualNumbers)!='undefined') {
+			try {
+				myWinObj.myGridVirtualNumbers.setSizes();
+			} catch(e) {}
+		}
+
+		if(typeof(myWinObj.myGridDownline)!='undefined') {
+			try {
+				myWinObj.myGridDownline.setSizes();
+			} catch(e) {}
+		}
+
+		if(typeof(myWinObj.myGridDownlineSettings)!='undefined') {
+			try {
+				myWinObj.myGridDownlineSettings.setSizes();
+			} catch(e) {}
+		}
+
+		if(typeof(myWinObj.myGridChild)!='undefined') {
+			try {
+				myWinObj.myGridChild.setSizes();
+			} catch(e) {}
+		}
+
+		if(typeof(myWinObj.myGridChildSettings)!='undefined') {
+			try {
+				myWinObj.myGridChildSettings.setSizes();
+			} catch(e) {}
+		}
+
+		if(typeof(myWinObj.myGridTransaction)!='undefined') {
+			try {
+				myWinObj.myGridTransaction.setSizes();
+			} catch(e) {}
+		}
+
+		if(typeof(myWinObj.myGridCreditTransaction)!='undefined') {
+			try {
+				myWinObj.myGridCreditTransaction.setSizes();
+			} catch(e) {}
+		}*/ ?>
+
+	}
+
+	function <?php echo $wid.$templatedetailid.$submod; ?>_openwindow_%formval%(rowid) {
+
+		if(typeof(rowid)=='undefined'||typeof(rowid)==null) {
+			return false;
+		}
+
+		var obj = {};
+		obj.routerid = settings.router_id;
+		obj.action = 'formonly';
+		obj.formid = '<?php echo $templatedetailid.$submod; ?>';
+		obj.module = '<?php echo $moduleid; ?>';
+		obj.method = 'onrowselect';
+		obj.rowid = rowid;
+		obj.formval = '%formval%';
+
+		//obj.title = 'Sim Cards / '+myGrid.cells(rowId,2).getValue()+' / '+myGrid.cells(rowId,3).getValue();
+
+		obj.title = 'Customer';
+
+		openWindow(obj, function(winobj,obj){
+			console.log(obj);
+
+			myTab.postData('/'+settings.router_id+'/json/', {
+				odata: {winobj:winobj,obj:obj},
+				pdata: "routerid="+settings.router_id+"&action="+obj.action+"&formid="+obj.formid+"&module="+obj.module+"&method="+obj.method+"&rowid="+obj.rowid+"&formval="+obj.formval+"&wid="+obj.wid,
+			}, function(ddata,odata){
+				if(ddata.toolbar) {
+					console.log(ddata.toolbar);
+					odata.winobj.toolbar = odata.winobj.attachToolbar({
+						icons_path: settings.template_assets+"toolbar/",
+					});
+					odata.winobj.toolbar.toolbardata = ddata.toolbar;
+					odata.winobj.toolbar.tbRender(ddata.toolbar);
+					odata.winobj.toolbar.attachEvent("onClick", function(id){
+						showMessage("ToolbarOnClick: "+id,5000);
+
+						var tdata = this.getToolbarData(id);
+
+						if(!tdata) return false;
+
+						if(typeof(tdata.onClick)=='function') {
+							var ret = tdata.onClick.apply(this,[id,'%formval%',odata.obj.wid]);
+							//showMessage('ret: '+ret,5000);
+
+							return ret;
+						}
+
+						showMessage("Toolbar ID "+id+" not yet implemented!",10000);
+						return false;
+					});
+				}
+				if(ddata.html) {
+					jQuery("#"+odata.obj.wid).html(ddata.html);
+					//layout_resize_%formval%();
+				}
+			});
+		});
+	}
+
+	function <?php echo $wid.$templatedetailid.$submod; ?>_%formval%() {
 
 		var $ = jQuery;
 
 		var myTab = srt.getTabUsingFormVal('%formval%');
 
+		var myWinObj = srt.windows['<?php echo $wid; ?>'];
+
+		var myWinToolbar = myWinObj.toolbar;
+
 		var myToolbar = <?php echo json_encode($myToolbar); ?>;
 
-		var myTabbar = new dhtmlXTabBar("<?php echo $templatedetailid.$submod; ?>tabform_%formval%");
+		var myTabbar = new dhtmlXTabBar("<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
-		myTabbar.addTab("tbCustomer", "Customer");
+
+		myTabbar.addTab("tbCustomer", "Retailer");
 		//myTabbar.addTab("tbDetails", "Details");
-		myTabbar.addTab("tbIdentification", "Identification");
+		//myTabbar.addTab("tbIdentification", "Identification");
 		myTabbar.addTab("tbAddress", "Address");
-		myTabbar.addTab("tbVirtualNumbers", "Virtual Numbers");
-		myTabbar.addTab("tbWebAccess", "Web Access");
-		myTabbar.addTab("tbDownline", "Downline");
-		myTabbar.addTab("tbDownlineRebate", "Downline Rebate Settings");
-		myTabbar.addTab("tbChild", "Child");
-		myTabbar.addTab("tbChildRebate", "Child Rebate Settings");
+		//myTabbar.addTab("tbSetting", "Settings");
+		myTabbar.addTab("tbAssignedSim", "Assigned Sim and Sim Commands");
+		myTabbar.addTab("tbUpline", "Upline");
+		//myTabbar.addTab("tbWebAccess", "Web Access");
+		//myTabbar.addTab("tbDownline", "Downline");
+		//myTabbar.addTab("tbDownlineRebate", "Downline Rebate Settings");
+		//myTabbar.addTab("tbChild", "Child");
+		//myTabbar.addTab("tbChildRebate", "Child Rebate Settings");
 
 		myTabbar.tabs("tbCustomer").setActive();
 
-		myTab.toolbar.resetAll();
+		myWinToolbar.resetAll();
 
 		var formData2_%formval% = [
 			{type: "settings", position: "label-left", labelWidth: 130, inputWidth: 200},
@@ -115,356 +279,356 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "<?php echo $moduleid; ?>"},
-				{type: "hidden", name: "formid", value: "<?php echo $templatedetailid.$submod; ?>"},				
+				{type: "hidden", name: "formid", value: "<?php echo $templatedetailid.$submod; ?>"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
-				{type: "hidden", name: "rowid", value: "<?php echo $method==$moduleid.'edit' ? $vars['post']['rowid'] : ''; ?>"},
+				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
+				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
 			]},
-			{type: "block", name: "tbCustomer", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbCustomer']); ?>},
-			//{type: "block", name: "tbDetails", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDetails']); ?>},
-			{type: "block", name: "tbIdentification", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbIdentification']); ?>},
-			{type: "block", name: "tbAddress", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbAddress']); ?>},
-			{type: "block", name: "tbVirtualNumbers", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbVirtualNumbers']); ?>},
-			{type: "block", name: "tbWebAccess", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbWebAccess']); ?>},
-			{type: "block", name: "tbDownline", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDownline']); ?>},
-			{type: "block", name: "tbDownlineRebate", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDownlineRebate']); ?>},
-			{type: "block", name: "tbChild", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbChild']); ?>},
-			{type: "block", name: "tbChildRebate", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbChildRebate']); ?>},
+			{type: "block", name: "tbCustomer", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbCustomer']); ?>},
+			{type: "block", name: "tbAddress", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbAddress']); ?>},
+			{type: "block", name: "tbAssignedSim", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbAssignedSim']); ?>},
+			{type: "block", name: "tbUpline", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbUpline']); ?>},
 			{type: "label", label: ""}
 		];
 
-		if(typeof(myForm2_%formval%)!='undefined') {
+		<?php /*if(typeof(myForm2_%formval%)!='undefined') {
 			try {
 				myForm2_%formval%.unload();
 			} catch(e) {}
 		}
 
 		var myForm = myForm2_%formval% = new dhtmlXForm("<?php echo $templatedetailid.$submod; ?>detailsform_%formval%",formData2_%formval%);
+		*/ ?>
+
+		if(typeof(myWinObj.form)!='undefined') {
+			try {
+				console.log('Form unloaded!');
+				myWinObj.form.unload();
+			} catch(e) {}
+		}
+
+		var myForm = myWinObj.form = new dhtmlXForm("<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%",formData2_%formval%);
 
 		myChanged_%formval% = false;
 
 		myFormStatus_%formval% = '<?php echo $method; ?>';
 
 		//myForm.hideItem('tbDetails');
-		myForm.hideItem('tbIdentification');
+		//myForm.hideItem('tbIdentification');
 		myForm.hideItem('tbAddress');
-		myForm.hideItem('tbVirtualNumbers');
-		myForm.hideItem('tbWebAccess');
-		myForm.hideItem('tbDownline');
-		myForm.hideItem('tbDownlineRebate');
-		myForm.hideItem('tbChild');
-		myForm.hideItem('tbChildRebate');
+		//myForm.hideItem('tbSetting');
+		myForm.hideItem('tbAssignedSim');
+		myForm.hideItem('tbUpline');
+		//myForm.hideItem('tbWebAccess');
+		//myForm.hideItem('tbDownline');
+		//myForm.hideItem('tbDownlineRebate');
+		//myForm.hideItem('tbChild');
+		//myForm.hideItem('tbChildRebate');
 
 ///////////////////////////////////
 
+		if(typeof(myWinObj.myGridAssignedSim)!='null'&&typeof(myWinObj.myGridAssignedSim)!='undefined'&&myWinObj.myGridAssignedSim!=null) {
+			try {
+				myWinObj.myGridAssignedSim.destructor();
+				myWinObj.myGridAssignedSim = null;
+			} catch(e) {
+				console.log(e);
+			}
+		}
+
+		var myGridAssignedSim = myWinObj.myGridAssignedSim = new dhtmlXGridObject(myForm.getContainer('customer_assignedsim'));
+
+		myGridAssignedSim.setImagePath("/codebase/imgs/")
+
+		myGridAssignedSim.setHeader("SEQUENCE, ACTIVE, SIM CARD, SIM COMMANDS");
+
+		myGridAssignedSim.setInitWidths("80,60,150,*");
+
+		myGridAssignedSim.setColAlign("center,center,left,left");
+
+		myGridAssignedSim.setColTypes("edn,ch,ro,combo");
+
+		myGridAssignedSim.setColSorting("str,str,str,str");
+
+		myGridAssignedSim.init();
+
+		myGridAssignedSim.setSizes();
+
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=virtualnumber&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=retailerassignedsim&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
 		}, function(ddata,odata){
 
-			if(typeof(myGridVirtualNumbers_%formval%)!='null'&&typeof(myGridVirtualNumbers_%formval%)!='undefined'&&myGridVirtualNumbers_%formval%!=null) {
-				try {
-					myGridVirtualNumbers_%formval%.destructor();
-					myGridVirtualNumbers_%formval% = null;
-				} catch(e) {
-					console.log(e);
-				}
-			}
+			try {
 
-			var myGridVirtualNumbers = myGridVirtualNumbers_%formval% = new dhtmlXGridObject(myForm.getContainer('customer_virtualnumbers'));
+				myGridAssignedSim.parse(ddata,function(){
 
-			myGridVirtualNumbers.setImagePath("/codebase/imgs/")
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
-			myGridVirtualNumbers.setHeader("No, Mobile Number, Provider, Default, Active");
+					myGridAssignedSim.forEachRow(function(id){
+						myGridAssignedSim.cells(id,0).setDisabled(true);
+						myGridAssignedSim.cells(id,1).setDisabled(true);
+						myGridAssignedSim.cells(id,2).setDisabled(true);
+						myGridAssignedSim.cells(id,3).setDisabled(true);
+						//myGridAssignedSim.cells(id,5).setDisabled(true);
+					});
 
-			myGridVirtualNumbers.setInitWidths("50,120,120,80,80");
+					<?php } ?>
 
-			myGridVirtualNumbers.setColAlign("center,left,left,center,center");
+					var x;
 
-			myGridVirtualNumbers.setColTypes("ro,edtxt,ro,ch,ch");
+					if(ddata.rows&&ddata.rows.length>0) {
+						for(x in ddata.rows) {
+							if(ddata.rows[x].options) {
+								//alert(JSON.stringify(ddata.rows[x].options));
+								var myCombo = myGridAssignedSim.getColumnCombo(3);
 
-			//myGridVirtualNumbers.setNumberFormat("00000000000",1,"","");
+								myCombo.load(JSON.stringify(ddata.rows[x].options));
 
-			myGridVirtualNumbers.setColSorting("str,str,str,str,str");
+								myCombo.enableFilteringMode(true);
 
-			//var combobox = myGridVirtualNumbers.getCombo(2);
-			//combobox.put("Smart","Smart");
-			//combobox.put("Globe","Globe");
-			//combobox.put("Sun","Sun");
-
-			myGridVirtualNumbers.init();
-
-			myGridVirtualNumbers.setSizes();
-
-			/*myGridVirtualNumbers.addRow(1,"1,09493621618,,1,1");
-			myGridVirtualNumbers.addRow(2,"2,,,,");
-			myGridVirtualNumbers.addRow(3,"3,,,,");
-			myGridVirtualNumbers.addRow(4,"4,,,,");
-			myGridVirtualNumbers.addRow(5,"5,,,,");
-			myGridVirtualNumbers.addRow(6,"6,,,,");
-			myGridVirtualNumbers.addRow(7,"7,,,,");
-			myGridVirtualNumbers.addRow(8,"8,,,,");
-			myGridVirtualNumbers.addRow(9,"9,,,,");
-			myGridVirtualNumbers.addRow(10,"10,,,,");*/
-
-			myGridVirtualNumbers.attachEvent("onCheck", function(rId,cInd,state){
-				var mobileNo = trim(myGridVirtualNumbers.cells(rId,1).getValue());
-
-				//showMessage('rId=>'+rId+', cInd=>'+cInd+', state=>'+state+', mobileNo=>'+mobileNo,10000);
-				
-				if(state==true&&(cInd==3||cInd==4)) {
-					if(mobileNo=='') {
-						myGridVirtualNumbers.cells(rId,cInd).setValue(false);
-					} else {
-						if(cInd==3) {
-							myGridVirtualNumbers.forEachRow(function(id){
-								if(rId!=id) {
-									myGridVirtualNumbers.cells(id,3).setValue(false);
-								}
-							});								
-						}
-					}
-				}
-			});
-
-			myGridVirtualNumbers.attachEvent("onCellChanged", function(rId,cInd,nValue){
-				//showMessage('rId=>'+rId+', cInd=>'+cInd+', nValue=>'+nValue,10000);
-
-				if(cInd==1) {
-					//var mobileNo = trim(myGridVirtualNumbers.cells(rId,cInd).getValue());
-					var mobileNo = trim(nValue);
-
-					if(mobileNo!='') {
-
-						if(!ValidMobileNo(mobileNo)) {
-							myGridVirtualNumbers.cells(rId,cInd).setValue('');
-							showErrorMessage('Invalid Mobile Number!',5000);
-							return false;
-						}
-
-						/*if(mobileNo.length>11) {
-							myGridVirtualNumbers.cells(rId,cInd).setValue('');
-							showErrorMessage('Invalid Mobile Number!',5000);
-							return false;
-						}
-
-						//var chkMatches = name.match(/txt\_atcommands\_regx(\d+)\[(\d+)\]/);
-
-						if(!mobileNo.match(/^0\d{10}$/)) {
-							myGridVirtualNumbers.cells(rId,cInd).setValue('');
-							showErrorMessage('Invalid Mobile Number!',5000);
-							return false;
-						}*/
-
-						myTab.postData('/'+settings.router_id+'/json/', {
-							odata: {},
-							pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getnetwork&mobileno="+mobileNo+"&formval=%formval%",
-						}, function(ddata,odata){
-							if(ddata.network) {
-								if(ddata.network=='Unknown') {
-									showErrorMessage('Invalid Mobile Number!',5000);
-									return false;
-								}
-								myGridVirtualNumbers.cells(rId,2).setValue(ddata.network);
+								break;
 							}
-						});
-					} else {
-						myGridVirtualNumbers.cells(rId,2).setValue('');						
-						myGridVirtualNumbers.cells(rId,3).setValue(0);						
-						myGridVirtualNumbers.cells(rId,4).setValue(0);						
-					}
-				}
-
-			});
-
-			myGridVirtualNumbers.attachEvent("onEditCell", function(stage,rId,cInd,nValue,oValue){
-				//showMessage('state=>'+stage+', rId=>'+rId+', cInd=>'+cInd+', nValue=>'+nValue+', oValue=>'+oValue,10000);
-
-				if(stage==1&&cInd==1) {
-					myGridVirtualNumbers.cells(rId,cInd).inputMask({mask:'99999999999',placeholder:''});
-					//myGridVirtualNumbers.cells(rId,cInd).inputMask('99999999999');
-					//myGridVirtualNumbers.cells(rId,cInd).numeric();
-					//jQuery(myGridVirtualNumbers.cells(rId,cInd).cell).first().numeric();
-					//jQuery(myGridVirtualNumbers.cells(rId,cInd).cell).first().attr('maxlength', 11);
-				}
-
-				return true;
-			});
-
-			myGridVirtualNumbers.parse(ddata,function(){
-
-				if(typeof(f)!='undefined'&&rowid!=null) {
-					myGridVirtualNumbers.selectRowById(rowid,false,true,true);
-				} else
-				if(typeof(f)=='undefined'&&ddata.rows.length>0) {
-					myGridVirtualNumbers.selectRowById(ddata.rows[0].id,false,true,true);
-				}
-
-				<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?> 
-
-				myGridVirtualNumbers.forEachRow(function(id){
-					myGridVirtualNumbers.cells(id,1).setDisabled(true);
-					myGridVirtualNumbers.cells(id,3).setDisabled(true);
-					myGridVirtualNumbers.cells(id,4).setDisabled(true);
-				});
-
-				<?php } ?>
-
-				<?php /* ?>
-				if(ddata.rows.length>0) {
-
-					for(var i=0;i<ddata.rows.length;i++) {
-						//var cell = myGrid_%formval%.cells(ddata.rows[i].id,0);
-
-						var o = myGrid.cells(ddata.rows[i].id,0).getRowObj();
-
-						if(ddata.rows[i].unread&&parseInt(ddata.rows[i].unread)===1) {
-							o.style.fontWeight = 'bold';
-							//o.style.color = '#f00';
-						} else {
-							o.style.fontWeight = 'normal';
 						}
 					}
-				}
-				<?php */ ?>
 
-			},'json');
+				},'json');
+
+			} catch(e) {
+				console.log(e);
+			}
 
 		});
 
 ///////////////////////////////////
 
-			var myGridDownline = myGridDownline_%formval% = new dhtmlXGridObject(myForm.getContainer('customer_downline'));
+		if(typeof(myWinObj.myGridUpline)!='null'&&typeof(myWinObj.myGridUpline)!='undefined'&&myWinObj.myGridUpline!=null) {
+			try {
+				myWinObj.myGridUpline.destructor();
+				myWinObj.myGridUpline = null;
+			} catch(e) {
+				console.log(e);
+			}
+		}
 
-			myGridDownline.setImagePath("/codebase/imgs/")
+		var myGridUpline = myWinObj.myGridUpline = new dhtmlXGridObject(myForm.getContainer('customer_upline'));
 
-			myGridDownline.setHeader("Customer ID, Virtual Number, Customer Name, Total Rebate");
+		myGridUpline.setImagePath("/codebase/imgs/")
 
-			myGridDownline.setInitWidths("120,120,120,120");
+		myGridUpline.setHeader("NO, UPLINE NAME, &nbsp;");
 
-			myGridDownline.setColAlign("left,left,left,right");
+		myGridUpline.setInitWidths("50,500,*");
 
-			myGridDownline.setColTypes("ro,ro,ro,ro");
+		myGridUpline.setColAlign("center,left,left");
 
-			myGridDownline.setColSorting("str,str,str,str");
+		myGridUpline.setColTypes("ro,combo,ro");
 
-			myGridDownline.init();
+		myGridUpline.setColSorting("str,str,str");
+
+		myGridUpline.init();
+
+		myGridUpline.setSizes();
+
+		myTab.postData('/'+settings.router_id+'/json/', {
+			odata: {},
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=retailerupline&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
+		}, function(ddata,odata){
+
+			try {
+
+				myGridUpline.parse(ddata,function(){
+
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
+
+					myGridUpline.forEachRow(function(id){
+						myGridUpline.cells(id,0).setDisabled(true);
+						myGridUpline.cells(id,1).setDisabled(true);
+						//myGridUpline.cells(id,2).setDisabled(true);
+						//myGridUpline.cells(id,3).setDisabled(true);
+						//myGridUpline.cells(id,5).setDisabled(true);
+					});
+
+					<?php } ?>
+
+					var x;
+					var opt;
+
+					if(ddata.rows&&ddata.rows.length>0) {
+						for(x in ddata.rows) {
+							if(ddata.rows[x].options) {
+								//alert(JSON.stringify(ddata.rows[x].options));
+								//var myCombo = myGridUpline.getColumnCombo(1);
+
+								//myCombo.load(JSON.stringify(ddata.rows[x].options));
+
+								//myCombo.enableFilteringMode(true);
+
+								opt = ddata.rows[x].options;
+
+								break;
+							}
+						}
+					}
+
+					myGridUpline.forEachRow(function(id){
+						var combo = myGridUpline.cells(id,1).getCellCombo();
+
+						combo.load(JSON.stringify(opt));
+
+						var cvalue = combo.getOption(myGridUpline.cells(id,1).getValue());
+
+						//console.log('cvalue',cvalue);
+
+						combo.setComboText(cvalue.text);
+						combo.setComboValue(cvalue.value);
+						myGridUpline.cells(id,1).setValue(cvalue.text);
+					});
+
+				},'json');
+
+			} catch(e) {
+				console.log(e);
+			}
+
+		});
 
 ///////////////////////////////////
 
-			var myGridDownlineSettings = myGridDownlineSettings_%formval% = new dhtmlXGridObject(myForm.getContainer('customer_downlinesettings'));
+		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?>
 
-			myGridDownlineSettings.setImagePath("/codebase/imgs/")
+		myWinToolbar.disableAll();
 
-			myGridDownlineSettings.setHeader("Provider, Category, Transaction Type, Discount Scheme");
+		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-			myGridDownlineSettings.setInitWidths("120,120,120,120");
+		//myForm.setItemFocus("customer_lastname");
 
-			myGridDownlineSettings.setColAlign("left,left,left,right");
-
-			myGridDownlineSettings.setColTypes("ro,ro,ro,ro");
-
-			myGridDownlineSettings.setColSorting("str,str,str,str");
-
-			myGridDownlineSettings.init();
-
-///////////////////////////////////
-
-			var myGridChild = myGridChild_%formval% = new dhtmlXGridObject(myForm.getContainer('customer_child'));
-
-			myGridChild.setImagePath("/codebase/imgs/")
-
-			myGridChild.setHeader("Retailer Mobile Number, Retailer Name");
-
-			myGridChild.setInitWidths("240,240");
-
-			myGridChild.setColAlign("left,left");
-
-			myGridChild.setColTypes("ro,ro");
-
-			myGridChild.setColSorting("str,str");
-
-			myGridChild.init();
-
-///////////////////////////////////
-
-			var myGridChildSettings = myGridChildSettings_%formval% = new dhtmlXGridObject(myForm.getContainer('customer_childsettings'));
-
-			myGridChildSettings.setImagePath("/codebase/imgs/")
-
-			myGridChildSettings.setHeader("Provider, Category, Transaction Type, Assigned Sim, Discount Scheme");
-
-			myGridChildSettings.setInitWidths("120,120,120,120,120");
-
-			myGridChildSettings.setColAlign("left,left,left,left,left");
-
-			myGridChildSettings.setColTypes("ro,ro,ro,ro,ro");
-
-			myGridChildSettings.setColSorting("str,str,str,str,str");
-
-			myGridChildSettings.init();
-
-///////////////////////////////////
-
-		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?> 
-
-		myTab.toolbar.disableAll();
-
-		myTab.toolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
-
-		myForm.setItemFocus("customer_lastname");
-
-		jQuery("#<?php echo $templatedetailid.$submod; ?>detailsform_%formval% input[name='customer_creditlimit']").numeric();
-		jQuery("#<?php echo $templatedetailid.$submod; ?>detailsform_%formval% input[name='customer_criticallevel']").numeric();
+		//jQuery("#<?php echo $templatedetailid.$submod; ?>detailsform_%formval% input[name='customer_creditlimit']").numeric();
+		//jQuery("#<?php echo $templatedetailid.$submod; ?>detailsform_%formval% input[name='customer_criticallevel']").numeric();
 		//jQuery("#<?php echo $templatedetailid.$submod; ?>detailsform_%formval% input[name='customer_creditbalance']").numeric();
 
-		<?php } else if($method==$moduleid.'save') { ?> 
+		myWinToolbar.showOnly(myToolbar);
 
-		myTab.toolbar.disableAll();
+		<?php } else if($method==$moduleid.'save') { ?>
 
-		myTab.toolbar.enableOnly(myToolbar);
+		myWinToolbar.disableAll();
 
-		myTab.toolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+		myWinToolbar.enableOnly(myToolbar);
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
-		myTab.toolbar.disableAll();
+		myWinToolbar.disableAll();
 
-		myTab.toolbar.enableOnly(myToolbar);
+		myWinToolbar.enableOnly(myToolbar);
 
-		myTab.toolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
 		<?php 	if(empty($vars['post']['rowid'])) { ?>
 
-		myTab.toolbar.disableItem('<?php echo $moduleid; ?>edit');
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>edit');
 
-		myTab.toolbar.disableItem('<?php echo $moduleid; ?>delete');
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>delete');
 
 		<?php 	} ?>
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
-		setTimeout(function(){
-			layout_resize_%formval%();
-		},100);
+		//setTimeout(function(){
+		//	layout_resize_%formval%();
+		//},100);
+
+///////////////////////////////////
+
+		<?php echo $wid.$templatedetailid.$submod; ?>_resize_%formval%(myWinObj);
+
+///////////////////////////////////
+
+		if(typeof myWinObj.onCloseId != 'undefined') {
+			try {
+				myWinObj.detachEvent(myWinObj.onCloseId);
+			} catch(e) {}
+		}
+
+		myWinObj.onCloseId = myWinObj.attachEvent("onClose", function(win){
+			console.log('onClose');
+			win.form.unload();
+			return true;
+		});
+
+		//console.log('eventId: '+srt.windows['<?php echo $wid; ?>'].onCloseId);
+
+		if(typeof myWinObj.onResizeFinishId != 'undefined') {
+			try {
+				myWinObj.detachEvent(myWinObj.onResizeFinishId);
+			} catch(e) {}
+		}
+
+		myWinObj.onResizeFinishId = myWinObj.attachEvent("onResizeFinish", function(win){
+			//win.form.unload();
+			myTabbar.setSizes();
+			//console.log(win.getId());
+			//console.log(win.getDimension());
+
+			<?php echo $wid.$templatedetailid.$submod; ?>_resize_%formval%(win);
+
+			return true;
+		});
+
+		if(typeof myWinObj.onMaximizeId != 'undefined') {
+			try {
+				myWinObj.detachEvent(myWinObj.onMaximizeId);
+			} catch(e) {}
+		}
+
+		myWinObj.onMaximizeId = myWinObj.attachEvent("onMaximize", function(win){
+			//win.form.unload();
+			myTabbar.setSizes();
+			//console.log(win.getId());
+			//console.log(win.getDimension());
+
+			<?php echo $wid.$templatedetailid.$submod; ?>_resize_%formval%(win);
+
+			return true;
+		});
+
+		if(typeof myWinObj.onMinimizeId != 'undefined') {
+			try {
+				myWinObj.detachEvent(myWinObj.onMinimizeId);
+			} catch(e) {}
+		}
+
+		myWinObj.onMinimizeId = myWinObj.attachEvent("onMinimize", function(win){
+			//win.form.unload();
+			myTabbar.setSizes();
+			//console.log(win.getId());
+			//console.log(win.getDimension());
+
+			<?php echo $wid.$templatedetailid.$submod; ?>_resize_%formval%(win);
+
+			return true;
+		});
 
 ///////////////////////////////////
 
 		myTabbar.attachEvent("onTabClick", function(id, lastId){
 
 			myTabbar.forEachTab(function(tab){
-			    var tbId = tab.getId();
+					var tbId = tab.getId();
 
-			    if(id==tbId) {
-				    myForm2_%formval%.showItem(tbId);
-			    } else {
-				    myForm2_%formval%.hideItem(tbId);
-			    }
+					if(id==tbId) {
+						srt.windows['<?php echo $wid; ?>'].form.showItem(tbId);
+						//myForm2_%formval%.showItem(tbId);
+					} else {
+						srt.windows['<?php echo $wid; ?>'].form.hideItem(tbId);
+						//myForm2_%formval%.hideItem(tbId);
+					}
 			});
- 
+
 		});
 
 		myForm.attachEvent("onBeforeChange", function (name, old_value, new_value){
@@ -507,62 +671,52 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			this.clearNote(id);
 		});
 
-		myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>new').onClick = function(id,formval) {
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>edit').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
 
-			myTab.postData('/'+settings.router_id+'/json/', {
-				odata: {},
-				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval=%formval%",
-			}, function(ddata,odata){
-				if(ddata.html) {					
-					jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-				}
-			});
-		};
-
-		myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>edit').onClick = function(id,formval) {
-			//showMessage("toolbar: "+id,5000);
-
-			var rowid = myGrid_%formval%.getSelectedRowId();
+			var rowid = srt.windows[wid].form.getItemValue('rowid');
 
 			if(rowid) {
 				myTab.postData('/'+settings.router_id+'/json/', {
-					odata: {rowid:rowid},
-					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&rowid="+rowid+"&formval=%formval%",
+					odata: {rowid:rowid, wid:wid},
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&rowid="+rowid+"&formval="+formval+"&wid="+wid,
 				}, function(ddata,odata){
 					if(ddata.html) {
-						jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);						
+						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+						jQuery("#"+odata.wid).html(ddata.html);
 					}
 				});
 			}
+
 		};
 
-		myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>delete').onClick = function(id,formval) {
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>delete').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
 
-			var rowid = myGrid_%formval%.getSelectedRowId();
+			var rowid = srt.windows[wid].form.getItemValue('rowid');
 
-			var rowids = [];
+			/*var rowids = [];
 
 			myGrid_%formval%.forEachRow(function(id){
 				var val = parseInt(myGrid_%formval%.cells(id,0).getValue());
 				if(val) {
 					rowids.push(id);
 				}
-			});
+			});*/
 
 			if(rowid) {
 				showConfirmWarning('Are you sure you want to delete the item(s)?',function(val){
 
 					if(val) {
 						myTab.postData('/'+settings.router_id+'/json/', {
-							odata: {rowid:rowid},
-							pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&rowid="+rowid+"&rowids="+rowids+"&formval=%formval%",
+							odata: {rowid:rowid,wid:wid},
+							pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&rowid="+rowid+"&formval=%formval%&wid="+wid,
 						}, function(ddata,odata){
 							if(ddata.return_code) {
 								if(ddata.return_code=='SUCCESS') {
 									<?php echo $templatemainid.$submod; ?>grid_%formval%();
 									showAlert(ddata.return_message);
+									closeWindow(odata.wid);
 								}
 							}
 						});
@@ -570,15 +724,18 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 				});
 			}
+
 		};
 
-		myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>save').onClick = function(id,formval) {
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>save').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
 
-			var myForm = myForm2_%formval%;
+			var myWinObj = srt.windows[wid];
+
+			var myForm = myWinObj.form;
 
 			//var txt_optionnumber = parseInt($("#messagingdetailsoptionsdetailsform_%formval% input[name='txt_optionnumber']").val());
-			
+
 			//if(isNaN(txt_optionnumber)) {
 			//	txt_optionnumber = '';
 			//}
@@ -589,7 +746,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			showSaving();
 
@@ -599,23 +756,45 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myForm.setItemValue('method', id);
 
-			//$("#messagingdetailsoptionsdetailsform_%formval% input[name='method']").val(id);
-
-			var obj = {o:this,id:id};
-
 			var extra = [];
 
-			myGridVirtualNumbers_%formval%.forEachRow(function(id){
-				var m = myGridVirtualNumbers_%formval%.cells(id,1).getValue();
+			myWinObj.myGridAssignedSim.forEachRow(function(id){
+				var m = myWinObj.myGridAssignedSim.cells(id,0).getValue();
 				if(m) {
-					extra['virtualnumber_mobileno['+id+']'] = m;
-					extra['virtualnumber_provider['+id+']'] = myGridVirtualNumbers_%formval%.cells(id,2).getValue();
-					extra['virtualnumber_default['+id+']'] = myGridVirtualNumbers_%formval%.cells(id,3).getValue();
-					extra['virtualnumber_active['+id+']'] = myGridVirtualNumbers_%formval%.cells(id,4).getValue();
+					extra['retailerassignedsim_seq['+id+']'] = m;
+					extra['retailerassignedsim_active['+id+']'] = myWinObj.myGridAssignedSim.cells(id,1).getValue();
+					extra['retailerassignedsim_simname['+id+']'] = myWinObj.myGridAssignedSim.cells(id,2).getValue();
+					extra['retailerassignedsim_simcommand['+id+']'] = myWinObj.myGridAssignedSim.cells(id,3).getValue();
 				}
 			});
 
-			$("#<?php echo $templatedetailid.$submod; ?>detailsform_%formval%").ajaxSubmit({
+			/*myWinObj.myGridUpline.forEachRow(function(id){
+				var m = myWinObj.myGridUpline.cells(id,1).getValue();
+				if(m) {
+					extra['retailerupline_customerid['+id+']'] = m;
+				}
+			});*/
+
+			myWinObj.myGridUpline.forEachRow(function(id){
+				var combo = myWinObj.myGridUpline.cells(id,1).getCellCombo();
+				//combo.load(JSON.stringify(opt));
+				//console.log(combo.getOption(myGridUpline.cells(id,1).getValue()));
+				//var cvalue = combo.getOption(myWinObj.myGridUpline.cells(id,1).getValue());
+				var cvalue = combo.getActualValue();
+
+				if(cvalue) {
+					extra['retailerupline_uplineid['+id+']'] = cvalue;
+					//console.log('cvalue',cvalue);
+				}
+
+				//combo.setComboText(cvalue.text);
+				//combo.setComboValue(cvalue.value);
+				//myWinObj.myGridUpline.cells(id,1).setValue(cvalue.text);
+			});
+
+			var obj = {o:this,id:id};
+
+			$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%").ajaxSubmit({
 				url: "/"+settings.router_id+"/json/",
 				dataType: 'json',
 				semantic: true,
@@ -659,12 +838,20 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
-	
+
+							try {
+								if(data.rowid) {
+									layout_resize_%formval%();
+									<?php echo $templatemainid.$submod; ?>grid_%formval%(data.rowid);
+								} else {
+									doSelect_%formval%("<?php echo $submod; ?>");
+								}
+							} catch(e) {}
+
+							closeWindow(wid);
+
 							if(data.rowid) {
-								layout_resize_%formval%();
-								<?php echo $templatemainid.$submod; ?>grid_%formval%(data.rowid);
-							} else {
-								doSelect_%formval%("<?php echo $submod; ?>");
+								<?php echo $wid.$templatedetailid.$submod; ?>_openwindow_%formval%(data.rowid)
 							}
 
 							showMessage(data.return_message,5000);
@@ -677,26 +864,36 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			return false;
 		};
 
-		myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>cancel').onClick = function(id,formval) {
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>cancel').onClick = myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
-			doSelect_%formval%("<?php echo $submod; ?>");
-		};
+			//doSelect_%formval%("<?php echo $submod; ?>");
 
-		myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval) {
-			//showMessage("toolbar: "+id,5000);
-			//doSelect_%formval%("retail");
+			var rowid = srt.windows[wid].form.getItemValue('rowid');
 
-			try {
-				var rowid = myGrid_%formval%.getSelectedRowId();
-				<?php echo $templatemainid.$submod; ?>grid_%formval%(rowid);
-			} catch(e) {
-				doSelect_%formval%("<?php echo $submod; ?>");
+			if(rowid) {
+				myTab.postData('/'+settings.router_id+'/json/', {
+					odata: {rowid:rowid,wid:wid},
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=onrowselect&rowid="+rowid+"&formval="+formval+"&wid="+wid,
+				}, function(ddata,odata){
+					if(ddata.html) {
+						jQuery("#"+odata.wid).html(ddata.html);
+					}
+				});
+			} else {
+				myTab.postData('/'+settings.router_id+'/json/', {
+					odata: {rowid:rowid,wid:wid},
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=contactnew&rowid=0&formval="+formval+"&wid="+wid,
+				}, function(ddata,odata){
+					if(ddata.html) {
+						jQuery("#"+odata.wid).html(ddata.html);
+					}
+				});
 			}
 
 		};
 
 	}
 
-	<?php echo $templatedetailid.$submod; ?>_%formval%();
+	<?php echo $wid.$templatedetailid.$submod; ?>_%formval%();
 
 </script>

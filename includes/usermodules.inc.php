@@ -639,7 +639,8 @@ function _eLoadProcessSMS($vars=array()) {
 
 		if($customer_type=='STAFF') {
 			$staff_balance = getStaffBalance($loadtransaction_customerid);
-		} else {
+		} else
+		if($customer_type=='REGULAR') {
 			if(!empty(($customer_balance = getCustomerBalance($loadtransaction_customerid)))) {
 			} else {
 
@@ -749,7 +750,8 @@ function _eLoadProcessSMS($vars=array()) {
 						if(!empty($itemData['item_regularloadstaffdiscountscheme'])) {
 							$itemregularloaddiscountscheme = $itemData['item_regularloadstaffdiscountscheme'];
 						}
-					} else {
+					} else
+					if($customer_type=='REGULAR') {
 						if(!empty($itemData['item_regularloaddiscountscheme'])) {
 							$itemregularloaddiscountscheme = $itemData['item_regularloaddiscountscheme'];
 						}
@@ -853,7 +855,8 @@ function _eLoadProcessSMS($vars=array()) {
 					$content['loadtransaction_amountdue'] = $amountdue;
 					$content['loadtransaction_processingfee'] = $itemProcessingFee;
 
-				} else {
+				} else
+				if($customer_type=='REGULAR') {
 
 					// CUSTOMER
 
@@ -1064,7 +1067,8 @@ function _eLoadProcessSMS($vars=array()) {
 
 					if($customer_type=='STAFF') {
 						$content['ledger_credit'] = $item_srp;
-					} else {
+					} else
+					if($customer_type=='REGULAR') {
 						$content['ledger_debit'] = $amountdue; //$item_eshopsrp;
 					}
 
@@ -1089,7 +1093,8 @@ function _eLoadProcessSMS($vars=array()) {
 
 					if($customer_type=='STAFF') {
 						computeStaffBalance($loadtransaction_customerid);
-					} else {
+					} else
+					if($customer_type=='REGULAR') {
 						computeCustomerBalance($loadtransaction_customerid);
 						computeChildRebateBalance($loadtransaction_customerid);
 					}
@@ -1540,7 +1545,8 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 
 							if($customer_type=='STAFF') {
 								$ledgerContent['ledger_credit'] = $content['loadtransaction_load'];
-							} else {
+							} else
+							if($customer_type=='REGULAR') {
 								$ledgerContent['ledger_debit'] = $content['loadtransaction_cost'];
 							}
 
@@ -1550,7 +1556,8 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 
 							if($customer_type=='STAFF') {
 								computeStaffBalance($content['loadtransaction_customerid']);
-							} else {
+							} else
+							if($customer_type=='REGULAR') {
 								computeCustomerBalance($content['loadtransaction_customerid']);
 							}
 
@@ -1599,7 +1606,8 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 					if($customer_type=='STAFF') {
 						computeStaffBalance($loadtransaction_customerid);
 						$errmsg = str_replace('%VBALANCE%',getStaffBalance($loadtransaction_customerid),$errmsg);
-					} else {
+					} else
+					if($customer_type=='REGULAR') {
 						computeCustomerBalance($loadtransaction_customerid);
 						$errmsg = str_replace('%VBALANCE%',getCustomerBalance($loadtransaction_customerid),$errmsg);
 					}
@@ -1616,7 +1624,8 @@ function _eLoadExpressionProcessSMS($vars=array()) {
 					if($customer_type=='STAFF') {
 						computeStaffBalance($loadtransaction_customerid);
 						$errmsg = str_replace('%balance%',getStaffBalance($loadtransaction_customerid),$errmsg);
-					} else {
+					} else
+					if($customer_type=='REGULAR') {
 						computeCustomerBalance($loadtransaction_customerid);
 						$errmsg = str_replace('%balance%',getCustomerBalance($loadtransaction_customerid),$errmsg);
 					}
@@ -2254,7 +2263,8 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 
 							$content['ledger_debit'] = $staffLedger['ledger_credit'];
 							$ledgerRefundId = $staffLedger['ledger_id'];
-						} else {
+						} else
+						if($customer_type=='REGULAR') {
 							//$content['ledger_credit'] = $itemData['item_eshopsrp'];
 							$customerLedger = getCustomerLedgerLoadtransactionId($loadtransaction['loadtransaction_id']);
 
@@ -2331,7 +2341,8 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 						if($customer_type=='STAFF') {
 							computeStaffBalance($loadtransaction_customerid);
 							$balance = getStaffBalance($loadtransaction_customerid);
-						} else {
+						} else
+						if($customer_type=='REGULAR') {
 							computeCustomerBalance($loadtransaction_customerid);
 							computeChildRebateBalance($loadtransaction_customerid);
 							$balance = getCustomerBalance($loadtransaction_customerid);

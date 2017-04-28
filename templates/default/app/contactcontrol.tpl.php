@@ -11,14 +11,14 @@ $sidebar[] = array(
 	'icon'=>'recent.png',
 );
 $sidebar[] = array(
-	'id'=>'supplier',
-	'text'=>'Supplier',
-	'icon'=>'pictures.png',
-);
-$sidebar[] = array(
 	'id'=>'retailer',
 	'text'=>'Retailer',
 	'icon'=>'desktop.png',
+);
+$sidebar[] = array(
+	'id'=>'supplier',
+	'text'=>'Supplier',
+	'icon'=>'pictures.png',
 );
 $sidebar[] = array(
 	'id'=>'remittance',
@@ -28,14 +28,14 @@ $sidebar[] = array(
 
 ?>
 <!--
-<?php 
+<?php
 
 global $appaccess;
 global $applogin;
 
 $access = $applogin->getAccess();
 
-//$appaccess->showrules(); 
+//$appaccess->showrules();
 
 pre(array('$_SESSION'=>$_SESSION));
 
@@ -148,7 +148,7 @@ pre(array('$_SESSION'=>$_SESSION));
 					myGridChildSettings_%formval%.setSizes();
 				} catch(e) {}
 			}
-			
+
 		}
 
 	<?php } else if($v['id']=='supplier') { ?>
@@ -190,7 +190,7 @@ pre(array('$_SESSION'=>$_SESSION));
 					myGridSupplierTransactions_%formval%.setSizes();
 				} catch(e) {}
 			}
-			
+
 		}
 
 	<?php } else { ?>
@@ -281,8 +281,8 @@ pre(array('$_SESSION'=>$_SESSION));
 					<?php //if(in_array('modemcommands',$access)) { ?>
 					{id: "modemcommands", text: "MODEM Commands", icon: "documents.png"},
 					<?php //} ?>
-				]	
-			<?php */ ?>	
+				]
+			<?php */ ?>
 		});
 
 		myTab.layout.cells('c').hideHeader();
@@ -416,7 +416,7 @@ pre(array('$_SESSION'=>$_SESSION));
 			pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatemainid; ?>"+id+"&module=<?php echo $moduleid; ?>&formval=%formval%",
 		}, function(ddata,odata){
 			if(ddata.html) {
-				jQuery("#formdiv_%formval% #<?php echo $templatemainid; ?>").parent().html(ddata.html);				
+				jQuery("#formdiv_%formval% #<?php echo $templatemainid; ?>").parent().html(ddata.html);
 			}
 		});
 

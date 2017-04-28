@@ -265,7 +265,7 @@ function getAllContacts($contactsonly=false) {
 	return false;
 }
 
-function getAllCustomers($contactsonly=false,$ord=false) {
+function getAllCustomers($contactsonly=false,$ord=false,$mode=0) {
 	global $appdb;
 
 	$order = '';
@@ -297,6 +297,21 @@ function getAllCustomers($contactsonly=false,$ord=false) {
 	}
 
 	if(!empty($result['rows'][0]['customer_id'])) {
+
+		if($mode==1) {
+			$ret = array();
+
+			foreach($result['rows'] as $k=>$v) {
+				$ret[$v['customer_id']] = $v;
+			}
+
+			if(!empty($ret)) {
+				return $ret;
+			}
+
+			return false;
+		}
+
 		return $result['rows'];
 	}
 
@@ -776,7 +791,7 @@ function getContactNickByNumber($number=false) {
 	return 'Unregistered';
 }
 
-function getCustomerFullname($id=false) {
+function getCustomerFullname($id=false,$last=false) {
 	global $appdb;
 
 	if(!empty($id)&&is_numeric($id)&&intval($id)>0) {
@@ -790,25 +805,52 @@ function getCustomerFullname($id=false) {
 
 	$fullname = '';
 
-	if(!empty($result['rows'][0]['customer_firstname'])) {
-		$f = trim($result['rows'][0]['customer_firstname']);
-		if(!empty($f)) {
-			$fullname .= $f;
-		}
-	}
+	if($last) {
 
-	if(!empty($result['rows'][0]['customer_middlename'])) {
-		$f = trim($result['rows'][0]['customer_middlename']);
-		if(!empty($f)) {
-			$fullname .= ' '.$f;
+		if(!empty($result['rows'][0]['customer_lastname'])) {
+			$f = trim($result['rows'][0]['customer_lastname']);
+			if(!empty($f)) {
+				$fullname .= ' '.$f.', ';
+			}
 		}
-	}
 
-	if(!empty($result['rows'][0]['customer_lastname'])) {
-		$f = trim($result['rows'][0]['customer_lastname']);
-		if(!empty($f)) {
-			$fullname .= ' '.$f;
+		if(!empty($result['rows'][0]['customer_firstname'])) {
+			$f = trim($result['rows'][0]['customer_firstname']);
+			if(!empty($f)) {
+				$fullname .= $f;
+			}
 		}
+
+		if(!empty($result['rows'][0]['customer_middlename'])) {
+			$f = trim($result['rows'][0]['customer_middlename']);
+			if(!empty($f)) {
+				$fullname .= ' '.$f;
+			}
+		}
+
+	} else {
+
+		if(!empty($result['rows'][0]['customer_firstname'])) {
+			$f = trim($result['rows'][0]['customer_firstname']);
+			if(!empty($f)) {
+				$fullname .= $f;
+			}
+		}
+
+		if(!empty($result['rows'][0]['customer_middlename'])) {
+			$f = trim($result['rows'][0]['customer_middlename']);
+			if(!empty($f)) {
+				$fullname .= ' '.$f;
+			}
+		}
+
+		if(!empty($result['rows'][0]['customer_lastname'])) {
+			$f = trim($result['rows'][0]['customer_lastname']);
+			if(!empty($f)) {
+				$fullname .= ' '.$f;
+			}
+		}
+
 	}
 
 	$fullname = trim($fullname);
@@ -1623,10 +1665,11 @@ function isCriticalLevel($id=false) {
 		if($balance>=$critical_level) {
 			return true;
 		}
-	} else {
+	} else
+  if(!empty($customer_type)&&$customer_type=='REGULAR') {
 		$balance = getCustomerBalance($id);
 
-		print_r(array('$balance'=>$balance));
+		//print_r(array('$balance'=>$balance));
 
 		if($balance<=$critical_level) {
 			return true;
@@ -1680,7 +1723,8 @@ function isFreezeLevel($id=false) {
 		if($balance>=$freeze_level) {
 			return true;
 		}
-	} else {
+	} else
+  if(!empty($customer_type)&&$customer_type=='REGULAR') {
 		$balance = getCustomerBalance($id);
 
 		//print_r(array('$balance'=>$balance));
@@ -2665,6 +2709,98 @@ function getSimNumberByName($name=false) {
 
 	if(!empty($simNumberByNamearr[$name])) {
 		return $simNumberByNamearr[$name];
+	}
+
+	return false;
+}
+
+function getAllDealerSimCard($provider=false,$mode=0) {
+	return getAllSimCardByCategory('DEALER',$provider,$mode);
+}
+
+function getAllSimCardByCategory($cat=false,$provider=false,$mode=0) {
+	global $appdb;
+
+	if(!empty($cat)) {
+	} else return false;
+
+	$cat = strtoupper(trim($cat));
+
+	$sql = "select * from tbl_simcard where simcard_category='$cat'";
+
+	if(!empty($provider)) {
+		$provider = trim($provider);
+		$sql .= " and simcard_provider='$provider'";
+	}
+
+	//pre(array('$sql'=>$sql));
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['simcard_id'])) {
+
+		$ret = array();
+
+		if($mode==1) {
+			foreach($result['rows'] as $k=>$v) {
+				$ret[$v['simcard_number']] = $v;
+			}
+
+			return $ret;
+		}
+
+		return $result['rows'];
+	}
+
+	return false;
+}
+
+function getSimCardCategoryByID($id=false) {
+	global $appdb, $simNumberByNamearr;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_simcard where simcard_id=$id";
+
+	//pre(array('$sql'=>$sql));
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['simcard_id'])) {
+		return $result['rows'][0]['simcard_category'];
+	}
+
+	return false;
+}
+
+function getSimCardCategoryByNumber($contactnumber=false) {
+	global $appdb;
+
+	if(!empty($contactnumber)&&is_numeric($contactnumber)) {
+	} else {
+		return false;
+	}
+
+	if(($res=parseMobileNo($contactnumber))) {
+		$contactnumber = '0'.$res[2].$res[3];
+
+		$sql = "select * from tbl_simcard where simcard_number='$contactnumber'";
+
+		//pre(array('$sql'=>$sql));
+
+		if(!($result = $appdb->query($sql))) {
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['simcard_category'])) {
+			return $result['rows'][0]['simcard_category'];
+		}
+
 	}
 
 	return false;
@@ -4377,7 +4513,9 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 		$simnumber = '0'.$res[2].$res[3];
 	}
 
-	$contactid = getContactIDByNumber($contactnumber);
+	//$contactid = getContactIDByNumber($contactnumber);
+
+	$contactid = getCustomerIDByNumber($contactnumber);
 
 	if(!$contactid) {
 		$contactid = 0;
@@ -4863,7 +5001,9 @@ function sendToGateway($contactnumber=false,$simnumber=false,$message=false,$sta
 		$simnumber = '0'.$res[2].$res[3];
 	}
 
-	$contactid = getContactIDByNumber($contactnumber);
+	//$contactid = getContactIDByNumber($contactnumber);
+
+	$contactid = getCustomerIDByNumber($contactnumber);
 
 	if(!$contactid) {
 		$contactid = 0;

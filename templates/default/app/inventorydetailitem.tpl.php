@@ -350,6 +350,8 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 								myCombo.load(JSON.stringify(ddata.rows[x].options));
 
 								myCombo.enableFilteringMode(true);
+
+								break;
 							}
 						}
 					}

@@ -487,7 +487,8 @@ if(!class_exists('APP_app_contact')) {
 
 						if($customer_type=='STAFF') {
 							computeStaffBalance($retval['rowid']);
-						} else {
+						} else
+						if($customer_type=='REGULAR') {
 							computeCustomerBalance($retval['rowid']);
 						}
 
@@ -736,7 +737,7 @@ if(!class_exists('APP_app_contact')) {
 				//	$opt[] = array('text'=>'','value'=>'','selected'=>false);
 				//}
 
-				$accounttype = array('REGULAR','RETAILER','STAFF','ADMIN');
+				$accounttype = array('REGULAR','STAFF','ADMIN');
 
 				foreach($accounttype as $v) {
 					$selected = false;
@@ -843,7 +844,8 @@ if(!class_exists('APP_app_contact')) {
 						'value' => !empty($params['customerinfo']['customer_staffbalance']) ? $params['customerinfo']['customer_staffbalance'] : '',
 					);
 
-				} else {
+				} else
+				if(!empty($params['customerinfo']['customer_type'])&&$params['customerinfo']['customer_type']=='REGULAR') {
 
 					$params['tbCustomer'][] = array(
 						'type' => 'input',
@@ -902,7 +904,8 @@ if(!class_exists('APP_app_contact')) {
 						'value' => !empty($params['customerinfo']['customer_creditbalance']) ? $params['customerinfo']['customer_creditbalance'] : '',
 					);*/
 
-			} else {
+			} else
+			if(!empty($params['customerinfo']['customer_type'])&&$params['customerinfo']['customer_type']=='REGULAR') {
 
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
@@ -922,10 +925,13 @@ if(!class_exists('APP_app_contact')) {
 					'offset' => $newcolumnoffset,
 				);
 
-				if($params['customerinfo']['customer_type']=='STAFF') {
+				if(!empty($params['customerinfo']['customer_type'])&&$params['customerinfo']['customer_type']=='STAFF') {
 					$customer_availablecredit = getStaffAvailableCredit($params['customerinfo']['customer_id']);
-				} else {
+				} else
+				if(!empty($params['customerinfo']['customer_type'])&&$params['customerinfo']['customer_type']=='REGULAR') {
 					$customer_availablecredit = getCustomerAvailableCredit($params['customerinfo']['customer_id']);
+				} else {
+					$customer_availablecredit = 0;
 				}
 
 				$params['tbCustomer'][] = array(
@@ -1744,6 +1750,687 @@ $block[] = array(
 
 				if(!empty($post['method'])&&($post['method']=='contactnew'||$post['method']=='contactedit')) {
 					$_SESSION['UPLOADS'] = array();
+
+					if(!($result = $appdb->query("delete from tbl_upload where upload_sid='".$appsession->id()."' and upload_temp=1"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
+
+					$readonly = false;
+				}
+
+				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='contactedit')) {
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+						if(!($result = $appdb->query("select * from tbl_customer where customer_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['rows'][0]['customer_id'])) {
+							$params['customerinfo'] = $result['rows'][0];
+						}
+					}
+				} else
+				if(!empty($post['method'])&&$post['method']=='getnetwork') {
+
+					$retval = array();
+					$retval['network'] = getNetworkName($this->vars['post']['mobileno']);
+
+					json_encode_return($retval);
+					die;
+
+				} else
+				if(!empty($post['method'])&&$post['method']=='contactsave') {
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Retailer successfully saved!';
+
+					//pre(array('$vars'=>$this->vars));
+					//die;
+
+					$content = array();
+					$content['customer_mobileno'] = !empty($post['customer_mobileno']) ? $post['customer_mobileno'] : '';
+					$content['customer_firstname'] = !empty($post['customer_firstname']) ? $post['customer_firstname'] : '';
+					$content['customer_lastname'] = !empty($post['customer_lastname']) ? $post['customer_lastname'] : '';
+					$content['customer_middlename'] = !empty($post['customer_middlename']) ? $post['customer_middlename'] : '';
+					$content['customer_suffix'] = !empty($post['customer_suffix']) ? $post['customer_suffix'] : '';
+					$content['customer_birthdate'] = !empty($post['customer_birthdate']) ? $post['customer_birthdate'] : '';
+					$content['customer_gender'] = !empty($post['customer_gender']) ? $post['customer_gender'] : '';
+					$content['customer_civilstatus'] = !empty($post['customer_civilstatus']) ? $post['customer_civilstatus'] : '';
+					//$content['customer_accounttype'] = !empty($post['customer_accounttype']) ? $post['customer_accounttype'] : '';
+					$content['customer_company'] = !empty($post['customer_company']) ? $post['customer_company'] : '';
+					$content['customer_pahouseno'] = !empty($post['customer_pahouseno']) ? $post['customer_pahouseno'] : '';
+					$content['customer_pabarangay'] = !empty($post['customer_pabarangay']) ? $post['customer_pabarangay'] : '';
+					$content['customer_pamunicipality'] = !empty($post['customer_pamunicipality']) ? $post['customer_pamunicipality'] : '';
+					$content['customer_paprovince'] = !empty($post['customer_paprovince']) ? $post['customer_paprovince'] : '';
+					$content['customer_pazipcode'] = !empty($post['customer_pazipcode']) ? $post['customer_pazipcode'] : '';
+					$content['customer_aahouseno'] = !empty($post['customer_aahouseno']) ? $post['customer_aahouseno'] : '';
+					$content['customer_aabarangay'] = !empty($post['customer_aabarangay']) ? $post['customer_aabarangay'] : '';
+					$content['customer_aamunicipality'] = !empty($post['customer_aamunicipality']) ? $post['customer_aamunicipality'] : '';
+					$content['customer_aaprovince'] = !empty($post['customer_aaprovince']) ? $post['customer_aaprovince'] : '';
+					$content['customer_aazipcode'] = !empty($post['customer_aazipcode']) ? $post['customer_aazipcode'] : '';
+					//$content['customer_creditlimit'] = !empty($post['customer_creditlimit']) ? floatval($post['customer_creditlimit']) : 0;
+					//$content['customer_criticallevel'] = !empty($post['customer_criticallevel']) ? floatval($post['customer_criticallevel']) : 0;
+					$content['customer_parent'] = !empty($post['customer_parent']) ? $post['customer_parent'] : 0;
+					//$content['customer_accounttype'] = !empty($post['customer_accounttype']) ? $post['customer_accounttype'] : '';
+					$content['customer_type'] = $customer_type = !empty($post['customer_type']) ? $post['customer_type'] : '';
+					//$content['customer_freezelevel'] = !empty($post['customer_freezelevel']) ? $post['customer_freezelevel'] : 0;
+					//$content['customer_terms'] = !empty($post['customer_terms']) ? $post['customer_terms'] : '';
+					//$content['customer_paymentpercentage'] = !empty($post['customer_paymentpercentage']) ? $post['customer_paymentpercentage'] : 100;
+					//$content['customer_freezed'] = !empty($post['customer_freezed']) ? 1 : 0;
+					//$content['customer_discountcustomerreload'] = !empty($post['customer_discountcustomerreload']) ? $post['customer_discountcustomerreload'] : '';
+					//$content['customer_discountfundreload'] = !empty($post['customer_discountfundreload']) ? $post['customer_discountfundreload'] : '';
+					//$content['customer_discountchildreload'] = !empty($post['customer_discountchildreload']) ? $post['customer_discountchildreload'] : '';
+					//$content['customer_discountfundtransfer'] = !empty($post['customer_discountfundtransfer']) ? $post['customer_discountfundtransfer'] : '';
+					//$content['customer_discountretail'] = !empty($post['customer_discountretail']) ? $post['customer_discountretail'] : '';
+					//$content['customer_creditnotibeforedue'] = !empty($post['customer_creditnotibeforedue']) ? $post['customer_creditnotibeforedue'] : 180;
+					//$content['customer_creditnotiafterdue'] = !empty($post['customer_creditnotiafterdue']) ? $post['customer_creditnotiafterdue'] : 1440;
+					//$content['customer_creditnotibeforeduemsg'] = !empty($post['customer_creditnotibeforeduemsg']) ? $post['customer_creditnotibeforeduemsg'] : 88;
+					//$content['customer_creditnotiafterduemsg'] = !empty($post['customer_creditnotiafterduemsg']) ? $post['customer_creditnotiafterduemsg'] : 89;
+
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+
+						$retval['rowid'] = $post['rowid'];
+
+						$content['customer_updatestamp'] = 'now()';
+
+						if(!($result = $appdb->update("tbl_customer",$content,"customer_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						//computeCustomerCreditDue($retval['rowid']);
+
+					} else {
+
+						$content['customer_ymd'] = date('Ymd');
+
+						if(!($result = $appdb->insert("tbl_customer",$content,"customer_id"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['returning'][0]['customer_id'])) {
+							$retval['rowid'] = $result['returning'][0]['customer_id'];
+						}
+
+					}
+
+					if(!empty($retval['rowid'])) {
+						if(!($result = $appdb->query("delete from tbl_retailerassignedsim where retailerassignedsim_customerid=".$retval['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!($result = $appdb->query("delete from tbl_retailerupline where retailerupline_customerid=".$retval['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+					}
+
+					if(!empty($retval['rowid'])&&!empty($post['retailerassignedsim_seq'])&&is_array($post['retailerassignedsim_seq'])) {
+						foreach($post['retailerassignedsim_seq'] as $k=>$v) {
+							$content = array();
+							$content['retailerassignedsim_customerid'] = $retval['rowid'];
+							$content['retailerassignedsim_seq'] = !empty($post['retailerassignedsim_seq'][$k]) ? $post['retailerassignedsim_seq'][$k] : '';
+							$content['retailerassignedsim_simname'] = !empty($post['retailerassignedsim_simname'][$k]) ? $post['retailerassignedsim_simname'][$k] : '';
+							$content['retailerassignedsim_simnumber'] = getSimNumberByName($content['retailerassignedsim_simname']);
+							$content['retailerassignedsim_simcommand'] = !empty($post['retailerassignedsim_simcommand'][$k]) ? $post['retailerassignedsim_simcommand'][$k] : '';
+							$content['retailerassignedsim_active'] = !empty($post['retailerassignedsim_active'][$k]) ? 1 : 0;
+
+							if(!($result = $appdb->insert("tbl_retailerassignedsim",$content,"retailerassignedsim_id"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+						}
+					}
+
+					if(!empty($retval['rowid'])&&!empty($post['retailerupline_uplineid'])&&is_array($post['retailerupline_uplineid'])) {
+						foreach($post['retailerupline_uplineid'] as $k=>$v) {
+							$content = array();
+							$content['retailerupline_customerid'] = $retval['rowid'];
+							$content['retailerupline_uplineid'] = !empty($post['retailerupline_uplineid'][$k]) ? $post['retailerupline_uplineid'][$k] : '';
+
+							if(!($result = $appdb->insert("tbl_retailerupline",$content,"retailerupline_id"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+						}
+					}
+
+					/*if(!empty($retval['rowid'])) {
+						if(!($result = $appdb->query("delete from tbl_virtualnumber where virtualnumber_customerid=".$retval['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!($result = $appdb->query("delete from tbl_childsettings where childsettings_customerid=".$retval['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!($result = $appdb->query("delete from tbl_downlinesettings where downlinesettings_customerid=".$retval['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+					}*/
+
+					/*if(!empty($retval['rowid'])&&!empty($post['virtualnumber_mobileno'])&&is_array($post['virtualnumber_mobileno'])) {
+
+						$customer_mobileno = '';
+
+						foreach($post['virtualnumber_mobileno'] as $k=>$v) {
+							$content = array();
+							$content['virtualnumber_customerid'] = $retval['rowid'];
+							$content['virtualnumber_mobileno'] = !empty($post['virtualnumber_mobileno'][$k]) ? $post['virtualnumber_mobileno'][$k] : '';
+							$content['virtualnumber_provider'] = !empty($post['virtualnumber_provider'][$k]) ? $post['virtualnumber_provider'][$k] : '';
+							$content['virtualnumber_default'] = !empty($post['virtualnumber_default'][$k]) ? $post['virtualnumber_default'][$k] : 0;
+							$content['virtualnumber_active'] = !empty($post['virtualnumber_active'][$k]) ? $post['virtualnumber_active'][$k] : 0;
+
+							if(!($result = $appdb->insert("tbl_virtualnumber",$content,"virtualnumber_id"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!empty($content['virtualnumber_default'])&&!empty($content['virtualnumber_active'])) {
+								$customer_mobileno = $content['virtualnumber_mobileno'];
+							}
+						}
+
+						$content = array();
+						$content['customer_mobileno'] = $customer_mobileno;
+
+						if(!($result = $appdb->update("tbl_customer",$content,"customer_id=".$retval['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+					}*/
+
+					json_encode_return($retval);
+					die;
+
+				} else
+				if(!empty($post['method'])&&$post['method']=='contactdelete') {
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Retailer successfully deleted!';
+
+					if(!empty($post['rowids'])) {
+
+						$rowids = explode(',', $post['rowids']);
+
+						$arowid = array();
+
+						for($i=0;$i<count($rowids);$i++) {
+							$rowid = intval(trim($rowids[$i]));
+							if(!empty($rowid)) {
+								$arowid[] = $rowid;
+							}
+						}
+
+						if(!empty($arowid)) {
+							$rowids = implode(',', $arowid);
+
+							if(!($result = $appdb->query("delete from tbl_customer where customer_id in (".$rowids.")"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!($result = $appdb->query("delete from tbl_virtualnumber where virtualnumber_customerid in (".$rowids.")"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							json_encode_return($retval);
+							die;
+						}
+
+					}
+
+					if(!empty($post['rowid'])) {
+						if(!($result = $appdb->query("delete from tbl_customer where customer_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!($result = $appdb->query("delete from tbl_virtualnumber where virtualnumber_customerid=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+					}
+
+					json_encode_return($retval);
+					die;
+				}
+
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$newcolumnoffset = 50;
+
+				$position = 'right';
+
+/*
+		myTabbar.addTab("tbCustomer", "Customer");
+		myTabbar.addTab("tbDetails", "Details");
+		myTabbar.addTab("tbIdentification", "Identification");
+		myTabbar.addTab("tbAddress", "Address");
+		myTabbar.addTab("tbVirtualNumbers", "Virtual Numbers");
+		myTabbar.addTab("tbWebAccess", "Web Access");
+		myTabbar.addTab("tbDownline", "Downline");
+		myTabbar.addTab("tbDownlineRebate", "Downline Rebate Settings");
+		myTabbar.addTab("tbChild", "Child");
+		myTabbar.addTab("tbChildRebate", "Child Rebate Settings");
+*/
+
+				$params['tbCustomer'] = array();
+				$params['tbAddress'] = array();
+				$params['tbSetting'] = array();
+				$params['tbAssignedSim'] = array();
+				$params['tbUpline'] = array();
+
+				$custid = '';
+
+				if(!empty($params['customerinfo']['customer_id'])&&!empty($params['customerinfo']['customer_ymd'])) {
+					$custid = $params['customerinfo']['customer_ymd'] . sprintf('%04d', intval($params['customerinfo']['customer_id']));
+				}
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'CUSTOMER ID',
+					'name' => 'customer_id',
+					'readonly' => true,
+					//'required' => !$readonly,
+					//'labelAlign' => $position,
+					'value' => $custid,
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'RETAILER NO.',
+					'name' => 'customer_mobileno',
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'inputMask' => array('mask'=>'09999999999'),
+					'value' => !empty($params['customerinfo']['customer_mobileno']) ? $params['customerinfo']['customer_mobileno'] : '',
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'LAST NAME',
+					'name' => 'customer_lastname',
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_lastname']) ? $params['customerinfo']['customer_lastname'] : '',
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'FIRST NAME',
+					'name' => 'customer_firstname',
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_firstname']) ? $params['customerinfo']['customer_firstname'] : '',
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'MIDDLE NAME',
+					'name' => 'customer_middlename',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_middlename']) ? $params['customerinfo']['customer_middlename'] : '',
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'SUFFIX',
+					'name' => 'customer_suffix',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_suffix']) ? $params['customerinfo']['customer_suffix'] : '',
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'newcolumn',
+					'offset' => $newcolumnoffset,
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'COMPANY NAME',
+					'name' => 'customer_companyname',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_companyname']) ? $params['customerinfo']['customer_companyname'] : '',
+				);
+
+				//$params['tbCustomer'][] = array(
+				//	'type' => 'newcolumn',
+				//	'offset' => $newcolumnoffset,
+				//);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'calendar',
+					'label' => 'BIRTH DATE',
+					'name' => 'customer_birthdate',
+					'readonly' => true,
+					'calendarPosition' => 'right',
+					'dateFormat' => '%m-%d-%Y',
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_birthdate']) ? $params['customerinfo']['customer_birthdate'] : '',
+				);
+
+				$opt = array();
+
+				if(!$readonly) {
+					$opt[] = array('text'=>'','value'=>'','selected'=>false);
+				}
+
+				$gender = array('MALE','FEMALE');
+
+				foreach($gender as $v) {
+					$selected = false;
+					if(!empty($params['customerinfo']['customer_gender'])&&$params['customerinfo']['customer_gender']==$v) {
+						$selected = true;
+					}
+					if($readonly) {
+						if($selected) {
+							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+						}
+					} else {
+						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+					}
+				}
+
+				$params['tbCustomer'][] = array(
+					'type' => 'combo',
+					'label' => 'GENDER',
+					'name' => 'customer_gender',
+					'readonly' => true,
+					'inputWidth' => 200,
+					//'required' => !$readonly,
+					'options' => $opt,
+				);
+
+				$opt = array();
+
+				if(!$readonly) {
+					$opt[] = array('text'=>'','value'=>'','selected'=>false);
+				}
+
+				$civilstatus = array('SINGLE','MARRIED','WIDOW','SEPARATED');
+
+				foreach($civilstatus as $v) {
+					$selected = false;
+					if(!empty($params['customerinfo']['customer_civilstatus'])&&$params['customerinfo']['customer_civilstatus']==$v) {
+						$selected = true;
+					}
+					if($readonly) {
+						if($selected) {
+							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+						}
+					} else {
+						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+					}
+				}
+
+				$params['tbCustomer'][] = array(
+					'type' => 'combo',
+					'label' => 'CIVIL STATUS',
+					'name' => 'customer_civilstatus',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'options' => $opt,
+				);
+
+				$opt = array();
+
+				//if(!$readonly) {
+				//	$opt[] = array('text'=>'','value'=>'','selected'=>false);
+				//}
+
+				$accounttype = array('RETAILER');
+
+				foreach($accounttype as $v) {
+					$selected = false;
+					if(!empty($params['customerinfo']['customer_type'])&&$params['customerinfo']['customer_type']==$v) {
+						$selected = true;
+					}
+					if($readonly) {
+						if($selected) {
+							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+						}
+					} else {
+						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+					}
+				}
+
+				$params['tbCustomer'][] = array(
+					'type' => 'combo',
+					'label' => 'CUSTOMER TYPE',
+					'name' => 'customer_type',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'options' => $opt,
+				);
+
+				$opt = array();
+
+				//if(!$readonly) {
+				//	$opt[] = array('text'=>'','value'=>'','selected'=>false);
+				//}
+
+				/*$accounttype = array('CASH','CREDIT');
+
+				foreach($accounttype as $v) {
+					$selected = false;
+					if(!empty($params['customerinfo']['customer_accounttype'])&&$params['customerinfo']['customer_accounttype']==$v) {
+						$selected = true;
+					}
+					if($readonly) {
+						if($selected) {
+							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+						}
+					} else {
+						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+					}
+				}
+
+				$params['tbCustomer'][] = array(
+					'type' => 'combo',
+					'label' => 'ACCOUNT TYPE',
+					'name' => 'customer_accounttype',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'options' => $opt,
+				);
+
+				$accounttypecash = true;
+
+				if(!empty($params['customerinfo']['customer_accounttype'])&&$params['customerinfo']['customer_accounttype']=='CREDIT') {
+					$accounttypecash = false;
+				}*/
+
+				/*if($readonly) {
+					$params['tbCustomer'][] = array(
+						'type' => 'input',
+						'label' => 'PARENT',
+						'name' => 'customer_parent',
+						'readonly' => true,
+						//'required' => !$readonly,
+						'value' => !empty($params['customerinfo']['customer_parent']) ? getCustomerNameByID($params['customerinfo']['customer_parent']) : '',
+					);
+				} else {
+					$params['tbCustomer'][] = array(
+						'type' => 'combo',
+						'label' => 'PARENT',
+						'name' => 'customer_parent',
+						'readonly' => $readonly,
+						//'readonly' => true,
+						//'comboType' => 'checkbox',
+						//'required' => !$readonly,
+						//'value' => !empty($params['customerinfo']['customer_parent']) ? $params['customerinfo']['customer_parent'] : '',
+						'options' => array(), //$opt,
+					);
+				}*/
+
+				$params['tbAddress'][] = array(
+					'type' => 'label',
+					'label' => 'PRESENT ADDRESS',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'input',
+					'label' => 'HOUSE NO / STREET NAME',
+					'name' => 'customer_pahouseno',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_pahouseno']) ? $params['customerinfo']['customer_pahouseno'] : '',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'input',
+					'label' => 'BARANGAY',
+					'name' => 'customer_pabarangay',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_pabarangay']) ? $params['customerinfo']['customer_pabarangay'] : '',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'input',
+					'label' => 'MUNICIPALITY',
+					'name' => 'customer_pamunicipality',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_pamunicipality']) ? $params['customerinfo']['customer_pamunicipality'] : '',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'input',
+					'label' => 'PROVINCE',
+					'name' => 'customer_paprovince',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_paprovince']) ? $params['customerinfo']['customer_paprovince'] : '',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'input',
+					'label' => 'ZIP CODE',
+					'name' => 'customer_pazipcode',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_pazipcode']) ? $params['customerinfo']['customer_pazipcode'] : '',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'newcolumn',
+					'offset' => $newcolumnoffset,
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'label',
+					'labelWidth' => 200,
+					'label' => 'ALTERNATIVE ADDRESS',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'input',
+					'label' => 'HOUSE NO / STREET NAME',
+					'name' => 'customer_aahouseno',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_aahouseno']) ? $params['customerinfo']['customer_aahouseno'] : '',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'input',
+					'label' => 'BARANGAY',
+					'name' => 'customer_aabarangay',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_aabarangay']) ? $params['customerinfo']['customer_aabarangay'] : '',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'input',
+					'label' => 'MUNICIPALITY',
+					'name' => 'customer_aamunicipality',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_aamunicipality']) ? $params['customerinfo']['customer_aamunicipality'] : '',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'input',
+					'label' => 'PROVINCE',
+					'name' => 'customer_aaprovince',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_aaprovince']) ? $params['customerinfo']['customer_aaprovince'] : '',
+				);
+
+				$params['tbAddress'][] = array(
+					'type' => 'input',
+					'label' => 'ZIP CODE',
+					'name' => 'customer_aazipcode',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_aazipcode']) ? $params['customerinfo']['customer_aazipcode'] : '',
+				);
+
+				$params['tbSetting'][] = array(
+					'type' => 'container',
+					'name' => 'customer_setting',
+					'inputWidth' => 450,
+					'inputHeight' => 200,
+					'className' => 'customer_setting_'.$post['formval'],
+				);
+
+				$params['tbAssignedSim'][] = array(
+					'type' => 'container',
+					'name' => 'customer_assignedsim',
+					'inputWidth' => 450,
+					'inputHeight' => 200,
+					'className' => 'customer_assignedsim_'.$post['formval'],
+				);
+
+				$params['tbUpline'][] = array(
+					'type' => 'container',
+					'name' => 'customer_upline',
+					'inputWidth' => 450,
+					'inputHeight' => 200,
+					'className' => 'customer_upline_'.$post['formval'],
+				);
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_contactdetailretailer
+
+		function _form_contactdetailretailer2($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb, $appsession;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				$params = array();
+
+				$post = $this->vars['post'];
+
+				$readonly = true;
+
+				if(!empty($post['method'])&&($post['method']=='contactnew'||$post['method']=='contactedit')) {
+					$_SESSION['UPLOADS'] = array();
 					$readonly = false;
 				}
 
@@ -2353,7 +3040,7 @@ $block[] = array(
 					'formid' => $post['formid'],
 					'module' => $post['module'],
 					'method' => 'contactphotoupload',
-					'rowid' => $post['rowid'],
+					'rowid' => !empty($post['rowid']) ? $post['rowid'] : 0,
 					'formval' => $post['formval'],
 				);
 
@@ -2385,7 +3072,7 @@ $block[] = array(
 					'formid' => $post['formid'],
 					'module' => $post['module'],
 					'method' => 'contactphotoupload',
-					'rowid' => $post['rowid'],
+					'rowid' => !empty($post['rowid']) ? $post['rowid'] : 0,
 					'formval' => $post['formval'],
 				);
 
@@ -4283,7 +4970,27 @@ $block[] = array(
 
 					} else
 					if($this->post['table']=='customer') {
-						if(!($result = $appdb->query("select * from tbl_customer order by customer_id asc"))) {
+						if(!($result = $appdb->query("select * from tbl_customer where customer_type in ('STAFF','REGULAR','ADMIN') order by customer_id asc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+						//pre(array('$result'=>$result));
+
+						if(!empty($result['rows'][0]['customer_id'])) {
+							$rows = array();
+
+							foreach($result['rows'] as $k=>$v) {
+								$custid = $v['customer_ymd'] . sprintf('%04d', $v['customer_id']);
+
+								$rows[] = array('id'=>$v['customer_id'],'data'=>array(0,$custid,$v['customer_mobileno'],$v['customer_lastname'],$v['customer_firstname'],$v['customer_middlename'],$v['customer_type'],$v['customer_suffix']));
+							}
+
+							$retval = array('rows'=>$rows);
+						}
+
+					} else
+					if($this->post['table']=='retailer') {
+						if(!($result = $appdb->query("select * from tbl_customer where customer_type in ('RETAILER') order by customer_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
@@ -4448,7 +5155,7 @@ $block[] = array(
 
 						$retval = array('rows'=>$rows);
 
-					}
+					} else
 					if($this->post['table']=='transaction') {
 
 						if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$this->post['rowid']." order by ledger_datetimeunix asc"))) {
@@ -4477,6 +5184,257 @@ $block[] = array(
 						}
 
 						$retval = array('rows'=>$rows);
+					} else
+					if($this->post['table']=='retailersetting') {
+						$result = array();
+						//if(!($result = $appdb->query("select * from tbl_virtualnumber where virtualnumber_customerid=".$this->post['rowid']." order by virtualnumber_id asc"))) {
+						//	json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						//	die;
+						//}
+						//pre(array('$result'=>$result));
+
+						$dsim = getAllDealerSimCard();
+
+						$acustomer = getAllCustomers(false,'customer_lastname asc');
+
+						//pre(array('$dsim'=>$dsim));
+
+						$ctr=1;
+
+						$rows = array();
+
+						$optflg = false;
+
+						if(!empty($result['rows'][0]['retailernumber_id'])) {
+							foreach($result['rows'] as $k=>$v) {
+								$row = array('id'=>$ctr,'data'=>array($ctr,$v['retailernumber_mobileno'],$v['retailernumber_provider'],$v['retailernumber_category'],$v['retailernumber_sim'],$v['retailernumber_upline']));
+
+								if(!$optflg) {
+									$opt = array(array('text'=>'','value'=>''));
+
+									foreach($dsim as $x) {
+										$opt[] = array('text'=>$x['simcard_number'],'value'=>$x['simcard_number']);
+									}
+
+									$row['dealersim'] = array('options'=>$opt);
+
+									$opt = array();
+
+									foreach($acustomer as $g=>$h) {
+										$opt[] = array('value'=>$h['customer_id'],'text'=>array(
+											'customermobileno' => !empty($h['customer_mobileno']) ? $h['customer_mobileno'] : ' ',
+											'customerfirstname' => !empty($h['customer_firstname']) ? $h['customer_firstname'] : ' ',
+											'customerlastname' => !empty($h['customer_lastname']) ? $h['customer_lastname'] : ' ',
+											'customermiddlename' => !empty($h['customer_middlename']) ? $h['customer_middlename'] : ' '
+										));
+									}
+
+									$row['upline'] = array('options'=>$opt);
+
+									$optflg = true;
+								}
+
+								$rows[] = $row;
+
+								$ctr++;
+							}
+						}
+
+						while($ctr<=10) {
+							$row = array('id'=>$ctr,'data'=>array($ctr,'','','','',''));
+
+							if(!$optflg) {
+								$opt = array(array('text'=>'','value'=>''));
+
+								foreach($dsim as $x) {
+									$opt[] = array('text'=>$x['simcard_number'],'value'=>$x['simcard_number']);
+								}
+
+								$row['dealersim'] = array('options'=>$opt);
+
+								$opt = array();
+
+								foreach($acustomer as $g=>$h) {
+									$opt[] = array('value'=>$h['customer_id'],'checked'=>false,'text'=>array(
+										'checkbox' => '1',
+										'customermobileno' => !empty($h['customer_mobileno']) ? $h['customer_mobileno'] : ' ',
+										'customerfirstname' => !empty($h['customer_firstname']) ? $h['customer_firstname'] : ' ',
+										'customerlastname' => !empty($h['customer_lastname']) ? $h['customer_lastname'] : ' ',
+										'customermiddlename' => !empty($h['customer_middlename']) ? $h['customer_middlename'] : ' '
+									));
+								}
+
+								$row['upline'] = $opt;
+
+								$optflg = true;
+							}
+
+							$rows[] = $row;
+
+							$ctr++;
+						}
+
+						$retval = array('rows'=>$rows);
+
+					} else
+					if($this->post['table']=='retailerassignedsim') {
+
+						//$result = array();
+
+						if(!($result = $appdb->query("select * from tbl_retailerassignedsim where retailerassignedsim_customerid=".$this->post['rowid']." order by retailerassignedsim_seq asc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						$dsim = getAllDealerSimCard(false,1);
+
+						$acustomer = getAllCustomers(false,'customer_lastname asc');
+
+						//pre(array('$result'=>$result));
+
+						//pre(array('$dsim'=>$dsim));
+
+						$modemcommands = array();
+
+						if(($modemcommands = getModemCommands(1))) {
+						} else {
+							$modemcommands = array();
+						}
+
+						$ctr=1;
+
+						$seq=0;
+
+						$rows = array();
+
+						$optflg = false;
+
+						if(!empty($result['rows'][0]['retailerassignedsim_id'])) {
+							foreach($result['rows'] as $k=>$v) {
+
+								if(!empty($dsim[$v['retailerassignedsim_simnumber']])) {
+									$seq = intval($v['retailerassignedsim_seq']);
+
+									$row = array('id'=>$ctr,'data'=>array($seq,$v['retailerassignedsim_active'],getSimNameByNumber($v['retailerassignedsim_simnumber']),$v['retailerassignedsim_simcommand']));
+
+									if(!$optflg) {
+										$opt = array(array('text'=>'','value'=>''));
+
+										foreach($modemcommands as $x) {
+											$opt[] = array('text'=>$x,'value'=>$x);
+										}
+
+										$row['options'] = array('options'=>$opt);
+										$optflg = true;
+									}
+
+									$rows[] = $row;
+
+									unset($dsim[$v['retailerassignedsim_simnumber']]);
+
+									$ctr++;
+								}
+							}
+						}
+
+						$seq++;
+
+						if(!empty($dsim)) {
+							foreach($dsim as $k=>$v) {
+								if(!empty($v['simcard_id'])) {
+
+									$row = array('id'=>$ctr,'data'=>array($seq,0,$v['simcard_name'],' '));
+
+									if(!$optflg) {
+										$opt = array(array('text'=>'','value'=>''));
+
+										foreach($modemcommands as $x) {
+											$opt[] = array('text'=>$x,'value'=>$x);
+										}
+
+										$row['options'] = array('options'=>$opt);
+										$optflg = true;
+									}
+
+									$rows[] = $row;
+
+									$ctr++;
+
+									$seq++;
+								}
+							}
+						}
+
+						$retval = array('rows'=>$rows);
+
+					} else
+					if($this->post['table']=='retailerupline') {
+
+						//$result = array();
+
+						if(!($result = $appdb->query("select * from tbl_retailerupline where retailerupline_customerid=".$this->post['rowid']." order by retailerupline_id asc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						$ctr = 1;
+
+						$acustomer = getAllCustomers(false,'customer_lastname asc',1);
+
+						$optflg = false;
+
+						//pre(array('$acustomer'=>$acustomer));
+
+						if(!empty($result['rows'][0]['retailerupline_id'])) {
+							foreach($result['rows'] as $k=>$v) {
+
+								if(!empty($acustomer[$v['retailerupline_uplineid']])) {
+									//$row = array('id'=>$ctr,'data'=>array($ctr,getCustomerFullname($v['retailerupline_uplineid'],true)));
+									$row = array('id'=>$ctr,'data'=>array($ctr,$v['retailerupline_uplineid']));
+
+									if(!$optflg) {
+										$opt = array(array('text'=>'','value'=>''));
+
+										foreach($acustomer as $x) {
+											$fname = getCustomerFullname($x['customer_id'],true);
+											$opt[] = array('text'=>$fname,'value'=>$x['customer_id']);
+										}
+
+										$row['options'] = array('options'=>$opt);
+										$optflg = true;
+									}
+
+									$rows[] = $row;
+
+									unset($acustomer[$v['retailerupline_customerid']]);
+
+									$ctr++;
+								}
+							}
+						}
+
+						while($ctr<=10) {
+							$row = array('id'=>$ctr,'data'=>array($ctr,''));
+
+							if(!$optflg) {
+								$opt = array(array('text'=>'','value'=>''));
+
+								foreach($acustomer as $x) {
+									$fname = getCustomerFullname($x['customer_id'],true);
+									$opt[] = array('text'=>$fname,'value'=>$x['customer_id']);
+								}
+
+								$row['options'] = array('options'=>$opt);
+								$optflg = true;
+							}
+
+							$rows[] = $row;
+
+							$ctr++;
+						}
+
+						$retval = array('rows'=>$rows);
+
 					}
 
 					$jsonval = json_encode($retval,JSON_OBJECT_AS_ARRAY);

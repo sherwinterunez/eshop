@@ -281,6 +281,8 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 				jQuery("#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>grid div.objbox").html('<span style="display:block;width:150px;margin:0 auto;"><center>Data not yet available!</center></span>');
 
+				layout_resize_%formval%();
+
 				<?php /*myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {},
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=nodata&formval=%formval%",

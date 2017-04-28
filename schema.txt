@@ -918,6 +918,120 @@ CREATE TABLE tbl_paymentdocument (
 
 ALTER TABLE ONLY tbl_paymentdocument ADD CONSTRAINT tbl_paymentdocument_primary_key PRIMARY KEY (paymentdocument_id);
 
+-- tbl_virtualnumber
+
+DROP SEQUENCE IF EXISTS tbl_virtualnumber_seq CASCADE;
+
+CREATE SEQUENCE tbl_virtualnumber_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_virtualnumber;
+
+CREATE TABLE tbl_virtualnumber (
+    virtualnumber_id bigint DEFAULT nextval(('tbl_virtualnumber_seq'::text)::regclass) NOT NULL,
+    virtualnumber_customerid integer DEFAULT 0 NOT NULL,
+    virtualnumber_mobileno text DEFAULT ''::text NOT NULL,
+    virtualnumber_provider text DEFAULT ''::text NOT NULL,
+    virtualnumber_default integer DEFAULT 0 NOT NULL,
+    virtualnumber_active integer DEFAULT 0 NOT NULL,
+    virtualnumber_deleted integer DEFAULT 0 NOT NULL,
+    virtualnumber_flag integer DEFAULT 0 NOT NULL,
+    virtualnumber_createstamp timestamp with time zone DEFAULT now(),
+    virtualnumber_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_virtualnumber ADD CONSTRAINT tbl_virtualnumber_primary_key PRIMARY KEY (virtualnumber_id);
+
+-- tbl_retailernumber
+
+DROP SEQUENCE IF EXISTS tbl_retailernumber_seq CASCADE;
+
+CREATE SEQUENCE tbl_retailernumber_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_retailernumber;
+
+CREATE TABLE tbl_retailernumber (
+    retailernumber_id bigint DEFAULT nextval(('tbl_retailernumber_seq'::text)::regclass) NOT NULL,
+    retailernumber_customerid integer DEFAULT 0 NOT NULL,
+    retailernumber_mobileno text DEFAULT ''::text NOT NULL,
+    retailernumber_provider text DEFAULT ''::text NOT NULL,
+    retailernumber_category text DEFAULT ''::text NOT NULL,
+    retailernumber_sim text DEFAULT ''::text NOT NULL,
+    retailernumber_upline text DEFAULT ''::text NOT NULL,
+    retailernumber_default integer DEFAULT 0 NOT NULL,
+    retailernumber_active integer DEFAULT 0 NOT NULL,
+    retailernumber_deleted integer DEFAULT 0 NOT NULL,
+    retailernumber_flag integer DEFAULT 0 NOT NULL,
+    retailernumber_createstamp timestamp with time zone DEFAULT now(),
+    retailernumber_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_retailernumber ADD CONSTRAINT tbl_retailernumber_primary_key PRIMARY KEY (retailernumber_id);
+
+-- tbl_retailerupline
+
+DROP SEQUENCE IF EXISTS tbl_retailerupline_seq CASCADE;
+
+CREATE SEQUENCE tbl_retailerupline_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_retailerupline;
+
+CREATE TABLE tbl_retailerupline (
+    retailerupline_id bigint DEFAULT nextval(('tbl_retailerupline_seq'::text)::regclass) NOT NULL,
+    retailerupline_customerid integer DEFAULT 0 NOT NULL,
+    retailerupline_uplineid text DEFAULT ''::text NOT NULL,
+    retailerupline_active integer DEFAULT 0 NOT NULL,
+    retailerupline_deleted integer DEFAULT 0 NOT NULL,
+    retailerupline_flag integer DEFAULT 0 NOT NULL,
+    retailerupline_createstamp timestamp with time zone DEFAULT now(),
+    retailerupline_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_retailerupline ADD CONSTRAINT tbl_retailerupline_primary_key PRIMARY KEY (retailerupline_id);
+
+-- tbl_retailerassignedsim
+
+DROP SEQUENCE IF EXISTS tbl_retailerassignedsim_seq CASCADE;
+
+CREATE SEQUENCE tbl_retailerassignedsim_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_retailerassignedsim;
+
+CREATE TABLE tbl_retailerassignedsim (
+    retailerassignedsim_id bigint DEFAULT nextval(('tbl_retailerassignedsim_seq'::text)::regclass) NOT NULL,
+    retailerassignedsim_customerid integer DEFAULT 0 NOT NULL,
+    retailerassignedsim_seq integer DEFAULT 0 NOT NULL,
+    retailerassignedsim_simname text DEFAULT ''::text NOT NULL,
+    retailerassignedsim_simnumber text DEFAULT ''::text NOT NULL,
+    retailerassignedsim_simcommand text DEFAULT ''::text NOT NULL,
+    retailerassignedsim_active integer DEFAULT 0 NOT NULL,
+    retailerassignedsim_deleted integer DEFAULT 0 NOT NULL,
+    retailerassignedsim_flag integer DEFAULT 0 NOT NULL,
+    retailerassignedsim_createstamp timestamp with time zone DEFAULT now(),
+    retailerassignedsim_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_retailerassignedsim ADD CONSTRAINT tbl_retailerassignedsim_primary_key PRIMARY KEY (retailerassignedsim_id);
+
 ---------------------------------------------------------------------
 
 

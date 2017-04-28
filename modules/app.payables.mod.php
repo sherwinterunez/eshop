@@ -1262,7 +1262,8 @@ sherwint_eshop=#
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 									die;
 								}
-							} else {
+							} else
+							if($customer_type=='STAFF') {
 								if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc"))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 									die;
@@ -1480,7 +1481,8 @@ sherwint_eshop=#
 
 										computeCustomerAvailableCredit($payment_customerid);
 
-									} else {
+									} else
+									if($customer_type=='STAFF') {
 
 										$ledger_datetimeunix = intval(getDbUnixDate());
 
@@ -2004,7 +2006,8 @@ sherwint_eshop=#
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
-						} else {
+						} else
+						if($customer_type=='STAFF') {
 							if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;

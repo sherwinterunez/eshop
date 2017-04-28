@@ -743,13 +743,35 @@ if(!class_exists('APP_app_inventory')) {
 					'value' => !empty($params['simcardinfo']['simcard_provider']) ? $params['simcardinfo']['simcard_provider'] : '',
 				);
 
+				$opt = array();
+
+				//if(!$readonly) {
+				//	$opt[] = array('text'=>'','value'=>'','selected'=>false);
+				//}
+
+				$gender = array('RETAIL','DEALER','SMARTMONEY','GCASH','RECEIVER','SENDER');
+
+				foreach($gender as $v) {
+					$selected = false;
+					if(!empty($params['simcardinfo']['simcard_category'])&&$params['simcardinfo']['simcard_category']==$v) {
+						$selected = true;
+					}
+					if($readonly) {
+						if($selected) {
+							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+						}
+					} else {
+						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+					}
+				}
+
 				$params['tbSimcards'][] = array(
-					'type' => 'input',
+					'type' => 'combo',
 					'label' => 'CATEGORY',
 					'name' => 'simcard_category',
 					'readonly' => $readonly,
-					//'required' => !$readonly,
-					'value' => '',
+					'required' => !$readonly,
+					'options' => $opt,
 				);
 
 
@@ -2419,7 +2441,8 @@ if($readonly) {
 
 								if($customer_type=='STAFF') {
 									computeStaffBalance($adjustment_customerid);
-								} else {
+								} else
+								if($customer_type=='REGULAR') {
 									computeCustomerBalance($adjustment_customerid);
 								}
 
@@ -2493,7 +2516,8 @@ if($readonly) {
 
 								if($customer_type=='STAFF') {
 									computeStaffBalance($adjustment_customerid);
-								} else {
+								} else
+								if($customer_type=='REGULAR') {
 									computeCustomerBalance($adjustment_customerid);
 								}
 
