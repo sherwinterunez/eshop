@@ -56,7 +56,9 @@ function sampleSMS() {
 
 	//$message = 'KEYLIST';
 
-	$message = "AIRTIME DEALER 09182799988 F1\r\n";
+	$randint = rand (1,10000);
+
+	$message = "AIRTIME DEALER 09182799988 F".$randint."\r\n";
 
 	$content = array();
 	$content['smsinbox_contactsid'] = 138;
