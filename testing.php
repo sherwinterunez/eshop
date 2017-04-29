@@ -67,14 +67,28 @@ pre(array('$str'=>'['.$str.']'));*/
 
 //pre(array('$_SESSION'=>$_SESSION));
 
-$smsinbox_contactsid = 135;
+//$smsinbox_contactsid = 135;
 
-computeStaffCreditDue2($smsinbox_contactsid);
+//computeStaffCreditDue2($smsinbox_contactsid);
 
 //$fund_recepientid = 73;
 
 //$discountSchemes = getStaffCustomerReloadDiscountScheme2($fund_recepientid);
 
 //pre(array('$discountSchemes'=>$discountSchemes));
+
+$no = '09091224234';
+
+$customer_id = getCustomerIDByDefaultNumber($no);
+
+$customer_type = getCustomerType($customer_id);
+
+$retailersimassigned = getRetailerSimAssign($customer_id);
+
+print_r(array('$customer_id'=>$customer_id,'$customer_type'=>$customer_type,'$retailersimassigned'=>$retailersimassigned));
+
+$dt = getDbDate(2);
+
+print_r(array('$dt'=>$dt));
 
 ///

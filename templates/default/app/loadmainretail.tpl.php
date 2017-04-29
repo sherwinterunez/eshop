@@ -5,7 +5,7 @@ $templatemainid = $moduleid.'main';
 $templatedetailid = $moduleid.'detail';
 $mainheight = 250;
 
-$myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto',$moduleid.'filter');
+$myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
 
 ?>
 <!--
@@ -104,9 +104,12 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 
 ///////////////
 
+		var datefrom = myTab.toolbar.getValue("<?php echo $moduleid; ?>datefrom");
+		var dateto = myTab.toolbar.getValue("<?php echo $moduleid; ?>dateto");
+
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=<?php echo $submod; ?>&formval=%formval%",
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=<?php echo $submod; ?>&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto),
 		}, function(ddata,odata){
 
 			if(typeof(myGrid_%formval%)!='null'&&typeof(myGrid_%formval%)!='undefined'&&myGrid_%formval%!=null) {
@@ -134,8 +137,6 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 
 			myGrid.enablePaging(true,100,10,"<?php echo $templatemainid.$submod; ?>gridpagingArea",true,"<?php echo $templatemainid.$submod; ?>gridrecinfoArea");
 
-			//myGrid.setPagingSkin("toolbar");
-
 			myGrid.init();
 
 			myGrid.setSizes();
@@ -159,23 +160,6 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 
 						return true;
 					});
-
-					/*myGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
-
-						myTab.toolbar.disableAll();
-
-						myTab.postData('/'+settings.router_id+'/json/', {
-							odata: {},
-							pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=onrowselect&rowid="+rowId+"&formval=%formval%",
-						}, function(ddata,odata){
-							if(ddata.html) {
-								jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-								layout_resize_%formval%();
-							}
-						});
-
-					});*/
-
 
 					myGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
 						layout_resize_%formval%();
@@ -284,6 +268,8 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 				console.log('e => '+e);
 
 				jQuery("#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>grid div.objbox").html('<span style="display:block;width:150px;margin:0 auto;"><center>Data not yet available!</center></span>');
+
+				layout_resize_%formval%();
 
 				<?php /*myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {},

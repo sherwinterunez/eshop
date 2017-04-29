@@ -170,8 +170,13 @@ pre(array('$_SESSION'=>$_SESSION));
 		myCalendar2_%formval% = new dhtmlXCalendarObject([input_till]);
 		myCalendar2_%formval%.setDateFormat("%m-%d-%Y %H:%i");
 
+		<?php /*
 		myTab.toolbar.setValue("<?php echo $moduleid; ?>datefrom","<?php $dt=getDbDate(1); echo $dt['date']; ?> 00:00");
 		myTab.toolbar.setValue("<?php echo $moduleid; ?>dateto","<?php echo getDbDate(); ?>");
+		*/ ?>
+
+		myTab.toolbar.setValue("<?php echo $moduleid; ?>datefrom","<?php $dt=getDbDate(1); echo $dt['date']; ?> 00:00");
+		myTab.toolbar.setValue("<?php echo $moduleid; ?>dateto","<?php $dt=getDbDate(2); echo $dt['date']; ?> 00:00");
 
 		var cdt = myCalendar1_%formval%.getDate();
 
@@ -308,8 +313,10 @@ pre(array('$_SESSION'=>$_SESSION));
 		}, function(ddata,odata){
 			if(ddata.html) {
 				jQuery("#formdiv_%formval% #loadmain").parent().html(ddata.html);
+				<?php /*
 				myTab.toolbar.setValue("<?php echo $moduleid; ?>datefrom","<?php $dt=getDbDate(1); echo $dt['date']; ?> 00:00");
 				myTab.toolbar.setValue("<?php echo $moduleid; ?>dateto","<?php echo getDbDate(); ?>");
+				*/ ?>
 			}
 		});
 

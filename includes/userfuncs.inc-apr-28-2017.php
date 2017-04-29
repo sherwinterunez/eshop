@@ -121,36 +121,6 @@ function getContactIDByNumber($number=false) {
 	return false;
 }
 
-function getCustomerIDByDefaultNumber($number=false) {
-	global $appdb;
-
-	if(!empty($number)) {
-	} else return false;
-
-	if(($res = parseMobileNo($number))) {
-
-		$number = $res[2].$res[3];
-
-		$sql = "select customer_id from tbl_customer where customer_mobileno like '%".$number."'";
-
-	} else {
-
-		$sql = "select customer_id from tbl_customer where customer_mobileno='".$number."'";
-
-	}
-
-	//print_r(array('$sql'=>$sql));
-
-	if(!($result = $appdb->query($sql))) {
-		return false;
-	}
-
-	if(!empty($result['rows'][0]['customer_id'])) {
-		return $result['rows'][0]['customer_id'];
-	}
-	return false;
-}
-
 function getCustomerIDByNumber($number=false) {
 	global $appdb;
 
@@ -1182,27 +1152,6 @@ function getCustomerChildSettings($id=false,$mode=0) {
 	//pre(array('getCustomerChildSettings'=>$result,'$sql'=>$sql));
 
 	if(!empty($result['rows'][0]['childsettings_id'])) {
-		return $result['rows'];
-	}
-
-	return false;
-}
-
-function getCustomerDownlineSettings($id=false,$mode=0) {
-	global $appdb;
-
-	if(!empty($id)&&is_numeric($id)) {
-	} else return false;
-
-	$sql = "select * from tbl_downlinesettings where downlinesettings_customerid=$id";
-
-	if(!($result = $appdb->query($sql))) {
-		return false;
-	}
-
-	//pre(array('getCustomerChildSettings'=>$result,'$sql'=>$sql));
-
-	if(!empty($result['rows'][0]['downlinesettings_id'])) {
 		return $result['rows'];
 	}
 
@@ -2387,46 +2336,6 @@ function getDiscounts($id=false,$mode=0) {
 
 	if(!empty($result['rows'][0]['discountlist_id'])) {
 		return $result['rows'];
-	}
-
-	return false;
-}
-
-function getDealerDiscounts($id=false,$provider=false,$simcard=false,$mode=0) {
-	global $appdb;
-
-	if(!empty($id)&&is_numeric($id)) {
-	} else return false;
-
-	$allDiscounts = array();
-
-	if(($childSettings = getCustomerDownlineSettings($id))) {
-		foreach($childSettings as $k=>$v) {
-			if(($discountId = getDiscountIDFromDesc($v['downlinesettings_discount']))) {
-				if(($discounts = getDiscounts($discountId))) {
-					foreach($discounts as $x=>$z) {
-						//$allDiscounts[$x] = $z;
-						if(!empty($provider)) {
-							if($provider===$z['discountlist_provider']) {
-								if(!empty($simcard)) {
-									if($simcard===$z['discountlist_simcard']) {
-										$allDiscounts[] = $z;
-									}
-								} else {
-									$allDiscounts[] = $z;
-								}
-							}
-						} else {
-							$allDiscounts[] = $z;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if(!empty($allDiscounts)) {
-		return $allDiscounts;
 	}
 
 	return false;
@@ -4025,55 +3934,6 @@ function getItemData2($item=false,$provider=false) {
 	return false;
 }
 
-function getRetailerSimAssign($retailerid=false,$provider=false) {
-	global $appdb;
-
-	if(!empty($retailerid)&&is_numeric($retailerid)&&intval($retailerid)>0) {
-		$retailerid = intval($retailerid);
-	} else {
-		return false;
-	}
-
-	$sql = "select * from tbl_retailerassignedsim where retailerassignedsim_customerid=$retailerid";
-
-	if(!($result = $appdb->query($sql))) {
-		return false;
-	}
-
-	if(!empty($result['rows'][0]['retailerassignedsim_id'])) {
-
-		$ret = array();
-
-		if(!empty($provider)) {
-
-			foreach($result['rows'] as $k=>$v) {
-				if(getNetworkName($v['retailerassignedsim_simnumber'])==$provider) {
-					$ret[$v['retailerassignedsim_simnumber']] = $v;
-				}
-			}
-
-			if(!empty($ret)) {
-				return $ret;
-			}
-
-			return false;
-		}
-
-		foreach($result['rows'] as $k=>$v) {
-			if(!empty($v['retailerassignedsim_simnumber'])) {
-				$ret[$v['retailerassignedsim_simnumber']] = $v;
-			}
-		}
-
-		if(!empty($ret)) {
-			return $ret;
-		}
-
-	}
-
-	return false;
-}
-
 function getItemSimAssign($item=false,$provider=false) {
 	global $appdb;
 
@@ -4593,12 +4453,6 @@ function pgDateUnix($dt=false,$format=false) {
 
 function getDbDate($mode=0,$f1='m-d-Y',$f2='H:i') {
 	global $appdb;
-
-	if($mode==2) {
-		$unixdate = intval(getDbUnixDate()) + 86400;
-
-		return array('date'=>pgDateUnix($unixdate,$f1),'time'=>pgDateUnix($unixdate,$f2));
-	}
 
 	if(!($result=$appdb->query("select now()"))) {
 		return false;

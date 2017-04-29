@@ -3011,7 +3011,55 @@ if(!class_exists('APP_app_load')) {
 
 					} else
 					if($this->post['table']=='retail') {
-						if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_type='retail' order by loadtransaction_id desc"))) {
+
+            $where = '';
+
+            if(!empty($this->post['datefrom'])&&!empty($this->post['dateto'])) {
+              $datefrom = date2timestamp($this->post['datefrom'],'m-d-Y H:i');
+              $dateto = date2timestamp($this->post['dateto'],'m-d-Y H:i');
+              $dtfrom = date('m-d-Y H:i',$datefrom);
+              $dtto = date('m-d-Y H:i',$dateto);
+
+              //pre(array('$datefrom'=>$datefrom,'$dtfrom'=>$dtfrom,'$dateto'=>$dateto,'$dtto'=>$dtto));
+
+              $where = " and extract(epoch from loadtransaction_createstamp)>=$datefrom and extract(epoch from loadtransaction_createstamp)<=$dateto";
+            }
+
+						if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_type='retail' $where order by loadtransaction_id desc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+						//pre(array('$result'=>$result));
+
+						if(!empty($result['rows'][0]['loadtransaction_id'])) {
+							$rows = array();
+
+							foreach($result['rows'] as $k=>$v) {
+
+								$receiptno = '';
+
+								if(!empty($v['loadtransaction_id'])&&!empty($v['loadtransaction_ymd'])) {
+									$receiptno = $v['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($v['loadtransaction_id']));
+								}
+
+								$statusString = getLoadTransactionStatusString($v['loadtransaction_status']);
+
+								//pre(array('$v'=>$v));
+
+
+								if($v['loadtransaction_status']==TRN_QUEUED||$v['loadtransaction_status']==TRN_APPROVED||$v['loadtransaction_status']==TRN_SENT||$v['loadtransaction_status']==TRN_PROCESSING) {
+									$statusString = $statusString . ', (' . intval($v['elapsedtime']) . 'sec)';
+								}
+
+								$rows[] = array('id'=>$v['loadtransaction_id'],'data'=>array(0,$v['loadtransaction_id'],pgDate($v['loadtransaction_createstamp']),$receiptno,$v['loadtransaction_provider'],$v['loadtransaction_assignedsim'],$v['loadtransaction_customername'],$v['loadtransaction_recipientnumber'],$v['loadtransaction_item'],number_format($v['loadtransaction_load'],2),number_format($v['loadtransaction_discount'],2),number_format($v['loadtransaction_amountdue'],2),$statusString));
+							}
+
+							$retval = array('rows'=>$rows);
+						}
+
+					} else
+          if($this->post['table']=='dealer') {
+						if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_type='dealer' order by loadtransaction_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}

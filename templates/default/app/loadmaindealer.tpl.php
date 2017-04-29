@@ -4,6 +4,9 @@ $submod = 'dealer';
 $templatemainid = $moduleid.'main';
 $templatedetailid = $moduleid.'detail';
 $mainheight = 250;
+
+$myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
+
 ?>
 <!--
 <?php print_r(array('$vars'=>$vars)); ?>
@@ -32,9 +35,15 @@ $mainheight = 250;
 
 	var myTab = srt.getTabUsingFormVal('%formval%');
 
-	myTab.layout.cells('c').expand();
+	myTab.layout.cells('c').collapse();
 
-	myTab.layout.cells('b').setHeight(<?php echo $mainheight; ?>);
+	myTab.layout.cells('c').hideArrow();
+
+	myTab.layout.cells('c').setText('');
+
+	myTab.layout.cells('b').hideArrow();
+
+	//myTab.layout.cells('b').setHeight(<?php echo $mainheight; ?>);
 
 	//myTab.layout.cells('d').collapse();
 
@@ -48,6 +57,8 @@ $mainheight = 250;
 
 	function <?php echo $templatemainid.$submod; ?>grid_%formval%(f) {
 
+		var myToolbar = <?php echo json_encode($myToolbar); ?>;
+
 		var myTab = srt.getTabUsingFormVal('%formval%');
 
 		myChanged_%formval% = false;
@@ -57,6 +68,10 @@ $mainheight = 250;
 		myTab.toolbar.hideAll();
 
 		myTab.toolbar.disableAll();
+
+		myTab.toolbar.enableOnly(myToolbar);
+
+		myTab.toolbar.showOnly(myToolbar);
 
 ///////////////
 
@@ -89,9 +104,12 @@ $mainheight = 250;
 
 ///////////////
 
+	var datefrom = myTab.toolbar.getValue("<?php echo $moduleid; ?>datefrom");
+	var dateto = myTab.toolbar.getValue("<?php echo $moduleid; ?>dateto");
+
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=<?php echo $submod; ?>&formval=%formval%",
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=<?php echo $submod; ?>&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto),
 		}, function(ddata,odata){
 
 			if(typeof(myGrid_%formval%)!='null'&&typeof(myGrid_%formval%)!='undefined'&&myGrid_%formval%!=null) {
@@ -144,8 +162,62 @@ $mainheight = 250;
 					});
 
 					myGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
+						layout_resize_%formval%();
+					});
 
-						myTab.toolbar.disableAll();
+					myGrid.attachEvent("onRowDblClicked", function(rowId,cellIndex){
+
+						var obj = {};
+						obj.routerid = settings.router_id;
+						obj.action = 'formonly';
+						obj.formid = '<?php echo $templatedetailid.$submod; ?>';
+						obj.module = '<?php echo $moduleid; ?>';
+						obj.method = 'onrowselect';
+						obj.rowid = rowId;
+						obj.formval = '%formval%';
+
+						obj.title = 'Load Retail / '+myGrid.cells(rowId,3).getValue()+' / '+myGrid.cells(rowId,5).getValue();
+
+						openWindow(obj, function(winobj,obj){
+							console.log(obj);
+
+							myTab.postData('/'+settings.router_id+'/json/', {
+								odata: {winobj:winobj,obj:obj},
+								pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=onrowselect&rowid="+rowId+"&formval=%formval%&wid="+obj.wid,
+							}, function(ddata,odata){
+								if(ddata.toolbar) {
+									console.log(ddata.toolbar);
+									odata.winobj.toolbar = odata.winobj.attachToolbar({
+										icons_path: settings.template_assets+"toolbar/",
+									});
+									odata.winobj.toolbar.toolbardata = ddata.toolbar;
+									odata.winobj.toolbar.tbRender(ddata.toolbar);
+									odata.winobj.toolbar.attachEvent("onClick", function(id){
+										showMessage("ToolbarOnClick: "+id,5000);
+
+										var tdata = this.getToolbarData(id);
+
+										if(!tdata) return false;
+
+										if(typeof(tdata.onClick)=='function') {
+											var ret = tdata.onClick.apply(this,[id,'%formval%',odata.obj.wid]);
+											//showMessage('ret: '+ret,5000);
+
+											return ret;
+										}
+
+										showMessage("Toolbar ID "+id+" not yet implemented!",10000);
+										return false;
+									});
+								}
+								if(ddata.html) {
+									jQuery("#"+odata.obj.wid).html(ddata.html);
+									//layout_resize_%formval%();
+								}
+							});
+						});
+
+						/*myTab.toolbar.disableAll();
 
 						myTab.postData('/'+settings.router_id+'/json/', {
 							odata: {},
@@ -155,7 +227,7 @@ $mainheight = 250;
 								jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 								layout_resize_%formval%();
 							}
-						});
+						});*/
 
 					});
 
@@ -197,6 +269,8 @@ $mainheight = 250;
 
 				jQuery("#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>grid div.objbox").html('<span style="display:block;width:150px;margin:0 auto;"><center>Data not yet available!</center></span>');
 
+				layout_resize_%formval%();
+
 				<?php /*myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {},
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=nodata&formval=%formval%",
@@ -210,6 +284,19 @@ $mainheight = 250;
 			}
 
 		});
+
+		myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval) {
+			//showMessage("toolbar: "+id,5000);
+			//doSelect_%formval%("retail");
+
+			try {
+				var rowid = myGrid_%formval%.getSelectedRowId();
+				<?php echo $templatemainid.$submod; ?>grid_%formval%(rowid);
+			} catch(e) {
+				doSelect_%formval%("<?php echo $submod; ?>");
+			}
+
+		};
 
 		try {
 
