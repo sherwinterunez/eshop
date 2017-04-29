@@ -1228,7 +1228,7 @@ function _eDealerProcessSMS($vars=array()) {
 		//return false;
 	}
 
-	pre(array('$sql'=>$sql));
+	pre(array('$sql'=>$sql,'$matched'=>$matched));
 
 	if(!empty($matched)&&!empty($matched['$AMOUNT'])&&!empty($matched['$MOBILENUMBER'])) {
 
