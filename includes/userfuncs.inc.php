@@ -5823,7 +5823,7 @@ function smsLoadCommandMatched($content=false){
 
 			$regx = '/'.$regstr.'/si';
 
-			//print_r(array('regx'=>$regx));
+			print_r(array('regx'=>$regx));
 
 			$matched = false;
 
