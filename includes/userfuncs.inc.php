@@ -5778,7 +5778,7 @@ function smsLoadCommandMatched($content=false){
 
 	$sql = "select * from tbl_smscommands where smscommands_active=1 and smscommands_type='loadcommand' order by smscommands_priority asc";
 
-	pre(array('$sql'=>$sql));
+	//pre(array('$sql'=>$sql));
 
 	if(!($result=$appdb->query($sql))) {
 		return false;
@@ -5807,7 +5807,7 @@ function smsLoadCommandMatched($content=false){
 			//echo '.';
 		} while(preg_match('#\s\s#si', $str));
 
-		print_r(array('$content'=>$content,'str'=>$str));
+		//print_r(array('$content'=>$content,'str'=>$str));
 
 		$matchedctr = 0;
 
