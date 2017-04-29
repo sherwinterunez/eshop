@@ -8943,7 +8943,7 @@ function processSMS($content=false) {
 
 	$matched = smsLoadCommandMatched($content);
 
-	//pre(array('$matched'=>$matched));
+	pre(array('$matched'=>$matched));
 
 	//if($matched===false) {
 	//	return false;
