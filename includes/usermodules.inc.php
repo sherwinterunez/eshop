@@ -2526,14 +2526,15 @@ function _eDealerExpressionProcessSMS($vars=array()) {
 			}
 
 			if(!empty($match['AMOUNT'])) {
-				$content['loadtransaction_amount'] = floatval($match['AMOUNT']);
+				//$content['loadtransaction_amount'] = floatval($match['AMOUNT']);
+				$content['loadtransaction_amount'] = floatval(str_replace(',','',$match['AMOUNT']));
 			}
 
 			if(!empty($match['PRODUCT'])) {
 				$content['loadtransaction_product'] = $match['PRODUCT'];
 			}
 
-			if(!empty($content['loadtransaction_confirmation'])&&!empty($content['loadtransaction_refnumber'])&&!empty($content['loadtransaction_product'])&&!empty($content['loadtransaction_simcardbalance'])) {
+			if(!empty($content['loadtransaction_confirmation'])&&!empty($content['loadtransaction_refnumber'])&&!empty($content['loadtransaction_simcardbalance'])) {
 				$content['loadtransaction_status'] = TRN_COMPLETED;
 				$content['loadtransaction_confirmationstamp'] = 'now()';
 			}
