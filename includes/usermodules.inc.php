@@ -1228,9 +1228,9 @@ function _eDealerProcessSMS($vars=array()) {
 		//return false;
 	}
 
-	pre(array('$sql'=>$sql,'$matched'=>$matched));
-
 	if(!empty($matched)&&!empty($matched['$AMOUNT'])&&!empty($matched['$MOBILENUMBER'])) {
+
+		pre(array('$sql'=>$sql,'$matched'=>$matched));
 
 		$loadtransaction_recipientnumber = $matched['$MOBILENUMBER'];
 
