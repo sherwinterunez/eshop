@@ -5778,6 +5778,8 @@ function smsLoadCommandMatched($content=false){
 
 	$sql = "select * from tbl_smscommands where smscommands_active=1 and smscommands_type='loadcommand' order by smscommands_priority asc";
 
+	pre(array('$sql'=>$sql));
+
 	if(!($result=$appdb->query($sql))) {
 		return false;
 	}
@@ -5786,7 +5788,7 @@ function smsLoadCommandMatched($content=false){
 		//print_r(array('$result'=>$result['rows']));
 		$smscommands = $result['rows'];
 
-		//pre(array('smscommands'=>$smscommands));
+		pre(array('smscommands'=>$smscommands));
 	}
 
 	if(!empty($smscommands)) {
