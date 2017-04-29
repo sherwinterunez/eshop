@@ -123,6 +123,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 
 			var myGrid = myGrid_%formval% = new dhtmlXGridObject('<?php echo $templatemainid.$submod; ?>grid');
 
+			<?php /*
 			myGrid.setImagePath("/codebase/imgs/")
 
 			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Provider, Customer Name, Retailer Number, Amount, Discount, Amount Due, Status");
@@ -134,6 +135,25 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
 			myGrid.setColSorting("int,int,str,str,str,str,str,str,str,str,str");
+
+			myGrid.enablePaging(true,100,10,"<?php echo $templatemainid.$submod; ?>gridpagingArea",true,"<?php echo $templatemainid.$submod; ?>gridrecinfoArea");
+
+			myGrid.init();
+
+			myGrid.setSizes();
+			*/ ?>
+
+			myGrid.setImagePath("/codebase/imgs/")
+
+			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Provider, SIM, Customer Name, Recipient No., Item, Quantity, Discount, Amnt Due, Status");
+
+			myGrid.setInitWidths("50,50,120,120,120,120,120,120,80,80,80,80,150");
+
+			myGrid.setColAlign("center,center,left,left,left,center,left,center,center,right,right,right,left");
+
+			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+
+			myGrid.setColSorting("int,int,str,str,str,str,str,str,str,str,str,str,str");
 
 			myGrid.enablePaging(true,100,10,"<?php echo $templatemainid.$submod; ?>gridpagingArea",true,"<?php echo $templatemainid.$submod; ?>gridrecinfoArea");
 
