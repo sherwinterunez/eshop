@@ -5835,7 +5835,7 @@ function smsLoadCommandMatched($content=false){
 
 				$matched = true;
 
-				print_r(array('$smscommands_key0'=>$smscommands_key0,'$match'=>$match));
+				//print_r(array('$smscommands_key0'=>$smscommands_key0,'$match'=>$match));
 
 				if(isset($match[1])) {
 					$allmatched[$smsc['smscommands_key0']] = $match[1];
@@ -5869,7 +5869,7 @@ function smsLoadCommandMatched($content=false){
 
 					$matched = true;
 
-					print_r(array('$smscommands_key1'=>$smscommands_key1,'$match'=>$match));
+					//print_r(array('$smscommands_key1'=>$smscommands_key1,'$match'=>$match));
 
 					if(preg_match('/'.$smscommands_key1.'\s+/si',$str,$match)) {
 						if(isset($match[1])) {
@@ -5918,7 +5918,7 @@ function smsLoadCommandMatched($content=false){
 					$matched = true;
 
 					//print_r(array('$regx'=>$regx,'$str'=>$str,'$smsc[\'smscommands_key2\']'=>$smsc['smscommands_key2']));
-					print_r(array('$smscommands_key2'=>$smscommands_key2,'$match'=>$match));
+					//print_r(array('$smscommands_key2'=>$smscommands_key2,'$match'=>$match));
 
 					if(preg_match('/'.$smscommands_key2.'\s+/si',$str,$match)) {
 					//	$allmatched[$smsc['smscommands_key2']] = $match[1];
@@ -5982,7 +5982,7 @@ function smsLoadCommandMatched($content=false){
 					//	$allmatched[$smsc['smscommands_key3']] = $match[0];
 					//}
 
-					print_r(array('$smscommands_key3'=>$smscommands_key3,'$match'=>$match));
+					//print_r(array('$smscommands_key3'=>$smscommands_key3,'$match'=>$match));
 
 					if(preg_match('/'.$smscommands_key3.'\s+/si',$str,$match)) {
 						if(isset($match[1])) {
@@ -6032,7 +6032,7 @@ function smsLoadCommandMatched($content=false){
 					//	$allmatched[$smsc['smscommands_key4']] = $match[0];
 					//}
 
-					print_r(array('$smscommands_key4'=>$smscommands_key4,'$match'=>$match));
+					//print_r(array('$smscommands_key4'=>$smscommands_key4,'$match'=>$match));
 
 					if(preg_match('/'.$smscommands_key4.'\s+/si',$str,$match)) {
 						if(isset($match[1])) {
@@ -6082,7 +6082,7 @@ function smsLoadCommandMatched($content=false){
 					//	$allmatched[$smsc['smscommands_key5']] = $match[0];
 					//}
 
-					print_r(array('$smscommands_key5'=>$smscommands_key5,'$match'=>$match));
+					//print_r(array('$smscommands_key5'=>$smscommands_key5,'$match'=>$match));
 
 					if(preg_match('/'.$smscommands_key5.'\s+/si',$str,$match)) {
 						if(isset($match[1])) {
