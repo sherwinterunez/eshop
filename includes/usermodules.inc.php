@@ -2469,7 +2469,7 @@ function _eDealerExpressionProcessSMS($vars=array()) {
 			$where .= " and loadtransaction_assignedsim='$loadtransaction_assignedsim'";
 		}
 
-		$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_type='retail' and loadtransaction_invalid=0 order by loadtransaction_id asc limit 1";
+		$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_type='dealer' and loadtransaction_invalid=0 order by loadtransaction_id asc limit 1";
 
 		print_r(array('$sql'=>$sql));
 
