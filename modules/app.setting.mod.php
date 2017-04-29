@@ -1867,6 +1867,7 @@ if(!class_exists('APP_app_setting')) {
 				//$actionOptions[] = array('text'=>'_SendSMStoMobileNumber','value'=>'_SendSMStoMobileNumber');
 				//$actionOptions[] = array('text'=>'_eLoadProcessSMS ( $ITEMCODE, $MOBILENUMBER )','value'=>'_eLoadProcessSMS');
 				$actionOptions[] = array('text'=>'_eLoadExpressionProcessSMS','value'=>'_eLoadExpressionProcessSMS');
+				$actionOptions[] = array('text'=>'_eDealerExpressionProcessSMS','value'=>'_eDealerExpressionProcessSMS');
 				$actionOptions[] = array('text'=>'_AutoLoadMAXBalanceExpressionProcessSMS','value'=>'_AutoLoadMAXBalanceExpressionProcessSMS');
 				$actionOptions[] = array('text'=>'_SunBalanceExpressionProcessSMS','value'=>'_SunBalanceExpressionProcessSMS');
 				$actionOptions[] = array('text'=>'_LoadWalletBalanceExpressionProcessSMS','value'=>'_LoadWalletBalanceExpressionProcessSMS');
@@ -3776,8 +3777,9 @@ if(!class_exists('APP_app_setting')) {
 				$actionOptions[] = array('text'=>'_SendSMS','value'=>'_SendSMS');
 				$actionOptions[] = array('text'=>'_SendSMStoMobileNumber','value'=>'_SendSMStoMobileNumber');
 				$actionOptions[] = array('text'=>'_eLoadProcessSMS ( $ITEMCODE, $MOBILENUMBER )','value'=>'_eLoadProcessSMS');
-				$actionOptions[] = array('text'=>'_eDealerProcessSMS ( $AMOUNT, $MOBILENUMBER )','value'=>'_eDealerProcessSMS');
 				$actionOptions[] = array('text'=>'_eLoadExpressionProcessSMS','value'=>'_eLoadExpressionProcessSMS');
+				$actionOptions[] = array('text'=>'_eDealerProcessSMS ( $AMOUNT, $MOBILENUMBER )','value'=>'_eDealerProcessSMS');
+				$actionOptions[] = array('text'=>'_eDealerExpressionProcessSMS','value'=>'_eDealerExpressionProcessSMS');
 				//$actionOptions[] = array('text'=>'_LoadWalletProcessSMS','value'=>'_LoadWalletProcessSMS');
 				$actionOptions[] = array('text'=>'_LoadWalletBalanceProcessSMS','value'=>'_LoadWalletBalanceProcessSMS');
 				$actionOptions[] = array('text'=>'_LoadAirtimeBalanceProcessSMS','value'=>'_LoadAirtimeBalanceProcessSMS');
