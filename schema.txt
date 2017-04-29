@@ -1139,6 +1139,9 @@ alter table tbl_customer drop column customer_creditnotibeforeduemsg;
 alter table tbl_customer drop column customer_creditnotiafterduemsg;
 alter table tbl_customer drop column customer_creditnotiafterdue;
 
+alter table tbl_customer add column customer_retailermin integer NOT NULL DEFAULT 100;
+alter table tbl_customer add column customer_retailermax integer NOT NULL DEFAULT 1000;
+
 ---------------------------------------------------------------------
 
 alter table tbl_users add column user_staffid integer NOT NULL DEFAULT 0;

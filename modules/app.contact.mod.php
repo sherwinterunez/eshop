@@ -1815,6 +1815,8 @@ $block[] = array(
 					$content['customer_parent'] = !empty($post['customer_parent']) ? $post['customer_parent'] : 0;
 					//$content['customer_accounttype'] = !empty($post['customer_accounttype']) ? $post['customer_accounttype'] : '';
 					$content['customer_type'] = $customer_type = !empty($post['customer_type']) ? $post['customer_type'] : '';
+          $content['customer_retailermin'] = !empty($post['customer_retailermin']) ? $post['customer_retailermin'] : 100;
+          $content['customer_retailermax'] = !empty($post['customer_retailermax']) ? $post['customer_retailermax'] : 1000;
 					//$content['customer_freezelevel'] = !empty($post['customer_freezelevel']) ? $post['customer_freezelevel'] : 0;
 					//$content['customer_terms'] = !empty($post['customer_terms']) ? $post['customer_terms'] : '';
 					//$content['customer_paymentpercentage'] = !empty($post['customer_paymentpercentage']) ? $post['customer_paymentpercentage'] : 100;
@@ -2215,6 +2217,24 @@ $block[] = array(
 					'readonly' => true,
 					//'required' => !$readonly,
 					'options' => $opt,
+				);
+
+        $params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'MINIMUM LOAD',
+					'name' => 'customer_retailermin',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_retailermin']) ? $params['customerinfo']['customer_retailermin'] : '100',
+				);
+
+        $params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'MAXIMUM LOAD',
+					'name' => 'customer_retailermax',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['customerinfo']['customer_retailermax']) ? $params['customerinfo']['customer_retailermax'] : '1000',
 				);
 
 				$opt = array();
