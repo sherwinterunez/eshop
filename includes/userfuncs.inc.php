@@ -4124,9 +4124,6 @@ function getRetailerMaxAmount($retailerid=false) {
 	return false;
 }
 
-function getRetailerMaxAmount($retailerid=false) {
-}
-
 function getItemSimAssign($item=false,$provider=false) {
 	global $appdb;
 
