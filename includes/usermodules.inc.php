@@ -1147,7 +1147,7 @@ function _eDealerProcessSMS($vars=array()) {
 		return false;
 	}
 
-	pre(array('$sql'=>$sql));
+	//pre(array('$sql'=>$sql));
 
 	$smscommands_checkprovider = false;
 
@@ -1227,6 +1227,8 @@ function _eDealerProcessSMS($vars=array()) {
 
 		//return false;
 	}
+
+	pre(array('$sql'=>$sql));
 
 	if(!empty($matched)&&!empty($matched['$AMOUNT'])&&!empty($matched['$MOBILENUMBER'])) {
 
