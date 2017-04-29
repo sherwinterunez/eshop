@@ -64,7 +64,7 @@ function sampleSMS() {
 
 	//$message = "AIRTIME SMART 50 09182799988 F".$randint."\r\n";
 
-	$message = "AIRTIME SMART 10 09216119988 F".$randint."\r\n";
+	$message = "AIRTIME SMART 20 09216119988 F".$randint."\r\n";
 
 	$content = array();
 	$content['smsinbox_contactsid'] = 138;
