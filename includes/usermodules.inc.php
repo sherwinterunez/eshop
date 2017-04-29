@@ -1126,7 +1126,7 @@ function _eDealerProcessSMS($vars=array()) {
 
 	$sql = "select * from tbl_simcard where simcard_active=1 and simcard_deleted=0 and simcard_online=1 and simcard_hotline=1 and simcard_number='".$vars['smsinbox']['smsinbox_simnumber']."'";
 
-	//pre(array('$sql'=>$sql));
+	pre(array('$sql'=>$sql));
 
 	if(!($result=$appdb->query($sql))) {
 		return false;
