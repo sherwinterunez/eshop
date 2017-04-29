@@ -1234,14 +1234,14 @@ function _eDealerProcessSMS($vars=array()) {
 
 		$loadtransaction_retailerid = getCustomerIDByDefaultNumber($loadtransaction_recipientnumber);
 
-		pre(array('$sql'=>$sql,'$matched'=>$matched,'$loadtransaction_retailerid'=>$loadtransaction_retailerid));
-
 		if(getCustomerType($loadtransaction_retailerid)=='RETAILER') {
 		} else {
 			return false;
 		}
 
-		if(intval($matched['$AMOUNT'])>100) {
+		pre(array('$sql'=>$sql,'$matched'=>$matched,'$loadtransaction_retailerid'=>$loadtransaction_retailerid));
+
+		if(intval($matched['$AMOUNT'])>=getRetailerMinAmount($loadtransaction_retailerid)) {
 		} else {
 			return false;
 		}

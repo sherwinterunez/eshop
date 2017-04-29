@@ -4074,6 +4074,59 @@ function getRetailerSimAssign($retailerid=false,$provider=false) {
 	return false;
 }
 
+function getRetailerMinAmount($retailerid=false) {
+	global $appdb;
+
+	if(!empty($retailerid)&&is_numeric($retailerid)&&intval($retailerid)>0) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_customer where customer_id=".$retailerid;
+
+	//pre(array('$sql'=>$sql));
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_retailermin'])) {
+		return intval($result['rows'][0]['customer_retailermin']);
+	} else {
+		return 100;
+	}
+
+	return false;
+}
+
+function getRetailerMaxAmount($retailerid=false) {
+	global $appdb;
+
+	if(!empty($retailerid)&&is_numeric($retailerid)&&intval($retailerid)>0) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_customer where customer_id=".$retailerid;
+
+	//pre(array('$sql'=>$sql));
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_retailermax'])) {
+		return intval($result['rows'][0]['customer_retailermax']);
+	} else {
+		return 1000;
+	}
+
+	return false;
+}
+
+function getRetailerMaxAmount($retailerid=false) {
+}
+
 function getItemSimAssign($item=false,$provider=false) {
 	global $appdb;
 
@@ -8943,7 +8996,7 @@ function processSMS($content=false) {
 
 	$matched = smsLoadCommandMatched($content);
 
-	pre(array('$matched'=>$matched));
+	//pre(array('$matched'=>$matched));
 
 	//if($matched===false) {
 	//	return false;
