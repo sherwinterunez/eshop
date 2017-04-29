@@ -1230,11 +1230,11 @@ function _eDealerProcessSMS($vars=array()) {
 
 	if(!empty($matched)&&!empty($matched['$AMOUNT'])&&!empty($matched['$MOBILENUMBER'])) {
 
-		pre(array('$sql'=>$sql,'$matched'=>$matched));
-
 		$loadtransaction_recipientnumber = $matched['$MOBILENUMBER'];
 
 		$loadtransaction_retailerid = getCustomerIDByDefaultNumber($loadtransaction_recipientnumber);
+
+		pre(array('$sql'=>$sql,'$matched'=>$matched,'$loadtransaction_retailerid'=>$loadtransaction_retailerid));
 
 		if(getCustomerType($loadtransaction_retailerid)=='RETAILER') {
 		} else {
