@@ -5788,7 +5788,7 @@ function smsLoadCommandMatched($content=false){
 		//print_r(array('$result'=>$result['rows']));
 		$smscommands = $result['rows'];
 
-		pre(array('smscommands'=>$smscommands));
+		//pre(array('smscommands'=>$smscommands));
 	}
 
 	if(!empty($smscommands)) {
@@ -5807,7 +5807,7 @@ function smsLoadCommandMatched($content=false){
 			//echo '.';
 		} while(preg_match('#\s\s#si', $str));
 
-		//print_r(array('$content'=>$content,'str'=>$str));
+		print_r(array('$content'=>$content,'str'=>$str));
 
 		$matchedctr = 0;
 
