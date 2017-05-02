@@ -1233,7 +1233,7 @@ function getCustomerDownlineSettings($id=false,$mode=0) {
 		$retval = array();
 
 		if($mode==1) {
-			foreach($result['rows'][0] as $k=>$v) {
+			foreach($result['rows'] as $k=>$v) {
 				$retval[$v['downlinesettings_mobileno']] = $v;
 			}
 
