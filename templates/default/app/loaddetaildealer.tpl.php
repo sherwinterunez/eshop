@@ -761,14 +761,14 @@ pre(array('$vars'=>$vars));
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
 
-							try {
+							<?php /*try {
 								if(data.rowid) {
 									layout_resize_%formval%();
 									<?php echo $templatemainid.$submod; ?>grid_%formval%(data.rowid);
 								} else {
 									doSelect_%formval%("<?php echo $submod; ?>");
 								}
-							} catch(e) {}
+							} catch(e) {}*/ ?>
 
 							//console.log('WID: '+wid);
 
