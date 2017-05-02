@@ -1230,6 +1230,16 @@ function getCustomerDownlineSettings($id=false,$mode=0) {
 	//pre(array('getCustomerChildSettings'=>$result,'$sql'=>$sql));
 
 	if(!empty($result['rows'][0]['downlinesettings_id'])) {
+		$retval = array();
+
+		if($mode==1) {
+			foreach($result['rows'][0] as $k=>$v) {
+				$retval[$v['downlinesettings_mobileno']] = $v;
+			}
+
+			return $retval;
+		}
+
 		return $result['rows'];
 	}
 
