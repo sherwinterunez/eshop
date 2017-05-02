@@ -5152,10 +5152,16 @@ $block[] = array(
 								$customerName .= !empty($v['customer_middlename']) ? ' '.$v['customer_middlename'] : '';
 								$customerName .= !empty($v['customer_lastname']) ? ' '.$v['customer_lastname'] : '';
 
+								$cdiscount = '';
+
+								if(!empty($settings[$v['customer_mobileno']])) {
+									$cdiscount = $settings[$v['customer_mobileno']]['downlinesettings_discount'];
+								}
+
 								if(!$optflag) {
-									$rows[] = array('id'=>$k,'discount'=>array('options'=>$optdiscount),'data'=>array($v['customer_mobileno'],$customerName,''));
+									$rows[] = array('id'=>$k,'discount'=>array('options'=>$optdiscount),'data'=>array($v['customer_mobileno'],$customerName,$cdiscount));
 								} else {
-									$rows[] = array('id'=>$k,'data'=>array($v['customer_mobileno'],$customerName,''));
+									$rows[] = array('id'=>$k,'data'=>array($v['customer_mobileno'],$customerName,$cdiscount));
 								}
 							}
 						}
