@@ -1129,7 +1129,7 @@ function getCustomerDownline($id=false,$mode=0) {
 	if(!empty($id)&&is_numeric($id)) {
 	} else return false;
 
-	$sql = "select A.*,B.* from tbl_retailerupline as A,tbl_customer as B where A.retailerupline_uplineid=$id and A.retailerupline_uplineid=B.customer_id order by A.retailerupline_customerid asc";
+	$sql = "select A.*,B.* from tbl_retailerupline as A,tbl_customer as B where A.retailerupline_customerid=$id and A.retailerupline_uplineid=B.customer_id order by A.retailerupline_uplineid asc";
 
 	if(!($result = $appdb->query($sql))) {
 		return false;
