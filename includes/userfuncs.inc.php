@@ -9393,7 +9393,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 	}
 
-	if(!empty($validModemCommands)&&is_array($validModemCommands)) {
+	if(!empty($validModemCommands)) {
 	} else {
 
 		$sql = "select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_status=".TRN_APPROVED." and loadtransaction_assignedsim='$mobileNo' order by loadtransaction_id asc limit 1";
@@ -9434,7 +9434,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 	}
 
-	if(!empty($validModemCommands)&&is_array($validModemCommands)) {
+	if(!empty($validModemCommands)) {
 
 		if(!($result = $appdb->query("select * from tbl_atcommands where atcommands_modemcommandsid='$validModemCommands' order by atcommands_id asc"))) {
 			return false;
