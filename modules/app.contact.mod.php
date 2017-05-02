@@ -5128,7 +5128,7 @@ $block[] = array(
 					} else
 					if($this->post['table']=='downlinesettings') {
 
-						$settings = getCustomerDownlineSettings($this->post['rowid']);
+						$settings = getCustomerDownlineSettings($this->post['rowid'],1);
 
 						$downline = getCustomerDownline($this->post['rowid']);
 
