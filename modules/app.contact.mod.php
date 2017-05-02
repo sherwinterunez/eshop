@@ -5128,11 +5128,13 @@ $block[] = array(
 					} else
 					if($this->post['table']=='downlinesettings') {
 
+						$settings = getCustomerDownlineSettings($this->post['rowid']);
+
 						$downline = getCustomerDownline($this->post['rowid']);
 
 						$discount = getDiscountScheme();
 
-						//pre(array('$downline'=>$downline));
+						pre(array('$downline'=>$downline,'$settings'=>$settings));
 
 						foreach($discount as $k=>$v) {
 							$optdiscount[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']);
