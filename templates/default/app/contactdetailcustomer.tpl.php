@@ -1325,9 +1325,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			});
 
 			myWinObj.myGridDownlineSettings.forEachRow(function(id){
-				var m = myWinObj.myGridDownlineSettings.cells(id,1).getValue();
-				var n = myWinObj.myGridDownlineSettings.cells(id,2).getValue();
-				var o = myWinObj.myGridDownlineSettings.cells(id,3).getValue();
+				var m = myWinObj.myGridDownlineSettings.cells(id,0).getValue();
+				var n = myWinObj.myGridDownlineSettings.cells(id,1).getValue();
+				var o = myWinObj.myGridDownlineSettings.cells(id,2).getValue();
 				//var p = myWinObj.myGridDownlineSettings.cells(id,4).getValue();
 				//var q = myWinObj.myGridDownlineSettings.cells(id,5).getValue();
 				if(m&&n&&o) {
