@@ -5134,7 +5134,7 @@ $block[] = array(
 
 						$discount = getDiscountScheme();
 
-						pre(array('$downline'=>$downline,'$settings'=>$settings));
+						//pre(array('$downline'=>$downline,'$settings'=>$settings));
 
 						foreach($discount as $k=>$v) {
 							$optdiscount[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']);
