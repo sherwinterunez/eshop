@@ -5107,6 +5107,8 @@ $block[] = array(
 
 						//pre(array('$downline'=>$downline));
 
+						$optdiscount = array(array('text'=>'','value'=>''));
+
 						$rows = array();
 
 						if(!empty($downline)&&is_array($downline)) {
@@ -5128,9 +5130,17 @@ $block[] = array(
 
 						$downline = getCustomerDownline($this->post['rowid']);
 
+						$discount = getDiscountScheme();
+
 						//pre(array('$downline'=>$downline));
 
+						foreach($discount as $k=>$v) {
+							$optdiscount[] = array('text'=>$v['discount_desc'],'value'=>$v['discount_desc']);
+						}
+
 						$rows = array();
+
+						$optflag = false;
 
 						if(!empty($downline)&&is_array($downline)) {
 							foreach($downline as $k=>$v) {
@@ -5140,7 +5150,11 @@ $block[] = array(
 								$customerName .= !empty($v['customer_middlename']) ? ' '.$v['customer_middlename'] : '';
 								$customerName .= !empty($v['customer_lastname']) ? ' '.$v['customer_lastname'] : '';
 
-								$rows[] = array('id'=>$k,'data'=>array($v['customer_mobileno'],$customerName,''));
+								if(!$optflag) {
+									$rows[] = array('id'=>$k,'discount'=>array('options'=>$optdiscount),'data'=>array($v['customer_mobileno'],$customerName,''));
+								} else {
+									$rows[] = array('id'=>$k,'data'=>array($v['customer_mobileno'],$customerName,''));									
+								}
 							}
 						}
 

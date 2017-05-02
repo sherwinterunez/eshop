@@ -567,7 +567,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myGridDownlineSettings.setColAlign("left,left,left");
 
-			myGridDownlineSettings.setColTypes("ro,ro,ro");
+			myGridDownlineSettings.setColTypes("ro,ro,combo");
 
 			myGridDownlineSettings.setColSorting("str,str,str");
 
@@ -580,6 +580,34 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 				try {
 					myGridDownlineSettings.parse(ddata,function(){
+
+						<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
+
+						myGridDownlineSettings.forEachRow(function(id){
+							//myGridDownlineSettings.cells(id,1).setDisabled(true);
+							myGridDownlineSettings.cells(id,2).setDisabled(true);
+							//myGridDownlineSettings.cells(id,3).setDisabled(true);
+							//myGridDownlineSettings.cells(id,4).setDisabled(true);
+						});
+
+						<?php } ?>
+
+						var x;
+
+						if(ddata.rows&&ddata.rows.length>0) {
+							for(x in ddata.rows) {
+								if(ddata.rows[x].discount) {
+									//alert(JSON.stringify(ddata.rows[x].type));
+									var myCombo = myGridDownlineSettings.getColumnCombo(2);
+
+									myCombo.load(JSON.stringify(ddata.rows[x].discount));
+
+									myCombo.enableFilteringMode(true);
+
+									break;
+								}
+							}
+						}
 
 					},'json');
 				} catch(e) {
