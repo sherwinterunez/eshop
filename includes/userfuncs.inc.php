@@ -1644,7 +1644,7 @@ function computeDownlineRebateBalance($id=false) {
 		}
 
 		$content = array();
-		$content['customer_totalrebate'] = floatval($balance);
+		$content['customer_totalrebateaschild'] = floatval($balance);
 
 		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
 			return false;
@@ -1655,7 +1655,7 @@ function computeDownlineRebateBalance($id=false) {
 	} else {
 
 		$content = array();
-		$content['customer_totalrebate'] = 0;
+		$content['customer_totalrebateaschild'] = 0;
 
 		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
 			return false;
