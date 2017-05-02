@@ -1877,7 +1877,8 @@ function _eDealerProcessSMS($vars=array()) {
 					} else
 					if($customer_type=='REGULAR') {
 						computeCustomerBalance($loadtransaction_customerid);
-						computeChildRebateBalance($loadtransaction_retailerid);
+						//computeChildRebateBalance($loadtransaction_retailerid);
+            computeDownlineRebateBalance($loadtransaction_retailerid);
 					}
 
 				}

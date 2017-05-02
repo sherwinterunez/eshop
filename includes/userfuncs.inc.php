@@ -1623,6 +1623,8 @@ function computeDownlineRebateBalance($id=false) {
 
 	$sql = "select rebate_id,rebate_debit as debit,rebate_credit as credit,(rebate_credit-rebate_debit) as balance from tbl_rebate where rebate_childid=$id order by rebate_id asc";
 
+	print_r(array('$sql'=>$sql));
+
 	if(!($result = $appdb->query($sql))) {
 		return false;
 	}
