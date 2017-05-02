@@ -1131,7 +1131,7 @@ function getCustomerDownline($id=false,$mode=0) {
 
 	$sql = "select A.*,B.* from tbl_retailerupline as A,tbl_customer as B where A.retailerupline_uplineid=$id and A.retailerupline_customerid=B.customer_id order by A.retailerupline_customerid asc";
 
-	pre(array('$sql'=>$sql));
+	//pre(array('$sql'=>$sql));
 
 	if(!($result = $appdb->query($sql))) {
 		return false;

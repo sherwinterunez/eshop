@@ -5105,7 +5105,7 @@ $block[] = array(
 
 						$downline = getCustomerDownline($this->post['rowid']);
 
-						pre(array('$downline'=>$downline));
+						//pre(array('$downline'=>$downline));
 
 						$rows = array();
 
