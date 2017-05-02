@@ -77,6 +77,7 @@ pre(array('$str'=>'['.$str.']'));*/
 
 //pre(array('$discountSchemes'=>$discountSchemes));
 
+/*
 $no = '09091224234';
 
 $customer_id = getCustomerIDByDefaultNumber($no);
@@ -90,5 +91,18 @@ print_r(array('$customer_id'=>$customer_id,'$customer_type'=>$customer_type,'$re
 $dt = getDbDate(2);
 
 print_r(array('$dt'=>$dt));
+*/
+
+$loadtransaction_customerid = 138;
+
+$loadtransaction_provider = false;
+$loadtransaction_assignedsim = false;
+
+
+$discount = getDealerDiscounts($loadtransaction_customerid,$loadtransaction_provider,$loadtransaction_assignedsim);
+
+pre(array('$discount'=>$discount));
+
+
 
 ///

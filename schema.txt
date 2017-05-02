@@ -949,7 +949,7 @@ CREATE TABLE tbl_downlinesettings (
 
 ALTER TABLE ONLY tbl_downlinesettings ADD CONSTRAINT tbl_downlinesettings_primary_key PRIMARY KEY (downlinesettings_id);
 
-CREATE UNIQUE INDEX indx_downlinesettings_mobileno ON tbl_downlinesettings USING btree (downlinesettings_mobileno);
+-- CREATE UNIQUE INDEX indx_downlinesettings_mobileno ON tbl_downlinesettings USING btree (downlinesettings_mobileno);
 
 -- tbl_virtualnumber
 

@@ -2437,14 +2437,14 @@ function getDealerDiscounts($id=false,$provider=false,$simcard=false,$mode=0) {
 
 	$allDiscounts = array();
 
-	if(($childSettings = getCustomerDownlineSettings($id))) {
-		foreach($childSettings as $k=>$v) {
+	if(($downlineSettings = getCustomerDownlineSettings($id))) {
+		foreach($downlineSettings as $k=>$v) {
 			if(($discountId = getDiscountIDFromDesc($v['downlinesettings_discount']))) {
 				if(($discounts = getDiscounts($discountId))) {
 					foreach($discounts as $x=>$z) {
 						//$allDiscounts[$x] = $z;
-						if(!empty($provider)) {
-							if($provider===$z['discountlist_provider']) {
+						//if(!empty($provider)) {
+							//if($provider===$z['discountlist_provider']) {
 								if(!empty($simcard)) {
 									if($simcard===$z['discountlist_simcard']) {
 										$allDiscounts[] = $z;
@@ -2452,10 +2452,10 @@ function getDealerDiscounts($id=false,$provider=false,$simcard=false,$mode=0) {
 								} else {
 									$allDiscounts[] = $z;
 								}
-							}
-						} else {
-							$allDiscounts[] = $z;
-						}
+							//}
+						//} else {
+						//	$allDiscounts[] = $z;
+						//}
 					}
 				}
 			}
