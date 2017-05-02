@@ -9368,6 +9368,8 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 			if($matched) {
 
+				$loadtransaction_matched = $matched;
+
 				if(!($result = $appdb->query("select * from tbl_modemcommands where modemcommands_name='".$loadtransaction['loadtransaction_simcommand']."'"))) {
 					return false;
 				}
@@ -9391,7 +9393,8 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 	}
 
-	if(!$validModemCommands) {
+	if(!empty($validModemCommands)&&is_array($validModemCommands)) {
+	} else {
 
 		$sql = "select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_status=".TRN_APPROVED." and loadtransaction_assignedsim='$mobileNo' order by loadtransaction_id asc limit 1";
 
@@ -9431,7 +9434,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 	}
 
-	if($validModemCommands) {
+	if(!empty($validModemCommands)&&is_array($validModemCommands)) {
 
 		if(!($result = $appdb->query("select * from tbl_atcommands where atcommands_modemcommandsid='$validModemCommands' order by atcommands_id asc"))) {
 			return false;
@@ -9448,8 +9451,10 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 				$at = $row['atcommands_at'];
 
-				foreach($matched['matched'] as $ak=>$am) {
-					$at = str_replace($ak,$am,$at);
+				if(!empty($loadtransaction_matched)) {
+					foreach($loadtransaction_matched['matched'] as $ak=>$am) {
+						$at = str_replace($ak,$am,$at);
+					}
 				}
 
 				if(!empty($loadtransaction_regularload)) {
