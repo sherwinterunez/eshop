@@ -93,7 +93,7 @@ $dt = getDbDate(2);
 print_r(array('$dt'=>$dt));
 */
 
-$loadtransaction_customerid = 138;
+$loadtransaction_customerid = 93; //138;
 
 $loadtransaction_provider = false;
 $loadtransaction_assignedsim = false;
