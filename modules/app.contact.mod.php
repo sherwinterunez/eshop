@@ -5101,6 +5101,27 @@ $block[] = array(
 						$retval = array('rows'=>$rows);
 
 					} else
+					if($this->post['table']=='downline') {
+
+						$downline = getCustomerDownline($this->post['rowid']);
+
+						$rows = array();
+
+						if(!empty($children)&&is_array($children)) {
+							foreach($children as $k=>$v) {
+								$custid = $v['customer_ymd'] . sprintf('%04d', $v['customer_id']);
+
+								$customerName = !empty($v['customer_firstname']) ? $v['customer_firstname'] : '';
+								$customerName .= !empty($v['customer_middlename']) ? ' '.$v['customer_middlename'] : '';
+								$customerName .= !empty($v['customer_lastname']) ? ' '.$v['customer_lastname'] : '';
+
+								$rows[] = array('id'=>$k,'data'=>array($custid,$v['customer_mobileno'],$customerName,getTotalRebateAsChild($v['customer_id'])));
+							}
+						}
+
+						$retval = array('rows'=>$rows);
+
+					} else
 					if($this->post['table']=='child') {
 
 						$children = getCustomerChild($this->post['rowid']);

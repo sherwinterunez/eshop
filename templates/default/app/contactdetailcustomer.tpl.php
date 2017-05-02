@@ -532,6 +532,20 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myGridDownline.init();
 
+			myTab.postData('/'+settings.router_id+'/json/', {
+				odata: {},
+				pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=downline&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
+			}, function(ddata,odata){
+
+				try {
+					myGridDownline.parse(ddata,function(){
+
+					},'json');
+				} catch(e) {
+					console.log(e);
+				}
+
+			});
 ///////////////////////////////////
 
 			if(typeof(myWinObj.myGridDownlineSettings)!='null'&&typeof(myWinObj.myGridDownlineSettings)!='undefined'&&myWinObj.myGridDownlineSettings!=null) {

@@ -1123,6 +1123,31 @@ function isCustomerChild($customerId=false,$childId=false) {
 	return false;
 }
 
+function getCustomerDownline($id=false,$mode=0) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select A.*,B.* from tbl_retailerupline as A,tbl_customer as B where A.retailerupline_uplineid=$id and A.retailerupline_uplineid=B.customer_id order by A.retailerupline_customerid asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['retailerupline_customerid'])) {
+		$retval = array();
+
+		foreach($result['rows'] as $k=>$v) {
+			$retval[$v['retailerupline_customerid']] = $v;
+		}
+
+		return $retval;
+	}
+
+	return false;
+}
+
 function getCustomerChild($id=false,$mode=0) {
 	global $appdb;
 

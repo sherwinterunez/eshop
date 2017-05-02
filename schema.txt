@@ -993,7 +993,7 @@ DROP TABLE IF EXISTS tbl_retailerupline;
 CREATE TABLE tbl_retailerupline (
     retailerupline_id bigint DEFAULT nextval(('tbl_retailerupline_seq'::text)::regclass) NOT NULL,
     retailerupline_customerid integer DEFAULT 0 NOT NULL,
-    retailerupline_uplineid text DEFAULT ''::text NOT NULL,
+    retailerupline_uplineid integer DEFAULT 0 NOT NULL,
     retailerupline_active integer DEFAULT 0 NOT NULL,
     retailerupline_deleted integer DEFAULT 0 NOT NULL,
     retailerupline_flag integer DEFAULT 0 NOT NULL,
