@@ -5119,7 +5119,7 @@ $block[] = array(
 								$customerName .= !empty($v['customer_middlename']) ? ' '.$v['customer_middlename'] : '';
 								$customerName .= !empty($v['customer_lastname']) ? ' '.$v['customer_lastname'] : '';
 
-								$rows[] = array('id'=>$k,'data'=>array($custid,$v['customer_mobileno'],$customerName,getTotalRebateAsChild($v['customer_id'])));
+								$rows[] = array('id'=>$k,'data'=>array($custid,$v['customer_mobileno'],$customerName,number_format(getTotalRebateAsChild($v['customer_id']),2)));
 							}
 						}
 
