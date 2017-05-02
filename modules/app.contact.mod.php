@@ -452,13 +452,13 @@ if(!class_exists('APP_app_contact')) {
 
 					if(!empty($retval['rowid'])&&!empty($post['downlinesettings_provider'])&&is_array($post['downlinesettings_provider'])&&!empty($post['downlinesettings_category'])&&is_array($post['downlinesettings_category'])&&!empty($post['downlinesettings_type'])&&is_array($post['downlinesettings_type'])&&!empty($post['downlinesettings_simcard'])&&is_array($post['downlinesettings_simcard'])&&!empty($post['downlinesettings_discount'])&&is_array($post['downlinesettings_discount'])) {
 
-						foreach($post['downlinesettings_provider'] as $k=>$v) {
+						foreach($post['downlinesettings_mobileno'] as $k=>$v) {
 							$content = array();
 							$content['downlinesettings_customerid'] = $retval['rowid'];
-							$content['downlinesettings_provider'] = !empty($post['downlinesettings_provider'][$k]) ? $post['downlinesettings_provider'][$k] : '';
-							$content['downlinesettings_category'] = !empty($post['downlinesettings_category'][$k]) ? $post['downlinesettings_category'][$k] : '';
-							$content['downlinesettings_type'] = !empty($post['downlinesettings_type'][$k]) ? $post['downlinesettings_type'][$k] : '';
-							$content['downlinesettings_simcard'] = !empty($post['downlinesettings_simcard'][$k]) ? $post['downlinesettings_simcard'][$k] : '';
+							$content['downlinesettings_mobileno'] = !empty($post['downlinesettings_mobileno'][$k]) ? $post['downlinesettings_mobileno'][$k] : '';
+							//$content['downlinesettings_category'] = !empty($post['downlinesettings_category'][$k]) ? $post['downlinesettings_category'][$k] : '';
+							//$content['downlinesettings_type'] = !empty($post['downlinesettings_type'][$k]) ? $post['downlinesettings_type'][$k] : '';
+							//$content['downlinesettings_simcard'] = !empty($post['downlinesettings_simcard'][$k]) ? $post['downlinesettings_simcard'][$k] : '';
 							$content['downlinesettings_discount'] = !empty($post['downlinesettings_discount'][$k]) ? $post['downlinesettings_discount'][$k] : '';
 
 							if(!($result = $appdb->insert("tbl_downlinesettings",$content,"downlinesettings_id"))) {
@@ -5153,7 +5153,7 @@ $block[] = array(
 								if(!$optflag) {
 									$rows[] = array('id'=>$k,'discount'=>array('options'=>$optdiscount),'data'=>array($v['customer_mobileno'],$customerName,''));
 								} else {
-									$rows[] = array('id'=>$k,'data'=>array($v['customer_mobileno'],$customerName,''));									
+									$rows[] = array('id'=>$k,'data'=>array($v['customer_mobileno'],$customerName,''));
 								}
 							}
 						}

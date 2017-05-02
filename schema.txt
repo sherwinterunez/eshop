@@ -918,6 +918,39 @@ CREATE TABLE tbl_paymentdocument (
 
 ALTER TABLE ONLY tbl_paymentdocument ADD CONSTRAINT tbl_paymentdocument_primary_key PRIMARY KEY (paymentdocument_id);
 
+-- tbl_downlinesettings
+
+DROP SEQUENCE IF EXISTS tbl_downlinesettings_seq CASCADE;
+
+CREATE SEQUENCE tbl_downlinesettings_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_downlinesettings;
+
+CREATE TABLE tbl_downlinesettings (
+    downlinesettings_id bigint DEFAULT nextval(('tbl_downlinesettings_seq'::text)::regclass) NOT NULL,
+    downlinesettings_customerid integer DEFAULT 0 NOT NULL,
+    downlinesettings_mobileno text DEFAULT ''::text NOT NULL,
+    downlinesettings_provider text DEFAULT ''::text NOT NULL,
+    downlinesettings_category text DEFAULT ''::text NOT NULL,
+    downlinesettings_type text DEFAULT ''::text NOT NULL,
+    downlinesettings_simcard text DEFAULT ''::text NOT NULL,
+    downlinesettings_discount text DEFAULT ''::text NOT NULL,
+    downlinesettings_active integer DEFAULT 0 NOT NULL,
+    downlinesettings_deleted integer DEFAULT 0 NOT NULL,
+    downlinesettings_flag integer DEFAULT 0 NOT NULL,
+    downlinesettings_createstamp timestamp with time zone DEFAULT now(),
+    downlinesettings_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_downlinesettings ADD CONSTRAINT tbl_downlinesettings_primary_key PRIMARY KEY (downlinesettings_id);
+
+CREATE UNIQUE INDEX indx_downlinesettings_mobileno ON tbl_downlinesettings USING btree (downlinesettings_mobileno);
+
 -- tbl_virtualnumber
 
 DROP SEQUENCE IF EXISTS tbl_virtualnumber_seq CASCADE;

@@ -1328,14 +1328,14 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				var m = myWinObj.myGridDownlineSettings.cells(id,1).getValue();
 				var n = myWinObj.myGridDownlineSettings.cells(id,2).getValue();
 				var o = myWinObj.myGridDownlineSettings.cells(id,3).getValue();
-				var p = myWinObj.myGridDownlineSettings.cells(id,4).getValue();
-				var q = myWinObj.myGridDownlineSettings.cells(id,5).getValue();
-				if(m&&n&&o&&p&&q) {
-					extra['downlinesettings_provider['+id+']'] = m;
-					extra['downlinesettings_category['+id+']'] = n;
-					extra['downlinesettings_type['+id+']'] = o;
-					extra['downlinesettings_simcard['+id+']'] = p;
-					extra['downlinesettings_discount['+id+']'] = q;
+				//var p = myWinObj.myGridDownlineSettings.cells(id,4).getValue();
+				//var q = myWinObj.myGridDownlineSettings.cells(id,5).getValue();
+				if(m&&n&&o) {
+					extra['downlinesettings_mobileno['+id+']'] = m;
+					extra['downlinesettings_retailername['+id+']'] = n;
+					extra['downlinesettings_discount['+id+']'] = o;
+					//extra['downlinesettings_simcard['+id+']'] = p;
+					//extra['downlinesettings_discount['+id+']'] = q;
 				}
 			});
 
