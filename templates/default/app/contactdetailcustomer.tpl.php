@@ -520,15 +520,15 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myGridDownline.setImagePath("/codebase/imgs/")
 
-			myGridDownline.setHeader("Retailer Mobile Number, Retailer Name");
+			myGridDownline.setHeader("Retailer ID, Retailer Mobile No., Retailer Name, Total Rebate");
 
-			myGridDownline.setInitWidths("240,240");
+			myGridDownline.setInitWidths("200,200,*,200");
 
-			myGridDownline.setColAlign("left,left");
+			myGridDownline.setColAlign("left,left,left,right");
 
-			myGridDownline.setColTypes("ro,ro");
+			myGridDownline.setColTypes("ro,ro,ro,ro");
 
-			myGridDownline.setColSorting("str,str");
+			myGridDownline.setColSorting("str,str,str,str");
 
 			myGridDownline.init();
 

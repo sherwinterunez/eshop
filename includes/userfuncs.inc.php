@@ -9453,7 +9453,9 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 				if(!empty($loadtransaction_matched)) {
 					foreach($loadtransaction_matched['matched'] as $ak=>$am) {
+						$oldat = $at;
 						$at = str_replace($ak,$am,$at);
+						print_r(array('str_replace($ak,$am,$at)'=>$at,'$ak'=>$ak,'$am'=>$am,'$oldat'=>$oldat));
 					}
 				}
 
