@@ -93,6 +93,7 @@ $dt = getDbDate(2);
 print_r(array('$dt'=>$dt));
 */
 
+/*
 $loadtransaction_customerid = 93; //138;
 
 $loadtransaction_provider = false;
@@ -101,7 +102,11 @@ $loadtransaction_assignedsim = false;
 
 $discount = getDealerDiscounts($loadtransaction_customerid,$loadtransaction_provider,$loadtransaction_assignedsim);
 
-pre(array('$discount'=>$discount));
+pre(array('$discount'=>$discount));*/
+
+$rebate = computeDownlineRebateBalance(145);
+
+pre(array('$rebate'=>$rebate));
 
 
 

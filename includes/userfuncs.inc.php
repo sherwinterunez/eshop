@@ -1562,6 +1562,112 @@ function computeChildRebateBalance($id=false) {
 	return false;
 }
 
+/*function computeDownlineRebateBalance($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_rebate where rebate_childid=$id order by rebate_id asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['rebate_id'])) {
+
+		//$ledger = $result['rows'];
+
+		$balance = 0;
+
+		foreach($result['rows'] as $k=>$v) {
+			$balance = floatval($balance) + floatval($v['ledger_rebate']);
+			//$ledger[$k]['running_balance'] = $balance;
+
+			$content = array();
+			$content['ledger_rebatebalance'] = $balance;
+
+			if(!($result = $appdb->update("tbl_ledger",$content,"ledger_id=".$ledger[$k]['ledger_id']))) {
+				return false;
+			}
+		}
+
+		$content = array();
+		$content['customer_totalrebateaschild'] = floatval($balance);
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+			return false;
+		}
+
+		return floatval($balance);
+
+	} else {
+
+		$content = array();
+		$content['customer_totalrebateaschild'] = 0;
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+			return false;
+		}
+
+	}
+
+	return false;
+}*/
+
+function computeDownlineRebateBalance($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select rebate_id,rebate_debit as debit,rebate_credit as credit,(rebate_credit-rebate_debit) as balance from tbl_rebate where rebate_childid=$id order by rebate_id asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['rebate_id'])) {
+		//$ledger = $result['rows'];
+		$balance = 0;
+
+		foreach($result['rows'] as $k=>$v) {
+			$balance = floatval($balance) + floatval($v['balance']);
+			//$ledger[$k]['rebate_runningbalance'] = $balance;
+
+			//$content = array();
+			//$content['rebate_balance'] = $balance;
+
+			//if(!($result = $appdb->update("tbl_rebate",$content,"rebate_id=".$ledger[$k]['rebate_id']))) {
+				//return false;
+			//}
+		}
+
+		$content = array();
+		$content['customer_totalrebate'] = floatval($balance);
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+			return false;
+		}
+
+		return floatval($balance);
+
+	} else {
+
+		$content = array();
+		$content['customer_totalrebate'] = 0;
+
+		if(!($result = $appdb->update("tbl_customer",$content,"customer_id=$id"))) {
+			return false;
+		}
+
+		return 0;
+
+	}
+
+	return false;
+}
+
 function computeCustomerAvailableCredit($id=false) {
 	global $appdb;
 
