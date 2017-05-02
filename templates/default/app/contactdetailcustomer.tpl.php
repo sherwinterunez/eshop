@@ -547,15 +547,15 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myGridDownlineSettings.setImagePath("/codebase/imgs/")
 
-			myGridDownlineSettings.setHeader("Provider, Category, Transaction Type, Assigned Sim, Discount Scheme");
+			myGridDownlineSettings.setHeader("Retailer Mobile No., Retailer Name, Discount Scheme");
 
-			myGridDownlineSettings.setInitWidths("120,120,120,120,120");
+			myGridDownlineSettings.setInitWidths("250,*,250");
 
-			myGridDownlineSettings.setColAlign("left,left,left,left,left");
+			myGridDownlineSettings.setColAlign("left,left,left");
 
-			myGridDownlineSettings.setColTypes("ro,ro,ro,ro,ro");
+			myGridDownlineSettings.setColTypes("ro,ro,ro");
 
-			myGridDownlineSettings.setColSorting("str,str,str,str,str");
+			myGridDownlineSettings.setColSorting("str,str,str");
 
 			myGridDownlineSettings.init();
 
