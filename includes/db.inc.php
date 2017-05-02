@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,37 +24,37 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_Db')) {
 
 	class APP_Db {
-	
+
 		var $dbhost = false;
 		var $dbname = false;
 		var $dbuser = false;
 		var $dbpass = false;
 		var $dbport = false;
-		
+
 		var $ready  = false;
-		
+
 		var $pglink = false;
-		
+
 		var $lasterror = false;
 
 		var $lastquery = false;
 
 		var $time_start = false;
 		var $total_time = false;
-		
+
 		var $queries = false;
-		
+
 		var $err = false;
-		
+
 		var $show_error = false;
-		
+
 		var $count = 0;
-		
+
 		var $begin = false;
-	
+
 		function __construct($dbhost=false,$dbname=false,$dbuser=false,$dbpass=false) {
 			global $apperror;
-		
+
 			if(empty($dbhost)||empty($dbname)||empty($dbuser)||empty($dbpass)) {
 				$this->error();
 			}
@@ -66,27 +66,27 @@ if(!class_exists('APP_Db')) {
 				$this->dbhost = $dbhost;
 				$this->dbport = 5432;
 			}
-			
+
 			$this->dbname = $dbname;
 			$this->dbuser = $dbuser;
 			$this->dbpass = $dbpass;
-			
+
 			$this->ready = true;
-			
+
 			$this->queries = array();
-			
+
 			if(isset($apperror)&&is_object($apperror)) {
 				$this->err = &$apperror;
 			} else {
 				die('error class is missing');
 			}
-		
+
 			$this->init();
 		}
-		
+
 		function __destruct() {
 		}
-		
+
 		function pre($data) {
 			echo "<pre>";
 			print_r($data);
@@ -96,20 +96,20 @@ if(!class_exists('APP_Db')) {
 		function error($err='error database connection.') {
 			die($err);
 		}
-		
+
 		function ready() {
 			return is_resource($this->pglink);
 		}
-	
+
 		function init() {
 			global $pglink;
-			
+
 			if(!$this->ready) $this->error();
-			
+
 			//echo 'db class loaded';
-			
+
 			$connect = "host=".$this->dbhost." port=".$this->dbport." dbname=".$this->dbname." user=".$this->dbuser." password=".$this->dbpass;
-			
+
 			//echo $connect;
 
 			$pglink = pg_connect($connect);
@@ -117,37 +117,37 @@ if(!class_exists('APP_Db')) {
 			if(!is_resource($pglink)) {
 				$this->error("\n\ncan't connect to postgres server\n\n");
 			}
-			
+
 			$this->pglink = &$pglink;
-		
+
 			return $this->pglink;
-			
+
 		} // init
 
 		function close() {
 			@pg_close($this->pglink);
 			$this->pglink = false;
 		}
-		
+
 		function begin() {
 			if(!is_resource($this->pglink)) $this->error("\n\ninvalid postgres connection\n\n");
 			pg_query($this->pglink, "begin;");
 			$this->begin = true;
 		}
-		
+
 		function rollback() {
 			if(!is_resource($this->pglink)) $this->error("\n\ninvalid postgres connection\n\n");
 			if($this->begin) pg_query($this->pglink, "rollback;");
 		}
-		
+
 		function commit() {
 			if(!is_resource($this->pglink)) $this->error("\n\ninvalid postgres connection\n\n");
 			if($this->begin) pg_query($this->pglink, "commit;");
 		}
-		
+
 		function query($sql=false,$show_error=false,$returning=false) {
 			if(!is_resource($this->pglink)) $this->error("\n\ninvalid postgres connection\n\n");
-			
+
 			$this->timer_start();
 
 			if(preg_match("/^(insert|update|delete)/si",trim($sql))) {
@@ -156,9 +156,9 @@ if(!class_exists('APP_Db')) {
 			} else {
 				$write = false;
 			}
-			
+
 			$this->count++;
-		
+
 			//if(!($result=@pg_query($this->pglink, $sql))) {
 
 			$this->lastquery = $sql;
@@ -168,71 +168,72 @@ if(!class_exists('APP_Db')) {
 				$this->lasterror = pg_last_error($this->pglink);
 
 				//pre(array('$this->lasterror'=>$this->lasterror));
-			
+
 				if($write) {
 					//pg_query($this->pglink, "rollback;");
 				}
-				
+
 				$this->queries[] = array('query'=>$sql,'total_time'=>$this->timer_stop(),'err'=>true, 'errmsg'=>$this->lasterror);
-				
+
 				if($this->show_error||$show_error) {
 					$this->err->show_error("\n\nSQL ERROR: {$this->lasterror}\n\n",true);
 				}
 			} else {
 				$this->lasterror = false;
-				
+
 				$this->queries[] = array('query'=>$sql,'total_time'=>$this->timer_stop());
-				
+
 				if($write) {
 					//pg_query($this->pglink, "commit;");
 					$ret = array('sql'=>$sql,'resource'=>&$result,'affected'=>pg_affected_rows($result),'pg_affected_rows'=>true);
-					
+
 					if(is_string($returning)) {
 						$ret['returning'] = pg_fetch_all($result);
 					}
-					
+
 					return $ret;
 				} else {
 					$nrows = pg_num_rows($result);
 					$ret = array('sql'=>$sql,'resource'=>&$result,'affected'=>$nrows,'pg_num_rows'=>true);
-					
+
 					if($nrows>0) {
 						//$ret['rows'] = pg_fetch_all($result);
-						
+
 						$trows = pg_fetch_all($result);
 						$krows = array();
-						
+
 						foreach($trows as $k=>$v) {
 							//$krows[$k] = array_map('utf8_encode',$v);
-							$krows[$k] = array_map('check_utf8',$v);
+							//$krows[$k] = array_map('check_utf8',$v);
+							$krows[$k] = $v;
 						}
-						
+
 						$ret['rows'] = $krows;
 						//$ret['krows'] = $krows;
 					}
-					
+
 					return $ret;
 				}
 			}
-			
+
 			return false;
-			
+
 		} // query
-		
+
 		function insert($tbl_name=false,$data=false,$ret=false) {
-		
+
 			if(empty($tbl_name)||empty($data)||!is_array($data)) return false;
-			
+
 			$sql = "insert into $tbl_name ";
-			
+
 			$values = array();
 			$tables = array();
-			
+
 			foreach($data as $k=>$v) {
 				if(empty($v)&&!is_numeric($v)) continue;
-			
+
 				$tables[] = $k;
-				
+
 				if(is_numeric($v)) {
 					if($v===0) {
 						$values[] = "'0'";
@@ -243,26 +244,26 @@ if(!class_exists('APP_Db')) {
 					$values[] = "'".pg_escape_string(trim(check_utf8($v)))."'";
 				}
 			}
-			
+
 			$sql .= '('.implode(',',$tables).') values ';
 			$sql .= '('.implode(',',$values).')';
-			
+
 			if(is_string($ret)) {
 				$sql .= ' returning '.$ret;
 			}
-			
+
 			return $this->query($sql,false,$ret);
-		
+
 		} // insert
 
 		function update($tbl_name=false,$data=false,$where=false,$debug=false) {
-		
+
 			if(empty($tbl_name)||empty($data)||!is_array($data)) return false;
-			
+
 			$sql = "update $tbl_name set ";
 
 			$fields = array();
-			
+
 			foreach($data as $k=>$v) {
 				if(is_numeric($v)) {
 					$fields[] = $k."='".trim($v)."'";
@@ -274,20 +275,20 @@ if(!class_exists('APP_Db')) {
 					$fields[] = $k."='".pg_escape_string(trim($v))."'";
 				}
 			}
-			
+
 			$sql .= implode(',',$fields);
-			
+
 			if($where) {
 				$sql .= ' where '.$where;
 			}
-			
+
 			if($debug) {
 				pre($sql);
 			}
-			
+
 			return $this->query($sql);
-		
-		} // update		
+
+		} // update
 
 		function timer_start() {
 			$mtime            = explode( ' ', microtime() );
@@ -301,7 +302,7 @@ if(!class_exists('APP_Db')) {
 			$this->total_time = $time_end - $this->time_start;
 			return $this->total_time;
 		}
-	
+
 		function total_time() {
 			return $this->total_time;
 		}

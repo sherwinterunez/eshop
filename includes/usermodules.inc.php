@@ -1654,7 +1654,7 @@ function _eDealerProcessSMS($vars=array()) {
 
 									//$content['loadtransaction_processingfee'] = number_format($z['discountlist_fee'],2);
 									$content['loadtransaction_rebatediscount'] = number_format($z['discountlist_rate'],2);
-									$content['loadtransaction_rebateparent'] = $parentData['customer_parent'];
+									//$content['loadtransaction_rebateparent'] = $parentData['customer_parent'];
 									$discountBypass = true;
 									break;
 								}
@@ -1686,7 +1686,7 @@ function _eDealerProcessSMS($vars=array()) {
 
 									//$content['loadtransaction_processingfee'] = number_format($z['discountlist_fee'],2);
 									$content['loadtransaction_rebatediscount'] = number_format($z['discountlist_rate'],2);
-									$content['loadtransaction_rebateparent'] = $parentData['customer_parent'];
+									//$content['loadtransaction_rebateparent'] = $parentData['customer_parent'];
 									$discountBypass = true;
 									break;
 								}
@@ -1742,7 +1742,7 @@ function _eDealerProcessSMS($vars=array()) {
 					//	$amountdue = $amountdue + floatval($content['loadtransaction_processingfee']);
 					//}
 
-					if(!empty($content['loadtransaction_rebatediscount'])&&!empty($content['loadtransaction_rebateparent'])) {
+					if(!empty($content['loadtransaction_rebatediscount'])) {
 						$loadtransaction_rebateamount = floatval($content['loadtransaction_rebatediscount']/100) * floatval($amountdue);
 						$content['loadtransaction_rebateamount'] = number_format($loadtransaction_rebateamount,3);
 					}
@@ -1798,13 +1798,12 @@ function _eDealerProcessSMS($vars=array()) {
 						return false;
 					}
 
-					if(!empty($loadtransaction_rebateamount)&&!empty($content['loadtransaction_rebateparent'])) {
-						$loadtransaction_rebateparent = $content['loadtransaction_rebateparent'];
+					if(!empty($loadtransaction_rebateamount)) {
 
 						$content = array();
-						$content['rebate_customerid'] = $loadtransaction_rebateparent;
+						$content['rebate_customerid'] = $loadtransaction_customerid;
 						$content['rebate_credit'] = $rebate_credit = number_format($loadtransaction_rebateamount,3);
-						$content['rebate_childid'] = $loadtransaction_customerid;
+						$content['rebate_childid'] = $loadtransaction_retailerid;
 						$content['rebate_loadtransactionid'] = $loadtransaction_id;
 
 						//$rebate_balance = getRebateBalance($loadtransaction_rebateparent) + $loadtransaction_rebateamount;
@@ -1815,7 +1814,7 @@ function _eDealerProcessSMS($vars=array()) {
 							return false;
 						}
 
-						computeCustomerRebateBalance($loadtransaction_rebateparent);
+						computeCustomerRebateBalance($loadtransaction_customerid);
 
 						//$content = array();
 						//$content['customer_totalrebate'] = number_format($rebate_balance,3);
@@ -1878,7 +1877,7 @@ function _eDealerProcessSMS($vars=array()) {
 					} else
 					if($customer_type=='REGULAR') {
 						computeCustomerBalance($loadtransaction_customerid);
-						computeChildRebateBalance($loadtransaction_customerid);
+						computeChildRebateBalance($loadtransaction_retailerid);
 					}
 
 				}
