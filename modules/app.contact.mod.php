@@ -5124,6 +5124,29 @@ $block[] = array(
 						$retval = array('rows'=>$rows);
 
 					} else
+					if($this->post['table']=='downlinesettings') {
+
+						$downline = getCustomerDownline($this->post['rowid']);
+
+						//pre(array('$downline'=>$downline));
+
+						$rows = array();
+
+						if(!empty($downline)&&is_array($downline)) {
+							foreach($downline as $k=>$v) {
+								$custid = $v['customer_ymd'] . sprintf('%04d', $v['customer_id']);
+
+								$customerName = !empty($v['customer_firstname']) ? $v['customer_firstname'] : '';
+								$customerName .= !empty($v['customer_middlename']) ? ' '.$v['customer_middlename'] : '';
+								$customerName .= !empty($v['customer_lastname']) ? ' '.$v['customer_lastname'] : '';
+
+								$rows[] = array('id'=>$k,'data'=>array($custid,$v['customer_mobileno'],$customerName,''));
+							}
+						}
+
+						$retval = array('rows'=>$rows);
+
+					} else
 					if($this->post['table']=='child') {
 
 						$children = getCustomerChild($this->post['rowid']);

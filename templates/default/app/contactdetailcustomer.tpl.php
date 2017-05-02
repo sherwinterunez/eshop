@@ -573,6 +573,21 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myGridDownlineSettings.init();
 
+			myTab.postData('/'+settings.router_id+'/json/', {
+				odata: {},
+				pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=downlinesettings&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
+			}, function(ddata,odata){
+
+				try {
+					myGridDownlineSettings.parse(ddata,function(){
+
+					},'json');
+				} catch(e) {
+					console.log(e);
+				}
+
+			});
+
 ///////////////////////////////////
 
 		myTab.postData('/'+settings.router_id+'/json/', {
