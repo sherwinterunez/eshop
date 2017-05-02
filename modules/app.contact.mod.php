@@ -450,7 +450,7 @@ if(!class_exists('APP_app_contact')) {
 						}
 					}
 
-					if(!empty($retval['rowid'])&&!empty($post['downlinesettings_provider'])&&is_array($post['downlinesettings_provider'])&&!empty($post['downlinesettings_category'])&&is_array($post['downlinesettings_category'])&&!empty($post['downlinesettings_type'])&&is_array($post['downlinesettings_type'])&&!empty($post['downlinesettings_simcard'])&&is_array($post['downlinesettings_simcard'])&&!empty($post['downlinesettings_discount'])&&is_array($post['downlinesettings_discount'])) {
+					if(!empty($retval['rowid'])&&!empty($post['downlinesettings_mobileno'])&&is_array($post['downlinesettings_mobileno'])&&!empty($post['downlinesettings_discount'])&&is_array($post['downlinesettings_discount'])&&!empty($post['downlinesettings_retailername'])&&is_array($post['downlinesettings_retailername'])) {
 
 						foreach($post['downlinesettings_mobileno'] as $k=>$v) {
 							$content = array();
