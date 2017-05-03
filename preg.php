@@ -332,7 +332,7 @@ foreach($str as $k=>$v) {
 	}
 }*/
 
-$regx = 'P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Load\s+Wallet.+?\d+(?<SIMCARD>\d{10})\s+from\s+(?<SUPPLIER>.+?)\..+?Balance\:P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref.+?(?<REFERENCE>\d+)';
+$regx = 'P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?loaded.+?Load\s+Wallet.+?\d+(?<SIMCARD>\d{10})\s+from\s+(?<SUPPLIER>.+?)\..+?Balance\:P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref.+?(?<REFERENCE>\d+)';
 
 $str = array();
 $str[] = '02May 19:06: P10.00 is loaded to Load Wallet of 09216119988 from TOP MOBILE D 639397602109.New Balance:P3679.55 Ref:860490615490';

@@ -2441,234 +2441,94 @@ function _eDealerExpressionProcessSMS($vars=array()) {
 		return false;
 	}
 
+	$content = array();
+
 	print_r(array('_eDealerExpressionProcessSMS'=>$vars));
 
 	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
 
-		$confirmationFrom = $vars['smsinbox']['smsinbox_contactnumber'];
+		$confirmationFrom = $content['loadtransaction_confirmationfrom'] = $vars['smsinbox']['smsinbox_contactnumber'];
 
-		$confirmation = $vars['smsinbox']['smsinbox_message'];
+		$confirmation = $content['loadtransaction_confirmation'] = $vars['smsinbox']['smsinbox_message'];
 
 		print_r(array('$match'=>$match));
 
-		$where = '1=1';
-
 		if(!empty($match['MOBILENO'])) {
-			$loadtransaction_recipientnumber = '0'.$match['MOBILENO'];
-
-			$where .= " and loadtransaction_recipientnumber='$loadtransaction_recipientnumber'";
+			$loadtransaction_recipientnumber = $content['loadtransaction_recipientnumber'] = '0'.$match['MOBILENO'];
 		}
 
 		if(!empty($match['SIMCARD'])) {
-			$loadtransaction_assignedsim = '0'.$match['SIMCARD'];
-
-			$where .= " and loadtransaction_assignedsim='$loadtransaction_assignedsim'";
+			$loadtransaction_assignedsim = $content['loadtransaction_assignedsim'] = '0'.$match['SIMCARD'];
 		} else {
-			$loadtransaction_assignedsim = $vars['smsinbox']['smsinbox_simnumber'];
-
-			$where .= " and loadtransaction_assignedsim='$loadtransaction_assignedsim'";
+			$loadtransaction_assignedsim = $content['loadtransaction_assignedsim'] = $vars['smsinbox']['smsinbox_simnumber'];
 		}
 
-		$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_type='dealer' and loadtransaction_invalid=0 order by loadtransaction_id asc limit 1";
+		$loadtransaction_type = $content['loadtransaction_type'] = 'receivedstock';
 
-		print_r(array('$sql'=>$sql));
+		if(!empty($match['REFERENCE'])) {
+			$content['loadtransaction_refnumber'] = $loadtransaction_refnumber = $match['REFERENCE'];
+		}
 
-		if(!($result = $appdb->query($sql))) {
+		if(!empty($match['BALANCE'])) {
+			$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = floatval(str_replace(',','',$match['BALANCE']));
+
+			$previousBalance = getSimBalance($loadtransaction_assignedsim);
+
+			$newbal = array();
+			$newbal['simcard_balance'] = floatval(str_replace(',','',$match['BALANCE']));
+
+			if(!($result = $appdb->update("tbl_simcard",$newbal,"simcard_number='".$loadtransaction_assignedsim."'"))) {
+				return false;
+			}
+		}
+
+		if(!empty($match['AMOUNT'])) {
+			$content['loadtransaction_amount'] = $content['loadtransaction_cost'] = $content['loadtransaction_load'] = $content['loadtransaction_amountdue'] = floatval(str_replace(',','',$match['AMOUNT']));
+		}
+
+		if(!empty($match['PRODUCT'])) {
+			$content['loadtransaction_product'] = $match['PRODUCT'];
+		}
+
+		if(!empty($match['SUPPLIER'])) {
+			$content['loadtransaction_customername'] = $match['SUPPLIER'];
+		}
+
+		$content['loadtransaction_ymd'] = date('Ymd');
+		$content['loadtransaction_status'] = TRN_COMPLETED;
+		$content['loadtransaction_confirmationstamp'] = 'now()';
+		$content['loadtransaction_adjustmentcredit'] = 1;
+		$content['loadtransaction_adjustmentdebit'] = 1;
+		//$content['loadtransaction_createstampunix'] = '#extract(epoch from now())#';
+
+		print_r(array('hello'=>'sherwin','$match'=>$match,'loadtransaction_cost'=>$loadtransaction_cost,'loadtransaction_amount'=>$loadtransaction_amount));
+
+		$content['loadtransaction_updatestamp'] = 'now()';
+
+		print_r(array('$content'=>$content));
+
+		//if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction_id))) {
+		//	return false;
+		//}
+
+		if(!($result = $appdb->insert("tbl_loadtransaction",$content,"loadtransaction_id"))) {
 			return false;
 		}
 
-		print_r(array('$result'=>$result));
+		if(!empty($result['returning'][0]['loadtransaction_id'])) {
 
-		if(!empty($result['rows'][0]['loadtransaction_id'])) {
+			print_r(array('$result'=>$result));
 
-			//$content = array();
-			//$content['loadtransaction_simnumber'] = $simnumber;
+			$lid = $result['returning'][0]['loadtransaction_id'];
 
-			$content = $result['rows'][0];
+			$cupdate = array();
+			$cupdate['loadtransaction_createstampunix'] = '#extract(epoch from loadtransaction_updatestamp)#';
 
-			$loadtransaction_customerid = $content['loadtransaction_customerid'];
-
-			$loadtransaction_type = $content['loadtransaction_type'];
-
-			$loadtransaction_id = $content['loadtransaction_id'];
-
-			print_r(array('$result'=>$content));
-
-			unset($content['loadtransaction_id']);
-			unset($content['loadtransaction_createstamp']);
-			unset($content['loadtransaction_execstamp']);
-
-			if(trim($content['loadtransaction_confirmation'])=='') {
-				$content['loadtransaction_confirmation'] = $confirmation;
-			} else {
-				$content['loadtransaction_confirmation'] = $content['loadtransaction_confirmation'] . ' ' . $confirmation;
-			}
-
-			if(!empty($match['REFERENCE'])) {
-				$content['loadtransaction_refnumber'] = $loadtransaction_refnumber = $match['REFERENCE'];
-			}
-
-			//if(!empty($match['BALANCE'])) {
-			//	$content['loadtransaction_simcardbalance'] = $match['BALANCE'];
-			//}
-
-			if(!empty($match['BALANCE'])) {
-				$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = floatval(str_replace(',','',$match['BALANCE']));
-
-				$previousBalance = getSimBalance($loadtransaction_assignedsim);
-
-				$newbal = array();
-				$newbal['simcard_balance'] = floatval(str_replace(',','',$match['BALANCE']));
-
-				if(!($result = $appdb->update("tbl_simcard",$newbal,"simcard_number='".$loadtransaction_assignedsim."'"))) {
-					return false;
-				}
-			}
-
-			if(!empty($match['AMOUNT'])) {
-				//$content['loadtransaction_amount'] = floatval($match['AMOUNT']);
-				$content['loadtransaction_amount'] = floatval(str_replace(',','',$match['AMOUNT']));
-			}
-
-			if(!empty($match['PRODUCT'])) {
-				$content['loadtransaction_product'] = $match['PRODUCT'];
-			}
-
-			if(!empty($content['loadtransaction_confirmation'])&&!empty($content['loadtransaction_refnumber'])&&!empty($content['loadtransaction_simcardbalance'])) {
-				$content['loadtransaction_status'] = TRN_COMPLETED;
-				$content['loadtransaction_confirmationstamp'] = 'now()';
-			}
-
-			print_r(array('hello'=>'sherwin','$match'=>$match,'loadtransaction_cost'=>$loadtransaction_cost,'loadtransaction_amount'=>$loadtransaction_amount));
-
-			if(!empty($content['loadtransaction_cost'])&&!empty($content['loadtransaction_amount'])) {
-				if(floatval($content['loadtransaction_cost'])!=floatval($content['loadtransaction_amount'])) {
-
-					// threshold
-					if(!empty($content['loadtransaction_itemthreshold'])) {
-						$checkThreshold = abs(floatval($content['loadtransaction_cost']) - floatval($content['loadtransaction_amount']));
-
-						if(floatval($content['loadtransaction_itemthreshold'])<$checkThreshold) {
-							$content['loadtransaction_status'] = TRN_PENDING;
-						} else {
-							$content['loadtransaction_cost'] = $content['loadtransaction_amountdue'] = floatval($content['loadtransaction_amount']);
-
-							$discount = floatval($content['loadtransaction_load']) - floatval($content['loadtransaction_amount']);
-
-							$discount = floatval(number_format($discount,2,'.',''));
-
-							$content['loadtransaction_discount'] = $discount;
-
-							$ledgerContent = array();
-
-							$customer_type = getCustomerType($content['loadtransaction_customerid']);
-
-							if($customer_type=='STAFF') {
-								$ledgerContent['ledger_credit'] = $content['loadtransaction_load'];
-							} else
-							if($customer_type=='REGULAR') {
-								$ledgerContent['ledger_debit'] = $content['loadtransaction_cost'];
-							}
-
-							if(!($result = $appdb->update("tbl_ledger",$ledgerContent,"ledger_loadtransactionid=".$loadtransaction_id))) {
-								return false;
-							}
-
-							if($customer_type=='STAFF') {
-								computeStaffBalance($content['loadtransaction_customerid']);
-							} else
-							if($customer_type=='REGULAR') {
-								computeCustomerBalance($content['loadtransaction_customerid']);
-							}
-
-							doSimcardAdjustment($loadtransaction_assignedsim,$checkThreshold,($loadtransaction_simcardbalance-$checkThreshold),$loadtransaction_refnumber);
-
-						}
-
-					} else {
-						$content['loadtransaction_status'] = TRN_PENDING;
-					}
-
-				}
-			}
-
-			if(!empty($confirmationFrom)&&empty($content['loadtransaction_confirmationfrom'])) {
-				$content['loadtransaction_confirmationfrom'] = $confirmationFrom;
-			}
-
-			$content['loadtransaction_updatestamp'] = 'now()';
-
-			print_r(array('$content'=>$content));
-
-			if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction_id))) {
+			if(!($appdb->update("tbl_loadtransaction",$cupdate,"loadtransaction_id=".$lid))) {
 				return false;
 			}
-
-			if($content['loadtransaction_status']==TRN_COMPLETED) {
-
-				//$errmsg = smsdt().' Product '.$content['loadtransaction_productcode'].' has been successfully loaded to '.$content['loadtransaction_recipientnumber'].' Ref:'.$content['loadtransaction_ref'].'.';
-
-				$customer_type = getCustomerType($loadtransaction_customerid);
-
-				if($loadtransaction_type=='retail') {
-
-					//$errmsg = smsdt(). ' '.getNotification('LOAD RETAIL COMPLETED');
-					$errmsg = getNotification('LOAD RETAIL COMPLETED');
-
-					// Load request of %TEXTCODE% %ESHOPSRP% to %CUSTMOBILENO% is now complete. Ref:%LRTXNREF% %LRDATETIME% Balance:P%VBALANCE%.
-
-					$errmsg = str_replace('%TEXTCODE%',$content['loadtransaction_item'],$errmsg);
-					$errmsg = str_replace('%ESHOPSRP%',$content['loadtransaction_load'],$errmsg);
-					$errmsg = str_replace('%CUSTMOBILENO%',$content['loadtransaction_recipientnumber'],$errmsg);
-					$errmsg = str_replace('%LRTXNREF%',$content['loadtransaction_refnumber'],$errmsg);
-					$errmsg = str_replace('%LRDATETIME%', pgDateUnix(time()),$errmsg);
-
-					if($customer_type=='STAFF') {
-						computeStaffBalance($loadtransaction_customerid);
-						$errmsg = str_replace('%VBALANCE%',getStaffBalance($loadtransaction_customerid),$errmsg);
-					} else
-					if($customer_type=='REGULAR') {
-						computeCustomerBalance($loadtransaction_customerid);
-						$errmsg = str_replace('%VBALANCE%',getCustomerBalance($loadtransaction_customerid),$errmsg);
-					}
-
-				} else {
-
-					$errmsg = smsdt(). ' '.getNotification('$SUCCESSFULLY_LOADED');
-
-					$errmsg = str_replace('%simcard%',$content['loadtransaction_assignedsim'],$errmsg);
-					$errmsg = str_replace('%productcode%',$content['loadtransaction_product'],$errmsg);
-					$errmsg = str_replace('%recipientnumber%',$content['loadtransaction_recipientnumber'],$errmsg);
-					$errmsg = str_replace('%ref%',$content['loadtransaction_refnumber'],$errmsg);
-
-					if($customer_type=='STAFF') {
-						computeStaffBalance($loadtransaction_customerid);
-						$errmsg = str_replace('%balance%',getStaffBalance($loadtransaction_customerid),$errmsg);
-					} else
-					if($customer_type=='REGULAR') {
-						computeCustomerBalance($loadtransaction_customerid);
-						$errmsg = str_replace('%balance%',getCustomerBalance($loadtransaction_customerid),$errmsg);
-					}
-
-				}
-
-				/*$errmsg = smsdt(). ' '.getNotification('$SUCCESSFULLY_LOADED');
-
-				$errmsg = str_replace('%simcard%',$content['loadtransaction_assignedsim'],$errmsg);
-				$errmsg = str_replace('%productcode%',$content['loadtransaction_product'],$errmsg);
-				$errmsg = str_replace('%recipientnumber%',$content['loadtransaction_recipientnumber'],$errmsg);
-				$errmsg = str_replace('%ref%',$content['loadtransaction_refnumber'],$errmsg);
-
-				if($customer_type=='STAFF') {
-					$errmsg = str_replace('%balance%',getStaffBalance($loadtransaction_customerid),$errmsg);
-				} else {
-					$errmsg = str_replace('%balance%',getCustomerBalance($loadtransaction_customerid),$errmsg);
-				}*/
-
-				//sendToOutBox($content['loadtransaction_customernumber'],$content['loadtransaction_simhotline'],$errmsg);
-				sendToGateway($content['loadtransaction_customernumber'],$content['loadtransaction_simhotline'],$errmsg);
-			}
 		}
+
 	}
 } // function _eDealerExpressionProcessSMS($vars=array()) {
 
@@ -2679,7 +2539,7 @@ function _eDealerExpressionTransferProcessSMS($vars=array()) {
 		return false;
 	}
 
-	print_r(array('_eDealerExpressionProcessSMS'=>$vars));
+	print_r(array('_eDealerExpressionTransferProcessSMS'=>$vars));
 
 	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
 
@@ -3003,7 +2863,6 @@ function _eDealerExpressionTradeMoneyProcessSMS($vars=array()) {
 
 	}
 } // function _eDealerExpressionTradeMoneyProcessSMS($vars=array()) {
-
 
 function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 	global $appdb;
