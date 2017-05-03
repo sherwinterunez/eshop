@@ -64,7 +64,9 @@ function sampleSMS() {
 
 	//$message = "AIRTIME SMART 50 09182799988 F".$randint."\r\n";
 
-	$message = "29Apr 1030: Transfer of P500.00 from Dealer TOP MOBILE D to Load Wallet 09397889394 completed. Avail Bal:P73,820.00 Ref:060213437377";
+	//$message = "29Apr 1030: Transfer of P500.00 from Dealer TOP MOBILE D to Load Wallet 09397889394 completed. Avail Bal:P73,820.00 Ref:060213437377";
+
+	$message = "28Apr 19:17: P100.00 is loaded to Load Wallet of 09216119988 from TOP MOBILE D 639397602109.New Balance:P2780.76 Ref:870057848198";
 
 	//$message = "AIRTIME SMART 20 09216119988 F".$randint."\r\n";
 
