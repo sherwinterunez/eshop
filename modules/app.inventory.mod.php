@@ -3874,6 +3874,15 @@ if($readonly) {
 										if(!empty($v['loadtransaction_adjustmentcredit'])) {
 											$in = $v['loadtransaction_amountdue'];
 										}
+									} else
+									if($v['loadtransaction_type']=='receivedstock') {
+										$prefix = 'ERS';
+										if(!empty($v['loadtransaction_adjustmentdebit'])) {
+											$out = $v['loadtransaction_amountdue'];
+										} else
+										if(!empty($v['loadtransaction_adjustmentcredit'])) {
+											$in = $v['loadtransaction_amountdue'];
+										}
 									}
 
 									$transid = $prefix . $v['loadtransaction_ymd'] . sprintf('%04d', $v['loadtransaction_id']);
