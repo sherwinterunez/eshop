@@ -1193,7 +1193,7 @@ if(!class_exists('APP_app_setting')) {
 
 				$opt = array();
 
-				$category = array('SMART RETAIL','GLOBE RETAIL','SUN RETAIL');
+				$category = array('SMART RETAIL','GLOBE RETAIL','SUN RETAIL','SMART DEALER','GLOBE DEALER','SUN DEALER');
 
 				foreach($category as $v) {
 					$selected = false;

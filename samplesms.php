@@ -64,11 +64,14 @@ function sampleSMS() {
 
 	//$message = "AIRTIME SMART 50 09182799988 F".$randint."\r\n";
 
-	$message = "AIRTIME SMART 20 09216119988 F".$randint."\r\n";
+	$message = "29Apr 1030: Transfer of P500.00 from Dealer TOP MOBILE D to Load Wallet 09397889394 completed. Avail Bal:P73,820.00 Ref:060213437377";
+
+	//$message = "AIRTIME SMART 20 09216119988 F".$randint."\r\n";
 
 	$content = array();
-	$content['smsinbox_contactsid'] = 138;
-	$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
+	//$content['smsinbox_contactsid'] = 138;
+	//$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
+	$content['smsinbox_contactnumber'] = 'SMARTMoney';
 	$content['smsinbox_simnumber'] = '09397602109';
 	$content['smsinbox_message'] = $message;
 	$content['smsinbox_unread'] = 1;
