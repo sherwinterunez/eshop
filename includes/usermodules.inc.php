@@ -2748,7 +2748,17 @@ function _eDealerExpressionTradeMoneyProcessSMS($vars=array()) {
 		}
 
 		if(!empty($result['returning'][0]['loadtransaction_id'])) {
+
 			print_r(array('$result'=>$result));
+
+			$lid = $result['returning'][0]['loadtransaction_id'];
+
+			$cupdate = array();
+			$cupdate['loadtransaction_createstampunix'] = '#extract(epoch from loadtransaction_updatestamp)#';
+
+			if(!($appdb->update("tbl_loadtransaction",$cupdate,"loadtransaction_id=".$lid))) {
+				return false;
+			}
 		}
 
 	}
