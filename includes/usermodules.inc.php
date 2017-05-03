@@ -2737,9 +2737,18 @@ function _eDealerExpressionTradeMoneyProcessSMS($vars=array()) {
 
 		print_r(array('$content'=>$content));
 
-		if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction_id))) {
+		//if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction_id))) {
+		//	return false;
+		//}
+
+		if(!($result = $appdb->insert("tbl_loadtransaction",$content,"loadtransaction_id"))) {
 			return false;
 		}
+
+		if(!empty($result['returning'][0]['loadtransaction_id'])) {
+			print_r(array('$result'=>$result));
+		}
+
 	}
 } // function _eDealerExpressionTradeMoneyProcessSMS($vars=array()) {
 
