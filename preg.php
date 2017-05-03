@@ -320,11 +320,23 @@ foreach($str as $v) {
 	}
 }*/
 
-$regx = 'Transfer.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Dealer.+?Load\s+Wallet\s+\d+(?<MOBILENO>\d{10})\s+completed.+?Bal\:P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref.+?(?<REFERENCE>\d+)';
+/*$regx = 'Transfer.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Dealer.+?Load\s+Wallet\s+\d+(?<MOBILENO>\d{10})\s+completed.+?Bal\:P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref.+?(?<REFERENCE>\d+)';
 
 $str = array();
 $str[] = '29Apr 12:16: Transfer of P10.00 from Dealer Card of TOP MOBILE D to Load Wallet 09216119988 completed.Avail Bal:P73,760.00 Ref:870057907129 ';
 $str[] = '29Apr 1030: Transfer of P500.00 from Dealer TOP MOBILE D to Load Wallet 09397889394 completed. Avail Bal:P73,820.00 Ref:060213437377';
+
+foreach($str as $k=>$v) {
+	if(preg_match('/'.$regx.'/si',$v,$matches)) {
+		print_r(array('$matches'=>$matches));
+	}
+}*/
+
+$regx = 'P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Load\s+Wallet.+?\d+(?<SIMCARD>\d{10})\s+from\s+(?<SUPPLIER>.+?)\..+?Balance\:P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref.+?(?<REFERENCE>\d+)';
+
+$str = array();
+$str[] = '02May 19:06: P10.00 is loaded to Load Wallet of 09216119988 from TOP MOBILE D 639397602109.New Balance:P3679.55 Ref:860490615490';
+$str[] = '13Apr 11:06: P3000.00 is loaded to Load Wallet of 09216119988 from TOP MOBILE D 639397602109.New Balance:P4408.30 Ref:860473998163';
 
 foreach($str as $k=>$v) {
 	if(preg_match('/'.$regx.'/si',$v,$matches)) {
