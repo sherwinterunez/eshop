@@ -73,7 +73,8 @@ function sampleSMS() {
 	$content = array();
 	//$content['smsinbox_contactsid'] = 138;
 	//$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
-	$content['smsinbox_contactnumber'] = 'SMARTMoney';
+	//$content['smsinbox_contactnumber'] = 'SMARTMoney';
+	$content['smsinbox_contactnumber'] = 'SMARTLoad';
 	$content['smsinbox_simnumber'] = '09397602109';
 	$content['smsinbox_message'] = $message;
 	$content['smsinbox_unread'] = 1;
