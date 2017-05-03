@@ -2728,8 +2728,10 @@ function _eDealerExpressionTradeMoneyProcessSMS($vars=array()) {
 			$content['loadtransaction_product'] = $match['PRODUCT'];
 		}
 
+		$content['loadtransaction_ymd'] = date('Ymd');
 		$content['loadtransaction_status'] = TRN_COMPLETED;
 		$content['loadtransaction_confirmationstamp'] = 'now()';
+		$content['loadtransaction_createstampunix'] = '#extract(epoch from now())#';
 
 		print_r(array('hello'=>'sherwin','$match'=>$match,'loadtransaction_cost'=>$loadtransaction_cost,'loadtransaction_amount'=>$loadtransaction_amount));
 
