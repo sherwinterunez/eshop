@@ -2498,7 +2498,7 @@ function _eDealerExpressionProcessSMS($vars=array()) {
 		$content['loadtransaction_status'] = TRN_COMPLETED;
 		$content['loadtransaction_confirmationstamp'] = 'now()';
 		$content['loadtransaction_adjustmentcredit'] = 1;
-		$content['loadtransaction_adjustmentdebit'] = 1;
+		$content['loadtransaction_adjustmentdebit'] = 0;
 		//$content['loadtransaction_createstampunix'] = '#extract(epoch from now())#';
 
 		print_r(array('hello'=>'sherwin','$match'=>$match,'loadtransaction_cost'=>$loadtransaction_cost,'loadtransaction_amount'=>$loadtransaction_amount));
