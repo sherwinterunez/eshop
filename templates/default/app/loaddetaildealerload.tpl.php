@@ -264,6 +264,8 @@ pre(array('$vars'=>$vars));
 
 		//myForm.setItemFocus("txt_optionsname");
 
+		myWinToolbar.showOnly(myToolbar);
+
 		<?php } else if($method==$moduleid.'save') { ?>
 
 		myWinToolbar.disableAll();
