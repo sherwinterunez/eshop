@@ -298,6 +298,78 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 
 		};
 
+		myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>new').onClick = function(id,formval,wid) {
+			//showMessage("toolbar: "+id,5000);
+
+			var obj = {};
+			obj.routerid = settings.router_id;
+			obj.action = 'formonly';
+			obj.formid = '<?php echo $templatedetailid.$submod; ?>';
+			obj.module = '<?php echo $moduleid; ?>';
+			obj.method = id;
+			obj.rowid = 0;
+			obj.formval = '%formval%';
+
+			obj.title = 'New Retail Load';
+
+			openWindow(obj, function(winobj,obj){
+				console.log(obj);
+
+				myTab.postData('/'+settings.router_id+'/json/', {
+					odata: {winobj:winobj,obj:obj},
+					pdata: "routerid="+settings.router_id+"&action="+obj.action+"&formid="+obj.formid+"&module="+obj.module+"&method="+obj.method+"&rowid="+obj.rowid+"&formval="+obj.formval+"&wid="+obj.wid,
+				}, function(ddata,odata){
+					if(ddata.return_code&&ddata.return_code=='ERROR') {
+						showAlert(ddata.return_message);
+						closeWindow(odata.obj.wid);
+						return;
+					}
+					if(ddata.toolbar) {
+						console.log(ddata.toolbar);
+						odata.winobj.toolbar = odata.winobj.attachToolbar({
+							icons_path: settings.template_assets+"toolbar/",
+						});
+						odata.winobj.toolbar.toolbardata = ddata.toolbar;
+						odata.winobj.toolbar.tbRender(ddata.toolbar);
+						odata.winobj.toolbar.attachEvent("onClick", function(id){
+							showMessage("ToolbarOnClick: "+id,5000);
+
+							var tdata = this.getToolbarData(id);
+
+							if(!tdata) return false;
+
+							if(typeof(tdata.onClick)=='function') {
+								var ret = tdata.onClick.apply(this,[id,'%formval%',odata.obj.wid]);
+								//showMessage('ret: '+ret,5000);
+
+								return ret;
+							}
+
+							showMessage("Toolbar ID "+id+" not yet implemented!",10000);
+							return false;
+						});
+					}
+					if(ddata.html) {
+						jQuery("#"+odata.obj.wid).html(ddata.html);
+						//layout_resize_%formval%();
+					}
+				});
+			});
+
+			/*myTab.postData('/'+settings.router_id+'/json/', {
+				odata: {wid:wid},
+				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval="+formval+"&wid="+wid,
+			}, function(ddata,odata){
+				if(ddata.html) {
+					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+					if(ddata.html) {
+						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+						jQuery("#"+odata.wid).html(ddata.html);
+					}
+				}
+			});*/
+		};
+
 		try {
 
 			clearInterval(mySetInterval_%formval%);
