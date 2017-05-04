@@ -2998,8 +2998,8 @@ if(!class_exists('APP_app_load')) {
 
 						$content = array();
 						$content['ledger_fundid'] = $retval['rowid'];
-						$content['ledger_credit'] = $fund_amountdue;
-						$content['ledger_type'] = 'CUSTOMERRELOAD '.$fund_amountdue;
+						$content['ledger_credit'] = $fund_amount; //$fund_amountdue;
+						$content['ledger_type'] = 'CUSTOMERRELOAD '.$fund_amount; //$fund_amountdue;
 						$content['ledger_datetimeunix'] = $fund_datetimeunix;
 						$content['ledger_datetime'] = $ledger_datetime = pgDateUnix($fund_datetimeunix);
 						$content['ledger_user'] = $fund_recepientid;
