@@ -1084,6 +1084,8 @@ alter table tbl_loadtransaction add column loadtransaction_adjustmentcredit inte
 alter table tbl_loadtransaction add column loadtransaction_regularload numeric NOT NULL DEFAULT 0;
 alter table tbl_loadtransaction add column loadtransaction_itemthreshold numeric NOT NULL DEFAULT 0;
 alter table tbl_loadtransaction add column loadtransaction_trademoney integer NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_retailload integer NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_dealerload integer NOT NULL DEFAULT 0;
 
 alter table tbl_ledger add column ledger_loadtransactionid integer NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_fundid integer NOT NULL DEFAULT 0;
