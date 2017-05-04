@@ -16,6 +16,16 @@ $sidebar[] = array(
 	'icon'=>'desktop.png',
 );
 $sidebar[] = array(
+	'id'=>'retailload',
+	'text'=>'Retail Load',
+	'icon'=>'recent.png',
+);
+$sidebar[] = array(
+	'id'=>'dealerload',
+	'text'=>'Dealer Load',
+	'icon'=>'desktop.png',
+);
+$sidebar[] = array(
 	'id'=>'customerreload',
 	'text'=>'Customer Reload',
 	'icon'=>'documents.png',
