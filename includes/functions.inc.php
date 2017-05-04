@@ -926,7 +926,7 @@ function clearcrlf2($str=false) {
 
 		do {
 			if(preg_match('/(\r)/',$str,$match)&&isset($match[1])) {
-				$str = str_replace($match[1],'',$str);
+				$str = str_replace($match[1],' ',$str);
 			} else {
 				//return $str;
 				break;
@@ -935,7 +935,7 @@ function clearcrlf2($str=false) {
 
 		do {
 			if(preg_match('/(\n)/',$str,$match)&&isset($match[1])) {
-				$str = str_replace($match[1],'',$str);
+				$str = str_replace($match[1],' ',$str);
 			} else {
 				return $str;
 				//break;

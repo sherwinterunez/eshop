@@ -411,13 +411,13 @@ function _eLoadProcessSMS($vars=array()) {
 	}
 
 	if(!empty($vars['smsinbox']['smsinbox_message'])) {
-		$loadtransaction_keyword = strtoupper(clearcrlf2(clearDoubleSpace($vars['smsinbox']['smsinbox_message'])));
+		$loadtransaction_keyword = strtoupper(clearDoubleSpace(clearcrlf2($vars['smsinbox']['smsinbox_message'])));
 	} else {
 		return false;
 	}
 
 	if(preg_match('/'.$regx.'/si',$loadtransaction_keyword,$keymatch)&&!empty($keymatch[0])) {
-		$keymatch[0] = strtoupper(clearcrlf2(clearDoubleSpace($keymatch[0])));
+		$keymatch[0] = strtoupper(clearDoubleSpace(clearcrlf2($keymatch[0])));
 
 		if($keymatch[0]!=$loadtransaction_keyword) {
 			print_r(array('$keyerror'=>$keymatch,'$loadtransaction_keyword'=>$loadtransaction_keyword));
@@ -1177,13 +1177,13 @@ function _eDealerProcessSMS($vars=array()) {
 	}
 
 	if(!empty($vars['smsinbox']['smsinbox_message'])) {
-		$loadtransaction_keyword = strtoupper(clearcrlf2(clearDoubleSpace($vars['smsinbox']['smsinbox_message'])));
+		$loadtransaction_keyword = strtoupper(clearDoubleSpace(clearcrlf2($vars['smsinbox']['smsinbox_message'])));
 	} else {
 		return false;
 	}
 
 	if(preg_match('/'.$regx.'/si',$loadtransaction_keyword,$keymatch)&&!empty($keymatch[0])) {
-		$keymatch[0] = strtoupper(clearcrlf2(clearDoubleSpace($keymatch[0])));
+		$keymatch[0] = strtoupper(clearDoubleSpace(clearcrlf2($keymatch[0])));
 
 		if($keymatch[0]!=$loadtransaction_keyword) {
 			print_r(array('$keyerror'=>$keymatch,'$loadtransaction_keyword'=>$loadtransaction_keyword));
