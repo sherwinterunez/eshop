@@ -9504,7 +9504,8 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 			$content['smsinbox_contactnumber'] = $loadtransaction['loadtransaction_customernumber'];
 			$content['smsinbox_simnumber'] = $loadtransaction['loadtransaction_simhotline'];
 
-			if(!($matched=smsCommandMatched($content))) {
+			//if(!($matched=smsCommandMatched($content))) {
+			if(!($matched=smsLoadCommandMatched($content))) {
 				//return false;
 				$matched = false;
 			}
