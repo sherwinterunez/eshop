@@ -2358,7 +2358,7 @@ if(!class_exists('APP_app_load')) {
 						}
 					}
 				} else
-				if(!empty($post['method'])&&$post['method']=='getitem'&&!empty($post['provider'])) {
+				if(!empty($post['method'])&&$post['method']=='getitem') {
 
 					$allItem = getAllItem($post['provider'],1);
 
