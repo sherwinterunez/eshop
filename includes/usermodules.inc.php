@@ -4633,15 +4633,15 @@ function _eShopBalance($vars=array()) {
 
 		$smscommandskeys = array();
 
-		if(isFreezeLevel($smsinbox_contactsid)) {
+		if(isFreezeLevel($loadtransaction_customerid)) {
 
-			setCustomerFreeze($smsinbox_contactsid);
+			setCustomerFreeze($loadtransaction_customerid);
 
 			$errmsg = smsdt()." ".getNotification('ACCOUNT FREEZED');
 			//$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
 
 			//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
-			sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);
+			sendToGateway($confirmationFrom,$loadtransaction_assignedsim,$errmsg);
 
 		}
 
