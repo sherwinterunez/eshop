@@ -540,12 +540,12 @@ pre(array('$vars'=>$vars));
 			} else return false;
 
 			if(name=='retail_processingfee') {
-				var retail_processingfee = myForm.getItemValue('retail_processingfee');
-				console.log({onBlur:retail_processingfee,type:typeof(retail_processingfee),value:parseFloat(retail_processingfee)});
+				var retail_processingfee = parseFloat(myForm.getItemValue('retail_processingfee'));
 
-				//if(parseInt(retail_processingfee)) {
+				if(parseFloat(retail_processingfee)) {
+					console.log({onBlur:retail_processingfee,type:typeof(retail_processingfee),value:retail_processingfee});
 
-				//}
+				}
 			}
 
 		});
