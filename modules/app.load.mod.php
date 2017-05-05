@@ -2354,7 +2354,7 @@ if(!class_exists('APP_app_load')) {
 						}
 
 						if(!empty($result['rows'][0]['loadtransaction_id'])) {
-							$params['customerloadinfo'] = $result['rows'][0];
+							$params['retailinfo'] = $result['rows'][0];
 						}
 					}
 				} else
