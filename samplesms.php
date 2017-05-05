@@ -66,16 +66,37 @@ function sampleSMS() {
 
 	//$message = "29Apr 1030: Transfer of P500.00 from Dealer TOP MOBILE D to Load Wallet 09397889394 completed. Avail Bal:P73,820.00 Ref:060213437377";
 
-	$message = "28Apr 19:17: P3000.00 is loaded to Load Wallet of 09216119988 from TOP MOBILE D 639397602109.New Balance:P5780.76 Ref:870057848198";
+	//$message = "28Apr 19:17: P3000.00 is loaded to Load Wallet of 09216119988 from TOP MOBILE D 639397602109.New Balance:P5780.76 Ref:870057848198";
 
 	//$message = "AIRTIME SMART 20 09216119988 F".$randint."\r\n";
 
+/*
 	$content = array();
 	//$content['smsinbox_contactsid'] = 138;
 	//$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
 	//$content['smsinbox_contactnumber'] = 'SMARTMoney';
 	$content['smsinbox_contactnumber'] = 'SMARTLoad';
 	$content['smsinbox_simnumber'] = '09397602109';
+	$content['smsinbox_message'] = $message;
+	$content['smsinbox_unread'] = 1;
+
+	processSMS($content);
+
+	$result = $appdb->insert('tbl_smsinbox',$content,'smsinbox_id');
+
+	$tstop = timer_stop();
+
+	echo "\nsampleSMS done (".$tstop." secs).\n";
+*/
+
+	$message = "LOADRETAIL AT10 09483621618 DRAFT\r\n";
+
+	$content = array();
+	$content['smsinbox_contactsid'] = 138;
+	$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
+	//$content['smsinbox_contactnumber'] = 'SMARTMoney';
+	//$content['smsinbox_contactnumber'] = 'SMARTLoad';
+	$content['smsinbox_simnumber'] = '09197708008';
 	$content['smsinbox_message'] = $message;
 	$content['smsinbox_unread'] = 1;
 
