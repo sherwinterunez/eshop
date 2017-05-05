@@ -275,9 +275,13 @@ pre(array('$vars'=>$vars));
 		dhxCombo.attachEvent("onChange", function(value, text){
 			console.log('onChange: '+value+', '+text);
 
+<?php /*
+actionformonlyformidcontactdetailcustomerformval0289d574f2fc491fb173ac630b902c47b29ee0d9methodgetnetworkmobileno09492342342modulecontactrouteridapp
+*/ ?>
+
 			myTab.postData('/'+settings.router_id+'/json/', {
 				odata: {dhxCombo:dhxCombo},
-				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitem&provider="+value,
+				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitem&provider="+value+"&formval=%formval%",
 			}, function(ddata,odata){
 				if(ddata.html) {
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
