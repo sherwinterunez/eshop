@@ -2422,6 +2422,16 @@ if(!class_exists('APP_app_load')) {
 					$retval['return_code'] = 'SUCCESS';
 					$retval['return_message'] = 'Customer retail load successfully updated!';
 
+					if(!empty($post['retail_status'])) {
+						$content = array();
+						$content['loadtransaction_status'] = $post['retail_status'];
+
+						if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+					}
+
 					json_encode_return($retval);
 					die;
 
