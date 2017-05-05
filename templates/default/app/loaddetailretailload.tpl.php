@@ -28,7 +28,9 @@ if(!empty($vars['post']['wid'])) {
 
 //$myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approve',$moduleid.'manually');
 
-$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'transfer',$moduleid.'approved',$moduleid.'manually',$moduleid.'cancelled',$moduleid.'hold');
+//$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'transfer',$moduleid.'approved',$moduleid.'manually',$moduleid.'cancelled',$moduleid.'hold');
+
+$myToolbar = array($moduleid.'refresh');
 
 /*if(!empty($vars['params']['optionsinfo']['options_name'])) {
 	$options_name = $vars['params']['optionsinfo']['options_name'];
@@ -366,15 +368,15 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		<?php 	if(empty($vars['post']['rowid'])) { ?>
+		<?php 	/*if(empty($vars['post']['rowid'])) { ?>
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>edit');
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>delete');
 
-		<?php 	} ?>
+		<?php 	}*/ ?>
 
-		<?php 	if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&!($vars['params']['retailinfo']['loadtransaction_status']==TRN_FAILED||$vars['params']['retailinfo']['loadtransaction_status']==TRN_PENDING||$vars['params']['retailinfo']['loadtransaction_status']==TRN_APPROVED||$vars['params']['retailinfo']['loadtransaction_status']==TRN_HOLD||$vars['params']['retailinfo']['loadtransaction_status']==TRN_QUEUED)) { ?>
+		<?php 	/*if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&!($vars['params']['retailinfo']['loadtransaction_status']==TRN_FAILED||$vars['params']['retailinfo']['loadtransaction_status']==TRN_PENDING||$vars['params']['retailinfo']['loadtransaction_status']==TRN_APPROVED||$vars['params']['retailinfo']['loadtransaction_status']==TRN_HOLD||$vars['params']['retailinfo']['loadtransaction_status']==TRN_QUEUED)) { ?>
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
 
@@ -386,9 +388,9 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
 
-		<?php 	} ?>
+		<?php 	}*/ ?>
 
-		<?php   if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&$vars['params']['retailinfo']['loadtransaction_status']==TRN_QUEUED) { ?>
+		<?php   /*if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&$vars['params']['retailinfo']['loadtransaction_status']==TRN_QUEUED) { ?>
 
 		//myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
 
@@ -400,9 +402,9 @@ pre(array('$vars'=>$vars));
 
 		//myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
 
-		<?php 	} ?>
+		<?php 	}*/ ?>
 
-		<?php   if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&$vars['params']['retailinfo']['loadtransaction_status']==TRN_APPROVED) { ?>
+		<?php   /*if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&$vars['params']['retailinfo']['loadtransaction_status']==TRN_APPROVED) { ?>
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
 
@@ -414,7 +416,7 @@ pre(array('$vars'=>$vars));
 
 		//myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
 
-		<?php 	} ?>
+		<?php 	}*/ ?>
 
 ///////////////////////////////////
 
@@ -847,7 +849,7 @@ pre(array('$vars'=>$vars));
 			myForm.setItemValue('method', '<?php echo $moduleid; ?>save');
 
 			if(id=='<?php echo $moduleid; ?>approved') {
-				myForm.setItemValue('retail_approved', 1);				
+				myForm.setItemValue('retail_approved', 1);
 			}
 
 			//$("#messagingdetailsoptionsdetailsform_%formval% input[name='method']").val(id);
