@@ -2423,6 +2423,7 @@ if(!class_exists('APP_app_load')) {
 
 					$retail_mobilenumber = !empty($post['retail_mobilenumber']) ? $post['retail_mobilenumber'] : false;
 					$retail_provider = !empty($post['retail_provider']) ? $post['retail_provider'] : false;
+					$retail_item = !empty($post['retail_item']) ? $post['retail_item'] : false;
 
 					if(!empty($retail_mobilenumber)&&!empty($retail_provider)) {
 					} else {
@@ -2436,6 +2437,16 @@ if(!class_exists('APP_app_load')) {
 						die;
 					}
 
+					if(!empty($retail_item)) {
+					} else {
+						$retval = array();
+						$retval['error_code'] = '345346';
+						$retval['error_message'] = 'Invalid Item Code!';
+
+						json_encode_return($retval);
+						die;
+					}
+
 					$userId = $applogin->getUserID();
 					$userData = $applogin->getUserData();
 
@@ -2445,22 +2456,32 @@ if(!class_exists('APP_app_load')) {
 						$customer_type = getCustomerType($userData['user_staffid']);
 					}
 
+					$status = 'DRAFT';
+
+					if(!empty($post['retail_approved'])) {
+						$status = 'APPROVED';
+					}
+
 					$retval = array();
 					$retval['return_code'] = 'SUCCESS';
 					$retval['return_message'] = 'Customer retail load successfully saved!';
 
-					$message = "LOADRETAIL AT10 09483621618 APPROVED\r\n";
+					$message = "LOADRETAIL $retail_item $retail_mobilenumber $status\r\n";
 
 					$content = array();
 					$content['smsinbox_contactsid'] = 138;
 					$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
-					//$content['smsinbox_contactnumber'] = 'SMARTMoney';
-					//$content['smsinbox_contactnumber'] = 'SMARTLoad';
 					$content['smsinbox_simnumber'] = '09197708008';
 					$content['smsinbox_message'] = $message;
 					$content['smsinbox_unread'] = 1;
 
+					ob_start();
+
 					processSMS($content);
+
+					$out = ob_get_clean();
+
+					$retval['out'] = $out;
 
 					json_encode_return($retval);
 					die;
