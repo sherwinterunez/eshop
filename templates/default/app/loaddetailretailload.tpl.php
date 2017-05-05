@@ -291,7 +291,7 @@ pre(array('$vars'=>$vars));
 				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitem&provider="+value+"&formval=%formval%",
 			}, function(ddata,odata){
 				if(ddata.option) {
-					console.log(JSON.stringify(ddata.option));
+					//console.log(JSON.stringify(ddata.option));
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 					//jQuery("#"+odata.wid).html(ddata.html);
 					odata.dhxCombo2.clearAll();
@@ -320,7 +320,7 @@ pre(array('$vars'=>$vars));
 				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitemdata&item="+value+"&formval=%formval%&provider="+provider,
 			}, function(ddata,odata){
 				if(ddata.data) {
-					console.log(JSON.stringify(ddata.data));
+					//console.log(JSON.stringify(ddata.data));
 
 					myForm.setItemValue('retail_load',ddata.quantity);
 					myForm.setItemValue('retail_discountpercent',ddata.percent);
