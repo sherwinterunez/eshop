@@ -2523,15 +2523,27 @@ if(!class_exists('APP_app_load')) {
 
 				$opt = array();
 
-				$params['tbDetails'][] = array(
-					'type' => 'combo',
-					'label' => 'ITEM',
-					'name' => 'retail_item',
-					'readonly' => true,
-					'required' => !$readonly,
-					'options' => $opt,
-					//'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
-				);
+				if($post['method']=='loadnew') {
+					$params['tbDetails'][] = array(
+						'type' => 'combo',
+						'label' => 'ITEM',
+						'name' => 'retail_item',
+						'readonly' => true,
+						'required' => !$readonly,
+						'options' => $opt,
+						//'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
+					);
+				} else {
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'ITEM',
+						'name' => 'retail_item',
+						'readonly' => true,
+						//'required' => !$readonly,
+						//'options' => $opt,
+						'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
+					);
+				}
 
 /*
 $item_cost = floatval($itemData['item_cost']);
