@@ -2383,6 +2383,18 @@ if(!class_exists('APP_app_load')) {
 					die;
 
 				} else
+				if(!empty($post['method'])&&$post['method']=='getitemdata'&&!empty($post['item'])&&!empty($post['provider'])) {
+
+					$retval = array();
+
+					$data = getItemData($post['item'],$post['provider']);
+
+					$retval['data'] = $data;
+
+					json_encode_return($retval);
+					die;
+
+				} else
 				if(!empty($post['method'])&&$post['method']=='loadsave') {
 
 					$retval = array();

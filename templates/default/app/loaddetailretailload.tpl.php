@@ -272,18 +272,15 @@ pre(array('$vars'=>$vars));
 		var dhxCombo2 = myForm.getCombo("retail_item");
 
 		dhxCombo.enableFilteringMode(true);
+		dhxCombo2.enableFilteringMode(true);
 
 		dhxCombo.attachEvent("onChange", function(value, text){
-			console.log('onChange: '+value+', '+text);
+			//console.log('onChange: '+value+', '+text);
 
 			if(!value) {
 				dhxCombo2.clearAll();
 				return false;
 			}
-
-<?php /*
-actionformonlyformidcontactdetailcustomerformval0289d574f2fc491fb173ac630b902c47b29ee0d9methodgetnetworkmobileno09492342342modulecontactrouteridapp
-*/ ?>
 
 			myTab.postData('/'+settings.router_id+'/json/', {
 				odata: {dhxCombo:dhxCombo,dhxCombo2:dhxCombo2},
@@ -300,12 +297,41 @@ actionformonlyformidcontactdetailcustomerformval0289d574f2fc491fb173ac630b902c47
 
 		});
 
+		dhxCombo2.attachEvent("onChange", function(value, text){
+			console.log('onChange: '+value+', '+text);
+
+			//if(!value) {
+			//	dhxCombo2.clearAll();
+			//	return false;
+			//}
+
+			var provider = myForm.getItemValue('retail_provider');
+
+			if(!provider) {
+				return false;
+			}
+
+			myTab.postData('/'+settings.router_id+'/json/', {
+				odata: {dhxCombo:dhxCombo,dhxCombo2:dhxCombo2},
+				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitemdata&item="+value+"&formval=%formval%&provider="+provider,
+			}, function(ddata,odata){
+				if(ddata.data) {
+					console.log(JSON.stringify(ddata.data));
+					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+					//jQuery("#"+odata.wid).html(ddata.html);
+					//odata.dhxCombo2.clearAll();
+					//odata.dhxCombo2.addOption(ddata.option);
+				}
+			});
+
+		});
+
 		dhxCombo.attachEvent("onClose", function(){
-			console.log('onClose: '+myForm.getItemValue('retail_provider'));
+			//console.log('onClose: '+myForm.getItemValue('retail_provider'));
 		});
 
 		dhxCombo.attachEvent("onBlur", function(){
-			console.log('onBlur: '+myForm.getItemValue('retail_provider'));
+			//console.log('onBlur: '+myForm.getItemValue('retail_provider'));
 		});
 
 ///////////////////////////////////////
