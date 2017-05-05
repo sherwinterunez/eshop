@@ -536,13 +536,12 @@ pre(array('$vars'=>$vars));
 
 			showMessage("onBlur: ["+name+"] ["+value+"] "+typeof(value),5000);
 
-			if(typeof(value)!='undefined') {
+			if(typeof(name)!='undefined') {
 			} else return false;
 
-
 			if(name=='retail_processingfee') {
-				console.log({onBlur:value});
-				//var retail_processingfee = myForm.getItemValue('retail_processingfee');
+				var retail_processingfee = myForm.getItemValue('retail_processingfee');
+				console.log({onBlur:retail_processingfee});
 			}
 
 		});
