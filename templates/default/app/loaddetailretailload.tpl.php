@@ -266,6 +266,22 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.showOnly(myToolbar);
 
+		var dhxCombo = myForm.getCombo("retail_provider");
+
+		dhxCombo.enableFilteringMode(true);
+
+		dhxCombo.attachEvent("onChange", function(value, text){
+			console.log('onChange: '+value+', '+text);
+		});
+
+		dhxCombo.attachEvent("onClose", function(){
+			console.log('onClose: '+myForm.getItemValue('retail_provider'));
+		});
+
+		dhxCombo.attachEvent("onBlur", function(){
+			console.log('onBlur: '+myForm.getItemValue('retail_provider'));
+		});
+
 		<?php } else if($method==$moduleid.'save') { ?>
 
 		myWinToolbar.disableAll();
