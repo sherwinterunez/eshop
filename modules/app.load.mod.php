@@ -2406,7 +2406,8 @@ if(!class_exists('APP_app_load')) {
 					$percent = $percent * 100;
 
 					$retval['data'] = $itemData;
-					$retval['load'] = $item_srp;
+					$retval['quantity'] = $item_quantity;
+					$retval['amountdue'] = $item_srp;
 					$retval['percent'] = $percent;
 					$retval['discount'] = $discount;
 
