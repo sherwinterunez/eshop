@@ -4110,6 +4110,7 @@ function isItemMaintenance($item=false,$checkdate=false) {
 }
 
 function getAllItem($fprovider=false,$mode=0,$factive=true) {
+	global $appdb;
 
 	$where = '1=1';
 
@@ -4126,11 +4127,11 @@ function getAllItem($fprovider=false,$mode=0,$factive=true) {
 	//pre(array('$sql'=>$sql));
 
 	if(!($result = $appdb->query($sql))) {
-		pre(array('$appdb'=>$appdb));
+		//pre(array('$appdb'=>$appdb));
 		return false;
 	}
 
-	pre(array('$result'=>$result));
+	//pre(array('$result'=>$result));
 
 	if(!empty($result['rows'][0]['item_id'])) {
 
