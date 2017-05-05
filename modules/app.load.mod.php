@@ -2364,7 +2364,18 @@ if(!class_exists('APP_app_load')) {
 
 					$allItem = getAllItem($post['provider'],1);
 
-					$retval['allItem'] = $allItem;
+					$opt = array();
+					$opt[] = array('text'=>'','value'=>'','selected'=>false);
+
+					if(!empty($allItem)) {
+						foreach($allItem as $k=>$v) {
+							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>false);
+						}
+					}
+
+					$retval['option'] = $opt;
+
+					//$retval['allItem'] = $allItem;
 
 					//pre(array('$allItem'=>$allItem));
 
