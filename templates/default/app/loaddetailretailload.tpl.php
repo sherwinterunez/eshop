@@ -48,6 +48,8 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 <!--
 <?php
 
+pre(array('$_SESSION'=>$_SESSION));
+
 $dt = getDbDate(1);
 
 pre(array('$dt'=>$dt));

@@ -2470,7 +2470,7 @@ if(!class_exists('APP_app_load')) {
 					$message = "LOADRETAIL $retail_item $retail_mobilenumber $status\r\n";
 
 					$content = array();
-					$content['smsinbox_contactsid'] = 138;
+					$content['smsinbox_contactsid'] = $user_staffid;
 					$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
 					$content['smsinbox_simnumber'] = '09197708008';
 					$content['smsinbox_message'] = $message;
