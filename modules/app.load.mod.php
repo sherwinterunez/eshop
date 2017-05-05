@@ -2232,6 +2232,8 @@ if(!class_exists('APP_app_load')) {
 
 				$post = $this->vars['post'];
 
+				pre(array('$post'=>$post));
+
 				$readonly = true;
 
 				$params = array();
