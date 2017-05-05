@@ -1011,6 +1011,7 @@ function _eLoadProcessSMS($vars=array()) {
 
 				if(!empty($loadretail_status)) {
 					$content['loadtransaction_status'] = $loadretail_status;
+					$content['loadtransaction_retailload'] = 1;
 				}
 
 				if(!empty($loadtransaction_regularload)) {
