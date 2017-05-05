@@ -55,7 +55,7 @@ if(!empty($_GET['id'])&&is_numeric($_GET['id'])&&intval($_GET['id'])>0) {
   pre(array('$customer_type'=>$customer_type,'$id'=>$id));
 
   if($customer_type=='STAFF') {
-    computeStaffBalance2($id);
+    computeStaffBalance($id);
   } else {
     computeCustomerBalance($id);
 		computeCustomerRebateBalance($id);

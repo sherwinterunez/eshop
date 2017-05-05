@@ -4538,6 +4538,8 @@ $item_provider = $itemData['item_provider'];
 							}
 						}
 
+						$content['ledger_credit'] = $fund_amountdue;
+						$content['ledger_type'] = 'CUSTOMERRELOAD '.$fund_amountdue;
 						$content['ledger_user'] = $user_staffid;
 
 						if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
