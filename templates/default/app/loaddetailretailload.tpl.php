@@ -559,6 +559,12 @@ pre(array('$vars'=>$vars));
 
 						myForm.setItemValue('retail_amountdue',amountdue);
 					}
+				} else {
+					var retail_itemsrp = parseFloat(myForm.getItemValue('retail_itemsrp'));
+
+					if(retail_itemsrp) {
+						myForm.setItemValue('retail_amountdue',amountdue);						
+					}
 				}
 			}
 
