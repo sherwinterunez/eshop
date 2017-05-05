@@ -321,6 +321,7 @@ pre(array('$vars'=>$vars));
 					myForm.setItemValue('retail_load',ddata.load);
 					myForm.setItemValue('retail_discountpercent',ddata.percent);
 					myForm.setItemValue('retail_discount',ddata.discount);
+					myForm.setItemValue('retail_amountdue',ddata.load);
 
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 					//jQuery("#"+odata.wid).html(ddata.html);
