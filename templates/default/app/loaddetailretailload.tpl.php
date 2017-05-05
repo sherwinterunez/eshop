@@ -306,6 +306,18 @@ pre(array('$vars'=>$vars));
 
 			if(!value) {
 			//	dhxCombo2.clearAll();
+
+				myForm.setItemValue('retail_load',0);
+				myForm.setItemValue('retail_discountpercent','');
+				myForm.setItemValue('retail_discount','');
+				myForm.setItemValue('retail_amountdue',0);
+				myForm.setItemValue('retail_cashreceived',0);
+
+				myForm.setItemValue('retail_itemcost',0);
+				myForm.setItemValue('retail_itemquantity',0);
+				myForm.setItemValue('retail_itemsrp',0);
+				myForm.setItemValue('retail_itemeshopsrp',0);
+
 				return false;
 			}
 
