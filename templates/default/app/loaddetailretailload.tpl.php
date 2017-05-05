@@ -260,7 +260,7 @@ pre(array('$vars'=>$vars));
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit'||$method==$moduleid.'approved'||$method==$moduleid.'manually'||$method==$moduleid.'cancelled'||$method==$moduleid.'hold'||$method==$moduleid.'transfer') { ?>
+		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -351,6 +351,16 @@ pre(array('$vars'=>$vars));
 		});
 
 ///////////////////////////////////////
+
+		<?php } else if($method==$moduleid.'approved'||$method==$moduleid.'manually'||$method==$moduleid.'cancelled'||$method==$moduleid.'hold'||$method==$moduleid.'transfer') { ?>
+
+			myWinToolbar.disableAll();
+
+			myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+
+			//myForm.setItemFocus("txt_optionsname");
+
+			myWinToolbar.showOnly(myToolbar);
 
 		<?php } else if($method==$moduleid.'save') { ?>
 

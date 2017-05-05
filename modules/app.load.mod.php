@@ -2565,7 +2565,7 @@ if(!class_exists('APP_app_load')) {
 						'type' => 'combo',
 						'label' => 'ITEM',
 						'name' => 'retail_item',
-						'readonly' => true,
+						'readonly' => $readonly,
 						'required' => !$readonly,
 						'options' => $opt,
 						//'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
@@ -5597,10 +5597,13 @@ $item_provider = $itemData['item_provider'];
 
 							$fund_staffid = $applogin->getStaffID();
 
-							if(!($result = $appdb->query("select * from tbl_fund where fund_type='customerreload' and fund_staffid=$fund_staffid order by fund_id desc"))) {
-								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;
+							if(!empty($fund_staffid)) {
+								if(!($result = $appdb->query("select * from tbl_fund where fund_type='customerreload' and fund_staffid=$fund_staffid order by fund_id desc"))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
 							}
+
 						}
 
 						//pre(array('$result'=>$result));
