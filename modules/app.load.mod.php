@@ -2533,6 +2533,39 @@ if(!class_exists('APP_app_load')) {
 					//'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
 				);
 
+/*
+$item_cost = floatval($itemData['item_cost']);
+$item_quantity = floatval($itemData['item_quantity']);
+$item_srp = floatval($itemData['item_srp']);
+$item_eshopsrp = floatval($itemData['item_eshopsrp']);
+$item_threshold = floatval($itemData['item_threshold']);
+$item_provider = $itemData['item_provider'];
+*/
+
+				$params['tbDetails'][] = array(
+					'type' => 'hidden',
+					'name' => 'retail_itemcost',
+					'value' => 0,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'hidden',
+					'name' => 'retail_itemquantity',
+					'value' => 0,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'hidden',
+					'name' => 'retail_itemsrp',
+					'value' => 0,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'hidden',
+					'name' => 'retail_itemeshopsrp',
+					'value' => 0,
+				);
+
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'MOBILE NUMBER',

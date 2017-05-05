@@ -323,6 +323,12 @@ pre(array('$vars'=>$vars));
 					myForm.setItemValue('retail_discount',ddata.discount);
 					myForm.setItemValue('retail_amountdue',ddata.amountdue);
 
+					myForm.setItemValue('retail_itemcost',ddata.data.item_cost);
+					myForm.setItemValue('retail_itemquantity',ddata.data.item_quantity);
+					myForm.setItemValue('retail_itemsrp',ddata.data.item_srp);
+					myForm.setItemValue('retail_itemeshopsrp',ddata.data.item_eshopsrp);
+
+
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 					//jQuery("#"+odata.wid).html(ddata.html);
 					//odata.dhxCombo2.clearAll();
@@ -543,8 +549,10 @@ pre(array('$vars'=>$vars));
 				var retail_processingfee = parseFloat(myForm.getItemValue('retail_processingfee'));
 
 				if(retail_processingfee) {
-					console.log({onBlur:retail_processingfee,type:typeof(retail_processingfee),value:retail_processingfee});
+					//console.log({onBlur:retail_processingfee,type:typeof(retail_processingfee),value:retail_processingfee});
+					var retail_itemsrp = parseFloat(myForm.getItemValue('retail_itemsrp'));
 
+					console.log({onBlur:retail_itemsrp,type:typeof(retail_itemsrp),value:retail_itemsrp});
 				}
 			}
 
