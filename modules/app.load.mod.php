@@ -2710,13 +2710,39 @@ $item_provider = $itemData['item_provider'];
 					'offset' => $newcolumnoffset,
 				);
 
-				$params['tbDetails'][] = array(
+				/*$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'CASHIER',
 					'name' => 'retail_cashier',
 					'readonly' => true,
 					//'required' => !$readonly,
 					'value' => !empty($params['retailinfo']['loadtransaction_cashier']) ? $params['retailinfo']['loadtransaction_cashier'] : '',
+				);*/
+
+				$params['tbDetails'][] = array(
+					'type' => 'hidden',
+					//'label' => 'USER ID',
+					'name' => 'retail_userid',
+					//'readonly' => true,
+					//'required' => !$readonly,
+					'value' => $applogin->getUserID(),
+				);
+
+				$fund_username = !empty($params['retailinfo']['loadtransaction_staffid']) ? getCustomerNameByID($params['retailinfo']['loadtransaction_staffid']) : '';
+
+				if(!empty($fund_username)) {
+				} else {
+					$fund_username = !empty($params['retailinfo']['loadtransaction_username']) ? $params['retailinfo']['loadtransaction_username'] : $applogin->fullname();
+				}
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'USER',
+					'name' => 'fund_username',
+					'readonly' => true,
+					//'required' => !$readonly,
+					//'value' => $applogin->fullname(),
+					'value' => $fund_username,
 				);
 
 				if($post['method']=='loadnew') {
