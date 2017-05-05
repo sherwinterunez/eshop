@@ -532,6 +532,18 @@ pre(array('$vars'=>$vars));
 			myChanged_%formval% = true;
 		});
 
+		myForm.attachEvent("onBlur", function(name, value, form){
+
+			if(typeof(value)!='undefined') {
+			} else return false;
+
+			if(name=='retail_processingfee') {
+				console.log({onBlur:value});
+				//var retail_processingfee = myForm.getItemValue('retail_processingfee');
+			}
+
+		});
+
 		myForm.attachEvent("onValidateError", function(id,value){
 			var msg;
 
