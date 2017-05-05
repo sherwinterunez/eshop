@@ -637,6 +637,15 @@ function _eLoadProcessSMS($vars=array()) {
 			return false;
 		}
 
+		if(!empty($matched['$LOADRETAIL_STATUS'])) {
+			if($matched['$LOADRETAIL_STATUS']=='DRAFT') {
+				$loadretail_status = TRN_DRAFT;
+			} else
+			if($matched['$LOADRETAIL_STATUS']=='APPROVED') {
+				$loadretail_status = TRN_APPROVED;
+			}
+		}
+
 		if($customer_type=='STAFF') {
 			$staff_balance = getStaffBalance($loadtransaction_customerid);
 		} else
@@ -990,6 +999,10 @@ function _eLoadProcessSMS($vars=array()) {
 				$content['loadtransaction_type'] = 'retail';
 				$content['loadtransaction_status'] = TRN_APPROVED;
 				$content['loadtransaction_itemthreshold'] = $item_threshold;
+
+				if(!empty($loadretail_status)) {
+					$content['loadtransaction_status'] = $loadretail_status;
+				}
 
 				if($counter===$maxcounter) {
 					$content['loadtransaction_status'] = TRN_QUEUED;
