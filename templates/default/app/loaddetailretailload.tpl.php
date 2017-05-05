@@ -575,7 +575,7 @@ pre(array('$vars'=>$vars));
 					var retail_cashchange = parseFloat(retail_cashreceived - retail_amountdue);
 
 					if(retail_cashchange) {
-						myForm.setItemValue('retail_cashchange',retail_cashchange);						
+						myForm.setItemValue('retail_cashchange',retail_cashchange);
 					}
 				}
 
@@ -845,6 +845,10 @@ pre(array('$vars'=>$vars));
 			//showMessage('Validation: '+myForm.validate());
 
 			myForm.setItemValue('method', '<?php echo $moduleid; ?>save');
+
+			if(id=='<?php echo $moduleid; ?>approved') {
+				myForm.setItemValue('retail_approved', 1);				
+			}
 
 			//$("#messagingdetailsoptionsdetailsform_%formval% input[name='method']").val(id);
 

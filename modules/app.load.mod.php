@@ -2447,7 +2447,20 @@ if(!class_exists('APP_app_load')) {
 
 					$retval = array();
 					$retval['return_code'] = 'SUCCESS';
-					$retval['return_message'] = 'Customer retail load has been queued!';
+					$retval['return_message'] = 'Customer retail load successfully saved!';
+
+					$message = "LOADRETAIL AT10 09483621618 APPROVED\r\n";
+
+					$content = array();
+					$content['smsinbox_contactsid'] = 138;
+					$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
+					//$content['smsinbox_contactnumber'] = 'SMARTMoney';
+					//$content['smsinbox_contactnumber'] = 'SMARTLoad';
+					$content['smsinbox_simnumber'] = '09197708008';
+					$content['smsinbox_message'] = $message;
+					$content['smsinbox_unread'] = 1;
+
+					processSMS($content);
 
 					json_encode_return($retval);
 					die;
@@ -2553,6 +2566,12 @@ $item_eshopsrp = floatval($itemData['item_eshopsrp']);
 $item_threshold = floatval($itemData['item_threshold']);
 $item_provider = $itemData['item_provider'];
 */
+
+				$params['tbDetails'][] = array(
+					'type' => 'hidden',
+					'name' => 'retail_approved',
+					'value' => 0,
+				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'hidden',
