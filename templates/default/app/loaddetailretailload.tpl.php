@@ -209,8 +209,8 @@ pre(array('$vars'=>$vars));
 
 		myTabbar.addTab("tbDetails", "Details");
 		//myTabbar.addTab("tbPayments", "Payments");
-		//myTabbar.addTab("tbMessage", "Message");
-		//myTabbar.addTab("tbHistory", "History");
+		myTabbar.addTab("tbMessage", "Message");
+		myTabbar.addTab("tbHistory", "History");
 
 		myTabbar.tabs("tbDetails").setActive();
 
@@ -230,8 +230,8 @@ pre(array('$vars'=>$vars));
 			]},
 			{type: "block", name: "tbDetails", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbDetails']) ? json_encode($params['tbDetails']) : '[]'; ?>},
 			//{type: "block", name: "tbPayments", hidden: true, width: 1200, blockOffset: 0, offsetTop:0, list:[]},
-			//{type: "block", name: "tbMessage", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbMessage']) ? json_encode($params['tbMessage']) : '[]'; ?>},
-			//{type: "block", name: "tbHistory", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:[]},
+			{type: "block", name: "tbMessage", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbMessage']) ? json_encode($params['tbMessage']) : '[]'; ?>},
+			{type: "block", name: "tbHistory", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:[]},
 			{type: "label", label: ""}
 		];
 

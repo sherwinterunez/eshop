@@ -2598,6 +2598,7 @@ if(!class_exists('APP_app_load')) {
 				$position = 'right';
 
 				$params['tbDetails'] = array();
+				$params['tbMessage'] = array();
 
 				$receiptno = '';
 
