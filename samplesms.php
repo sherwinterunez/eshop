@@ -102,7 +102,7 @@ function sampleSMS() {
 
 	processSMS($content);
 
-	$result = $appdb->insert('tbl_smsinbox',$content,'smsinbox_id');
+	//$result = $appdb->insert('tbl_smsinbox',$content,'smsinbox_id');
 
 	$tstop = timer_stop();
 
