@@ -304,10 +304,10 @@ pre(array('$vars'=>$vars));
 		dhxCombo2.attachEvent("onChange", function(value, text){
 			console.log('onChange: '+value+', '+text);
 
-			//if(!value) {
+			if(!value) {
 			//	dhxCombo2.clearAll();
-			//	return false;
-			//}
+				return false;
+			}
 
 			var provider = myForm.getItemValue('retail_provider');
 
