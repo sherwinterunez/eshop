@@ -478,7 +478,7 @@ function _eLoadProcessSMS($vars=array()) {
 		  unset($memcache);
 		}
 
-		if(!empty($memcache)) {
+		if(!empty($memcache)&&empty($loadretail_status)) {
 		  $key = sha1($loadtransaction_customerid.$loadtransaction_keyword);
 
 		  if(!$memcache->add($key, time(), false, $general_resendtimer)) {
@@ -507,45 +507,50 @@ function _eLoadProcessSMS($vars=array()) {
 		  print_r(array('ERROR'=>'MEMCACHED'));
 		}
 
-		$sql = "SELECT *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime FROM tbl_loadtransaction WHERE loadtransaction_customerid=$loadtransaction_customerid AND loadtransaction_keyword='$loadtransaction_keyword' ORDER BY loadtransaction_id DESC LIMIT 1";
+		if(!empty($loadretail_status)) {
+		} else {
 
-		if(!($result=$appdb->query($sql))) {
-			return false;
-		}
+			$sql = "SELECT *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime FROM tbl_loadtransaction WHERE loadtransaction_customerid=$loadtransaction_customerid AND loadtransaction_keyword='$loadtransaction_keyword' ORDER BY loadtransaction_id DESC LIMIT 1";
 
-		if(!empty($result['rows'][0]['loadtransaction_id'])) {
-
-			print_r(array('THIS IS A DUPLICATE REQUEST?'=>'THIS IS A DUPLICATE REQUEST?','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','elapsedtime'=>$result['rows'][0]['elapsedtime'],'$general_resendtimer'=>$general_resendtimer));
-
-			if(intval($result['rows'][0]['elapsedtime'])<intval($general_resendtimer)) {  /// 30 minutes in seconds
-
-				$duplicate_elapsedtime = $result['rows'][0]['elapsedtime'];
-
-				print_r(array('CONFIRMED DUPLICATE REQUEST!'=>'CONFIRMED DUPLICATE REQUEST!','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$duplicate_elapsedtime'=>$duplicate_elapsedtime));
-
-				$general_resendduplicatenotification = getOption('$GENERALSETTINGS_RESENDDUPLICATENOTIFICATION',false);
-
-				if(!empty($general_resendduplicatenotification)) {
-
-					$noti = explode(',', $general_resendduplicatenotification);
-
-					foreach($noti as $v) {
-
-						$errmsg = smsdt()." ".getNotificationByID($v);
-						$errmsg = str_replace('%minutes%', ($general_resendtimer/60), $errmsg);
-
-						//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
-						sendToGateway($loadtransaction_customernumber,$simhotline,$errmsg);
-
-					}
-				}
-
+			if(!($result=$appdb->query($sql))) {
 				return false;
-
 			}
-		}
 
-		print_r(array('NOT A DUPLICATE REQUEST?'=>'NOT A DUPLICATE REQUEST?','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$duplicate_elapsedtime'=>!empty($duplicate_elapsedtime)?$duplicate_elapsedtime:0));
+			if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+				print_r(array('THIS IS A DUPLICATE REQUEST?'=>'THIS IS A DUPLICATE REQUEST?','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','elapsedtime'=>$result['rows'][0]['elapsedtime'],'$general_resendtimer'=>$general_resendtimer));
+
+				if(intval($result['rows'][0]['elapsedtime'])<intval($general_resendtimer)) {  /// 30 minutes in seconds
+
+					$duplicate_elapsedtime = $result['rows'][0]['elapsedtime'];
+
+					print_r(array('CONFIRMED DUPLICATE REQUEST!'=>'CONFIRMED DUPLICATE REQUEST!','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$duplicate_elapsedtime'=>$duplicate_elapsedtime));
+
+					$general_resendduplicatenotification = getOption('$GENERALSETTINGS_RESENDDUPLICATENOTIFICATION',false);
+
+					if(!empty($general_resendduplicatenotification)) {
+
+						$noti = explode(',', $general_resendduplicatenotification);
+
+						foreach($noti as $v) {
+
+							$errmsg = smsdt()." ".getNotificationByID($v);
+							$errmsg = str_replace('%minutes%', ($general_resendtimer/60), $errmsg);
+
+							//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
+							sendToGateway($loadtransaction_customernumber,$simhotline,$errmsg);
+
+						}
+					}
+
+					return false;
+
+				}
+			}
+
+			print_r(array('NOT A DUPLICATE REQUEST?'=>'NOT A DUPLICATE REQUEST?','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$duplicate_elapsedtime'=>!empty($duplicate_elapsedtime)?$duplicate_elapsedtime:0));
+			
+		}
 
 		$customer_type = getCustomerType($loadtransaction_customerid);
 
