@@ -4109,6 +4109,44 @@ function isItemMaintenance($item=false,$checkdate=false) {
 	return false;
 }
 
+function getAllItem($fprovider=false,$mode=0,$factive=true) {
+
+	$where = '1=1';
+	$provider = '';
+	$factive = '';
+
+	if(!empty($fprovider)) {
+		$where .= "and item_provider ilike '$fprovider'";
+	}
+
+	if(!empty($factive)) {
+		$where .= "and item_active>0";
+	}
+
+	$sql = "select * from tbl_item where $where order by item_code asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['item_id'])) {
+
+		if($mode==1) {
+			$ret = array();
+
+			foreach($result['rows'] as $k=>$v) {
+				$ret[] = $v['item_code'];
+			}
+
+			return $ret;
+		}
+
+		return $result['rows'];
+	}
+
+	return false;
+}
+
 function getItemData($item=false,$provider=false) {
 	global $appdb;
 

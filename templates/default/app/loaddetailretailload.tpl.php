@@ -277,7 +277,7 @@ pre(array('$vars'=>$vars));
 
 			myTab.postData('/'+settings.router_id+'/json/', {
 				odata: {dhxCombo:dhxCombo},
-				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitems&value="+value,
+				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitem&provider="+value,
 			}, function(ddata,odata){
 				if(ddata.html) {
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);

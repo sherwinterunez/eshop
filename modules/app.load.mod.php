@@ -2358,6 +2358,13 @@ if(!class_exists('APP_app_load')) {
 						}
 					}
 				} else
+				if(!empty($post['method'])&&$post['method']=='getitem'&&!empty($post['provider'])) {
+
+					$allItem = getAllItem($post['provider'],1);
+
+					pre(array('$allItem'=>$allItem));
+
+				} else
 				if(!empty($post['method'])&&$post['method']=='loadsave') {
 
 					$userId = $applogin->getUserID();
