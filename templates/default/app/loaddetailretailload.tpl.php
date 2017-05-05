@@ -283,6 +283,7 @@ actionformonlyformidcontactdetailcustomerformval0289d574f2fc491fb173ac630b902c47
 				odata: {dhxCombo:dhxCombo},
 				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitem&provider="+value+"&formval=%formval%",
 			}, function(ddata,odata){
+				console.log({ddata:ddata});
 				if(ddata.option) {
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 					//jQuery("#"+odata.wid).html(ddata.html);
