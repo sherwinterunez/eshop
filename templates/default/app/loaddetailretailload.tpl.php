@@ -532,10 +532,12 @@ pre(array('$vars'=>$vars));
 			myChanged_%formval% = true;
 		});
 
-		myForm.attachEvent("onBlur", function(name, value, form){
+		myForm.attachEvent("onBlur", function (name, value){
 
 			if(typeof(value)!='undefined') {
 			} else return false;
+
+			showMessage("onBlur: ["+name+"] ["+value+"] "+typeof(value),5000);
 
 			if(name=='retail_processingfee') {
 				console.log({onBlur:value});
