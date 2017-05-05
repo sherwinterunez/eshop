@@ -30,7 +30,7 @@ if(!empty($vars['post']['wid'])) {
 
 //$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'transfer',$moduleid.'approved',$moduleid.'manually',$moduleid.'cancelled',$moduleid.'hold');
 
-$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh');
+$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved');
 
 /*if(!empty($vars['params']['optionsinfo']['options_name'])) {
 	$options_name = $vars['params']['optionsinfo']['options_name'];
@@ -48,7 +48,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 <!--
 <?php
 
-pre(array('$_SESSION'=>$_SESSION));
+//pre(array('$_SESSION'=>$_SESSION));
 
 $dt = getDbDate(1);
 
