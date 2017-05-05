@@ -280,7 +280,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		$idx = array();
 		$loadTran = array();
 
-		$allLoadtransaction = getLoadTransaction();
+		$allLoadtransaction = getLoadTransaction(0,0,5000);
 
 		foreach($allLoadtransaction as $k=>$v) {
 			if($k!=$vars['post']['rowid']) {

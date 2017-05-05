@@ -17,12 +17,12 @@ $sidebar[] = array(
 );
 $sidebar[] = array(
 	'id'=>'retailload',
-	'text'=>'Retail Load',
+	'text'=>'Load Retail',
 	'icon'=>'recent.png',
 );
 $sidebar[] = array(
 	'id'=>'dealerload',
-	'text'=>'Dealer Load',
+	'text'=>'Load Dealer',
 	'icon'=>'desktop.png',
 );
 $sidebar[] = array(

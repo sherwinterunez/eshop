@@ -205,8 +205,8 @@ pre(array('$vars'=>$vars));
 
 		myTabbar.addTab("tbDetails", "Details");
 		//myTabbar.addTab("tbPayments", "Payments");
-		myTabbar.addTab("tbMessage", "Message");
-		myTabbar.addTab("tbHistory", "History");
+		//myTabbar.addTab("tbMessage", "Message");
+		//myTabbar.addTab("tbHistory", "History");
 
 		myTabbar.tabs("tbDetails").setActive();
 
@@ -224,10 +224,10 @@ pre(array('$vars'=>$vars));
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
 			]},
-			{type: "block", name: "tbDetails", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDetails']); ?>},
+			{type: "block", name: "tbDetails", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbDetails']) ? json_encode($params['tbDetails']) : '[]'; ?>},
 			//{type: "block", name: "tbPayments", hidden: true, width: 1200, blockOffset: 0, offsetTop:0, list:[]},
-			{type: "block", name: "tbMessage", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbMessage']); ?>},
-			{type: "block", name: "tbHistory", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:[]},
+			//{type: "block", name: "tbMessage", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbMessage']) ? json_encode($params['tbMessage']) : '[]'; ?>},
+			//{type: "block", name: "tbHistory", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:[]},
 			{type: "label", label: ""}
 		];
 
@@ -260,7 +260,7 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.disableAll();
 
-		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>approved']);
 
 		//myForm.setItemFocus("txt_optionsname");
 
@@ -543,6 +543,8 @@ pre(array('$vars'=>$vars));
 			}
 		};
 
+		<?php if($method!=$moduleid.'new') { ?>
+
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>approved').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
 
@@ -568,6 +570,8 @@ pre(array('$vars'=>$vars));
 				});
 			}
 		};
+
+		<?php } ?>
 
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>manually').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
@@ -713,7 +717,7 @@ pre(array('$vars'=>$vars));
 
 			//showMessage('Validation: '+myForm.validate());
 
-			myForm.setItemValue('method', id);
+			myForm.setItemValue('method', '<?php echo $moduleid; ?>save');
 
 			//$("#messagingdetailsoptionsdetailsform_%formval% input[name='method']").val(id);
 
@@ -790,6 +794,12 @@ pre(array('$vars'=>$vars));
 			return false;
 		};
 
+		<?php if($method==$moduleid.'new') { ?>
+
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>approved').onClick = myWinToolbar.getToolbarData('<?php echo $moduleid; ?>save').onClick;
+
+		<?php } ?>
+
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>cancel').onClick = myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
 			//doSelect_%formval%("<?php echo $submod; ?>");
@@ -808,7 +818,7 @@ pre(array('$vars'=>$vars));
 			} else {
 				myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {rowid:rowid,wid:wid},
-					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=inventorynew&rowid=0&formval="+formval+"&wid="+wid,
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=<?php echo $moduleid; ?>new&rowid=0&formval="+formval+"&wid="+wid,
 				}, function(ddata,odata){
 					if(ddata.html) {
 						jQuery("#"+odata.wid).html(ddata.html);
