@@ -276,6 +276,11 @@ pre(array('$vars'=>$vars));
 		dhxCombo.attachEvent("onChange", function(value, text){
 			console.log('onChange: '+value+', '+text);
 
+			if(!value) {
+				dhxCombo2.clearAll();
+				return false;
+			}
+
 <?php /*
 actionformonlyformidcontactdetailcustomerformval0289d574f2fc491fb173ac630b902c47b29ee0d9methodgetnetworkmobileno09492342342modulecontactrouteridapp
 */ ?>
