@@ -552,7 +552,13 @@ pre(array('$vars'=>$vars));
 					//console.log({onBlur:retail_processingfee,type:typeof(retail_processingfee),value:retail_processingfee});
 					var retail_itemsrp = parseFloat(myForm.getItemValue('retail_itemsrp'));
 
-					console.log({onBlur:retail_itemsrp,type:typeof(retail_itemsrp),value:retail_itemsrp});
+					//console.log({onBlur:retail_itemsrp,type:typeof(retail_itemsrp),value:retail_itemsrp});
+
+					if(retail_itemsrp) {
+						var amountdue = retail_itemsrp + retail_processingfee;
+
+						myForm.setItemValue('retail_amountdue',amountdue);
+					}
 				}
 			}
 
