@@ -4126,6 +4126,7 @@ function getAllItem($fprovider=false,$mode=0,$factive=true) {
 	//pre(array('$sql'=>$sql));
 
 	if(!($result = $appdb->query($sql))) {
+		pre(array('$appdb'=>$appdb));
 		return false;
 	}
 
