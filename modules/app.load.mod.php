@@ -2416,6 +2416,16 @@ if(!class_exists('APP_app_load')) {
 					die;
 
 				} else
+				if(!empty($post['method'])&&$post['method']=='loadsave'&&!empty($post['rowid'])) {
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Customer retail load successfully updated!';
+
+					json_encode_return($retval);
+					die;
+
+				} else
 				if(!empty($post['method'])&&$post['method']=='loadsave') {
 
 					$retval = array();
