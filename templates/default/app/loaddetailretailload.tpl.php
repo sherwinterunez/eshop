@@ -563,9 +563,22 @@ pre(array('$vars'=>$vars));
 					var retail_itemsrp = parseFloat(myForm.getItemValue('retail_itemsrp'));
 
 					if(retail_itemsrp) {
-						myForm.setItemValue('retail_amountdue',retail_itemsrp);						
+						myForm.setItemValue('retail_amountdue',retail_itemsrp);
 					}
 				}
+			} else
+			if(name=='retail_cashreceived') {
+				var retail_amountdue = parseFloat(myForm.getItemValue('retail_amountdue'));
+				var retail_cashreceived = parseFloat(myForm.getItemValue('retail_cashreceived'));
+
+				if(retail_amountdue&&retail_cashreceived) {
+					var retail_cashchange = parseFloat(retail_cashreceived - retail_amountdue);
+
+					if(retail_cashchange) {
+						myForm.setItemValue('retail_cashchange',retail_cashchange);						
+					}
+				}
+
 			}
 
 		});
