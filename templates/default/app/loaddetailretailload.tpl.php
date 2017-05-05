@@ -266,12 +266,25 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.showOnly(myToolbar);
 
+///////////////////////////////////////
+
 		var dhxCombo = myForm.getCombo("retail_provider");
 
 		dhxCombo.enableFilteringMode(true);
 
 		dhxCombo.attachEvent("onChange", function(value, text){
 			console.log('onChange: '+value+', '+text);
+
+			myTab.postData('/'+settings.router_id+'/json/', {
+				odata: {dhxCombo:dhxCombo},
+				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitems&formval="+formval+"&value="+value,
+			}, function(ddata,odata){
+				if(ddata.html) {
+					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+					//jQuery("#"+odata.wid).html(ddata.html);
+				}
+			});
+
 		});
 
 		dhxCombo.attachEvent("onClose", function(){
@@ -281,6 +294,8 @@ pre(array('$vars'=>$vars));
 		dhxCombo.attachEvent("onBlur", function(){
 			console.log('onBlur: '+myForm.getItemValue('retail_provider'));
 		});
+
+///////////////////////////////////////
 
 		<?php } else if($method==$moduleid.'save') { ?>
 
