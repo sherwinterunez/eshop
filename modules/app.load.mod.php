@@ -2385,6 +2385,25 @@ if(!class_exists('APP_app_load')) {
 				} else
 				if(!empty($post['method'])&&$post['method']=='loadsave') {
 
+					$retval = array();
+					$retval['error_code'] = '345345';
+					$retval['error_message'] = 'Invalid Subscriber Number!';
+
+					$retail_mobilenumber = !empty($post['retail_mobilenumber']) ? $post['retail_mobilenumber'] : false;
+					$retail_provider = !empty($post['retail_provider']) ? $post['retail_provider'] : false;
+
+					if(!empty($retail_mobilenumber)&&!empty($retail_provider)) {
+					} else {
+						json_encode_return($retval);
+						die;
+					}
+
+					if(getNetworkName($retail_mobilenumber)==$retail_provider) {
+					} else {
+						json_encode_return($retval);
+						die;
+					}
+
 					$userId = $applogin->getUserID();
 					$userData = $applogin->getUserData();
 
