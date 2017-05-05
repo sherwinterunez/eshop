@@ -468,6 +468,15 @@ function _eLoadProcessSMS($vars=array()) {
 
 		//print_r(array('$match'=>$match));
 
+		if(!empty($matched['$LOADRETAIL_STATUS'])) {
+			if($matched['$LOADRETAIL_STATUS']=='DRAFT') {
+				$loadretail_status = TRN_DRAFT;
+			} else
+			if($matched['$LOADRETAIL_STATUS']=='APPROVED') {
+				$loadretail_status = TRN_APPROVED;
+			}
+		}
+
 		$general_resendtimer = getOption('$GENERALSETTINGS_RESENDTIMER',3600);
 
 		print_r(array('CHECKING FOR DUPLICATE REQUEST'=>'CHECKING FOR DUPLICATE REQUEST','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$general_resendtimer'=>$general_resendtimer));
@@ -549,7 +558,7 @@ function _eLoadProcessSMS($vars=array()) {
 			}
 
 			print_r(array('NOT A DUPLICATE REQUEST?'=>'NOT A DUPLICATE REQUEST?','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$duplicate_elapsedtime'=>!empty($duplicate_elapsedtime)?$duplicate_elapsedtime:0));
-			
+
 		}
 
 		$customer_type = getCustomerType($loadtransaction_customerid);
@@ -640,15 +649,6 @@ function _eLoadProcessSMS($vars=array()) {
 			}
 
 			return false;
-		}
-
-		if(!empty($matched['$LOADRETAIL_STATUS'])) {
-			if($matched['$LOADRETAIL_STATUS']=='DRAFT') {
-				$loadretail_status = TRN_DRAFT;
-			} else
-			if($matched['$LOADRETAIL_STATUS']=='APPROVED') {
-				$loadretail_status = TRN_APPROVED;
-			}
 		}
 
 		if($customer_type=='STAFF') {
