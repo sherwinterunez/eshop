@@ -2476,6 +2476,8 @@ if(!class_exists('APP_app_load')) {
 					$content['smsinbox_message'] = $message;
 					$content['smsinbox_unread'] = 1;
 
+					pre(array('$content'=>$content));
+
 					ob_start();
 
 					processSMS($content);
