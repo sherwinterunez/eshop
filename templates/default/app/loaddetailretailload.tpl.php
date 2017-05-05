@@ -563,7 +563,7 @@ pre(array('$vars'=>$vars));
 					var retail_itemsrp = parseFloat(myForm.getItemValue('retail_itemsrp'));
 
 					if(retail_itemsrp) {
-						myForm.setItemValue('retail_amountdue',amountdue);						
+						myForm.setItemValue('retail_amountdue',retail_itemsrp);						
 					}
 				}
 			}
