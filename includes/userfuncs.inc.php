@@ -4123,11 +4123,13 @@ function getAllItem($fprovider=false,$mode=0,$factive=true) {
 
 	$sql = "select * from tbl_item where $where order by item_code asc";
 
-	pre(array('$sql'=>$sql));
+	//pre(array('$sql'=>$sql));
 
 	if(!($result = $appdb->query($sql))) {
 		return false;
 	}
+
+	pre(array('$result'=>$result));
 
 	if(!empty($result['rows'][0]['item_id'])) {
 
