@@ -542,7 +542,7 @@ pre(array('$vars'=>$vars));
 			if(name=='retail_processingfee') {
 				var retail_processingfee = parseFloat(myForm.getItemValue('retail_processingfee'));
 
-				if(parseFloat(retail_processingfee)) {
+				if(retail_processingfee) {
 					console.log({onBlur:retail_processingfee,type:typeof(retail_processingfee),value:retail_processingfee});
 
 				}
