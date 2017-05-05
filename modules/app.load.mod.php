@@ -2232,8 +2232,6 @@ if(!class_exists('APP_app_load')) {
 
 				$post = $this->vars['post'];
 
-				pre(array('$post'=>$post));
-
 				$readonly = true;
 
 				$params = array();
@@ -2361,6 +2359,8 @@ if(!class_exists('APP_app_load')) {
 					}
 				} else
 				if(!empty($post['method'])&&$post['method']=='getitem') {
+
+					pre(array('$post'=>$post));
 
 					$allItem = getAllItem($post['provider'],1);
 
