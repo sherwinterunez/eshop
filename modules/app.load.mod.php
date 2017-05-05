@@ -2361,9 +2361,10 @@ if(!class_exists('APP_app_load')) {
 				if(!empty($post['method'])&&$post['method']=='getitem'&&!empty($post['provider'])) {
 
 					$retval = array();
-					$retval['allItem'] = $allItem;
 
 					$allItem = getAllItem($post['provider'],1);
+
+					$retval['allItem'] = $allItem;
 
 					//pre(array('$allItem'=>$allItem));
 
