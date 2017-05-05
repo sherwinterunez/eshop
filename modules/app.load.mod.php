@@ -2360,9 +2360,15 @@ if(!class_exists('APP_app_load')) {
 				} else
 				if(!empty($post['method'])&&$post['method']=='getitem'&&!empty($post['provider'])) {
 
+					$retval = array();
+					$retval['allItem'] = $allItem;
+
 					$allItem = getAllItem($post['provider'],1);
 
-					pre(array('$allItem'=>$allItem));
+					//pre(array('$allItem'=>$allItem));
+
+					json_encode_return($retval);
+					die;
 
 				} else
 				if(!empty($post['method'])&&$post['method']=='loadsave') {
