@@ -318,7 +318,9 @@ pre(array('$vars'=>$vars));
 				if(ddata.data) {
 					console.log(JSON.stringify(ddata.data));
 
-					myForm.setItemValue('retail_load',ddata.data.item_srp);
+					myForm.setItemValue('retail_load',ddata.load);
+					myForm.setItemValue('retail_discountpercent',ddata.percent);
+					myForm.setItemValue('retail_discount',ddata.discount);
 
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 					//jQuery("#"+odata.wid).html(ddata.html);
