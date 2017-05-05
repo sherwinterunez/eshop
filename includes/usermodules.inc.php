@@ -1005,12 +1005,12 @@ function _eLoadProcessSMS($vars=array()) {
 				$content['loadtransaction_status'] = TRN_APPROVED;
 				$content['loadtransaction_itemthreshold'] = $item_threshold;
 
-				if(!empty($loadretail_status)) {
-					$content['loadtransaction_status'] = $loadretail_status;
-				}
-
 				if($counter===$maxcounter) {
 					$content['loadtransaction_status'] = TRN_QUEUED;
+				}
+
+				if(!empty($loadretail_status)) {
+					$content['loadtransaction_status'] = $loadretail_status;
 				}
 
 				if(!empty($loadtransaction_regularload)) {

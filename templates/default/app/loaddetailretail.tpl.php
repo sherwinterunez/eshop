@@ -332,6 +332,20 @@ pre(array('$vars'=>$vars));
 
 		<?php 	} ?>
 
+		<?php   if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&$vars['params']['retailinfo']['loadtransaction_status']==TRN_DRAFT) { ?>
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
+
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>approved');
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
+
+		<?php 	} ?>
+
 ///////////////////////////////////
 
 		//myTab.toolbar.setValue("<?php echo $moduleid; ?>datefrom","<?php $dt=getDbDate(1); echo $dt['date']; ?> 00:00");
