@@ -317,6 +317,9 @@ pre(array('$vars'=>$vars));
 			}, function(ddata,odata){
 				if(ddata.data) {
 					console.log(JSON.stringify(ddata.data));
+
+					myForm.setItemValue('retail_load',ddata.data.item_srp);
+
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 					//jQuery("#"+odata.wid).html(ddata.html);
 					//odata.dhxCombo2.clearAll();

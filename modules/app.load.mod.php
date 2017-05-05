@@ -2387,9 +2387,28 @@ if(!class_exists('APP_app_load')) {
 
 					$retval = array();
 
-					$data = getItemData($post['item'],$post['provider']);
+					$itemData = getItemData($post['item'],$post['provider']);
 
-					$retval['data'] = $data;
+					$item_cost = floatval($itemData['item_cost']);
+					$item_quantity = floatval($itemData['item_quantity']);
+					$item_srp = floatval($itemData['item_srp']);
+					$item_eshopsrp = floatval($itemData['item_eshopsrp']);
+					$item_threshold = floatval($itemData['item_threshold']);
+					$item_provider = $itemData['item_provider'];
+
+					$percent = $item_quantity - $item_cost;
+					$percent = $percent / $item_quantity;
+
+					$discount = $item_quantity * $percent;
+
+					$discount = floatval(number_format($discount,2,'.',''));
+
+					$percent = $percent * 100;
+
+					$retval['data'] = $itemData;
+					$retval['load'] = $item_srp;
+					$retval['percent'] = $percent;
+					$retval['discount'] = $discount;
 
 					json_encode_return($retval);
 					die;
