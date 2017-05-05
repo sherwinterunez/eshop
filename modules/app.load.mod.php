@@ -2459,6 +2459,10 @@ if(!class_exists('APP_app_load')) {
 					}
 
 					if(!empty($retail_item)) {
+						$itemData = getItemData($retail_item,$retail_provider);
+					}
+
+					if(!empty($itemData)) {
 					} else {
 						$retval = array();
 						$retval['error_code'] = '345346';
