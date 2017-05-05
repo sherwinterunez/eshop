@@ -481,10 +481,12 @@ function _eLoadProcessSMS($vars=array()) {
 
 		print_r(array('CHECKING FOR DUPLICATE REQUEST'=>'CHECKING FOR DUPLICATE REQUEST','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$general_resendtimer'=>$general_resendtimer));
 
-		$memcache = new Memcache;
+		if(class_exists('Memcache')) {
+			$memcache = new Memcache;
 
-		if(!$memcache->connect('127.0.0.1', 11211, 5)) {
-		  unset($memcache);
+			if(!$memcache->connect('127.0.0.1', 11211, 5)) {
+			  unset($memcache);
+			}
 		}
 
 		if(!empty($memcache)&&empty($loadretail_status)) {

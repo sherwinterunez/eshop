@@ -344,6 +344,9 @@ pre(array('$vars'=>$vars));
 					myForm.setItemValue('retail_itemsrp',ddata.data.item_srp);
 					myForm.setItemValue('retail_itemeshopsrp',ddata.data.item_eshopsrp);
 
+					if(ddata.data.item_regularload) {
+						myForm.setItemValue('retail_itemregularload',ddata.data.item_regularload);
+					}
 
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 					//jQuery("#"+odata.wid).html(ddata.html);
@@ -392,14 +395,6 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		<?php 	/*if(empty($vars['post']['rowid'])) {
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>edit');
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>delete');
-
-		}*/ ?>
-
 		<?php 	if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&!($vars['params']['retailinfo']['loadtransaction_status']==TRN_DRAFT)) { ?>
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
@@ -413,34 +408,6 @@ pre(array('$vars'=>$vars));
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
 
 		<?php 	} ?>
-
-		<?php   /*if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&$vars['params']['retailinfo']['loadtransaction_status']==TRN_QUEUED) { ?>
-
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>approved');
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
-
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
-
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
-
-		<?php 	}*/ ?>
-
-		<?php   /*if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&$vars['params']['retailinfo']['loadtransaction_status']==TRN_APPROVED) { ?>
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>approved');
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
-
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
-
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
-
-		<?php 	}*/ ?>
 
 ///////////////////////////////////
 
@@ -547,19 +514,19 @@ pre(array('$vars'=>$vars));
 		});
 
 		myForm.attachEvent("onBeforeChange", function (name, old_value, new_value){
-		    //showMessage("onBeforeChange: ["+name+"] "+name.length+" / {"+old_value+"} "+old_value.length,5000);
-		    return true;
+	    //showMessage("onBeforeChange: ["+name+"] "+name.length+" / {"+old_value+"} "+old_value.length,5000);
+	    return true;
 		});
 
 		myForm.attachEvent("onChange", function (name, value){
-		    //showMessage("onChange: ["+name+"] "+name.length+" / {"+value+"} "+value.length,5000);
+	    //showMessage("onChange: ["+name+"] "+name.length+" / {"+value+"} "+value.length,5000);
 
 			myChanged_%formval% = true;
 
 		});
 
 		myForm.attachEvent("onInputChange", function(name, value, form){
-		    //showMessage("onInputChange: ["+name+"] "+name.length+" / {"+value+"} "+value.length,5000);
+	    //showMessage("onInputChange: ["+name+"] "+name.length+" / {"+value+"} "+value.length,5000);
 
 			myChanged_%formval% = true;
 		});
@@ -603,6 +570,59 @@ pre(array('$vars'=>$vars));
 					if(retail_cashchange) {
 						myForm.setItemValue('retail_cashchange',retail_cashchange);
 					}
+				}
+
+			} else
+			if(name=='retail_load') {
+				var retail_itemregularload = parseInt(myForm.getItemValue('retail_itemregularload'));
+
+				console.log({retail_itemregularload:retail_itemregularload});
+
+				var retail_load = parseFloat(myForm.getItemValue('retail_load'));
+
+				if(retail_load) {
+
+					var provider = myForm.getItemValue('retail_provider');
+
+					if(!provider) {
+						return false;
+					}
+
+					var item = myForm.getItemValue('retail_item');
+
+					if(!item) {
+						return false;
+					}
+
+					myTab.postData('/'+settings.router_id+'/json/', {
+						odata: {dhxCombo:dhxCombo,dhxCombo2:dhxCombo2},
+						pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitemdata&item="+item+"&formval=%formval%&provider="+provider+"&regularload="+retail_load,
+					}, function(ddata,odata){
+						if(ddata.data) {
+							//console.log(JSON.stringify(ddata.data));
+
+							//myForm.setItemValue('retail_load',ddata.quantity);
+							myForm.setItemValue('retail_discountpercent',ddata.percent);
+							myForm.setItemValue('retail_discount',ddata.discount);
+							myForm.setItemValue('retail_amountdue',ddata.amountdue);
+							myForm.setItemValue('retail_processingfee',ddata.processingfee);
+
+							myForm.setItemValue('retail_itemcost',ddata.data.item_cost);
+							myForm.setItemValue('retail_itemquantity',ddata.data.item_quantity);
+							myForm.setItemValue('retail_itemsrp',ddata.data.item_srp);
+							myForm.setItemValue('retail_itemeshopsrp',ddata.data.item_eshopsrp);
+
+							//if(ddata.data.item_regularload) {
+							//	myForm.setItemValue('retail_itemregularload',ddata.data.item_regularload);
+							//}
+
+							//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+							//jQuery("#"+odata.wid).html(ddata.html);
+							//odata.dhxCombo2.clearAll();
+							//odata.dhxCombo2.addOption(ddata.option);
+						}
+					});
+
 				}
 
 			}

@@ -2396,6 +2396,63 @@ if(!class_exists('APP_app_load')) {
 					$item_eshopsrp = floatval($itemData['item_eshopsrp']);
 					$item_threshold = floatval($itemData['item_threshold']);
 					$item_provider = $itemData['item_provider'];
+					$item_regularload = $itemData['item_regularload'];
+
+					$itemDiscountRate = 1;
+					$itemProcessingFee = 0;
+
+////////////////////////
+
+					if(!empty($post['regularload'])) {
+						$loadtransaction_regularload = intval($post['regularload']);
+					}
+
+					if(!empty($item_regularload)&&!empty($loadtransaction_regularload)) {
+
+						if(!empty($customer_type)&&$customer_type=='STAFF') {
+							if(!empty($itemData['item_regularloadstaffdiscountscheme'])) {
+								$itemregularloaddiscountscheme = $itemData['item_regularloadstaffdiscountscheme'];
+							}
+						} else
+						if(!empty($customer_type)&&$customer_type=='REGULAR') {
+							if(!empty($itemData['item_regularloaddiscountscheme'])) {
+								$itemregularloaddiscountscheme = $itemData['item_regularloaddiscountscheme'];
+							}
+						}
+
+						if(!empty($itemregularloaddiscountscheme)) {
+
+							if(!empty(($itemDiscount=getItemDiscount($itemregularloaddiscountscheme,'RETAIL',$itemData['item_provider'])))) {
+
+								foreach($itemDiscount as $t=>$d) {
+									if(!empty($d['discountlist_simcard'])) {
+									} else {
+										$itemDiscountMin = floatval($d['discountlist_min']);
+										$itemDiscountMax = floatval($d['discountlist_max']);
+
+										if($loadtransaction_regularload>=$itemDiscountMin&&$loadtransaction_regularload<=$itemDiscountMax) {
+											$itemDiscountRate = (100 - floatval($d['discountlist_rate'])) / 100;
+											$itemProcessingFee = floatval($d['discountlist_fee']);
+											break;
+										} else {
+											continue;
+										}
+									}
+								}
+
+							}
+						}
+
+						//print_r(array('$itemDiscountRate'=>$itemDiscountRate,'$itemProcessingFee'=>$itemProcessingFee));
+
+						$item_cost = $loadtransaction_regularload * $itemDiscountRate;
+						$item_quantity = $loadtransaction_regularload;
+						$item_srp = $loadtransaction_regularload;
+						$item_eshopsrp = $item_cost;
+
+					} // if(!empty($loadtransaction_regularload)) {
+
+////////////////////////
 
 					$percent = $item_quantity - $item_cost;
 					$percent = $percent / $item_quantity;
@@ -2408,9 +2465,11 @@ if(!class_exists('APP_app_load')) {
 
 					$retval['data'] = $itemData;
 					$retval['quantity'] = $item_quantity;
-					$retval['amountdue'] = $item_srp;
+					$retval['amountdue'] = $item_srp + $itemProcessingFee;
 					$retval['percent'] = $percent;
 					$retval['discount'] = $discount;
+					$retval['processingfee'] = $itemProcessingFee;
+					$retval['$_SESSION'] = $_SESSION;
 
 					json_encode_return($retval);
 					die;
@@ -2446,6 +2505,7 @@ if(!class_exists('APP_app_load')) {
 					$retail_mobilenumber = !empty($post['retail_mobilenumber']) ? $post['retail_mobilenumber'] : false;
 					$retail_provider = !empty($post['retail_provider']) ? $post['retail_provider'] : false;
 					$retail_item = !empty($post['retail_item']) ? $post['retail_item'] : false;
+					$retail_load = !empty($post['retail_load']) ? intval($post['retail_load']) : false;
 
 					if(!empty($retail_mobilenumber)&&!empty($retail_provider)) {
 					} else {
@@ -2471,6 +2531,21 @@ if(!class_exists('APP_app_load')) {
 
 						json_encode_return($retval);
 						die;
+					}
+
+					//pre(array('$itemData'=>$itemData));
+
+					if(!empty($itemData['item_regularload'])) {
+						if(!empty($retail_load)) {
+							$retail_item = $retail_item.$retail_load;
+						} else {
+							$retval = array();
+							$retval['error_code'] = '345347';
+							$retval['error_message'] = 'Invalid Regular Load Amount!';
+
+							json_encode_return($retval);
+							die;
+						}
 					}
 
 					$userId = $applogin->getUserID();
@@ -2643,6 +2718,12 @@ $item_provider = $itemData['item_provider'];
 				$params['tbDetails'][] = array(
 					'type' => 'hidden',
 					'name' => 'retail_itemeshopsrp',
+					'value' => 0,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'hidden',
+					'name' => 'retail_itemregularload',
 					'value' => 0,
 				);
 
