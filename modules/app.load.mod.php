@@ -2477,8 +2477,8 @@ if(!class_exists('APP_app_load')) {
 					'label' => 'ITEM',
 					'name' => 'retail_item',
 					'readonly' => true,
+					'required' => !$readonly,
 					'options' => $opt,
-					//'required' => !$readonly,
 					//'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
 				);
 
