@@ -269,6 +269,7 @@ pre(array('$vars'=>$vars));
 ///////////////////////////////////////
 
 		var dhxCombo = myForm.getCombo("retail_provider");
+		var dhxCombo2 = myForm.getCombo("retail_item");
 
 		dhxCombo.enableFilteringMode(true);
 
@@ -280,14 +281,15 @@ actionformonlyformidcontactdetailcustomerformval0289d574f2fc491fb173ac630b902c47
 */ ?>
 
 			myTab.postData('/'+settings.router_id+'/json/', {
-				odata: {dhxCombo:dhxCombo},
+				odata: {dhxCombo:dhxCombo,dhxCombo2:dhxCombo2},
 				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitem&provider="+value+"&formval=%formval%",
 			}, function(ddata,odata){
 				if(ddata.option) {
 					console.log(JSON.stringify(ddata.option));
 					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 					//jQuery("#"+odata.wid).html(ddata.html);
-					odata.dhxCombo.addOption(ddata.option);
+					odata.dhxCombo2.clearAll();
+					odata.dhxCombo2.addOption(ddata.option);
 				}
 			});
 
