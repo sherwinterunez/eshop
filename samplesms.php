@@ -89,7 +89,8 @@ function sampleSMS() {
 	echo "\nsampleSMS done (".$tstop." secs).\n";
 */
 
-	$message = "LOADRETAIL AT10 09483621618 DRAFT\r\n";
+	//$message = "LOADRETAIL AT10 09483621618 DRAFT\r\n";
+	$message = "LOADRETAIL AT10 09483621618 APPROVED\r\n";
 
 	$content = array();
 	$content['smsinbox_contactsid'] = 138;
