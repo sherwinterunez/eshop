@@ -532,16 +532,16 @@ pre(array('$vars'=>$vars));
 			myChanged_%formval% = true;
 		});
 
-		myForm.attachEvent("onBlur", function (name, value){
+		myForm.attachEvent("onBlur", function (name){
 
-			showMessage("onBlur: ["+name+"] ["+value+"] "+typeof(value),5000);
+			//showMessage("onBlur: ["+name+"] ["+value+"] "+typeof(value),5000);
 
 			if(typeof(name)!='undefined') {
 			} else return false;
 
 			if(name=='retail_processingfee') {
 				var retail_processingfee = myForm.getItemValue('retail_processingfee');
-				console.log({onBlur:retail_processingfee});
+				console.log({onBlur:retail_processingfee,type:typeof(retail_processingfee)});
 			}
 
 		});
