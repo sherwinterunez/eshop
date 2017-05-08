@@ -2569,10 +2569,23 @@ if(!class_exists('APP_app_load')) {
 
 					$message = "LOADRETAIL $retail_item $retail_mobilenumber $status\r\n";
 
+					$asims = getAllSims(10);
+
+					if(!empty($asims[0]['simcard_number'])) {
+						$hotlime = $asims[0]['simcard_number'];
+					} else {
+						$retval = array();
+		        $retval['error_code'] = '3453431';
+		        $retval['error_message'] = 'There is no Sim Hot Line!';
+
+		        json_encode_return($retval);
+		        die;
+					}
+
 					$content = array();
 					$content['smsinbox_contactsid'] = $user_staffid;
 					$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
-					$content['smsinbox_simnumber'] = '09197708008';
+					$content['smsinbox_simnumber'] = $hotlime; //'09197708008';
 					$content['smsinbox_message'] = $message;
 					$content['smsinbox_unread'] = 1;
 
@@ -3545,12 +3558,23 @@ $item_provider = $itemData['item_provider'];
 
 					$asims = getAllSims(10);
 
-					pre(array('$asims'=>$asims));
+					if(!empty($asims[0]['simcard_number'])) {
+						$hotlime = $asims[0]['simcard_number'];
+					} else {
+						$retval = array();
+		        $retval['error_code'] = '3453431';
+		        $retval['error_message'] = 'There is no Sim Hot Line!';
+
+		        json_encode_return($retval);
+		        die;
+					}
+
+					//pre(array('$asims'=>$asims));
 
 		      $content = array();
 		      $content['smsinbox_contactsid'] = $user_staffid;
 		      $content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
-		      $content['smsinbox_simnumber'] = '09197708008';
+		      $content['smsinbox_simnumber'] = $hotlime; //'09197708008';
 		      $content['smsinbox_message'] = $message;
 		      $content['smsinbox_unread'] = 1;
 
