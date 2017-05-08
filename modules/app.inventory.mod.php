@@ -543,7 +543,7 @@ if(!class_exists('APP_app_inventory')) {
                 if($v['loadtransaction_type']=='dealer') {
 									$out = $v['loadtransaction_amount'];
 								} else
-								if($v['loadtransaction_type']=='adjustment') {
+								if($v['loadtransaction_type']=='adjustment'||$v['loadtransaction_type']=='receivedstock') {
 									if(!empty($v['loadtransaction_adjustmentdebit'])) {
 										$out = $v['loadtransaction_amountdue'];
 									} else

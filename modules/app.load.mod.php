@@ -3543,6 +3543,10 @@ $item_provider = $itemData['item_provider'];
 
 		      $message = "LOADDEALER $retail_provider $retail_load $retail_mobilenumber $status\r\n";
 
+					$asims = getAllSims();
+
+					pre(array('$asims'=>$asims));
+
 		      $content = array();
 		      $content['smsinbox_contactsid'] = $user_staffid;
 		      $content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
