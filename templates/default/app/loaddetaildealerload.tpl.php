@@ -274,6 +274,18 @@ pre(array('$vars'=>$vars));
 
 		dhxCombo.enableFilteringMode('between');
 
+		dhxCombo.attachEvent("onChange", function(value, text){
+			console.log('onChange: '+value+', '+text);
+		}
+
+		dhxCombo.attachEvent("onClose", function(){
+			console.log('onClose: '+myForm.getItemValue('retail_customername'));
+		});
+
+		dhxCombo.attachEvent("onBlur", function(){
+			console.log('onBlur: '+myForm.getItemValue('retail_customername'));
+		});
+
 ///////////////////////////////////////
 
 		<?php } else if($method==$moduleid.'approved'||$method==$moduleid.'manually'||$method==$moduleid.'cancelled'||$method==$moduleid.'hold'||$method==$moduleid.'transfer') { ?>
