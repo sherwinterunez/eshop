@@ -2964,7 +2964,7 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 				return false;
 			}
 
-			if($content['loadtransaction_status']==TRN_COMPLETED) {
+			if($content['loadtransaction_status']==TRN_COMPLETED&&!empty($content['loadtransaction_customernumber'])) {
 
 				// 18Aug 09:18: 09397599095 Load Wallet Balance: P641.30. Ref:004919718730
 				// %simcard% Load Wallet Balance: P%balance%. Ref:%ref%
@@ -2979,7 +2979,106 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 				sendToGateway($content['loadtransaction_customernumber'],$content['loadtransaction_simhotline'],$errmsg);
 			}
 
+			return true;
 		}
+
+		$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_invalid=0 and loadtransaction_type='retail' order by loadtransaction_id asc limit 1";
+
+		//print_r(array('$sql'=>$sql));
+
+		if(!($result = $appdb->query($sql))) {
+			return false;
+		}
+
+		//print_r(array('$result'=>$result));
+
+		if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+			if(!empty($match['REFERENCE'])) {
+				$loadwalletreference = $match['REFERENCE'];
+			}
+
+			if(!empty($match['BALANCE'])) {
+				$loadwalletbalance = floatval($match['BALANCE']);
+			}
+
+			$loadtransaction = $result['rows'][0];
+
+			$loadtransaction_id = $loadtransaction['loadtransaction_id'];
+
+			$loadtransaction_loadretries = $loadtransaction['loadtransaction_loadretries'];
+
+			$loadtransaction_cost = floatval($loadtransaction['loadtransaction_cost']);
+
+			$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_COMPLETED." and loadtransaction_invalid=0 and loadtransaction_type='retail' order by loadtransaction_id DESC limit 1";
+
+			//print_r(array('$sql'=>$sql));
+
+			if(!($result = $appdb->query($sql))) {
+				return false;
+			}
+
+			//print_r(array('$result'=>$result));
+
+			if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+				$oldtransaction = $result['rows'][0];
+
+				$oldtransaction_id = $oldtransaction['loadtransaction_id'];
+
+				$oldtransaction_simcardbalance = floatval($oldtransaction['loadtransaction_simcardbalance']);
+
+				$diff = $oldtransaction_simcardbalance - $loadwalletbalance;
+
+				pre(array('no confirmation received'=>array('loadwalletreference'=>$loadwalletreference,'loadwalletbalance'=>$loadwalletbalance,'oldtransaction_id'=>$oldtransaction_id,'oldtransaction_simcardbalance'=>$oldtransaction_simcardbalance,'diff'=>$diff,'$loadtransaction_cost'=>$loadtransaction_cost)));
+
+				if($loadwalletbalance==$oldtransaction_simcardbalance) {
+
+					$content = array();
+					$content['loadtransaction_updatestamp'] = 'now()';
+					$content['loadtransaction_status'] = TRN_APPROVED;
+					$content['loadtransaction_balanceinquiry'] = 0;
+					$content['loadtransaction_loadretries'] = $loadtransaction_loadretries + 1;
+
+					//print_r(array('$content'=>$content));
+
+					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=$loadtransaction_id"))) {
+						return false;
+					}
+
+					return true;
+				}
+
+				if($diff==$loadtransaction_cost) {
+
+					$content = array();
+					$content['loadtransaction_updatestamp'] = 'now()';
+					$content['loadtransaction_status'] = TRN_COMPLETED;
+					$content['loadtransaction_confirmation'] = !empty($confirmation) ? $confirmation : '';
+					$content['loadtransaction_confirmationfrom'] = !empty($confirmationFrom) ? $confirmationFrom : '';
+					$content['loadtransaction_simcardbalance'] = $loadwalletbalance;
+
+					$newbal = array();
+					$newbal['simcard_balance'] = $loadwalletbalance;
+
+					if(!($result = $appdb->update("tbl_simcard",$newbal,"simcard_number='$loadtransaction_assignedsim'"))) {
+						return false;
+					}
+
+					//print_r(array('$content'=>$content));
+
+					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=$loadtransaction_id"))) {
+						return false;
+					}
+
+					return true;
+
+				}
+
+			}
+
+		}
+
 	}
 } // function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 
@@ -3064,7 +3163,7 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 				return false;
 			}
 
-			if($content['loadtransaction_status']==TRN_COMPLETED) {
+			if($content['loadtransaction_status']==TRN_COMPLETED&&!empty($content['loadtransaction_customernumber'])) {
 
 				// 18Aug 09:18: 09397599095 Load Wallet Balance: P641.30. Ref:004919718730
 				// %simcard% Load Wallet Balance: P%balance%. Ref:%ref%
@@ -3079,7 +3178,109 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 				sendToGateway($content['loadtransaction_customernumber'],$content['loadtransaction_simhotline'],$errmsg);
 			}
 
+			return true;
 		}
+
+		$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_invalid=0 and loadtransaction_type='retail' order by loadtransaction_id asc limit 1";
+
+		//print_r(array('$sql'=>$sql));
+
+		if(!($result = $appdb->query($sql))) {
+			return false;
+		}
+
+		//print_r(array('$result'=>$result));
+
+		if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+			if(!empty($match['REFERENCE'])) {
+				$loadwalletreference = $match['REFERENCE'];
+			} else {
+				$loadwalletreference = '1234567890';
+
+			}
+
+			if(!empty($match['BALANCE'])) {
+				$loadwalletbalance = floatval($match['BALANCE']);
+			}
+
+			$loadtransaction = $result['rows'][0];
+
+			$loadtransaction_id = $loadtransaction['loadtransaction_id'];
+
+			$loadtransaction_loadretries = $loadtransaction['loadtransaction_loadretries'];
+
+			$loadtransaction_cost = floatval($loadtransaction['loadtransaction_cost']);
+
+			$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_COMPLETED." and loadtransaction_invalid=0 and loadtransaction_type='retail' order by loadtransaction_id DESC limit 1";
+
+			//print_r(array('$sql'=>$sql));
+
+			if(!($result = $appdb->query($sql))) {
+				return false;
+			}
+
+			//print_r(array('$result'=>$result));
+
+			if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+				$oldtransaction = $result['rows'][0];
+
+				$oldtransaction_id = $oldtransaction['loadtransaction_id'];
+
+				$oldtransaction_simcardbalance = floatval($oldtransaction['loadtransaction_simcardbalance']);
+
+				$diff = $oldtransaction_simcardbalance - $loadwalletbalance;
+
+				pre(array('no confirmation received'=>array('loadwalletreference'=>$loadwalletreference,'loadwalletbalance'=>$loadwalletbalance,'oldtransaction_id'=>$oldtransaction_id,'oldtransaction_simcardbalance'=>$oldtransaction_simcardbalance,'diff'=>$diff,'$loadtransaction_cost'=>$loadtransaction_cost)));
+
+				if($loadwalletbalance==$oldtransaction_simcardbalance) {
+
+					$content = array();
+					$content['loadtransaction_updatestamp'] = 'now()';
+					$content['loadtransaction_status'] = TRN_APPROVED;
+					$content['loadtransaction_balanceinquiry'] = 0;
+					$content['loadtransaction_loadretries'] = $loadtransaction_loadretries + 1;
+
+					//print_r(array('$content'=>$content));
+
+					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=$loadtransaction_id"))) {
+						return false;
+					}
+
+					return true;
+				}
+
+				if($diff==$loadtransaction_cost) {
+
+					$content = array();
+					$content['loadtransaction_updatestamp'] = 'now()';
+					$content['loadtransaction_status'] = TRN_COMPLETED;
+					$content['loadtransaction_confirmation'] = !empty($confirmation) ? $confirmation : '';
+					$content['loadtransaction_confirmationfrom'] = !empty($confirmationFrom) ? $confirmationFrom : '';
+					$content['loadtransaction_simcardbalance'] = $loadwalletbalance;
+
+					$newbal = array();
+					$newbal['simcard_balance'] = $loadwalletbalance;
+
+					if(!($result = $appdb->update("tbl_simcard",$newbal,"simcard_number='$loadtransaction_assignedsim'"))) {
+						return false;
+					}
+
+					//print_r(array('$content'=>$content));
+
+					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=$loadtransaction_id"))) {
+						return false;
+					}
+
+					return true;
+
+				}
+
+			}
+
+		}
+
 	}
 } // function _SunBalanceExpressionProcessSMS($vars=array()) {
 
