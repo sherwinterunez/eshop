@@ -138,13 +138,39 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 			//	$eloadnumbers = explode(',', $optionx);
 			//}
 
+			$aout = arrayprintrbuf(array('$matches'=>$matches));
+
+			foreach($aout as $bk=>$str) {
+				$dt = logdt(time());
+				$str = trim($str);
+				doLog("RETRIEVEPDU $dt $dev $mobileNo $ip $str",$mobileNo);
+			}
+
 			foreach($matches[2] as $key=>$pdustr) {
 
-				print_r(array('$pdu->decode()'=>$pdustr));
+				$printr = array('$dev'=>$dev,'$mobileNo'=>$mobileNo,'$ip'=>$ip,'$pdu->decode()'=>$pdustr);
+				print_r($printr);
+
+				$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+				foreach($aout as $bk=>$str) {
+					$dt = logdt(time());
+					$str = trim($str);
+					doLog("RETRIEVEPDUPROCESS $dt $dev $mobileNo $ip $str",$mobileNo);
+				}
 
 				$msg = $pdu->decode($pdustr);
 
-				print_r(array('$msg'=>$msg));
+				$printr = array('$msg'=>$msg);
+				print_r($printr);
+
+				$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+				foreach($aout as $bk=>$str) {
+					$dt = logdt(time());
+					$str = trim($str);
+					doLog("RETRIEVEPDUMSG $dt $dev $mobileNo $ip $str",$mobileNo);
+				}
 
 				$msgid = $matches[1][$key];
 
