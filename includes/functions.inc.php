@@ -955,9 +955,9 @@ function toFloat($num=false,$round=0) {
 	if(!empty($num)) {
 		$num = str_replace(',','',$num);
 
-		$num = clearDoubleSpace($num);
-
 		$num = clearcrlf2($num);
+
+		$num = clearDoubleSpace($num);
 
 		$num = floatval($num);
 

@@ -3418,389 +3418,823 @@ $item_provider = $itemData['item_provider'];
 				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='loadedit'||$post['method']=='loadapproved'||$post['method']=='loadmanually'||$post['method']=='loadcancelled'||$post['method']=='loadhold'||$post['method']=='loadtransfer')) {
 				//if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='loadedit')) {
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
-						if(!($result = $appdb->query("select * from tbl_fund where fund_id=".$post['rowid']))) {
+						if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
 
-						if(!empty($result['rows'][0]['fund_id'])) {
-							$params['customerreloadinfo'] = $result['rows'][0];
-						}
+						if(!empty($result['rows'][0]['loadtransaction_id'])) {
+		          $params['retailinfo'] = $result['rows'][0];
+		        }
 					}
 				} else
+				if(!empty($post['method'])&&$post['method']=='loadsave'&&!empty($post['rowid'])) {
+
+		      $retval = array();
+		      $retval['return_code'] = 'SUCCESS';
+		      $retval['return_message'] = 'Customer dealer load successfully updated!';
+
+		      if(!empty($post['retail_status'])) {
+		        $content = array();
+		        $content['loadtransaction_status'] = $post['retail_status'];
+		        $content['loadtransaction_updatestamp'] = 'now()';
+
+		        if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$post['rowid']))) {
+		          json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+		          die;
+		        }
+		      }
+
+		      json_encode_return($retval);
+		      die;
+
+		    } else
 				if(!empty($post['method'])&&$post['method']=='loadsave') {
 
-					$userId = $applogin->getUserID();
-					$userData = $applogin->getUserData();
-
-
-					if(!empty($userData['user_staffid'])) {
-						$user_staffid = $userData['user_staffid'];
-						$customer_type = getCustomerType($userData['user_staffid']);
-					}
-
 					$retval = array();
-					$retval['return_code'] = 'SUCCESS';
-					$retval['return_message'] = 'Customer reload successfully saved!';
+		      $retval['error_code'] = '345345';
+		      $retval['error_message'] = 'Invalid Subscriber Number!';
 
-					$fund_amount = $fund_amountdue = !empty($post['fund_amount']) ? $post['fund_amount'] : 0;
-					$fund_discount = 0;
-					$fund_processingfee = 0;
+		      $retail_mobilenumber = !empty($post['retail_mobilenumber']) ? $post['retail_mobilenumber'] : false;
+		      $retail_provider = !empty($post['retail_provider']) ? $post['retail_provider'] : false;
+		      $retail_item = !empty($post['retail_item']) ? $post['retail_item'] : false;
+		      $retail_load = !empty($post['retail_load']) ? intval($post['retail_load']) : false;
 
-					$fund_recepientid = !empty($post['fund_recepientid']) ? $post['fund_recepientid'] : 0;
+		      if(!empty($retail_mobilenumber)&&!empty($retail_provider)) {
+		      } else {
+		        json_encode_return($retval);
+		        die;
+		      }
 
-					if(!empty(($discountSchemes = getStaffCustomerReloadDiscountScheme($fund_recepientid)))) {
+		      if(getNetworkName($retail_mobilenumber)==$retail_provider) {
+		      } else {
+		        json_encode_return($retval);
+		        die;
+		      }
 
-						print_r(array('$discountSchemes'=>$discountSchemes));
+		      if(!empty($retail_item)) {
+		        $itemData = getItemData($retail_item,$retail_provider);
+		      }
 
-						$bypass = false;
+		      if(!empty($itemData)) {
+		      } else {
+		        $retval = array();
+		        $retval['error_code'] = '345346';
+		        $retval['error_message'] = 'Invalid Item Code!';
 
-						foreach($discountSchemes as $k=>$v) {
-							if(!empty($v['discountlist_rate'])&&$fund_amount>=floatval($v['discountlist_min'])&&$fund_amount<=floatval($v['discountlist_max'])) {
-								$fund_discount = floatval($v['discountlist_rate']);
-								$fund_processingfee = floatval($v['discountlist_fee']);
-								$fund_discountamount = ($fund_discount / 100) * $fund_amount;
-								$totaldiscount =  $fund_discountamount + $fund_processingfee;
-								$fund_amountdue = $fund_amount - $totaldiscount;
-								$bypass = true;
-								break;
-							}
-						}
-					} // if(!empty(($discountSchemes = getStaffCustomerReloadDiscountScheme($recepientId)))) {
+		        json_encode_return($retval);
+		        die;
+		      }
 
-					$fund_datetimeunix = intval(getDbUnixDate());
+		      //pre(array('$itemData'=>$itemData));
 
-					$content = array();
-					$content['fund_ymd'] = $fund_ymd = date('Ymd');
-					$content['fund_type'] = 'customerreload';
-					$content['fund_amount'] = $fund_amount;
-					$content['fund_amountdue'] = $fund_amountdue;
-					$content['fund_discount'] = $fund_discount;
-					$content['fund_processingfee'] = $fund_processingfee;
-					$content['fund_datetimeunix'] = $fund_datetimeunix;
-					$content['fund_datetime'] = pgDateUnix($fund_datetimeunix);
-					$content['fund_userid'] = $fund_userid = !empty($post['fund_userid']) ? $post['fund_userid'] : 0;
-					$content['fund_username'] = !empty($post['fund_username']) ? $post['fund_username'] : '';
-					$content['fund_usernumber'] = !empty($post['fund_usernumber']) ? $post['fund_usernumber'] : '';
-					$content['fund_userpaymentterm'] = !empty($post['fund_userpaymentterm']) ? $post['fund_userpaymentterm'] : '';
-					$content['fund_recepientid'] = $fund_recepientid;
-					$content['fund_recepientname'] = getCustomerNameByID($fund_recepientid);
-					$content['fund_recepientnumber'] = $fund_recepientnumber = getCustomerNumber($fund_recepientid);
-					$content['fund_recepientpaymentterm'] = !empty($post['fund_recepientpaymentterm']) ? $post['fund_recepientpaymentterm'] : '';
-					$content['fund_status'] = 1;
+		      if(!empty($itemData['item_regularload'])) {
+		        if(!empty($retail_load)) {
+		          $retail_item = $retail_item.$retail_load;
+		        } else {
+		          $retval = array();
+		          $retval['error_code'] = '345347';
+		          $retval['error_message'] = 'Invalid Regular Load Amount!';
 
-					log_notice(array('$content'=>$content));
+		          json_encode_return($retval);
+		          die;
+		        }
+		      }
 
-					//pre(array('$content'=>$content));
-
-					if(!empty($customer_type)&&$customer_type=='STAFF') {
-						$content['fund_staffid'] = $user_staffid;
-					}
-
-					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
-
-						$retval['rowid'] = $post['rowid'];
-
-						$content['fund_updatestamp'] = 'now()';
-
-						unset($content['fund_ymd']);
-						unset($content['fund_datetimeunix']);
-						unset($content['fund_datetime']);
-
-						if(!($result = $appdb->update("tbl_fund",$content,"fund_id=".$post['rowid']))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-
-					} else {
-
-						if(!($result = $appdb->insert("tbl_fund",$content,"fund_id"))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-
-						if(!empty($result['returning'][0]['fund_id'])) {
-							$retval['rowid'] = $result['returning'][0]['fund_id'];
-						}
-
-					}
-
-					if(!empty($retval['rowid'])) {
-
-						if(!($result = $appdb->query("delete from tbl_ledger where ledger_fundid=".$retval['rowid']))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-
-						$receiptno = $fund_ymd . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', $retval['rowid']);
-
-						$content = array();
-						$content['ledger_fundid'] = $retval['rowid'];
-						$content['ledger_credit'] = $fund_amount; //$fund_amountdue;
-						$content['ledger_type'] = 'CUSTOMERRELOAD '.$fund_amount; //$fund_amountdue;
-						$content['ledger_datetimeunix'] = $fund_datetimeunix;
-						$content['ledger_datetime'] = $ledger_datetime = pgDateUnix($fund_datetimeunix);
-						$content['ledger_user'] = $fund_recepientid;
-						$content['ledger_seq'] = '0';
-						$content['ledger_receiptno'] = $receiptno;
-
-						if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-
-						computeCustomerBalance($fund_recepientid);
-
-						$fundBalance = getCustomerBalance($fund_recepientid);
-
-						if(!empty(($gateways = getGateways($fund_recepientnumber)))) {
-
-							//shuffle($gateways);
-
-							foreach($gateways as $gw=>$v) {
-								$errmsg = getNotification('CUSTOMER RELOAD');
-								$errmsg = str_replace('%VAMOUNT%', number_format($fund_amountdue,2), $errmsg);
-								$errmsg = str_replace('%VBALANCE%', number_format($fundBalance,2), $errmsg);
-								$errmsg = str_replace('%FRRECEIPTNO%', $receiptno, $errmsg);
-								$errmsg = str_replace('%DATETIME%', $ledger_datetime, $errmsg);
-
-								// You have received %VAMOUNT% credits. Your current VFUND is P%VBALANCE%. Tx: %FRRECEIPTNO% as of %DATETIME% Thank you.
-
-								sendToGateway($fund_recepientnumber,$gw,$errmsg);
-								break;
-							}
-						}
-
-						$content['ledger_user'] = $user_staffid;
-
-						if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-
-						computeStaffBalance($user_staffid);
+		      $userId = $applogin->getUserID();
+		      $userData = $applogin->getUserData();
 
 
-					}
+		      if(!empty($userData['user_staffid'])) {
+		        $user_staffid = $userData['user_staffid'];
+		        $customer_type = getCustomerType($userData['user_staffid']);
+		      }
 
-					json_encode_return($retval);
-					die;
+		      $status = 'DRAFT';
+
+		      if(!empty($post['retail_approved'])) {
+		        $status = 'APPROVED';
+		      }
+
+		      $retval = array();
+		      $retval['return_code'] = 'SUCCESS';
+		      $retval['return_message'] = 'Customer retail load successfully saved!';
+
+		      $message = "LOADRETAIL $retail_item $retail_mobilenumber $status\r\n";
+
+		      $content = array();
+		      $content['smsinbox_contactsid'] = $user_staffid;
+		      $content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
+		      $content['smsinbox_simnumber'] = '09197708008';
+		      $content['smsinbox_message'] = $message;
+		      $content['smsinbox_unread'] = 1;
+
+		      //pre(array('$content'=>$content));
+
+		      ob_start();
+
+		      processSMS($content);
+
+		      $out = ob_get_clean();
+
+		      $retval['out'] = $out;
+
+		      json_encode_return($retval);
+		      die;
 
 				}
 
 				$params['hello'] = 'Hello, Sherwin!';
 
-				$newcolumnoffset = 50;
+		    $newcolumnoffset = 50;
 
-				$position = 'right';
+		    $position = 'right';
 
-				$params['tbDetails'] = array();
+		    $params['tbDetails'] = array();
+		    $params['tbMessage'] = array();
 
-				$receiptno = '';
+		    $receiptno = '';
 
-				if(!empty($params['customerreloadinfo']['fund_id'])&&!empty($params['customerreloadinfo']['fund_ymd'])) {
-					$receiptno = $params['customerreloadinfo']['fund_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['customerreloadinfo']['fund_id']));
-				}
+		    if(!empty($params['retailinfo']['loadtransaction_id'])&&!empty($params['retailinfo']['loadtransaction_ymd'])) {
+		      $receiptno = $params['retailinfo']['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['retailinfo']['loadtransaction_id']));
+		    }
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'RECEIPT NO',
-					'name' => 'fund_receiptno',
-					'readonly' => true,
-					//'required' => !$readonly,
-					//'labelAlign' => $position,
-					'value' => $receiptno,
-				);
+		    $params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'RECEIPT NO',
+		      'name' => 'retail_receiptno',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      //'labelAlign' => $position,
+		      'value' => $receiptno,
+		    );
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'RECEIPT DATE/TIME',
-					'name' => 'fund_datetime',
-					'readonly' => true,
-					//'required' => !$readonly,
-					'value' => !empty($params['customerreloadinfo']['fund_datetime']) ? $params['customerreloadinfo']['fund_datetime'] : '',
-				);
+		    $params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'RECEIPT DATE/TIME',
+		      'name' => 'retail_date',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'value' => !empty($params['retailinfo']['loadtransaction_createstamp']) ? pgDate($params['retailinfo']['loadtransaction_createstamp']) : '',
+		    );
 
-				if($readonly) {
-					$params['tbDetails'][] = array(
-						'type' => 'input',
-						'label' => 'CUSTOMER NAME',
-						'name' => 'fund_recepientname',
-						'readonly' => true,
-						//'required' => !$readonly,
-						'value' => !empty($params['customerreloadinfo']['fund_recepientname']) ? $params['customerreloadinfo']['fund_recepientname'] : '',
-					);
-				} else {
+		    $providers = getProviders();
 
-					if(!empty($params['customerreloadinfo']['fund_recepientid'])) {
-						$params['tbDetails'][] = array(
-							'type' => 'hidden',
-							'name' => 'fund_recepientid',
-							'value' => $params['customerreloadinfo']['fund_recepientid'],
-						);
+		    $opt = array();
 
-						$params['tbDetails'][] = array(
-							'type' => 'input',
-							'label' => 'CUSTOMER NAME',
-							'name' => 'fund_recepientname',
-							'readonly' => true,
-							//'required' => !$readonly,
-							'value' => getCustomerNameByID($params['customerreloadinfo']['fund_recepientid']),
-						);
-					} else {
-						$params['tbDetails'][] = array(
-							'type' => 'combo',
-							'label' => 'CUSTOMER NAME',
-							'name' => 'fund_recepientid',
-							'readonly' => $readonly,
-							'required' => !$readonly,
-							'options' => array(), //$opt,
-						);
-					}
-				}
+		    if(!$readonly) {
+		      $opt[] = array('text'=>'','value'=>'');
+		    }
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'MOBILE NUMBER',
-					'name' => 'fund_recepientnumber',
-					'readonly' => true,
-					//'required' => !$readonly,
-					'value' => !empty($params['customerreloadinfo']['fund_recepientnumber']) ? $params['customerreloadinfo']['fund_recepientnumber'] : '',
-				);
+		    foreach($providers as $v) {
+		      $selected = false;
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'PAYMENT TERM',
-					'name' => 'fund_recepientpaymentterm',
-					'readonly' => true,
-					//'required' => !$readonly,
-					'value' => !empty($params['customerreloadinfo']['fund_recepientpaymentterm']) ? $params['customerreloadinfo']['fund_recepientpaymentterm'] : '',
-				);
+		      if(!empty($params['retailinfo']['loadtransaction_provider'])&&$params['retailinfo']['loadtransaction_provider']==$v) {
+		        $selected = true;
+		      }
 
-				/*$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'FUND',
-					'name' => 'fundreload_fund',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => '',
-				);*/
+		      if($readonly) {
+		        if($selected) {
+		          $opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+		        }
+		      } else {
+		        $opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+		      }
 
+		    }
 
-				/*$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'DISCOUNT',
-					'name' => 'fund_discount',
-					'readonly' => true,
-					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-					//'required' => !$readonly,
-					'value' => !empty($params['customerreloadinfo']['fund_discount']) ? $params['customerreloadinfo']['fund_discount'] : 0,
-				);*/
+		    $params['tbDetails'][] = array(
+		      'type' => 'combo',
+		      'label' => 'PROVIDER',
+		      'name' => 'retail_provider',
+		      'readonly' => true,
+		      'required' => !$readonly,
+		      'options' => $opt,
+		    );
 
-				$params['tbDetails'][] = array(
-					'type' => 'block',
-					'name' => 'discountblock',
-					'blockOffset' => 0,
-					'offsetTop' => 0,
-					'width' => 350,
-					'list' => array(
-						array(
-							'type' => 'input',
-							'label' => 'DISCOUNT',
-							'name' => 'fund_discount',
-							'readonly' => true,
-							//'required' => !$readonly,
-							'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
-							//'value' => !empty($percent) ? number_format($percent,2) : 0,
-							'value' => !empty($params['customerreloadinfo']['fund_discount']) ? number_format($params['customerreloadinfo']['fund_discount'],2) : '',
-							'inputWidth' => 90,
-						),
-						array(
-							'type' => 'newcolumn',
-							'offset' => 5,
-						),
-						array(
-							'type' => 'input',
-							'name' => 'fund_discountamount',
-							'readonly' => true,
-							//'required' => !$readonly,
-							'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-							//'value' => !empty($discount) ? number_format($discount,2) : 0,
-							'value' => !empty($params['customerreloadinfo']['fund_discountamount']) ? number_format($params['customerreloadinfo']['fund_discountamount'],2) : '',
-							'inputWidth' => 100,
-						),
-					),
-				);
+		    $opt = array();
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'PROCESSING FEE',
-					'name' => 'fund_processingfee',
-					'readonly' => true,
-					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-					//'required' => !$readonly,
-					'value' => !empty($params['customerreloadinfo']['fund_processingfee']) ? $params['customerreloadinfo']['fund_processingfee'] : 0,
-				);
+		    if($post['method']=='loadnew') {
+		      $params['tbDetails'][] = array(
+		        'type' => 'combo',
+		        'label' => 'ITEM',
+		        'name' => 'retail_item',
+		        'readonly' => $readonly,
+		        'required' => !$readonly,
+		        'options' => $opt,
+		        //'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
+		      );
+		    } else {
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'ITEM',
+		        'name' => 'retail_item',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        //'options' => $opt,
+		        'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
+		      );
+		    }
 
-				$params['tbDetails'][] = array(
-					'type' => 'newcolumn',
-					'offset' => $newcolumnoffset,
-				);
+		/*
+		$item_cost = floatval($itemData['item_cost']);
+		$item_quantity = floatval($itemData['item_quantity']);
+		$item_srp = floatval($itemData['item_srp']);
+		$item_eshopsrp = floatval($itemData['item_eshopsrp']);
+		$item_threshold = floatval($itemData['item_threshold']);
+		$item_provider = $itemData['item_provider'];
+		*/
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'AMOUNT',
-					'name' => 'fund_amount',
-					'readonly' => $readonly,
-					'required' => !$readonly,
-					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-					'value' => !empty($params['customerreloadinfo']['fund_amount']) ? $params['customerreloadinfo']['fund_amount'] : 0,
-				);
+		    $params['tbDetails'][] = array(
+		      'type' => 'hidden',
+		      'name' => 'retail_approved',
+		      'value' => 0,
+		    );
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'AMOUNT DUE',
-					'name' => 'fund_amountdue',
-					'readonly' => true,
-					//'required' => !$readonly,
-					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-					'value' => !empty($params['customerreloadinfo']['fund_amountdue']) ? $params['customerreloadinfo']['fund_amountdue'] : 0,
-				);
+		    $params['tbDetails'][] = array(
+		      'type' => 'hidden',
+		      'name' => 'retail_itemcost',
+		      'value' => 0,
+		    );
 
-				$params['tbDetails'][] = array(
-					'type' => 'hidden',
-					//'label' => 'USER ID',
-					'name' => 'fund_userid',
-					//'readonly' => true,
-					//'required' => !$readonly,
-					'value' => $applogin->getUserID(),
-				);
+		    $params['tbDetails'][] = array(
+		      'type' => 'hidden',
+		      'name' => 'retail_itemquantity',
+		      'value' => 0,
+		    );
 
-				$fund_username = !empty($params['customerreloadinfo']['fund_staffid']) ? getCustomerNameByID($params['customerreloadinfo']['fund_staffid']) : '';
+		    $params['tbDetails'][] = array(
+		      'type' => 'hidden',
+		      'name' => 'retail_itemsrp',
+		      'value' => 0,
+		    );
 
-				if(!empty($fund_username)) {
-				} else {
-					$fund_username = !empty($params['customerreloadinfo']['fund_username']) ? $params['customerreloadinfo']['fund_username'] : $applogin->fullname();
-				}
+		    $params['tbDetails'][] = array(
+		      'type' => 'hidden',
+		      'name' => 'retail_itemeshopsrp',
+		      'value' => 0,
+		    );
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'USER',
-					'name' => 'fund_username',
-					'readonly' => true,
-					//'required' => !$readonly,
-					//'value' => $applogin->fullname(),
-					'value' => $fund_username,
-				);
+		    $params['tbDetails'][] = array(
+		      'type' => 'hidden',
+		      'name' => 'retail_itemregularload',
+		      'value' => 0,
+		    );
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'STATUS',
-					'name' => 'fund_status',
-					'readonly' => true,
-					//'required' => !$readonly,
-					'value' => !empty($params['customerreloadinfo']['fund_status']) ? getLoadTransactionStatusString($params['customerreloadinfo']['fund_status']) : 'DRAFT',
-				);
+		    $params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'MOBILE NUMBER',
+		      'name' => 'retail_mobilenumber',
+		      'readonly' => $readonly,
+		      'required' => !$readonly,
+		      'inputMask' => array('mask'=>'09999999999'),
+		      'value' => !empty($params['retailinfo']['loadtransaction_recipientnumber']) ? $params['retailinfo']['loadtransaction_recipientnumber'] : '',
+		    );
+
+		    $params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'LOAD',
+		      'name' => 'retail_load',
+		      'readonly' => $readonly,
+		      'required' => !$readonly,
+		      'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		      'value' => !empty($params['retailinfo']['loadtransaction_load']) ? $params['retailinfo']['loadtransaction_load'] : 0,
+		    );
+
+		    /*$params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'DISCOUNT',
+		      'name' => 'retail_discount',
+		      'readonly' => $readonly,
+		      'required' => !$readonly,
+		      'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		      'value' => !empty($params['retailinfo']['loadtransaction_discount']) ? $params['retailinfo']['loadtransaction_discount'] : 0,
+		    );*/
+
+		    /*if(!empty($params['retailinfo']['loadtransaction_load'])&&!empty($params['retailinfo']['loadtransaction_cost'])) {
+		      $percent = floatval($params['retailinfo']['loadtransaction_load']) - floatval($params['retailinfo']['loadtransaction_cost']);
+		      $percent = $percent / floatval($params['retailinfo']['loadtransaction_load']);
+
+		      $discount = floatval($params['retailinfo']['loadtransaction_load']) * $percent;
+
+		      $percent = $percent * 100;
+
+		      $amountdue = floatval($params['retailinfo']['loadtransaction_load']) - $discount;
+		    }*/
+
+		    $params['tbDetails'][] = array(
+		      'type' => 'block',
+		      'name' => 'discountblock',
+		      'blockOffset' => 0,
+		      'offsetTop' => 0,
+		      'width' => 350,
+		      'list' => array(
+		        array(
+		          'type' => 'input',
+		          'label' => 'DISCOUNT',
+		          'name' => 'retail_discountpercent',
+		          'readonly' => true,
+		          //'required' => !$readonly,
+		          'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
+		          //'value' => !empty($percent) ? number_format($percent,2) : 0,
+		          'value' => !empty($params['retailinfo']['loadtransaction_discountpercent']) ? number_format($params['retailinfo']['loadtransaction_discountpercent'],2) : '',
+		          'inputWidth' => 90,
+		        ),
+		        array(
+		          'type' => 'newcolumn',
+		          'offset' => 5,
+		        ),
+		        array(
+		          'type' => 'input',
+		          'name' => 'retail_discount',
+		          'readonly' => true,
+		          //'required' => !$readonly,
+		          'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		          //'value' => !empty($discount) ? number_format($discount,2) : 0,
+		          'value' => !empty($params['retailinfo']['loadtransaction_discount']) ? number_format($params['retailinfo']['loadtransaction_discount'],2) : '',
+		          'inputWidth' => 100,
+		        ),
+		      ),
+		    );
+
+		    $params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'PROCESSING FEE',
+		      'name' => 'retail_processingfee',
+		      'readonly' => $readonly,
+		      //'required' => !$readonly,
+		      'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		      'value' => !empty($params['retailinfo']['loadtransaction_processingfee']) ? $params['retailinfo']['loadtransaction_processingfee'] : 0,
+		    );
+
+		    $params['tbDetails'][] = array(
+		      'type' => 'newcolumn',
+		      'offset' => $newcolumnoffset,
+		    );
+
+		    /*$params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'CASHIER',
+		      'name' => 'retail_cashier',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'value' => !empty($params['retailinfo']['loadtransaction_cashier']) ? $params['retailinfo']['loadtransaction_cashier'] : '',
+		    );*/
+
+		    $params['tbDetails'][] = array(
+		      'type' => 'hidden',
+		      //'label' => 'USER ID',
+		      'name' => 'retail_userid',
+		      //'readonly' => true,
+		      //'required' => !$readonly,
+		      'value' => $applogin->getUserID(),
+		    );
+
+		    $fund_username = !empty($params['retailinfo']['loadtransaction_staffid']) ? getCustomerNameByID($params['retailinfo']['loadtransaction_staffid']) : '';
+
+		    if(!empty($fund_username)) {
+		    } else {
+		      $fund_username = !empty($params['retailinfo']['loadtransaction_username']) ? $params['retailinfo']['loadtransaction_username'] : $applogin->fullname();
+		    }
+
+		    $params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'USER',
+		      'name' => 'fund_username',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      //'value' => $applogin->fullname(),
+		      'value' => $fund_username,
+		    );
+
+		    if($post['method']=='loadnew') {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS CODE',
+		        'name' => 'retail_status',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => TRN_DRAFT,
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS',
+		        'name' => 'retail_statustext',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => getLoadTransactionStatusString(TRN_DRAFT),
+		      );
+
+		    } else
+		    if($post['method']=='loadapproved'||$post['method']=='loadtransfer') {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS CODE',
+		        'name' => 'retail_status',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => TRN_APPROVED,
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS',
+		        'name' => 'retail_statustext',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => getLoadTransactionStatusString(TRN_APPROVED),
+		      );
+
+		    } else
+		    if($post['method']=='loadmanually') {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS CODE',
+		        'name' => 'retail_status',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => TRN_COMPLETED_MANUALLY,
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS',
+		        'name' => 'retail_statustext',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => getLoadTransactionStatusString(TRN_COMPLETED_MANUALLY),
+		      );
+
+		    } else
+		    if($post['method']=='loadhold') {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS CODE',
+		        'name' => 'retail_status',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => TRN_HOLD,
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS',
+		        'name' => 'retail_statustext',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => getLoadTransactionStatusString(TRN_HOLD),
+		      );
+
+		    } else
+		    if($post['method']=='loadcancelled') {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS CODE',
+		        'name' => 'retail_status',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => TRN_CANCELLED,
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS',
+		        'name' => 'retail_statustext',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => getLoadTransactionStatusString(TRN_CANCELLED),
+		      );
+
+		    } else {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS CODE',
+		        'name' => 'retail_status',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => !empty($params['retailinfo']['loadtransaction_status']) ? $params['retailinfo']['loadtransaction_status'] : '',
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS',
+		        'name' => 'retail_statustext',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => !empty($params['retailinfo']['loadtransaction_status']) ? getLoadTransactionStatusString($params['retailinfo']['loadtransaction_status']) : '',
+		      );
+		    }
+
+		    $params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'AMOUNT DUE',
+		      'name' => 'retail_amountdue',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		      //'value' => !empty($amountdue) ? number_format($amountdue,2) : 0,
+		      'value' => !empty($params['retailinfo']['loadtransaction_amountdue']) ? $params['retailinfo']['loadtransaction_amountdue'] : 0,
+		    );
+
+		    //
+
+		    //if(!empty($params['retailinfo']['loadtransaction_status'])&&$params['retailinfo']['loadtransaction_status']==TRN_QUEUED) {
+
+		    if($post['method']=='loadnew') {
+		    } else
+		    if($post['method']=='loadtransfer') {
+
+		      //$sims = getAllSims(3);
+
+		      if(!empty(($simassignment = getItemSimAssign($params['retailinfo']['loadtransaction_item'],$params['retailinfo']['loadtransaction_provider'])))) {
+
+		        //pre(array('$simassignment'=>$simassignment));
+
+		        $opt = array();
+
+		        foreach($simassignment as $v) {
+		          $selected = false;
+		          if(!empty($params['retailinfo']['loadtransaction_assignedsim'])&&$params['retailinfo']['loadtransaction_assignedsim']==$v['itemassignedsim_simnumber']) {
+		            $selected = true;
+		          }
+		          //if($selected) {
+		          //	$opt[] = array('text'=>$v['itemassignedsim_simnumber'],'value'=>$v['itemassignedsim_simnumber'],'selected'=>$selected);
+		          //} else {
+		            $opt[] = array('text'=>$v['itemassignedsim_simnumber'],'value'=>$v['itemassignedsim_simnumber'],'selected'=>$selected);
+		          //}
+		        }
+
+		        $params['tbDetails'][] = array(
+		          'type' => 'combo',
+		          'label' => 'ASSIGNED SIM',
+		          'name' => 'retail_newassignedsimcard',
+		          'readonly' => true,
+		          //'inputWidth' => 200,
+		          //'required' => !$readonly,
+		          'options' => $opt,
+		        );
+
+		        $params['tbDetails'][] = array(
+		          'type' => 'hidden',
+		          //'label' => 'NEW ASSIGNED SIM',
+		          'name' => 'retail_assignedsimcard',
+		          //'readonly' => true,
+		          //'inputWidth' => 200,
+		          //'required' => !$readonly,
+		          //'options' => $opt,
+		          'value' => !empty($params['retailinfo']['loadtransaction_assignedsim']) ? $params['retailinfo']['loadtransaction_assignedsim'] : '',
+		        );
+
+		        $params['tbDetails'][] = array(
+		          'type' => 'hidden',
+		          //'label' => 'NEW ASSIGNED SIM',
+		          'name' => 'retail_oldstatus',
+		          //'readonly' => true,
+		          //'inputWidth' => 200,
+		          //'required' => !$readonly,
+		          //'options' => $opt,
+		          'value' => !empty($params['retailinfo']['loadtransaction_status']) ? $params['retailinfo']['loadtransaction_status'] : 0,
+		        );
+
+		      } else {
+
+		        $params['tbDetails'][] = array(
+		          'type' => 'input',
+		          'label' => 'ASSIGNED SIM',
+		          'name' => 'retail_assignedsimcard',
+		          'readonly' => true,
+		          //'required' => !$readonly,
+		          'value' => !empty($params['retailinfo']['loadtransaction_assignedsim']) ? $params['retailinfo']['loadtransaction_assignedsim'] : '',
+		        );
+
+		      }
+
+		    } else {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'ASSIGNED SIM',
+		        'name' => 'retail_assignedsimcard',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => !empty($params['retailinfo']['loadtransaction_assignedsim']) ? $params['retailinfo']['loadtransaction_assignedsim'] : '',
+		      );
+
+		    }
+
+		    if($post['method']=='loadnew') {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'CASH RECEIVED',
+		        'name' => 'retail_cashreceived',
+		        'readonly' => $readonly,
+		        'required' => !$readonly,
+		        'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		        'value' => !empty($params['retailinfo']['loadtransaction_cashreceived']) ? $params['retailinfo']['loadtransaction_cashreceived'] : '',
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'CHANGE',
+		        'name' => 'retail_cashchange',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		        'value' => !empty($params['retailinfo']['loadtransaction_cashchange']) ? $params['retailinfo']['loadtransaction_cashchange'] : '',
+		      );
+
+		    } else {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'CASH RECEIVED',
+		        'name' => 'retail_cashreceived',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		        'value' => !empty($params['retailinfo']['loadtransaction_cashreceived']) ? $params['retailinfo']['loadtransaction_cashreceived'] : '',
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'CUSTOMER NAME',
+		        'name' => 'retail_customername',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => !empty($params['retailinfo']['loadtransaction_customernumber']) ? getCustomerNickByNumber($params['retailinfo']['loadtransaction_customernumber']) : '',
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'LOAD COMMAND',
+		        'name' => 'retail_laodcommand',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => !empty($params['retailinfo']['loadtransaction_keyword']) ? $params['retailinfo']['loadtransaction_keyword'] : '',
+		      );
+		    }
+
+		    if($post['method']=='loadnew') {
+		    } else {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'newcolumn',
+		        'offset' => $newcolumnoffset,
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'REBATE PARENT',
+		        'name' => 'retail_rebateparent',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => !empty($params['retailinfo']['loadtransaction_rebateparent']) ? getCustomerNameByID($params['retailinfo']['loadtransaction_rebateparent']) : '',
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'REBATE DISCOUNT',
+		        'name' => 'retail_rebatediscount',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        //'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		        'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
+		        'value' => !empty($params['retailinfo']['loadtransaction_rebatediscount']) ? $params['retailinfo']['loadtransaction_rebatediscount'] : '',
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'REBATE AMOUNT',
+		        'name' => 'retail_rebateamount',
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'inputMask' => array('alias'=>'currency','prefix'=>'','digits'=>3,'autoUnmask'=>true),
+		        //'inputMask' => array('numericInput'=>true,'prefix'=>'','autoUnmask'=>true,'rightAlign'=>true),
+		        'value' => !empty($params['retailinfo']['loadtransaction_rebateamount']) ? $params['retailinfo']['loadtransaction_rebateamount'] : '',
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'label',
+		        'label' => 'FOR MANUALLY COMPLETED',
+		        'labelWidth' => 200,
+		      );
+
+		/*
+		      $params['tbCustomer'][] = array(
+		        'type' => 'calendar',
+		        'label' => 'BIRTH DATE',
+		        'name' => 'customer_birthdate',
+		        'readonly' => true,
+		        'calendarPosition' => 'right',
+		        'dateFormat' => '%m-%d-%Y',
+		        //'required' => !$readonly,
+		        'value' => !empty($params['customerinfo']['customer_birthdate']) ? $params['customerinfo']['customer_birthdate'] : '',
+		      );
+		*/
+		      $params['tbDetails'][] = array(
+		        'type' => 'block',
+		        'name' => 'datetime',
+		        'blockOffset' => 0,
+		        'offsetTop' => 0,
+		        'width' => 350,
+		        'list' => array(
+
+		          array(
+		            'type' => $readonly ? 'input' : 'calendar',
+		            'label' => 'DATE',
+		            'name' => 'retail_manualdate',
+		            'readonly' => true,
+		            'required' => !$readonly,
+		            'calendarPosition' => 'right',
+		            'dateFormat' => '%m-%d-%Y',
+		            'value' => !empty($params['retailinfo']['loadtransaction_manualdate']) ? $params['retailinfo']['loadtransaction_manualdate'] : '',
+		            'labelWidth' => 50,
+		            'inputWidth' => 90,
+		          ),
+		          array(
+		            'type' => 'newcolumn',
+		            'offset' => 35,
+		          ),
+		          array(
+		            'type' => 'input', //$readonly ? 'input' : 'calendar',
+		            'label' => 'TIME',
+		            'name' => 'retail_manualtime',
+		            'readonly' => $readonly,
+		            'required' => !$readonly,
+		            'inputMask' => array('alias'=>'hh:mm','prefix'=>'','autoUnmask'=>true),
+		            'value' => !empty($params['retailinfo']['loadtransaction_manualtime']) ? $params['retailinfo']['loadtransaction_manualtime'] : '',
+		            'labelWidth' => 50,
+		            'inputWidth' => 100,
+		          ),
+		        ),
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'REFERENCE NO',
+		        'name' => 'retail_referenceno',
+		        'readonly' => $readonly,
+		        'required' => !$readonly,
+		        'value' => !empty($params['retailinfo']['loadtransaction_refnumber']) ? $params['retailinfo']['loadtransaction_refnumber'] : '',
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'SIMCARD BALANCE',
+		        'name' => 'retail_simcardbalance',
+		        'readonly' => $readonly,
+		        'required' => !$readonly,
+		        'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		        'value' => !empty($params['retailinfo']['loadtransaction_simcardbalance']) ? $params['retailinfo']['loadtransaction_simcardbalance'] : '',
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'RUNNING BALANCE',
+		        'name' => 'retail_runningbalance',
+		        'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		        'readonly' => $readonly,
+		        'required' => !$readonly,
+		        'value' => !empty($params['retailinfo']['loadtransaction_runningbalance']) ? $params['retailinfo']['loadtransaction_runningbalance'] : '',
+		      );
+		    }
+
+		    $params['tbMessage'][] = array(
+		      'type' => 'input',
+		      'label' => 'FROM',
+		      'name' => 'retail_confirmationfrom',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'value' => !empty($params['retailinfo']['loadtransaction_confirmationfrom']) ? $params['retailinfo']['loadtransaction_confirmationfrom'] : '',
+		    );
+
+		    $params['tbMessage'][] = array(
+		      'type' => 'input',
+		      'label' => 'DATE/TIME',
+		      'name' => 'retail_confirmationstamp',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'value' => !empty($params['retailinfo']['loadtransaction_confirmationstamp']) ? pgDate($params['retailinfo']['loadtransaction_confirmationstamp']) : '',
+		    );
+
+		    $params['tbMessage'][] = array(
+		      'type' => 'input',
+		      'label' => 'CONFIRMATION',
+		      'name' => 'retail_confirmation',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'inputWidth' => 500,
+		      'rows' => 5,
+		      'value' => !empty($params['retailinfo']['loadtransaction_confirmation']) ? $params['retailinfo']['loadtransaction_confirmation'] : '',
+		    );
 
 				$templatefile = $this->templatefile($routerid,$formid);
 

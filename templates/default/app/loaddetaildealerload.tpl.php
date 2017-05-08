@@ -226,8 +226,8 @@ pre(array('$vars'=>$vars));
 			]},
 			{type: "block", name: "tbDetails", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbDetails']) ? json_encode($params['tbDetails']) : '[]'; ?>},
 			//{type: "block", name: "tbPayments", hidden: true, width: 1200, blockOffset: 0, offsetTop:0, list:[]},
-			//{type: "block", name: "tbMessage", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbMessage']) ? json_encode($params['tbMessage']) : '[]'; ?>},
-			//{type: "block", name: "tbHistory", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:[]},
+			{type: "block", name: "tbMessage", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbMessage']) ? json_encode($params['tbMessage']) : '[]'; ?>},
+			{type: "block", name: "tbHistory", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:[]},
 			{type: "label", label: ""}
 		];
 
@@ -256,7 +256,17 @@ pre(array('$vars'=>$vars));
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit'||$method==$moduleid.'approved'||$method==$moduleid.'manually'||$method==$moduleid.'cancelled'||$method==$moduleid.'hold'||$method==$moduleid.'transfer') { ?>
+		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?>
+
+		myWinToolbar.disableAll();
+
+		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+
+		//myForm.setItemFocus("txt_optionsname");
+
+		myWinToolbar.showOnly(myToolbar);
+
+		<?php } else if($method==$moduleid.'approved'||$method==$moduleid.'manually'||$method==$moduleid.'cancelled'||$method==$moduleid.'hold'||$method==$moduleid.'transfer') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -284,15 +294,7 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		<?php 	if(empty($vars['post']['rowid'])) { ?>
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>edit');
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>delete');
-
-		<?php 	} ?>
-
-		<?php 	if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&!($vars['params']['retailinfo']['loadtransaction_status']==TRN_FAILED||$vars['params']['retailinfo']['loadtransaction_status']==TRN_PENDING||$vars['params']['retailinfo']['loadtransaction_status']==TRN_APPROVED||$vars['params']['retailinfo']['loadtransaction_status']==TRN_HOLD||$vars['params']['retailinfo']['loadtransaction_status']==TRN_QUEUED)) { ?>
+		<?php 	if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&!($vars['params']['retailinfo']['loadtransaction_status']==TRN_DRAFT)) { ?>
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
 
@@ -303,34 +305,6 @@ pre(array('$vars'=>$vars));
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
-
-		<?php 	} ?>
-
-		<?php   if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&$vars['params']['retailinfo']['loadtransaction_status']==TRN_QUEUED) { ?>
-
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>approved');
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
-
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
-
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
-
-		<?php 	} ?>
-
-		<?php   if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&$vars['params']['retailinfo']['loadtransaction_status']==TRN_APPROVED) { ?>
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>approved');
-
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
-
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
-
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
 
 		<?php 	} ?>
 
@@ -713,7 +687,11 @@ pre(array('$vars'=>$vars));
 
 			//showMessage('Validation: '+myForm.validate());
 
-			myForm.setItemValue('method', id);
+			myForm.setItemValue('method', '<?php echo $moduleid; ?>save');
+
+			if(id=='<?php echo $moduleid; ?>approved') {
+				myForm.setItemValue('retail_approved', 1);
+			}
 
 			//$("#messagingdetailsoptionsdetailsform_%formval% input[name='method']").val(id);
 
@@ -789,6 +767,12 @@ pre(array('$vars'=>$vars));
 
 			return false;
 		};
+
+		<?php if($method==$moduleid.'new') { ?>
+
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>approved').onClick = myWinToolbar.getToolbarData('<?php echo $moduleid; ?>save').onClick;
+
+		<?php } ?>
 
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>cancel').onClick = myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
