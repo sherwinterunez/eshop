@@ -3539,7 +3539,7 @@ $item_provider = $itemData['item_provider'];
 
 		      $retval = array();
 		      $retval['return_code'] = 'SUCCESS';
-		      $retval['return_message'] = 'Customer retail load successfully saved!';
+		      $retval['return_message'] = 'Customer dealer load successfully saved!';
 
 		      $message = "LOADDEALER $retail_provider $retail_load $retail_mobilenumber $status\r\n";
 
