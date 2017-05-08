@@ -1145,8 +1145,6 @@ function _eDealerProcessSMS($vars=array()) {
 	if(!empty($vars)) {
 	} else return false;
 
-	print_r(array('$vars'=>$vars));
-
 	$sql = "select * from tbl_simcard where simcard_active=1 and simcard_deleted=0 and simcard_online=1 and simcard_hotline=1 and simcard_number='".$vars['smsinbox']['smsinbox_simnumber']."'";
 
 	if(!($result=$appdb->query($sql))) {
@@ -1204,6 +1202,8 @@ function _eDealerProcessSMS($vars=array()) {
 	} else {
 		return false;
 	}
+
+	print_r(array('$vars'=>$vars));
 
 	if(preg_match('/'.$regx.'/si',$loadtransaction_keyword,$keymatch)&&!empty($keymatch[0])) {
 		$keymatch[0] = strtoupper(clearDoubleSpace(clearcrlf2($keymatch[0])));
