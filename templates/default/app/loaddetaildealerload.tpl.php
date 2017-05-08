@@ -276,6 +276,13 @@ pre(array('$vars'=>$vars));
 
 		dhxCombo.attachEvent("onChange", function(value, text){
 			console.log('onChange: '+value+', '+text);
+
+			if(ValidMobileNo(value)) {
+				myForm.setItemValue('retail_mobilenumber',value);
+			} else {
+				myForm.setItemValue('retail_mobilenumber','');				
+			}
+
 		});
 
 		dhxCombo.attachEvent("onClose", function(){
