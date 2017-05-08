@@ -1254,6 +1254,15 @@ function _eDealerProcessSMS($vars=array()) {
 
 	if(!empty($matched)&&!empty($matched['$AMOUNT'])&&!empty($matched['$MOBILENUMBER'])) {
 
+		if(!empty($matched['$LOADDEALER_STATUS'])) {
+			if($matched['$LOADDEALER_STATUS']=='DRAFT') {
+				$loaddealer_status = TRN_DRAFT;
+			} else
+			if($matched['$LOADDEALER_STATUS']=='APPROVED') {
+				$loaddealer_status = TRN_APPROVED;
+			}
+		}
+
 		$loadtransaction_recipientnumber = $matched['$MOBILENUMBER'];
 
 		$loadtransaction_retailerid = getCustomerIDByDefaultNumber($loadtransaction_recipientnumber);
@@ -1280,10 +1289,12 @@ function _eDealerProcessSMS($vars=array()) {
 
 		print_r(array('CHECKING FOR DUPLICATE REQUEST'=>'CHECKING FOR DUPLICATE REQUEST','$loadtransaction_keyword'=>'['.$loadtransaction_keyword.']','$general_resendtimer'=>$general_resendtimer));
 
-		$memcache = new Memcache;
+		if(class_exists('Memcache')) {
+			$memcache = new Memcache;
 
-		if(!$memcache->connect('127.0.0.1', 11211, 5)) {
-		  unset($memcache);
+			if(!$memcache->connect('127.0.0.1', 11211, 5)) {
+			  unset($memcache);
+			}
 		}
 
 		if(!empty($memcache)) {
@@ -1804,6 +1815,11 @@ function _eDealerProcessSMS($vars=array()) {
 				//if(!empty($loadtransaction_regularload)) {
 				//	$content['loadtransaction_regularload'] = $loadtransaction_regularload;
 				//}
+
+				if(!empty($loaddealer_status)) {
+					$content['loadtransaction_status'] = $loaddealer_status;
+					$content['loadtransaction_dealerload'] = 1;
+				}
 
 				pre(array('$content'=>$content));
 
