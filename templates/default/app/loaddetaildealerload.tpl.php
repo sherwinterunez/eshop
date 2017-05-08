@@ -472,13 +472,18 @@ pre(array('$vars'=>$vars));
 
 					var retail_processingfee = parseFloat(myForm.getItemValue('retail_processingfee'));
 
+					var amountdue = 0;
+
 					if(retail_processingfee) {
+						amountdue = retail_load + retail_processingfee;
 					} else {
 						retail_processingfee = 0;
 						myForm.setItemValue('retail_processingfee',retail_processingfee);
 					}
 
-					myForm.setItemValue('retail_amountdue',retail_load);
+					amountdue = retail_load + retail_processingfee;
+
+					myForm.setItemValue('retail_amountdue',amountdue);
 				}
 			}
 
