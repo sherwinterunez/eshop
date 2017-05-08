@@ -9828,6 +9828,16 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 						//pre(array('$content'=>$content));
 
+						if(!empty($content)) {
+							$aout = arrayprintrbuf(array('$content'=>$content));
+						}
+
+						foreach($aout as $bk=>$str) {
+							$dt = logdt(time());
+							$str = trim($str);
+							doLog("DOFAILEDBALANCEINQUIRY $dt $mobileNo $str",$mobileNo);
+						}
+
 						if(!($result = $appdb->insert("tbl_loadtransaction",$content,"loadtransaction_id"))) {
 							return false;
 						}
