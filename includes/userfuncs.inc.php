@@ -9356,12 +9356,14 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 							return false;
 						}
 
+						$validModemCommands = false;
+
 						if(!empty($result['rows'][0]['modemcommands_id'])) {
 							//print_r(array('$result'=>$result['rows']));
 							$validModemCommands = $result['rows'][0]['modemcommands_id'];
 						}
 
-						if($validModemCommands) {
+						if(!empty($validModemCommands)) {
 
 	///////////////////////////////////////
 

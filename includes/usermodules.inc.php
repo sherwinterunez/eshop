@@ -2919,19 +2919,31 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 
 		$confirmation = $vars['smsinbox']['smsinbox_message'];
 
-		$loadtransaction_assignedsim = $vars['smsinbox']['smsinbox_simnumber'];
+		$loadtransaction_assignedsim = $mobileNo = $vars['smsinbox']['smsinbox_simnumber'];
 
 		print_r(array('$match'=>$match));
 
 		$sql = "select * from tbl_loadtransaction where loadtransaction_assignedsim='$loadtransaction_assignedsim' and loadtransaction_status=".TRN_SENT." and loadtransaction_type='balance' and loadtransaction_invalid=0 order by loadtransaction_id asc limit 1";
 
-		print_r(array('$sql'=>$sql));
+		//print_r(array('$sql'=>$sql));
 
 		if(!($result = $appdb->query($sql))) {
 			return false;
 		}
 
-		print_r(array('$result'=>$result));
+		//print_r(array('$result'=>$result));
+
+		$printr = array('$match'=>$match,'$sql'=>$sql,'$result'=>$result);
+
+		print_r($printr);
+
+		$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+		foreach($aout as $bk=>$str) {
+			$dt = logdt(time());
+			$str = trim($str);
+			doLog("DOCHECKBALANCE $dt $mobileNo $str",$mobileNo);
+		}
 
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
@@ -3009,7 +3021,17 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 			return false;
 		}
 
-		print_r(array('$sql'=>$sql,'$result'=>$result));
+		$printr = array('$match'=>$match,'$sql'=>$sql,'$result'=>$result);
+
+		print_r($printr);
+
+		$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+		foreach($aout as $bk=>$str) {
+			$dt = logdt(time());
+			$str = trim($str);
+			doLog("DOCHECKBALANCEFORFAILEDPENDING $dt $mobileNo $str",$mobileNo);
+		}
 
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
@@ -3116,19 +3138,31 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 
 		$confirmation = $vars['smsinbox']['smsinbox_message'];
 
-		$loadtransaction_assignedsim = $vars['smsinbox']['smsinbox_simnumber'];
+		$loadtransaction_assignedsim = $mobileNo = $vars['smsinbox']['smsinbox_simnumber'];
 
 		print_r(array('$match'=>$match));
 
 		$sql = "select * from tbl_loadtransaction where loadtransaction_assignedsim='$loadtransaction_assignedsim' and loadtransaction_status=".TRN_SENT." and loadtransaction_type='balance' and loadtransaction_invalid=0 order by loadtransaction_id asc limit 1";
 
-		print_r(array('$sql'=>$sql));
+		//print_r(array('$sql'=>$sql));
 
 		if(!($result = $appdb->query($sql))) {
 			return false;
 		}
 
-		print_r(array('$result'=>$result));
+		//print_r(array('$result'=>$result));
+
+		$printr = array('$match'=>$match,'$sql'=>$sql,'$result'=>$result);
+
+		print_r($printr);
+
+		$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+		foreach($aout as $bk=>$str) {
+			$dt = logdt(time());
+			$str = trim($str);
+			doLog("DOCHECKBALANCE $dt $mobileNo $str",$mobileNo);
+		}
 
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
@@ -3208,7 +3242,19 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 			return false;
 		}
 
-		print_r(array('$sql'=>$sql,'$result'=>$result));
+		//print_r(array('$sql'=>$sql,'$result'=>$result));
+
+		$printr = array('$match'=>$match,'$sql'=>$sql,'$result'=>$result);
+
+		print_r($printr);
+
+		$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+		foreach($aout as $bk=>$str) {
+			$dt = logdt(time());
+			$str = trim($str);
+			doLog("DOCHECKBALANCEFORFAILEDPENDING $dt $mobileNo $str",$mobileNo);
+		}
 
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
@@ -3319,7 +3365,7 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 
 		$confirmation = $vars['smsinbox']['smsinbox_message'];
 
-		$loadtransaction_assignedsim = $vars['smsinbox']['smsinbox_simnumber'];
+		$loadtransaction_assignedsim = $mobileNo = $vars['smsinbox']['smsinbox_simnumber'];
 
 		print_r(array('$match'=>$match));
 
@@ -3335,13 +3381,25 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 
 		$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_invalid=0 and loadtransaction_type='balance' order by loadtransaction_id asc limit 1";
 
-		print_r(array('$sql'=>$sql));
+		//print_r(array('$sql'=>$sql));
 
 		if(!($result = $appdb->query($sql))) {
 			return false;
 		}
 
-		print_r(array('$result'=>$result));
+		//print_r(array('$result'=>$result));
+
+		$printr = array('$match'=>$match,'$sql'=>$sql,'$result'=>$result);
+
+		print_r($printr);
+
+		$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+		foreach($aout as $bk=>$str) {
+			$dt = logdt(time());
+			$str = trim($str);
+			doLog("DOCHECKBALANCE $dt $mobileNo $str",$mobileNo);
+		}
 
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
@@ -3425,6 +3483,18 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 
 		//print_r(array('$result'=>$result));
 
+		$printr = array('$match'=>$match,'$sql'=>$sql,'$result'=>$result);
+
+		print_r($printr);
+
+		$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+		foreach($aout as $bk=>$str) {
+			$dt = logdt(time());
+			$str = trim($str);
+			doLog("DOCHECKBALANCEFORFAILEDPENDING $dt $mobileNo $str",$mobileNo);
+		}
+		
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
 			if(!empty($match['REFERENCE'])) {
