@@ -1152,6 +1152,7 @@ function _eDealerProcessSMS($vars=array()) {
 	}
 
 	print_r(array('$vars'=>$vars));
+	print_r(array('$result'=>$result));
 
 	if(!empty($result['rows'][0]['simcard_id'])) {
 	} else {
