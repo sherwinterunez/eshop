@@ -3243,7 +3243,7 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 
 				$diff = $oldtransaction_simcardbalance - $loadwalletbalance;
 
-				pre(array('no confirmation received'=>array('loadwalletreference'=>$loadwalletreference,'loadwalletbalance'=>$loadwalletbalance,'oldtransaction_id'=>$oldtransaction_id,'oldtransaction_simcardbalance'=>$oldtransaction_simcardbalance,'diff'=>$diff)));
+				pre(array('no confirmation received'=>array('loadwalletreference'=>$loadwalletreference,'loadwalletbalance'=>$loadwalletbalance,'oldtransaction_id'=>$oldtransaction_id,'oldtransaction_simcardbalance'=>$oldtransaction_simcardbalance,'diff'=>$diff,'$loadtransaction_cost'=>$loadtransaction_cost)));
 
 				if($loadwalletbalance==$oldtransaction_simcardbalance) {
 
