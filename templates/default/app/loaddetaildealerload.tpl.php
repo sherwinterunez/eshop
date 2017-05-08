@@ -268,6 +268,14 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.showOnly(myToolbar);
 
+///////////////////////////////////////
+
+		var dhxCombo = myForm.getCombo("retail_customername");
+
+		dhxCombo.enableFilteringMode('between');
+
+///////////////////////////////////////
+
 		<?php } else if($method==$moduleid.'approved'||$method==$moduleid.'manually'||$method==$moduleid.'cancelled'||$method==$moduleid.'hold'||$method==$moduleid.'transfer') { ?>
 
 		myWinToolbar.disableAll();
