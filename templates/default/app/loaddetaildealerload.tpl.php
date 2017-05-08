@@ -276,7 +276,7 @@ pre(array('$vars'=>$vars));
 
 		dhxCombo.attachEvent("onChange", function(value, text){
 			console.log('onChange: '+value+', '+text);
-		}
+		});
 
 		dhxCombo.attachEvent("onClose", function(){
 			console.log('onClose: '+myForm.getItemValue('retail_customername'));
