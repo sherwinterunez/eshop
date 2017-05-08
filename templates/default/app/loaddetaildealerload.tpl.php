@@ -497,7 +497,7 @@ pre(array('$vars'=>$vars));
 					if(retail_load) {
 					} else {
 						myForm.setItemValue('retail_processingfee',0);
-						myForm.setItemValue('retail_amountdue',0;
+						myForm.setItemValue('retail_amountdue',0);
 						return false;
 					}
 
