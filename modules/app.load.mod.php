@@ -3533,7 +3533,7 @@ $item_provider = $itemData['item_provider'];
 
 		      ob_start();
 
-		      processSMS($content);
+		      //processSMS($content);
 
 		      $out = ob_get_clean();
 
