@@ -3612,29 +3612,27 @@ $item_provider = $itemData['item_provider'];
 		      'options' => $opt,
 		    );
 
-		    /*$opt = array();
+		    $opt = array();
 
 		    if($post['method']=='loadnew') {
-		      $params['tbDetails'][] = array(
-		        'type' => 'combo',
-		        'label' => 'RETAILER',
-		        'name' => 'retail_item',
+					$params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'CUSTOMER NAME',
+		        'name' => 'retail_customername',
 		        'readonly' => $readonly,
 		        'required' => !$readonly,
-		        'options' => $opt,
-		        //'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
+						'options' => $opt,
+		        //'value' => !empty($params['retailinfo']['loadtransaction_customernumber']) ? getCustomerNickByNumber($params['retailinfo']['loadtransaction_customernumber']) : '',
 		      );
 		    } else {
 		      $params['tbDetails'][] = array(
 		        'type' => 'input',
-		        'label' => 'ITEM',
-		        'name' => 'retail_item',
+						'label' => 'CUSTOMER NAME',
+		        'name' => 'retail_customername',
 		        'readonly' => true,
-		        //'required' => !$readonly,
-		        //'options' => $opt,
-		        'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
+						'value' => !empty($params['retailinfo']['loadtransaction_customernumber']) ? getCustomerNickByNumber($params['retailinfo']['loadtransaction_customernumber']) : '',
 		      );
-		    }*/
+		    }
 
 		/*
 		$item_cost = floatval($itemData['item_cost']);
@@ -4061,15 +4059,6 @@ $item_provider = $itemData['item_provider'];
 		        //'required' => !$readonly,
 		        'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 		        'value' => !empty($params['retailinfo']['loadtransaction_cashreceived']) ? $params['retailinfo']['loadtransaction_cashreceived'] : '',
-		      );
-
-		      $params['tbDetails'][] = array(
-		        'type' => 'input',
-		        'label' => 'CUSTOMER NAME',
-		        'name' => 'retail_customername',
-		        'readonly' => true,
-		        //'required' => !$readonly,
-		        'value' => !empty($params['retailinfo']['loadtransaction_customernumber']) ? getCustomerNickByNumber($params['retailinfo']['loadtransaction_customernumber']) : '',
 		      );
 
 		      $params['tbDetails'][] = array(
