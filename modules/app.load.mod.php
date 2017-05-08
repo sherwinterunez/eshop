@@ -3415,7 +3415,8 @@ $item_provider = $itemData['item_provider'];
 					}
 
 				} else
-				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='loadedit')) {
+				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='loadedit'||$post['method']=='loadapproved'||$post['method']=='loadmanually'||$post['method']=='loadcancelled'||$post['method']=='loadhold'||$post['method']=='loadtransfer')) {
+				//if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='loadedit')) {
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 						if(!($result = $appdb->query("select * from tbl_fund where fund_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));

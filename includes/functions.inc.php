@@ -43,6 +43,11 @@ function printrbuf($data) {
 	return $output;
 }
 
+function arrayprintrbuf($data) {
+	$out = printrbuf($data);
+	return explode("\n",$out);
+}
+
 function abs_path() {
 	return ABS_PATH;
 }

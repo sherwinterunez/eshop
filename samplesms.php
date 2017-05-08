@@ -89,6 +89,7 @@ function sampleSMS() {
 	echo "\nsampleSMS done (".$tstop." secs).\n";
 */
 
+/*
 	//$message = "LOADRETAIL AT10 09483621618 DRAFT\r\n";
 	$message = "LOADRETAIL AT10 09483621618 APPROVED\r\n";
 
@@ -108,7 +109,31 @@ function sampleSMS() {
 	$tstop = timer_stop();
 
 	echo "\nsampleSMS done (".$tstop." secs).\n";
+*/
 
+	$message = "LOADRETAIL AT10 09483621618 APPROVED\r\n";
+
+	$content = array();
+	$content['smsinbox_message'] = $message;
+	$content['smsinbox_contactsid'] = 138;
+	$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
+	$content['smsinbox_simnumber'] = '09197708008';
+
+	if(!($matched=smsLoadCommandMatched($content))) {
+		//return false;
+		$matched = false;
+	}
+
+	//$out = prebuf(array('$matched'=>$matched));
+	//$out = printrbuf(array('$matched'=>$matched));
+
+	//$aout = explode("\n",$out);
+
+	$aout = arrayprintrbuf($matched);
+
+	print_r(array('$aout'=>$aout));
+
+	//echo $out;
 }
 
 sampleSMS();

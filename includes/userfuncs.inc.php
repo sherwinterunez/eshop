@@ -9639,6 +9639,18 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 			$atsc = array();
 
+			//$pout = prebuf(array('$loadtransaction_matched'=>$loadtransaction_matched['matched']));
+			//$pout = printrbuf(array('$loadtransaction_matched'=>$loadtransaction_matched));
+			//$aout = explode("\n",$pout);
+
+			$aout = arrayprintrbuf(array('$loadtransaction_matched'=>$loadtransaction_matched));
+
+			foreach($aout as $bk=>$str) {
+				$dt = logdt(time());
+				$str = trim($str);
+				doLog("DOSMSCOMMANDS $dt $mobileNo $str",$mobileNo);
+			}
+
 			foreach($result['rows'] as $row) {
 				$t = array();
 
@@ -9649,6 +9661,9 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 						$oldat = $at;
 						$at = str_replace($ak,$am,$at);
 						print_r(array('str_replace($ak,$am,$at)'=>$at,'$ak'=>$ak,'$am'=>$am,'$oldat'=>$oldat));
+						$dt = logdt(time());
+						$str = 'str_replace('.$ak.','.$am.','.$oldat.') => '.$at;
+						doLog("DOSMSCOMMANDS $dt $mobileNo $str",$mobileNo);
 					}
 				}
 

@@ -140,6 +140,8 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 
 			foreach($matches[2] as $key=>$pdustr) {
 
+				print_r(array('$pdu->decode()'=>$pdustr));
+
 				$msg = $pdu->decode($pdustr);
 
 				print_r(array('$msg'=>$msg));
