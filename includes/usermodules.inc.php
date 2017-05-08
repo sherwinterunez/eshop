@@ -3009,7 +3009,7 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 			return false;
 		}
 
-		//print_r(array('$result'=>$result));
+		print_r(array('$sql'=>$sql,'$result'=>$result));
 
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
@@ -3018,7 +3018,7 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 			}
 
 			if(!empty($match['BALANCE'])) {
-				$loadwalletbalance = floatval($match['BALANCE']);
+				$loadwalletbalance = str_replace(',','',$match['BALANCE']); //floatval($match['BALANCE']);
 			}
 
 			$loadtransaction = $result['rows'][0];
@@ -3037,7 +3037,7 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 				return false;
 			}
 
-			//print_r(array('$result'=>$result));
+			print_r(array('$sql'=>$sql,'$result'=>$result));
 
 			if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
