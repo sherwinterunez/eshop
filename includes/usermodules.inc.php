@@ -1151,6 +1151,8 @@ function _eDealerProcessSMS($vars=array()) {
 		return false;
 	}
 
+	print_r(array('$vars'=>$vars));
+
 	if(!empty($result['rows'][0]['simcard_id'])) {
 	} else {
 		return false;
@@ -1202,8 +1204,6 @@ function _eDealerProcessSMS($vars=array()) {
 	} else {
 		return false;
 	}
-
-	print_r(array('$vars'=>$vars));
 
 	if(preg_match('/'.$regx.'/si',$loadtransaction_keyword,$keymatch)&&!empty($keymatch[0])) {
 		$keymatch[0] = strtoupper(clearDoubleSpace(clearcrlf2($keymatch[0])));
