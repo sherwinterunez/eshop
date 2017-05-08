@@ -280,7 +280,7 @@ pre(array('$vars'=>$vars));
 			if(ValidMobileNo(value)) {
 				myForm.setItemValue('retail_mobilenumber',value);
 			} else {
-				myForm.setItemValue('retail_mobilenumber','');				
+				myForm.setItemValue('retail_mobilenumber','');
 			}
 
 		});
@@ -457,6 +457,31 @@ pre(array('$vars'=>$vars));
 		    //showMessage("onInputChange: ["+name+"] "+name.length+" / {"+value+"} "+value.length,5000);
 
 			myChanged_%formval% = true;
+		});
+
+		myForm.attachEvent("onBlur", function (name){
+			//showMessage("onBlur: ["+name+"] ["+value+"] "+typeof(value),5000);
+
+			if(typeof(name)!='undefined') {
+			} else return false;
+
+			if(name=='retail_load') {
+				var retail_load = parseFloat(myForm.getItemValue('retail_load'));
+
+				if(retail_load) {
+
+					var retail_processingfee = parseFloat(myForm.getItemValue('retail_processingfee'));
+
+					if(retail_processingfee) {
+					} else {
+						retail_processingfee = 0;
+						myForm.setItemValue('retail_processingfee',retail_processingfee);
+					}
+
+					myForm.setItemValue('retail_amountdue',retail_load);
+				}
+			}
+
 		});
 
 		myForm.attachEvent("onValidateError", function(id,value){
