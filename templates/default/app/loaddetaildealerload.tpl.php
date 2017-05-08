@@ -505,6 +505,18 @@ pre(array('$vars'=>$vars));
 
 					myForm.setItemValue('retail_amountdue',amountdue);
 				}
+			} else
+			if(name=='retail_cashreceived') {
+				var retail_amountdue = parseFloat(myForm.getItemValue('retail_amountdue'));
+				var retail_cashreceived = parseFloat(myForm.getItemValue('retail_cashreceived'));
+
+				if(retail_amountdue&&retail_cashreceived) {
+					var retail_cashchange = parseFloat(retail_cashreceived - retail_amountdue);
+
+					if(retail_cashchange) {
+						myForm.setItemValue('retail_cashchange',retail_cashchange);
+					}
+				}
 			}
 
 		});
