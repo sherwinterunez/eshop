@@ -3578,7 +3578,7 @@ $item_provider = $itemData['item_provider'];
 		      'value' => !empty($params['retailinfo']['loadtransaction_createstamp']) ? pgDate($params['retailinfo']['loadtransaction_createstamp']) : '',
 		    );
 
-		    $providers = array('SMART','GLOBE','SUN','OPEN','09493621618|SHERWIN|TERUNEZ');
+		    $providers = array('SMART','GLOBE','SUN','OPEN');
 
 		    $opt = array();
 
