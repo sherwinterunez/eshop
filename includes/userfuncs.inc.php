@@ -9692,7 +9692,14 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 			//$pout = printrbuf(array('$loadtransaction_matched'=>$loadtransaction_matched));
 			//$aout = explode("\n",$pout);
 
-			$aout = arrayprintrbuf(array('$loadtransaction_matched'=>$loadtransaction_matched));
+			if(!empty($loadtransaction_matched)) {
+				$aout = arrayprintrbuf(array('$loadtransaction_matched'=>$loadtransaction_matched));
+			} else
+			if(!empty($loadtransaction)) {
+				$aout = arrayprintrbuf(array('$loadtransaction'=>$loadtransaction));
+			} else {
+				$aout = arrayprintrbuf(array('$nothing'=>'nothing'));
+			}
 
 			foreach($aout as $bk=>$str) {
 				$dt = logdt(time());
@@ -9787,8 +9794,6 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 					print_r(array('MODEM FUNCTION FAILED!','MODEM FUNCTION FAILED!','MODEM FUNCTION FAILED!','MODEM FUNCTION FAILED!'));
 
 					$content['loadtransaction_status'] = $loadtransaction_status = TRN_FAILED; // not successful
-
-
 
 				//}
 
