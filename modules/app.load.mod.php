@@ -3612,12 +3612,12 @@ $item_provider = $itemData['item_provider'];
 		      'options' => $opt,
 		    );
 
-		    $opt = array();
+		    /*$opt = array();
 
 		    if($post['method']=='loadnew') {
 		      $params['tbDetails'][] = array(
 		        'type' => 'combo',
-		        'label' => 'ITEM',
+		        'label' => 'RETAILER',
 		        'name' => 'retail_item',
 		        'readonly' => $readonly,
 		        'required' => !$readonly,
@@ -3634,7 +3634,7 @@ $item_provider = $itemData['item_provider'];
 		        //'options' => $opt,
 		        'value' => !empty($params['retailinfo']['loadtransaction_item']) ? strtoupper($params['retailinfo']['loadtransaction_item']) : '',
 		      );
-		    }
+		    }*/
 
 		/*
 		$item_cost = floatval($itemData['item_cost']);
