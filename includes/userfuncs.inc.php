@@ -1039,6 +1039,44 @@ function getAllRegularCustomer($mode=1) {
 	return false;
 }
 
+function getAllRetailerCustomer($mode=1) {
+	global $appdb;
+
+	$sql = "select * from tbl_customer where customer_type='RETAILER' order by customer_id asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['customer_id'])) {
+
+		$retval = array();
+
+		if($mode==1) {
+
+			foreach($result['rows'] as $k=>$v) {
+				$retval[$v['customer_id']] = $v;
+			}
+
+			return $retval;
+
+		} else
+		if($mode==2) {
+
+			foreach($result['rows'] as $k=>$v) {
+				$retval[$v['customer_mobileno']] = $v;
+			}
+
+			return $retval;
+
+		}
+
+		return $result['rows'];
+	}
+
+	return false;
+}
+
 function getSupplier($mode=0, $id=false) {
 	global $appdb;
 

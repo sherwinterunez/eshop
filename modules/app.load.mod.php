@@ -3683,15 +3683,16 @@ $item_provider = $itemData['item_provider'];
 		      'type' => 'input',
 		      'label' => 'MOBILE NUMBER',
 		      'name' => 'retail_mobilenumber',
-		      'readonly' => $readonly,
-		      'required' => !$readonly,
-		      'inputMask' => array('mask'=>'09999999999'),
+					'readonly' => true,
+		      //'readonly' => $readonly,
+		      //'required' => !$readonly,
+		      //'inputMask' => array('mask'=>'09999999999'),
 		      'value' => !empty($params['retailinfo']['loadtransaction_recipientnumber']) ? $params['retailinfo']['loadtransaction_recipientnumber'] : '',
 		    );
 
 		    $params['tbDetails'][] = array(
 		      'type' => 'input',
-		      'label' => 'LOAD',
+		      'label' => 'AMOUNT',
 		      'name' => 'retail_load',
 		      'readonly' => $readonly,
 		      'required' => !$readonly,
