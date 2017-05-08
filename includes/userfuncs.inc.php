@@ -3427,7 +3427,7 @@ function getAllSims($mode=0,$all=false) {
 		if($mode==10) {
 			foreach($result['rows'] as $v) {
 				if(!empty($v['simcard_online'])&&!empty($v['simcard_hotline'])) {
-					$sims[] = $v['simcard_name'];
+					$sims[] = $v;
 				}
 			}
 
