@@ -262,7 +262,7 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.disableAll();
 
-		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>approved']);
 
 		//myForm.setItemFocus("txt_optionsname");
 
