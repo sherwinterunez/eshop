@@ -3208,7 +3208,7 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 			return false;
 		}
 
-		//print_r(array('$result'=>$result));
+		print_r(array('$sql'=>$sql,'$result'=>$result));
 
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
@@ -3233,7 +3233,7 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 
 			$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_COMPLETED." and loadtransaction_invalid=0 and loadtransaction_type='retail' order by loadtransaction_id DESC limit 1";
 
-			//print_r(array('$sql'=>$sql));
+			print_r(array('$sql'=>$sql,'$result'=>$result));
 
 			if(!($result = $appdb->query($sql))) {
 				return false;
