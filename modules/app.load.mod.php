@@ -3616,7 +3616,7 @@ $item_provider = $itemData['item_provider'];
 
 		    if($post['method']=='loadnew') {
 					$params['tbDetails'][] = array(
-		        'type' => 'input',
+		        'type' => 'combo',
 		        'label' => 'CUSTOMER NAME',
 		        'name' => 'retail_customername',
 		        'readonly' => $readonly,
