@@ -3612,9 +3612,32 @@ $item_provider = $itemData['item_provider'];
 		      'options' => $opt,
 		    );
 
-		    $opt = array();
-
 		    if($post['method']=='loadnew') {
+					$opt = array();
+
+					$retailers = getAllRetailerCustomer(2);
+
+					if(!$readonly) {
+			      $opt[] = array('text'=>'','value'=>'');
+			    }
+
+			    foreach($retailers as $v) {
+			      $selected = false;
+
+			      if(!empty($params['retailinfo']['loadtransaction_customernumber'])&&$params['retailinfo']['loadtransaction_customernumber']==$v['customer_mobileno']) {
+			        $selected = true;
+			      }
+
+			      if($readonly) {
+			        if($selected) {
+			          $opt[] = array('text'=>getCustomerFullname($v['customer_id']),'value'=>$v['customer_mobileno'],'selected'=>$selected);
+			        }
+			      } else {
+							$opt[] = array('text'=>getCustomerFullname($v['customer_id']),'value'=>$v['customer_mobileno'],'selected'=>$selected);
+			      }
+
+			    }
+
 					$params['tbDetails'][] = array(
 		        'type' => 'combo',
 		        'label' => 'CUSTOMER NAME',
