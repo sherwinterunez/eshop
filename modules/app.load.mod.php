@@ -3457,7 +3457,7 @@ $item_provider = $itemData['item_provider'];
 
 		      $retail_mobilenumber = !empty($post['retail_mobilenumber']) ? $post['retail_mobilenumber'] : false;
 		      $retail_provider = !empty($post['retail_provider']) ? $post['retail_provider'] : false;
-		      $retail_item = !empty($post['retail_item']) ? $post['retail_item'] : false;
+		      //$retail_item = !empty($post['retail_item']) ? $post['retail_item'] : false;
 		      $retail_load = !empty($post['retail_load']) ? intval($post['retail_load']) : false;
 
 		      if(!empty($retail_mobilenumber)&&!empty($retail_provider)) {
@@ -3466,13 +3466,35 @@ $item_provider = $itemData['item_provider'];
 		        die;
 		      }
 
-		      if(getNetworkName($retail_mobilenumber)==$retail_provider) {
-		      } else {
+					//$loadtransaction_provider = getNetworkName($retail_mobilenumber);
+
+					if(!empty($retail_provider)) {
+					} else {
+						$retval = array();
+		        $retval['error_code'] = '345342';
+		        $retval['error_message'] = 'Invalid Provider!';
+
 		        json_encode_return($retval);
 		        die;
-		      }
+					}
 
-		      if(!empty($retail_item)) {
+					if(!empty($retail_load)) {
+					} else {
+						$retval = array();
+		        $retval['error_code'] = '345342';
+		        $retval['error_message'] = 'Invalid Amount!';
+
+		        json_encode_return($retval);
+		        die;
+					}
+
+		      //if(getNetworkName($retail_mobilenumber)==$retail_provider) {
+		      //} else {
+		      //  json_encode_return($retval);
+		      //  die;
+		      //}
+
+		      /*if(!empty($retail_item)) {
 		        $itemData = getItemData($retail_item,$retail_provider);
 		      }
 
@@ -3484,11 +3506,11 @@ $item_provider = $itemData['item_provider'];
 
 		        json_encode_return($retval);
 		        die;
-		      }
+		      }*/
 
 		      //pre(array('$itemData'=>$itemData));
 
-		      if(!empty($itemData['item_regularload'])) {
+		      /*if(!empty($itemData['item_regularload'])) {
 		        if(!empty($retail_load)) {
 		          $retail_item = $retail_item.$retail_load;
 		        } else {
@@ -3499,11 +3521,10 @@ $item_provider = $itemData['item_provider'];
 		          json_encode_return($retval);
 		          die;
 		        }
-		      }
+		      }*/
 
 		      $userId = $applogin->getUserID();
 		      $userData = $applogin->getUserData();
-
 
 		      if(!empty($userData['user_staffid'])) {
 		        $user_staffid = $userData['user_staffid'];
@@ -3520,7 +3541,7 @@ $item_provider = $itemData['item_provider'];
 		      $retval['return_code'] = 'SUCCESS';
 		      $retval['return_message'] = 'Customer retail load successfully saved!';
 
-		      $message = "LOADRETAIL $retail_item $retail_mobilenumber $status\r\n";
+		      $message = "LOADDEALER $retail_provider $retail_load $retail_mobilenumber $status\r\n";
 
 		      $content = array();
 		      $content['smsinbox_contactsid'] = $user_staffid;
