@@ -3543,7 +3543,7 @@ $item_provider = $itemData['item_provider'];
 
 		      $message = "LOADDEALER $retail_provider $retail_load $retail_mobilenumber $status\r\n";
 
-					$asims = getAllSims();
+					$asims = getAllSims(10);
 
 					pre(array('$asims'=>$asims));
 
