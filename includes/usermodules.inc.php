@@ -3059,7 +3059,19 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 				return false;
 			}
 
-			print_r(array('$sql'=>$sql,'$result'=>$result));
+			//print_r(array('$sql'=>$sql,'$result'=>$result));
+
+			$printr = array('$sql'=>$sql,'$result'=>$result);
+
+			print_r($printr);
+
+			$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+			foreach($aout as $bk=>$str) {
+				$dt = logdt(time());
+				$str = trim($str);
+				doLog("DOCHECKOLDCOMPLETEDTRANS $dt $mobileNo $str",$mobileNo);
+			}
 
 			if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
@@ -3071,7 +3083,17 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 
 				$diff = $oldtransaction_simcardbalance - $loadwalletbalance;
 
-				pre(array('no confirmation received'=>array('loadwalletreference'=>$loadwalletreference,'loadwalletbalance'=>$loadwalletbalance,'oldtransaction_id'=>$oldtransaction_id,'oldtransaction_simcardbalance'=>$oldtransaction_simcardbalance,'diff'=>$diff,'$loadtransaction_cost'=>$loadtransaction_cost)));
+				$printr = array('no confirmation received'=>array('loadwalletreference'=>$loadwalletreference,'loadwalletbalance'=>$loadwalletbalance,'oldtransaction_id'=>$oldtransaction_id,'oldtransaction_simcardbalance'=>$oldtransaction_simcardbalance,'diff'=>$diff,'$loadtransaction_cost'=>$loadtransaction_cost));
+
+				print_r($printr);
+
+				$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+				foreach($aout as $bk=>$str) {
+					$dt = logdt(time());
+					$str = trim($str);
+					doLog("DOCHECKOLDCOMPLETEDTRANS $dt $mobileNo $str",$mobileNo);
+				}
 
 				if($loadwalletbalance==$oldtransaction_simcardbalance) {
 
@@ -3287,6 +3309,18 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 
 			//print_r(array('$result'=>$result));
 
+			$printr = array('$sql'=>$sql,'$result'=>$result);
+
+			print_r($printr);
+
+			$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+			foreach($aout as $bk=>$str) {
+				$dt = logdt(time());
+				$str = trim($str);
+				doLog("DOCHECKOLDCOMPLETEDTRANS $dt $mobileNo $str",$mobileNo);
+			}
+
 			if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
 				$oldtransaction = $result['rows'][0];
@@ -3297,7 +3331,17 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 
 				$diff = $oldtransaction_simcardbalance - $loadwalletbalance;
 
-				pre(array('no confirmation received'=>array('loadwalletreference'=>$loadwalletreference,'loadwalletbalance'=>$loadwalletbalance,'oldtransaction_id'=>$oldtransaction_id,'oldtransaction_simcardbalance'=>$oldtransaction_simcardbalance,'diff'=>$diff,'$loadtransaction_cost'=>$loadtransaction_cost)));
+				$printr = array('no confirmation received'=>array('loadwalletreference'=>$loadwalletreference,'loadwalletbalance'=>$loadwalletbalance,'oldtransaction_id'=>$oldtransaction_id,'oldtransaction_simcardbalance'=>$oldtransaction_simcardbalance,'diff'=>$diff,'$loadtransaction_cost'=>$loadtransaction_cost));
+
+				print_r($printr);
+
+				$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+				foreach($aout as $bk=>$str) {
+					$dt = logdt(time());
+					$str = trim($str);
+					doLog("DOCHECKOLDCOMPLETEDTRANS $dt $mobileNo $str",$mobileNo);
+				}
 
 				if($loadwalletbalance==$oldtransaction_simcardbalance) {
 
@@ -3494,7 +3538,7 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 			$str = trim($str);
 			doLog("DOCHECKBALANCEFORFAILEDPENDING $dt $mobileNo $str",$mobileNo);
 		}
-		
+
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
 			if(!empty($match['REFERENCE'])) {
@@ -3523,6 +3567,18 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 
 			//print_r(array('$result'=>$result));
 
+			$printr = array('$sql'=>$sql,'$result'=>$result);
+
+			print_r($printr);
+
+			$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+			foreach($aout as $bk=>$str) {
+				$dt = logdt(time());
+				$str = trim($str);
+				doLog("DOCHECKOLDCOMPLETEDTRANS $dt $mobileNo $str",$mobileNo);
+			}
+
 			if(!empty($result['rows'][0]['loadtransaction_id'])) {
 
 				$oldtransaction = $result['rows'][0];
@@ -3533,7 +3589,17 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 
 				$diff = $oldtransaction_simcardbalance - $loadwalletbalance;
 
-				pre(array('no confirmation received'=>array('loadwalletreference'=>$loadwalletreference,'loadwalletbalance'=>$loadwalletbalance,'oldtransaction_id'=>$oldtransaction_id,'oldtransaction_simcardbalance'=>$oldtransaction_simcardbalance,'diff'=>$diff,'$loadtransaction_cost'=>$loadtransaction_cost)));
+				$printr = array('no confirmation received'=>array('loadwalletreference'=>$loadwalletreference,'loadwalletbalance'=>$loadwalletbalance,'oldtransaction_id'=>$oldtransaction_id,'oldtransaction_simcardbalance'=>$oldtransaction_simcardbalance,'diff'=>$diff,'$loadtransaction_cost'=>$loadtransaction_cost));
+
+				print_r($printr);
+
+				$aout = arrayprintrbuf(array('$printr'=>$printr));
+
+				foreach($aout as $bk=>$str) {
+					$dt = logdt(time());
+					$str = trim($str);
+					doLog("DOCHECKOLDCOMPLETEDTRANS $dt $mobileNo $str",$mobileNo);
+				}
 
 				if($loadwalletbalance==$oldtransaction_simcardbalance) {
 
