@@ -4906,6 +4906,8 @@ function _fundCredit($vars=array()) {
 
 			}
 
+			$customer_availablecredit = getCustomerAvailableCredit($smsinbox_contactsid);
+
 			print_r(array('$customer_availablecredit'=>$customer_availablecredit,'$customer_creditlimit'=>$customer_creditlimit,'$terms'=>$terms,'$unpaidCredit'=>$unpaidCredit));
 
 			if($customer_availablecredit>=$fund_amount) {
