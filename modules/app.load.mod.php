@@ -3481,6 +3481,8 @@ $item_provider = $itemData['item_provider'];
 
 					//$loadtransaction_provider = getNetworkName($retail_mobilenumber);
 
+					$loadtransaction_retailerid = getCustomerIDByDefaultNumber($retail_mobilenumber);
+
 					if(!empty($retail_provider)) {
 					} else {
 						$retval = array();
@@ -3496,6 +3498,19 @@ $item_provider = $itemData['item_provider'];
 						$retval = array();
 		        $retval['error_code'] = '345342';
 		        $retval['error_message'] = 'Invalid Amount!';
+
+		        json_encode_return($retval);
+		        die;
+					}
+
+					$minamount = getRetailerMinAmount($loadtransaction_retailerid);
+					$maxamount = getRetailerMaxAmount($loadtransaction_retailerid);
+
+					if($retail_load>=$minamount&&$retail_load<=$maxamount) {
+					} else {
+						$retval = array();
+		        $retval['error_code'] = '345331';
+		        $retval['error_message'] = 'Valid amount is from '.$minamount.' to '.$maxamount;
 
 		        json_encode_return($retval);
 		        die;
