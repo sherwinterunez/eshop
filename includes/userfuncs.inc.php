@@ -9797,6 +9797,11 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 				//}
 
+				if(!empty($loadtransaction['loadtransaction_failedtransid'])) { // this is balance force complete
+					$loadtransaction_failedtransid = $loadtransaction['loadtransaction_failedtransid'];
+					//$content['loadtransaction_status'] = $loadtransaction_status = TRN_COMPLETED;
+				}
+
 			}
 
 			$content['loadtransaction_updatestamp'] = 'now()';
@@ -9828,6 +9833,10 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 						$content['loadtransaction_type'] = 'balance';
 						$content['loadtransaction_status'] = TRN_APPROVED;
 						$content['loadtransaction_failedtransid'] = $loadtransaction_id;
+
+						if(!empty($loadtransaction_failedtransid)) {
+							$content['loadtransaction_failedtransid'] = $loadtransaction_failedtransid;
+						}
 
 						//pre(array('$content'=>$content));
 

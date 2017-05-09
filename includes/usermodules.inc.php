@@ -2978,7 +2978,7 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 			}
 
 			if(!empty($match['REFERENCE'])) {
-				$content['loadtransaction_refnumber'] = $match['REFERENCE'];
+				$content['loadtransaction_refnumber'] = $loadwalletreference = $match['REFERENCE'];
 			}
 
 			if(!empty($match['BALANCE'])) {
@@ -3344,9 +3344,9 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 			}
 
 			if(!empty($match['REFERENCE'])) {
-				$content['loadtransaction_refnumber'] = $match['REFERENCE'];
+				$content['loadtransaction_refnumber'] = $loadwalletreference = $match['REFERENCE'];
 			} else {
-				$content['loadtransaction_refnumber'] = '1234567890';
+				$content['loadtransaction_refnumber'] = $loadwalletreference = '1234567890';
 			}
 
 			if(!empty($match['BALANCE'])) {
@@ -3722,7 +3722,7 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 			}
 
 			if(!empty($match['REFERENCE'])) {
-				$content['loadtransaction_refnumber'] = $match['REFERENCE'];
+				$content['loadtransaction_refnumber'] = $loadwalletreference = $match['REFERENCE'];
 			}
 
 			if(!empty($match['BALANCE'])) {
@@ -3879,7 +3879,7 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 				}
 
 			} // if(!empty($loadtransaction_failedtransid)) {
-				
+
 			return true;
 		}
 
