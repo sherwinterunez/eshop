@@ -9805,6 +9805,8 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 				return false;
 			}
 
+			$loadtransaction_id = $loadtransaction['loadtransaction_id'];
+
 			if($loadtransaction_status==TRN_FAILED&&isSimFailedPerformBalanceInquiry($mobileNo)) {
 
 				$simcommand = getSimFailedPerformBalanceInquirySimCommand($mobileNo);
@@ -9825,6 +9827,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 						$content['loadtransaction_simcommand'] = $simcommand;
 						$content['loadtransaction_type'] = 'balance';
 						$content['loadtransaction_status'] = TRN_APPROVED;
+						$content['loadtransaction_failedtransid'] = $loadtransaction_id;
 
 						//pre(array('$content'=>$content));
 

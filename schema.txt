@@ -1086,6 +1086,7 @@ alter table tbl_loadtransaction add column loadtransaction_itemthreshold numeric
 alter table tbl_loadtransaction add column loadtransaction_trademoney integer NOT NULL DEFAULT 0;
 alter table tbl_loadtransaction add column loadtransaction_retailload integer NOT NULL DEFAULT 0;
 alter table tbl_loadtransaction add column loadtransaction_dealerload integer NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_failedtransid integer NOT NULL DEFAULT 0;
 
 alter table tbl_ledger add column ledger_loadtransactionid integer NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_fundid integer NOT NULL DEFAULT 0;
