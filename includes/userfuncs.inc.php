@@ -9798,8 +9798,16 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 				//}
 
 				if(!empty($loadtransaction['loadtransaction_failedtransid'])) { // this is balance force complete
-					$loadtransaction_failedtransid = $loadtransaction['loadtransaction_failedtransid'];
-					//$content['loadtransaction_status'] = $loadtransaction_status = TRN_COMPLETED;
+					//$loadtransaction_failedtransid = $loadtransaction['loadtransaction_failedtransid'];
+					$content['loadtransaction_status'] = $loadtransaction_status = TRN_APPROVED;
+
+					$content['loadtransaction_balanceinquiry'] = $loadtransaction['loadtransaction_balanceinquiry'] + 1;
+
+					$content['loadtransaction_balanceinquirystamp'] = 'now()';
+
+					if($content['loadtransaction_balanceinquiry']>3) {
+						$content['loadtransaction_status'] = $loadtransaction_status = TRN_COMPLETED;
+					}
 				}
 
 			}
