@@ -3455,6 +3455,22 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 							doLog("DOCHECKOLDCOMPLETEDTRANS $dt $mobileNo $str",$mobileNo);
 						}
 
+						if($loadtransaction_loadretries>3) {
+							$content = array();
+							$content['loadtransaction_updatestamp'] = 'now()';
+							$content['loadtransaction_status'] = TRN_FAILED;
+							$content['loadtransaction_balanceinquiry'] = 0;
+							//$content['loadtransaction_loadretries'] = $loadtransaction_loadretries + 1;
+
+							//print_r(array('$content'=>$content));
+
+							if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=$loadtransaction_id"))) {
+								return false;
+							}
+
+							return true;
+						}
+
 						if($loadwalletbalance==$oldtransaction_simcardbalance) {
 
 							$content = array();
