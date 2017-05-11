@@ -3042,7 +3042,9 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 
 					$loadtransaction_cost = floatval($loadtransaction['loadtransaction_cost']);
 
-					$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_COMPLETED." and loadtransaction_invalid=0 and loadtransaction_type='retail' order by loadtransaction_id DESC limit 1";
+					$loadtransaction_createstampunix = $loadtransaction['loadtransaction_createstampunix'];
+
+					$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_COMPLETED." and loadtransaction_invalid=0 and loadtransaction_type='retail' and loadtransaction_createstampunix<$loadtransaction_createstampunix order by loadtransaction_id DESC limit 1";
 
 					//print_r(array('$sql'=>$sql));
 
@@ -3095,6 +3097,10 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 							$content['loadtransaction_loadretries'] = $loadtransaction_loadretries + 1;
 
 							//print_r(array('$content'=>$content));
+
+							if($content['loadtransaction_loadretries']>3) {
+								$content['loadtransaction_status'] = TRN_FAILED;
+							}
 
 							if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=$loadtransaction_id"))) {
 								return false;
@@ -3227,6 +3233,10 @@ function _AutoLoadMAXBalanceExpressionProcessSMS($vars=array()) {
 					$content['loadtransaction_status'] = TRN_APPROVED;
 					$content['loadtransaction_balanceinquiry'] = 0;
 					$content['loadtransaction_loadretries'] = $loadtransaction_loadretries + 1;
+
+					if($content['loadtransaction_loadretries']>3) {
+						$content['loadtransaction_status'] = TRN_FAILED;
+					}
 
 					//print_r(array('$content'=>$content));
 
@@ -3411,7 +3421,9 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 
 					$loadtransaction_cost = floatval($loadtransaction['loadtransaction_cost']);
 
-					$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_COMPLETED." and loadtransaction_invalid=0 and loadtransaction_type='retail' order by loadtransaction_id DESC limit 1";
+					$loadtransaction_createstampunix = $loadtransaction['loadtransaction_createstampunix'];
+
+					$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_COMPLETED." and loadtransaction_invalid=0 and loadtransaction_type='retail' and loadtransaction_createstampunix<$loadtransaction_createstampunix order by loadtransaction_id DESC limit 1";
 
 					//print_r(array('$sql'=>$sql));
 
@@ -3455,22 +3467,6 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 							doLog("DOCHECKOLDCOMPLETEDTRANS $dt $mobileNo $str",$mobileNo);
 						}
 
-						if($loadtransaction_loadretries>3) {
-							$content = array();
-							$content['loadtransaction_updatestamp'] = 'now()';
-							$content['loadtransaction_status'] = TRN_FAILED;
-							$content['loadtransaction_balanceinquiry'] = 0;
-							//$content['loadtransaction_loadretries'] = $loadtransaction_loadretries + 1;
-
-							//print_r(array('$content'=>$content));
-
-							if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=$loadtransaction_id"))) {
-								return false;
-							}
-
-							return true;
-						}
-
 						if($loadwalletbalance==$oldtransaction_simcardbalance) {
 
 							$content = array();
@@ -3478,6 +3474,10 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 							$content['loadtransaction_status'] = TRN_APPROVED;
 							$content['loadtransaction_balanceinquiry'] = 0;
 							$content['loadtransaction_loadretries'] = $loadtransaction_loadretries + 1;
+
+							if($content['loadtransaction_loadretries']>3) {
+								$content['loadtransaction_status'] = TRN_FAILED;
+							}
 
 							//print_r(array('$content'=>$content));
 
@@ -3619,6 +3619,10 @@ function _SunBalanceExpressionProcessSMS($vars=array()) {
 					$content['loadtransaction_loadretries'] = $loadtransaction_loadretries + 1;
 
 					//print_r(array('$content'=>$content));
+
+					if($content['loadtransaction_loadretries']>3) {
+						$content['loadtransaction_status'] = TRN_FAILED;
+					}
 
 					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=$loadtransaction_id"))) {
 						return false;
@@ -3803,7 +3807,9 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 
 					$loadtransaction_cost = floatval($loadtransaction['loadtransaction_cost']);
 
-					$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_COMPLETED." and loadtransaction_invalid=0 and loadtransaction_type='retail' order by loadtransaction_id DESC limit 1";
+					$loadtransaction_createstampunix = $loadtransaction['loadtransaction_createstampunix'];
+
+					$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_COMPLETED." and loadtransaction_invalid=0 and loadtransaction_type='retail' and loadtransaction_createstampunix<$loadtransaction_createstampunix order by loadtransaction_id DESC limit 1";
 
 					//print_r(array('$sql'=>$sql));
 
@@ -3856,6 +3862,10 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 							$content['loadtransaction_loadretries'] = $loadtransaction_loadretries + 1;
 
 							//print_r(array('$content'=>$content));
+
+							if($content['loadtransaction_loadretries']>3) {
+								$content['loadtransaction_status'] = TRN_FAILED;
+							}
 
 							if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=$loadtransaction_id"))) {
 								return false;
@@ -3993,6 +4003,10 @@ function _LoadWalletBalanceExpressionProcessSMS($vars=array()) {
 					$content['loadtransaction_loadretries'] = $loadtransaction_loadretries + 1;
 
 					//print_r(array('$content'=>$content));
+
+					if($content['loadtransaction_loadretries']>3) {
+						$content['loadtransaction_status'] = TRN_FAILED;
+					}
 
 					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=$loadtransaction_id"))) {
 						return false;

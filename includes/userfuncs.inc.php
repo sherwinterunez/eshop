@@ -9820,6 +9820,8 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 			$loadtransaction_id = $loadtransaction['loadtransaction_id'];
 
+			$loadtransaction_loadretries = $loadtransaction['loadtransaction_loadretries'];
+
 			if($loadtransaction_status==TRN_FAILED&&isSimFailedPerformBalanceInquiry($mobileNo)) {
 
 				$simcommand = getSimFailedPerformBalanceInquirySimCommand($mobileNo);
