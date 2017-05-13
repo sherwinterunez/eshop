@@ -1472,7 +1472,7 @@ function _eDealerProcessSMS($vars=array()) {
 			}
 		}
 
-		pre(array('$assignedsim'=>$simassignment));
+		pre(array('$simassignment'=>$simassignment));
 
 		//return false;
 
@@ -1522,7 +1522,7 @@ function _eDealerProcessSMS($vars=array()) {
 
 				$simonline++;
 
-				//pre(array('$assignedsim2'=>$simassignment));
+				pre(array('$assignedsim'=>$assignedsim));
 
 				/*if(!($result=$appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_type='retail' and loadtransaction_status in (".TRN_APPROVED.",".TRN_PROCESSING.",".TRN_SENT.") and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_id asc limit 1"))) {
 					return false;

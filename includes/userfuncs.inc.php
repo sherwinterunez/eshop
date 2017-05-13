@@ -4273,7 +4273,7 @@ function getRetailerSimAssign($retailerid=false,$provider=false) {
 		return false;
 	}
 
-	$sql = "select * from tbl_retailerassignedsim where retailerassignedsim_customerid=$retailerid";
+	$sql = "select * from tbl_retailerassignedsim where retailerassignedsim_customerid=$retailerid and retailerassignedsim_active>0";
 
 	if(!($result = $appdb->query($sql))) {
 		return false;
