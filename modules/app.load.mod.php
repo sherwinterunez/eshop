@@ -3694,10 +3694,10 @@ $item_provider = $itemData['item_provider'];
 
 			      if($readonly) {
 			        if($selected) {
-			          $opt[] = array('text'=>getCustomerFullname($v['customer_id']),'value'=>$v['customer_mobileno'],'selected'=>$selected);
+			          $opt[] = array('text'=>$v['customer_mobileno'].' '.getCustomerFullname($v['customer_id']),'value'=>$v['customer_mobileno'],'selected'=>$selected);
 			        }
 			      } else {
-							$opt[] = array('text'=>getCustomerFullname($v['customer_id']),'value'=>$v['customer_mobileno'],'selected'=>$selected);
+							$opt[] = array('text'=>$v['customer_mobileno'].' '.getCustomerFullname($v['customer_id']),'value'=>$v['customer_mobileno'],'selected'=>$selected);
 			      }
 
 			    }
