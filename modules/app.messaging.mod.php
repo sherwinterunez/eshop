@@ -4095,7 +4095,7 @@ Indexes:
 						}
 					} else
 					if($this->post['table']=='sent') {
-						if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_sent!=0 and smsoutbox_deleted=0 order by smsoutbox_id desc"))) {
+						if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_sent!=0 and smsoutbox_deleted=0 order by smsoutbox_id desc limit 10000"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
