@@ -120,8 +120,6 @@ if($savecancel) {
 
 		var myToolbar = <?php echo json_encode($toolbars); ?>
 
-		//var disabledtb = <?php echo json_encode($disabledtb); ?>
-
 		var $ = jQuery;
 
 		var myTab = srt.getTabUsingFormVal('%formval%');

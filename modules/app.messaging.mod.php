@@ -4040,7 +4040,7 @@ Indexes:
 						}
 					} else
 					if($this->post['table']=='inbox') {
-						if(!($result = $appdb->query("select * from tbl_smsinbox where smsinbox_deleted=0 order by smsinbox_id desc"))) {
+						if(!($result = $appdb->query("select * from tbl_smsinbox where smsinbox_deleted=0 order by smsinbox_id desc limit 10000"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}

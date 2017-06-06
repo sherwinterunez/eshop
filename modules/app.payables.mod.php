@@ -2018,8 +2018,9 @@ sherwint_eshop=#
 
 						//pre(array('$result'=>$result));
 
+						$amountdue = 0;
+
 						if(!empty($result['rows'][0]['ledger_id'])) {
-							$amountdue = 0;
 							foreach($result['rows'] as $k=>$v) {
 								$ledger_credit = floatval($v['ledger_credit']);
 

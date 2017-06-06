@@ -410,7 +410,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		dhxCombo.addOption(<?php echo json_encode($opt); ?>);
 
-		dhxCombo.enableFilteringMode(true);
+		//dhxCombo.enableFilteringMode(true);
+
+		dhxCombo.enableFilteringMode('between');
 
 		dhxCombo.attachEvent("onClose", function(){
 		    //your code here
