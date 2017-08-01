@@ -126,11 +126,11 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 
 			myGrid.setImagePath("/codebase/imgs/")
 
-			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Provider, SIM, Customer Name, Recipient No., Item, Quantity, Discount, Amnt Due, Status");
+			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Provider, SIM, Customer Name, Retailer No., Retailer Name, Quantity, Discount, Amnt Due, Status");
 
-			myGrid.setInitWidths("50,50,120,120,120,120,120,120,80,80,80,80,150");
+			myGrid.setInitWidths("50,50,120,120,120,120,120,120,120,80,80,80,150");
 
-			myGrid.setColAlign("center,center,left,left,left,center,left,center,center,right,right,right,left");
+			myGrid.setColAlign("center,center,left,left,left,center,left,center,left,right,right,right,left");
 
 			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
