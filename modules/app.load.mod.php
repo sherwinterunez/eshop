@@ -6168,7 +6168,7 @@ $item_provider = $itemData['item_provider'];
 									$statusString = $statusString . ', (' . intval($v['elapsedtime']) . 'sec)';
 								}
 
-								$rows[] = array('id'=>$v['loadtransaction_id'],'data'=>array(0,$v['loadtransaction_id'],pgDate($v['loadtransaction_createstamp']),$receiptno,$v['loadtransaction_provider'],$v['loadtransaction_assignedsim'],$v['loadtransaction_customername'],$v['loadtransaction_recipientnumber'],getCustomerNickByNumber($v['loadtransaction_recipientnumber']),number_format($v['loadtransaction_load'],2),number_format($v['loadtransaction_discount'],2),number_format($v['loadtransaction_amountdue'],2),$statusString));
+								$rows[] = array('id'=>$v['loadtransaction_id'],'data'=>array(0,$v['loadtransaction_id'],pgDate($v['loadtransaction_createstamp']),$receiptno,$v['loadtransaction_provider'],$v['loadtransaction_assignedsim'],getCustomerNameByID($v['loadtransaction_customerid']),$v['loadtransaction_recipientnumber'],getCustomerNickByNumber($v['loadtransaction_recipientnumber']),number_format($v['loadtransaction_load'],2),number_format($v['loadtransaction_discount'],2),number_format($v['loadtransaction_amountdue'],2),$statusString));
 							}
 
 							$retval = array('rows'=>$rows);
