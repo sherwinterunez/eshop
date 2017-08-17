@@ -332,11 +332,34 @@ foreach($str as $k=>$v) {
 	}
 }*/
 
+/*
 $regx = 'P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?loaded.+?Load\s+Wallet.+?\d+(?<SIMCARD>\d{10})\s+from\s+(?<SUPPLIER>.+?)\..+?Balance\:P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref.+?(?<REFERENCE>\d+)';
 
 $str = array();
 $str[] = '02May 19:06: P10.00 is loaded to Load Wallet of 09216119988 from TOP MOBILE D 639397602109.New Balance:P3679.55 Ref:860490615490';
 $str[] = '13Apr 11:06: P3000.00 is loaded to Load Wallet of 09216119988 from TOP MOBILE D 639397602109.New Balance:P4408.30 Ref:860473998163';
+
+foreach($str as $k=>$v) {
+	if(preg_match('/'.$regx.'/si',$v,$matches)) {
+		print_r(array('$matches'=>$matches));
+	}
+}
+*/
+
+//$regx = 'CONFIRM.+?Ref\:(?<REF>.{12}).+?Customer.+?Cellphone.+?Receiver.+?Cellphone';
+//$regx = '.+?Sent.+?PHP(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<LABEL>.+?)\s+to\s+(?<CARDNO>.{16}).+?at\s+\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12})';
+//$regx = '.+?Remittance.+?PHP(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?fee.+?PHP(?<FEE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?deducted.+?bal.+?PHP(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref\:(?<REF>.{12})';
+$regx = '.+?Remittance .+?PHP(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission.+?PHP(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?received.+?\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12}).+?Bal.+?PHP(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
+
+$str = array();
+//$str[] = '17Aug 2143:Sent PHP500.00 from LOADING to 557751******8104 at 639092701100.Ref:f620ccf870f6.Sa next msg,i-type ang customer &receiver cellphone# &send to 8890.';
+//$str[] = '17Aug 2143:Remittance of PHP500.00 & fee of PHP18.50 was deducted from your account.Avail bal:PHP9,592.50.Ref:f620ccf870f6';
+
+$str[] = "CONFIRM Ref:8ce57d66c530\nCustomer Cellphone#:\nReceiver Cellphone#:";
+$str[] = '18Aug 0009:Sent PHP500.00 from LOADING to 557751******8104 at 639092701100.Ref:8ce57d66c530.Sa next msg,i-type ang customer &receiver cellphone# &send to 8890.';
+$str[] = '18Aug 0009:Remittance of PHP500.00 & fee of PHP18.50 was deducted from your account.Avail bal:PHP9,074.00.Ref:8ce57d66c530';
+
+$str[] = '18Aug 0009:Remittance of PHP500.00 & commission of PHP11.50 was received from 639477409000.LIBRE ang pag-claim ng iyong customer.Ref:8ce57d66c530 Bal:PHP511.50';
 
 foreach($str as $k=>$v) {
 	if(preg_match('/'.$regx.'/si',$v,$matches)) {

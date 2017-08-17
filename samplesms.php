@@ -111,6 +111,7 @@ function sampleSMS() {
 	echo "\nsampleSMS done (".$tstop." secs).\n";
 */
 
+/*
 	$message = "LOADRETAIL AT10 09483621618 APPROVED\r\n";
 
 	$content = array();
@@ -134,6 +135,12 @@ function sampleSMS() {
 	print_r(array('$aout'=>$aout));
 
 	//echo $out;
+*/
+
+$message = "CONFIRM Ref:8ce57d66c530\nCustomer Cellphone#:09493621255\nReceiver Cellphone#:09088853095";
+
+sendToOutBox('09477409000','8890',$message);
+
 }
 
 sampleSMS();
