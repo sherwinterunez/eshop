@@ -161,6 +161,10 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 
 				$msg = $pdu->decode($pdustr);
 
+				if(!empty($msg['message'])) {
+					$msg['messagenocrlf'] = tocrlf($msg['message']);
+				}
+
 				$printr = array('$msg'=>$msg);
 				print_r($printr);
 
