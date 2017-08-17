@@ -1065,6 +1065,167 @@ CREATE TABLE tbl_retailerassignedsim (
 
 ALTER TABLE ONLY tbl_retailerassignedsim ADD CONSTRAINT tbl_retailerassignedsim_primary_key PRIMARY KEY (retailerassignedsim_id);
 
+-- tbl_smartmoneyservicefees
+
+DROP SEQUENCE IF EXISTS tbl_smartmoneyservicefees_seq CASCADE;
+
+CREATE SEQUENCE tbl_smartmoneyservicefees_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_smartmoneyservicefees;
+
+CREATE TABLE tbl_smartmoneyservicefees (
+    smartmoneyservicefees_id bigint DEFAULT nextval(('tbl_smartmoneyservicefees_seq'::text)::regclass) NOT NULL,
+    smartmoneyservicefees_desc text DEFAULT ''::text NOT NULL,
+    smartmoneyservicefees_sendcommissionpercentage integer DEFAULT 0 NOT NULL,
+    smartmoneyservicefees_receivecommissionpercentage integer DEFAULT 0 NOT NULL,
+    smartmoneyservicefees_transferfeepercentage integer DEFAULT 0 NOT NULL,
+    smartmoneyservicefees_active integer DEFAULT 0 NOT NULL,
+    smartmoneyservicefees_deleted integer DEFAULT 0 NOT NULL,
+    smartmoneyservicefees_flag integer DEFAULT 0 NOT NULL,
+    smartmoneyservicefees_createstamp timestamp with time zone DEFAULT now(),
+    smartmoneyservicefees_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_smartmoneyservicefees ADD CONSTRAINT tbl_smartmoneyservicefees_primary_key PRIMARY KEY (smartmoneyservicefees_id);
+
+-- tbl_smartmoneyservicefeeslist
+
+DROP SEQUENCE IF EXISTS tbl_smartmoneyservicefeeslist_seq CASCADE;
+
+CREATE SEQUENCE tbl_smartmoneyservicefeeslist_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_smartmoneyservicefeeslist;
+
+CREATE TABLE tbl_smartmoneyservicefeeslist (
+    smartmoneyservicefeeslist_id bigint DEFAULT nextval(('tbl_smartmoneyservicefeeslist_seq'::text)::regclass) NOT NULL,
+    smartmoneyservicefeeslist_smartmoneyservicefeesid integer DEFAULT 0 NOT NULL,
+    smartmoneyservicefeeslist_minamount numeric DEFAULT 0 NOT NULL,
+    smartmoneyservicefeeslist_maxamount numeric DEFAULT 0 NOT NULL,
+    smartmoneyservicefeeslist_sendcommission numeric DEFAULT 0 NOT NULL,
+    smartmoneyservicefeeslist_receivecommission numeric DEFAULT 0 NOT NULL,
+    smartmoneyservicefeeslist_transferfee numeric DEFAULT 0 NOT NULL,
+    smartmoneyservicefeeslist_active integer DEFAULT 0 NOT NULL,
+    smartmoneyservicefeeslist_deleted integer DEFAULT 0 NOT NULL,
+    smartmoneyservicefeeslist_flag integer DEFAULT 0 NOT NULL,
+    smartmoneyservicefeeslist_createstamp timestamp with time zone DEFAULT now(),
+    smartmoneyservicefeeslist_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_smartmoneyservicefeeslist ADD CONSTRAINT tbl_smartmoneyservicefeeslist_primary_key PRIMARY KEY (smartmoneyservicefeeslist_id);
+
+-- tbl_remitcust
+
+DROP SEQUENCE IF EXISTS tbl_remitcust_seq CASCADE;
+
+CREATE SEQUENCE tbl_remitcust_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_remitcust;
+
+CREATE TABLE tbl_remitcust (
+    remitcust_id bigint DEFAULT nextval(('tbl_remitcust_seq'::text)::regclass) NOT NULL,
+    remitcust_ymd text DEFAULT ''::text NOT NULL,
+    remitcust_mobileno text DEFAULT ''::text NOT NULL,
+    remitcust_firstname text DEFAULT ''::text NOT NULL,
+    remitcust_lastname text DEFAULT ''::text NOT NULL,
+    remitcust_middlename text DEFAULT ''::text NOT NULL,
+    remitcust_suffix text DEFAULT ''::text NOT NULL,
+    remitcust_company text DEFAULT ''::text NOT NULL,
+    remitcust_birthdate text DEFAULT ''::text NOT NULL,
+    remitcust_gender text DEFAULT ''::text NOT NULL,
+    remitcust_civilstatus text DEFAULT ''::text NOT NULL,
+    remitcust_type text DEFAULT ''::text NOT NULL,
+    remitcust_creditlimit numeric DEFAULT 0 NOT NULL,
+    remitcust_pahouseno text DEFAULT ''::text NOT NULL,
+    remitcust_pabarangay text DEFAULT ''::text NOT NULL,
+    remitcust_pamunicipality text DEFAULT ''::text NOT NULL,
+    remitcust_paprovince text DEFAULT ''::text NOT NULL,
+    remitcust_pazipcode text DEFAULT ''::text NOT NULL,
+    remitcust_aahouseno text DEFAULT ''::text NOT NULL,
+    remitcust_aabarangay text DEFAULT ''::text NOT NULL,
+    remitcust_aamunicipality text DEFAULT ''::text NOT NULL,
+    remitcust_aaprovince text DEFAULT ''::text NOT NULL,
+    remitcust_aazipcode text DEFAULT ''::text NOT NULL,
+    remitcust_active integer DEFAULT 0 NOT NULL,
+    remitcust_deleted integer DEFAULT 0 NOT NULL,
+    remitcust_flag integer DEFAULT 0 NOT NULL,
+    remitcust_createstamp timestamp with time zone DEFAULT now(),
+    remitcust_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_remitcust ADD CONSTRAINT tbl_remitcust_primary_key PRIMARY KEY (remitcust_id);
+
+-- tbl_remitcustnumber
+
+DROP SEQUENCE IF EXISTS tbl_remitcustnumber_seq CASCADE;
+
+CREATE SEQUENCE tbl_remitcustnumber_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_remitcustnumber;
+
+CREATE TABLE tbl_remitcustnumber (
+    remitcustnumber_id bigint DEFAULT nextval(('tbl_remitcustnumber_seq'::text)::regclass) NOT NULL,
+    remitcustnumber_remitcustid integer DEFAULT 0 NOT NULL,
+    remitcustnumber_mobileno text DEFAULT ''::text NOT NULL,
+    remitcustnumber_remittanceno text DEFAULT ''::text NOT NULL,
+    remitcustnumber_trademoney text DEFAULT ''::text NOT NULL,
+    remitcustnumber_provider text DEFAULT ''::text NOT NULL,
+    remitcustnumber_default integer DEFAULT 0 NOT NULL,
+    remitcustnumber_active integer DEFAULT 0 NOT NULL,
+    remitcustnumber_deleted integer DEFAULT 0 NOT NULL,
+    remitcustnumber_flag integer DEFAULT 0 NOT NULL,
+    remitcustnumber_createstamp timestamp with time zone DEFAULT now(),
+    remitcustnumber_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_remitcustnumber ADD CONSTRAINT tbl_remitcustnumber_primary_key PRIMARY KEY (remitcustnumber_id);
+
+-- tbl_remittance
+
+DROP SEQUENCE IF EXISTS tbl_remittance_seq CASCADE;
+
+CREATE SEQUENCE tbl_remittance_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_remittance;
+
+CREATE TABLE tbl_remittance (
+    remittance_id bigint DEFAULT nextval(('tbl_remittance_seq'::text)::regclass) NOT NULL,
+    remittance_remitcustid integer DEFAULT 0 NOT NULL,
+    remittance_loadtransactionid integer DEFAULT 0 NOT NULL,
+    remittance_desc text DEFAULT ''::text NOT NULL,
+    remittance_type text DEFAULT ''::text NOT NULL,
+    remittance_active integer DEFAULT 0 NOT NULL,
+    remittance_deleted integer DEFAULT 0 NOT NULL,
+    remittance_flag integer DEFAULT 0 NOT NULL,
+    remitcustnumber_createstamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_remittance ADD CONSTRAINT tbl_remittance_primary_key PRIMARY KEY (remittance_id);
+
 ---------------------------------------------------------------------
 
 
@@ -1087,6 +1248,20 @@ alter table tbl_loadtransaction add column loadtransaction_trademoney integer NO
 alter table tbl_loadtransaction add column loadtransaction_retailload integer NOT NULL DEFAULT 0;
 alter table tbl_loadtransaction add column loadtransaction_dealerload integer NOT NULL DEFAULT 0;
 alter table tbl_loadtransaction add column loadtransaction_failedtransid integer NOT NULL DEFAULT 0;
+
+------------------------------------------------------------------------------------------------------------------
+
+alter table tbl_loadtransaction add column loadtransaction_sendagentcommissionpercent numeric NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_sendagentcommissionamount numeric NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_transferfeepercent numeric NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_transferfeeamount numeric NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_receiveagentcommissionpercent numeric NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_receiveagentcommissionamount numeric NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_otherchargespercent numeric NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_otherchargesamount numeric NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_changed numeric NOT NULL DEFAULT 0;
+
+------------------------------------------------------------------------------------------------------------------
 
 alter table tbl_ledger add column ledger_loadtransactionid integer NOT NULL DEFAULT 0;
 alter table tbl_ledger add column ledger_fundid integer NOT NULL DEFAULT 0;

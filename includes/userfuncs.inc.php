@@ -2875,6 +2875,28 @@ function getDiscountScheme() {
 	return false;
 }
 
+function getSmartMoneyServiceFees() {
+	global $appdb;
+
+	$sql = "select * from tbl_smartmoneyservicefees where smartmoneyservicefees_active>0 order by smartmoneyservicefees_id asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['smartmoneyservicefees_id'])) {
+		$retval = array();
+
+		foreach($result['rows'] as $k=>$v) {
+			$retval[$v['smartmoneyservicefees_id']] = $v;
+		}
+
+		return $retval;
+	}
+
+	return false;
+}
+
 function getContactIDFromInbox($id=false) {
 	global $appdb;
 

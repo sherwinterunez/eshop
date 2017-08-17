@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -366,6 +366,39 @@ $layouts['app']['remittance'] = array(
 	)
 );
 
+$layouts['app']['smartmoney'] = array(
+	'pattern'=>'3L',
+	'module'=>'smartmoney',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'smartmoneycontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'smartmoneymain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'smartmoneydetail',
+			),
+		),
+	)
+);
+
 $layouts['app']['encashment'] = array(
 	'pattern'=>'3L',
 	'module'=>'encashment',
@@ -547,4 +580,3 @@ $layouts['app']['sample'] = array(
 		),
 	)
 );
-

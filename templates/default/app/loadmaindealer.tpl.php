@@ -125,11 +125,11 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 
 			myGrid.setImagePath("/codebase/imgs/")
 
-			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Provider, SIM, Customer Name, Recipient No., Item, Quantity, Discount, Amnt Due, Status");
+			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Provider, SIM, Customer Name, Retailer No., Retailer Name, Quantity, Discount, Amnt Due, Status");
 
-			myGrid.setInitWidths("50,50,120,120,120,120,120,120,80,80,80,80,150");
+			myGrid.setInitWidths("50,50,120,120,120,120,120,120,120,80,80,80,150");
 
-			myGrid.setColAlign("center,center,left,left,left,center,left,center,center,right,right,right,left");
+			myGrid.setColAlign("center,center,left,left,left,center,left,center,left,right,right,right,left");
 
 			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
@@ -148,7 +148,9 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$module
 
 				if(ddata.rows[0].id) {
 
-					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#combo_filter,#text_filter");
+					//myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#combo_filter,#text_filter");
+
+					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter,#combo_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,&nbsp;,&nbsp;,&nbsp;,#combo_filter");
 
 					myGrid.attachEvent("onBeforeSelect", function(new_row,old_row,new_col_index){
 

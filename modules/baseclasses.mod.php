@@ -208,6 +208,8 @@ if(!class_exists('APP_Base')) {
 			$approuter->addroute(array('^/'.$this->pathid.'/js/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'dojs'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/js/\?(.*)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'dojs'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/json/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'postjson'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/api/smartmoneycardno/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=', 'callback'=>array($this,'smartmoneycardno'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/api/smartmoneycardno/\?(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=', 'callback'=>array($this,'smartmoneycardno'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/api/(.+?)\/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'doapi2'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/api/(.+?)\/\?(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1&params2=$2', 'callback'=>array($this,'doapi2'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/(.+?)\/(.+?)\/(.+?)$' => array('id'=>$this->pathid,'param'=>'routerid='.$this->pathid.'&module=$1&action=$2&params=$3', 'callback'=>array($this,'doapi'))));
@@ -458,6 +460,45 @@ if(!class_exists('APP_Base')) {
 			}
 
 		} // postapi
+
+		function smartmoneycardno($vars=false,$retflag=false) {
+			global $appdb;
+			//pre(array('$vars'=>$vars));
+
+			header('Content-type: text/xml');
+
+			$xml = '<?xml version="1.0" encoding="UTF-8"?>'.
+				'<complete>';
+
+			if(!empty($vars['get']['mask'])) {
+
+				$mask = trim($vars['get']['mask']);
+
+				/*$r = mysql_query("SELECT id, text FROM tree_def WHERE LOWER(text) LIKE LOWER('".p($mask)."%') ORDER BY LOWER(text) ");
+				while ($o = mysql_fetch_object($r)) {
+					$xml .= '<option value="'.str_replace(" ","_",strtolower($o->text)).'"><![CDATA['.$o->text.']]></option>';
+				}
+				mysql_free_result($r);*/
+
+				$sql = "select * from tbl_contact where contact_number ilike '%$mask%'";
+
+				if(!($result = $appdb->query($sql))) {
+					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+					die;
+				}
+
+				if(!empty($result['rows'][0]['contact_id'])) {
+					foreach($result['rows'] as $k=>$v) {
+						$xml .= '<option value="'.$v['contact_number'].'"><![CDATA['.$v['contact_number'].' | '.$v['contact_nick'].']]></option>';
+					}
+				}
+
+			}
+
+			$xml .= '</complete>';
+
+			print_r($xml);
+		}
 
 		function postjson($vars=false,$retflag=false) {
 			global $applogin;

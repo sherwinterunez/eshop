@@ -1204,6 +1204,18 @@ if(!class_exists('APP_app_inventory')) {
 					'className' => 'simcard_transactions_'.$post['formval'],
 				);
 
+				if(!empty($params['simcardinfo']['simcard_category'])&&$params['simcardinfo']['simcard_category']=='SMARTMONEY') {
+					$params['tbSmartMoney'] = array();
+
+					$params['tbSmartMoney'][] = array(
+						'type' => 'container',
+						'name' => 'simcard_smartmoney',
+						'inputWidth' => 600,
+						'inputHeight' => 200,
+						'className' => 'simcard_smartmoney_'.$post['formval'],
+					);
+				}
+
 				$templatefile = $this->templatefile($routerid,$formid);
 
 				if(file_exists($templatefile)) {

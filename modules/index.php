@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -37,6 +37,7 @@ require_once(MODULE_PATH.'app.inventory.mod.php');
 require_once(MODULE_PATH.'app.payables.mod.php');
 require_once(MODULE_PATH.'app.receivables.mod.php');
 require_once(MODULE_PATH.'app.remittance.mod.php');
+require_once(MODULE_PATH.'app.smartmoney.mod.php');
 require_once(MODULE_PATH.'app.reports.mod.php');
 require_once(MODULE_PATH.'app.setting.mod.php');
 require_once(MODULE_PATH.'app.tools.mod.php');

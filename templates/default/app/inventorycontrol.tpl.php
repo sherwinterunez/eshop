@@ -254,6 +254,9 @@ pre(array('$_SESSION'=>$_SESSION));
 				$("#formdiv_%formval% #<?php echo $templatedetailid; ?><?php echo $v['id']; ?>detailsform_%formval% .simcard_transactions_%formval% .dhxform_container").height(lcHeight-65);
 				$("#formdiv_%formval% #<?php echo $templatedetailid; ?><?php echo $v['id']; ?>detailsform_%formval% .simcard_transactions_%formval% .dhxform_container").width(lcWidth-40);
 
+				$("#formdiv_%formval% #<?php echo $templatedetailid; ?><?php echo $v['id']; ?>detailsform_%formval% .simcard_smartmoney_%formval% .dhxform_container").height(lcHeight-65);
+				$("#formdiv_%formval% #<?php echo $templatedetailid; ?><?php echo $v['id']; ?>detailsform_%formval% .simcard_smartmoney_%formval% .dhxform_container").width(lcWidth-40);
+
 				if(typeof(myGridSMSFunction_%formval%)!='undefined') {
 					try {
 						myGridSMSFunction_%formval%.setSizes();

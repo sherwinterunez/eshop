@@ -3262,18 +3262,24 @@ $block[] = array(
 
 				if(!empty($post['method'])&&($post['method']=='contactnew'||$post['method']=='contactedit')) {
 					$_SESSION['UPLOADS'] = array();
+
+					if(!($result = $appdb->query("delete from tbl_upload where upload_sid='".$appsession->id()."' and upload_temp=1"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
+
 					$readonly = false;
 				}
 
 				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='contactedit')) {
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
-						if(!($result = $appdb->query("select * from tbl_customer where customer_id=".$post['rowid']))) {
+						if(!($result = $appdb->query("select * from tbl_remitcust where remitcust_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
 
-						if(!empty($result['rows'][0]['customer_id'])) {
-							$params['customerinfo'] = $result['rows'][0];
+						if(!empty($result['rows'][0]['remitcust_id'])) {
+							$params['remitcustinfo'] = $result['rows'][0];
 						}
 					}
 				} else
@@ -3287,6 +3293,11 @@ $block[] = array(
 
 				} else
 				if(!empty($post['method'])&&$post['method']=='contactphotoget') {
+
+					if(!empty($post['_method'])&&$post['_method']=='contactnew'&&empty($_GET['itemId'])) {
+						header("Content-Type: image/jpg");
+						die();
+					}
 
 					/*$retval = array();
 					$retval['vars'] = $this->vars;
@@ -3304,7 +3315,11 @@ $block[] = array(
 							die;
 						}
 					} else {
-						if(!($result = $appdb->query("select * from tbl_upload where upload_name='".$post['name']."' and upload_customerid=".$post['rowid']." order by upload_id desc limit 1"))) {
+						if(!empty($post['rowid'])) {
+						} else {
+							$post['rowid'] = 0;
+						}
+						if(!($result = $appdb->query("select * from tbl_upload where upload_name='".$post['name']."' and upload_supplierid=".$post['rowid']." order by upload_id desc limit 1"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
@@ -3356,7 +3371,7 @@ $block[] = array(
 							$content['upload_name'] = $post['itemId'];
 							//$content['upload_customerid'] = $post['rowid'];
 
-							if(!($result = $appdb->query("select * from tbl_upload where upload_customerid=0 and upload_sid='".$content['upload_sid']."' and upload_name='".$post['itemId']."'"))) {
+							if(!($result = $appdb->query("select * from tbl_upload where upload_supplierid=0 and upload_sid='".$content['upload_sid']."' and upload_name='".$post['itemId']."'"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
@@ -3402,104 +3417,102 @@ $block[] = array(
 
 					$retval = array();
 					$retval['return_code'] = 'SUCCESS';
-					$retval['return_message'] = 'Customer successfully saved!';
+					$retval['return_message'] = 'Remittance customer successfully saved!';
 
 					//pre(array('$vars'=>$this->vars));
 					//die;
 
 					$content = array();
-					$content['customer_firstname'] = !empty($post['customer_firstname']) ? $post['customer_firstname'] : '';
-					$content['customer_lastname'] = !empty($post['customer_lastname']) ? $post['customer_lastname'] : '';
-					$content['customer_middlename'] = !empty($post['customer_middlename']) ? $post['customer_middlename'] : '';
-					$content['customer_suffix'] = !empty($post['customer_suffix']) ? $post['customer_suffix'] : '';
-					$content['customer_birthdate'] = !empty($post['customer_birthdate']) ? $post['customer_birthdate'] : '';
-					$content['customer_gender'] = !empty($post['customer_gender']) ? $post['customer_gender'] : '';
-					$content['customer_civilstatus'] = !empty($post['customer_civilstatus']) ? $post['customer_civilstatus'] : '';
-					$content['customer_accounttype'] = !empty($post['customer_accounttype']) ? $post['customer_accounttype'] : '';
-					$content['customer_company'] = !empty($post['customer_company']) ? $post['customer_company'] : '';
-					$content['customer_pahouseno'] = !empty($post['customer_pahouseno']) ? $post['customer_pahouseno'] : '';
-					$content['customer_pabarangay'] = !empty($post['customer_pabarangay']) ? $post['customer_pabarangay'] : '';
-					$content['customer_pamunicipality'] = !empty($post['customer_pamunicipality']) ? $post['customer_pamunicipality'] : '';
-					$content['customer_paprovince'] = !empty($post['customer_paprovince']) ? $post['customer_paprovince'] : '';
-					$content['customer_pazipcode'] = !empty($post['customer_pazipcode']) ? $post['customer_pazipcode'] : '';
-					$content['customer_aahouseno'] = !empty($post['customer_aahouseno']) ? $post['customer_aahouseno'] : '';
-					$content['customer_aabarangay'] = !empty($post['customer_aabarangay']) ? $post['customer_aabarangay'] : '';
-					$content['customer_aamunicipality'] = !empty($post['customer_aamunicipality']) ? $post['customer_aamunicipality'] : '';
-					$content['customer_aaprovince'] = !empty($post['customer_aaprovince']) ? $post['customer_aaprovince'] : '';
-					$content['customer_aazipcode'] = !empty($post['customer_aazipcode']) ? $post['customer_aazipcode'] : '';
-					$content['customer_creditlimit'] = !empty($post['customer_creditlimit']) ? floatval($post['customer_creditlimit']) : 0;
-					$content['customer_criticallevel'] = !empty($post['customer_criticallevel']) ? floatval($post['customer_criticallevel']) : 0;
+					$content['remitcust_firstname'] = !empty($post['remitcust_firstname']) ? $post['remitcust_firstname'] : '';
+					$content['remitcust_lastname'] = !empty($post['remitcust_lastname']) ? $post['remitcust_lastname'] : '';
+					$content['remitcust_middlename'] = !empty($post['remitcust_middlename']) ? $post['remitcust_middlename'] : '';
+					$content['remitcust_suffix'] = !empty($post['remitcust_suffix']) ? $post['remitcust_suffix'] : '';
+					$content['remitcust_birthdate'] = !empty($post['remitcust_birthdate']) ? $post['remitcust_birthdate'] : '';
+					$content['remitcust_gender'] = !empty($post['remitcust_gender']) ? $post['remitcust_gender'] : '';
+					$content['remitcust_civilstatus'] = !empty($post['remitcust_civilstatus']) ? $post['remitcust_civilstatus'] : '';
+					$content['remitcust_type'] = !empty($post['remitcust_type']) ? $post['remitcust_type'] : '';
+					$content['remitcust_company'] = !empty($post['remitcust_companyname']) ? $post['remitcust_companyname'] : '';
+					$content['remitcust_pahouseno'] = !empty($post['remitcust_pahouseno']) ? $post['remitcust_pahouseno'] : '';
+					$content['remitcust_pabarangay'] = !empty($post['remitcust_pabarangay']) ? $post['remitcust_pabarangay'] : '';
+					$content['remitcust_pamunicipality'] = !empty($post['remitcust_pamunicipality']) ? $post['remitcust_pamunicipality'] : '';
+					$content['remitcust_paprovince'] = !empty($post['remitcust_paprovince']) ? $post['remitcust_paprovince'] : '';
+					$content['remitcust_pazipcode'] = !empty($post['remitcust_pazipcode']) ? $post['remitcust_pazipcode'] : '';
+					$content['remitcust_aahouseno'] = !empty($post['remitcust_aahouseno']) ? $post['remitcust_aahouseno'] : '';
+					$content['remitcust_aabarangay'] = !empty($post['remitcust_aabarangay']) ? $post['remitcust_aabarangay'] : '';
+					$content['remitcust_aamunicipality'] = !empty($post['remitcust_aamunicipality']) ? $post['remitcust_aamunicipality'] : '';
+					$content['remitcust_aaprovince'] = !empty($post['remitcust_aaprovince']) ? $post['remitcust_aaprovince'] : '';
+					$content['remitcust_aazipcode'] = !empty($post['remitcust_aazipcode']) ? $post['remitcust_aazipcode'] : '';
+					$content['remitcust_creditlimit'] = !empty($post['remitcust_creditlimit']) ? floatval($post['remitcust_creditlimit']) : 0;
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
 						$retval['rowid'] = $post['rowid'];
 
-						$content['customer_updatestamp'] = 'now()';
+						$content['remitcust_updatestamp'] = 'now()';
 
-						if(!($result = $appdb->update("tbl_customer",$content,"customer_id=".$post['rowid']))) {
+						if(!($result = $appdb->update("tbl_remitcust",$content,"remitcust_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
 
 					} else {
 
-						$content['customer_ymd'] = date('Ymd');
+						$content['remitcust_ymd'] = date('Ymd');
 
-						if(!($result = $appdb->insert("tbl_customer",$content,"customer_id"))) {
+						if(!($result = $appdb->insert("tbl_remitcust",$content,"remitcust_id"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
 
-						if(!empty($result['returning'][0]['customer_id'])) {
-							$retval['rowid'] = $result['returning'][0]['customer_id'];
+						if(!empty($result['returning'][0]['remitcust_id'])) {
+							$retval['rowid'] = $result['returning'][0]['remitcust_id'];
 						}
 
 					}
 
 					if(!empty($retval['rowid'])) {
-						if(!($result = $appdb->query("delete from tbl_virtualnumber where virtualnumber_customerid=".$retval['rowid']))) {
+						if(!($result = $appdb->query("delete from tbl_remitcustnumber where remitcustnumber_remitcustid=".$retval['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
 					}
 
-					if(!empty($retval['rowid'])&&!empty($post['virtualnumber_mobileno'])&&is_array($post['virtualnumber_mobileno'])) {
+					if(!empty($retval['rowid'])&&!empty($post['remitcustnumber_mobileno'])&&is_array($post['remitcustnumber_mobileno'])) {
 
 						$customer_mobileno = '';
 
-						foreach($post['virtualnumber_mobileno'] as $k=>$v) {
+						foreach($post['remitcustnumber_mobileno'] as $k=>$v) {
 							$content = array();
-							$content['virtualnumber_customerid'] = $retval['rowid'];
-							$content['virtualnumber_mobileno'] = !empty($post['virtualnumber_mobileno'][$k]) ? $post['virtualnumber_mobileno'][$k] : '';
-							$content['virtualnumber_provider'] = !empty($post['virtualnumber_provider'][$k]) ? $post['virtualnumber_provider'][$k] : '';
-							$content['virtualnumber_default'] = !empty($post['virtualnumber_default'][$k]) ? $post['virtualnumber_default'][$k] : 0;
-							$content['virtualnumber_active'] = !empty($post['virtualnumber_active'][$k]) ? $post['virtualnumber_active'][$k] : 0;
+							$content['remitcustnumber_remitcustid'] = $retval['rowid'];
+							$content['remitcustnumber_mobileno'] = !empty($post['remitcustnumber_mobileno'][$k]) ? $post['remitcustnumber_mobileno'][$k] : '';
+							$content['remitcustnumber_remittanceno'] = !empty($post['remitcustnumber_remittanceno'][$k]) ? $post['remitcustnumber_remittanceno'][$k] : '';
+							$content['remitcustnumber_trademoney'] = !empty($post['remitcustnumber_trademoney'][$k]) ? $post['remitcustnumber_trademoney'][$k] : '';
+							$content['remitcustnumber_provider'] = !empty($post['remitcustnumber_provider'][$k]) ? $post['remitcustnumber_provider'][$k] : '';
 
-							if(!($result = $appdb->insert("tbl_virtualnumber",$content,"virtualnumber_id"))) {
+							if(!($result = $appdb->insert("tbl_remitcustnumber",$content,"remitcustnumber_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
 
-							if(!empty($content['virtualnumber_default'])&&!empty($content['virtualnumber_active'])) {
-								$customer_mobileno = $content['virtualnumber_mobileno'];
-							}
+							//if(!empty($content['virtualnumber_default'])&&!empty($content['virtualnumber_active'])) {
+							//	$customer_mobileno = $content['virtualnumber_mobileno'];
+							//}
 						}
 
-						$content = array();
+						/*$content = array();
 						$content['customer_mobileno'] = $customer_mobileno;
 
 						if(!($result = $appdb->update("tbl_customer",$content,"customer_id=".$retval['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
-						}
-
+						}*/
 					}
 
 					if(!empty($retval['rowid'])) {
 						if(!empty($_SESSION['UPLOADS'])) {
 
 							$content = array();
-							$content['upload_customerid'] = $retval['rowid'];
+							$content['upload_supplierid'] = $retval['rowid'];
 							$content['upload_temp'] = 0;
 							$content['upload_updatestamp'] = 'now()';
 
@@ -3520,7 +3533,7 @@ $block[] = array(
 
 					$retval = array();
 					$retval['return_code'] = 'SUCCESS';
-					$retval['return_message'] = 'Customer successfully deleted!';
+					$retval['return_message'] = 'Remittance customer successfully deleted!';
 
 					if(!empty($post['rowids'])) {
 
@@ -3538,7 +3551,7 @@ $block[] = array(
 						if(!empty($arowid)) {
 							$rowids = implode(',', $arowid);
 
-							if(!($result = $appdb->query("delete from tbl_customer where customer_id in (".$rowids.")"))) {
+							if(!($result = $appdb->query("delete from tbl_remitcust where remitcust_id in (".$rowids.")"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
@@ -3550,7 +3563,7 @@ $block[] = array(
 					}
 
 					if(!empty($post['rowid'])) {
-						if(!($result = $appdb->query("delete from tbl_customer where customer_id=".$post['rowid']))) {
+						if(!($result = $appdb->query("delete from tbl_remitcust where remitcust_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
@@ -3584,23 +3597,19 @@ $block[] = array(
 				$params['tbDetails'] = array();
 				$params['tbIdentification'] = array();
 				$params['tbAddress'] = array();
-				$params['tbVirtualNumbers'] = array();
-				$params['tbWebAccess'] = array();
-				$params['tbDownline'] = array();
-				$params['tbDownlineRebate'] = array();
-				$params['tbChild'] = array();
-				$params['tbChildRebate'] = array();
+				$params['tbContactNumbers'] = array();
+				$params['tbTransactions'] = array();
 
 				$custid = '';
 
-				if(!empty($params['customerinfo']['customer_id'])&&!empty($params['customerinfo']['customer_ymd'])) {
-					$custid = $params['customerinfo']['customer_ymd'] . sprintf('%04d', intval($params['customerinfo']['customer_id']));
+				if(!empty($params['remitcustinfo']['remitcust_id'])&&!empty($params['remitcustinfo']['remitcust_ymd'])) {
+					$custid = $params['remitcustinfo']['remitcust_ymd'] . sprintf('%04d', intval($params['remitcustinfo']['remitcust_id']));
 				}
 
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
-					'label' => 'CUSTOMER ID',
-					'name' => 'customer_id',
+					'label' => 'REMITTANCE CUST ID',
+					'name' => 'remitcust_id',
 					'readonly' => true,
 					//'required' => !$readonly,
 					//'labelAlign' => $position,
@@ -3610,46 +3619,46 @@ $block[] = array(
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
 					'label' => 'LAST NAME',
-					'name' => 'customer_lastname',
+					'name' => 'remitcust_lastname',
 					'readonly' => $readonly,
 					'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_lastname']) ? $params['customerinfo']['customer_lastname'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_lastname']) ? $params['remitcustinfo']['remitcust_lastname'] : '',
 				);
 
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
 					'label' => 'FIRST NAME',
-					'name' => 'customer_firstname',
+					'name' => 'remitcust_firstname',
 					'readonly' => $readonly,
 					'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_firstname']) ? $params['customerinfo']['customer_firstname'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_firstname']) ? $params['remitcustinfo']['remitcust_firstname'] : '',
 				);
 
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
 					'label' => 'MIDDLE NAME',
-					'name' => 'customer_middlename',
+					'name' => 'remitcust_middlename',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_middlename']) ? $params['customerinfo']['customer_middlename'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_middlename']) ? $params['remitcustinfo']['remitcust_middlename'] : '',
 				);
 
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
 					'label' => 'SUFFIX',
-					'name' => 'customer_suffix',
+					'name' => 'remitcust_suffix',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_suffix']) ? $params['customerinfo']['customer_suffix'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_suffix']) ? $params['remitcustinfo']['remitcust_suffix'] : '',
 				);
 
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
 					'label' => 'COMPANY NAME',
-					'name' => 'customer_companyname',
+					'name' => 'remitcust_companyname',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_companyname']) ? $params['customerinfo']['customer_companyname'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_company']) ? $params['remitcustinfo']['remitcust_company'] : '',
 				);
 
 				$params['tbCustomer'][] = array(
@@ -3660,12 +3669,12 @@ $block[] = array(
 				$params['tbCustomer'][] = array(
 					'type' => 'calendar',
 					'label' => 'BIRTH DATE',
-					'name' => 'customer_birthdate',
+					'name' => 'remitcust_birthdate',
 					'readonly' => true,
 					'calendarPosition' => 'right',
 					'dateFormat' => '%m-%d-%Y',
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_birthdate']) ? $params['customerinfo']['customer_birthdate'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_birthdate']) ? $params['remitcustinfo']['remitcust_birthdate'] : '',
 				);
 
 				$opt = array();
@@ -3678,7 +3687,7 @@ $block[] = array(
 
 				foreach($gender as $v) {
 					$selected = false;
-					if(!empty($params['customerinfo']['customer_gender'])&&$params['customerinfo']['customer_gender']==$v) {
+					if(!empty($params['remitcustinfo']['remitcust_gender'])&&$params['remitcustinfo']['remitcust_gender']==$v) {
 						$selected = true;
 					}
 					if($readonly) {
@@ -3693,7 +3702,7 @@ $block[] = array(
 				$params['tbCustomer'][] = array(
 					'type' => 'combo',
 					'label' => 'GENDER',
-					'name' => 'customer_gender',
+					'name' => 'remitcust_gender',
 					'readonly' => true,
 					'inputWidth' => 200,
 					//'required' => !$readonly,
@@ -3710,7 +3719,7 @@ $block[] = array(
 
 				foreach($civilstatus as $v) {
 					$selected = false;
-					if(!empty($params['customerinfo']['customer_civilstatus'])&&$params['customerinfo']['customer_civilstatus']==$v) {
+					if(!empty($params['remitcustinfo']['remitcust_civilstatus'])&&$params['remitcustinfo']['remitcust_civilstatus']==$v) {
 						$selected = true;
 					}
 					if($readonly) {
@@ -3725,7 +3734,7 @@ $block[] = array(
 				$params['tbCustomer'][] = array(
 					'type' => 'combo',
 					'label' => 'CIVIL STATUS',
-					'name' => 'customer_civilstatus',
+					'name' => 'remitcust_civilstatus',
 					'readonly' => true,
 					//'required' => !$readonly,
 					'options' => $opt,
@@ -3741,7 +3750,7 @@ $block[] = array(
 
 				foreach($accounttype as $v) {
 					$selected = false;
-					if(!empty($params['customerinfo']['customer_accounttype'])&&$params['customerinfo']['customer_accounttype']==$v) {
+					if(!empty($params['remitcustinfo']['remitcust_type'])&&$params['remitcustinfo']['remitcust_type']==$v) {
 						$selected = true;
 					}
 					if($readonly) {
@@ -3756,36 +3765,16 @@ $block[] = array(
 				$params['tbCustomer'][] = array(
 					'type' => 'combo',
 					'label' => 'ACCOUNT TYPE',
-					'name' => 'customer_accounttype',
+					'name' => 'remitcust_type',
 					'readonly' => true,
 					//'required' => !$readonly,
 					'options' => $opt,
 				);
 
-				$params['tbCustomer'][] = array(
-					'type' => 'input',
-					'label' => 'TOTAL REBATE',
-					'name' => 'customer_totalrebate',
-					'readonly' => true,
-					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_totalrebate']) ? $params['customerinfo']['customer_totalrebate'] : '',
-				);
-
-				$params['tbCustomer'][] = array(
-					'type' => 'input',
-					'label' => 'BALANCE',
-					'name' => 'customer_balance',
-					'readonly' => true,
-					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_balance']) ? $params['customerinfo']['customer_balance'] : '',
-				);
-
-				$params['tbCustomer'][] = array(
-					'type' => 'newcolumn',
-					'offset' => $newcolumnoffset,
-				);
+				//$params['tbCustomer'][] = array(
+				//	'type' => 'newcolumn',
+				//	'offset' => $newcolumnoffset,
+				//);
 
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
@@ -3794,71 +3783,21 @@ $block[] = array(
 					'readonly' => $readonly,
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_creditlimit']) ? $params['customerinfo']['customer_creditlimit'] : '',
+					'value' => !empty($params['remitcustinfo']['customer_creditlimit']) ? $params['remitcustinfo']['customer_creditlimit'] : '',
 				);
-
-				$params['tbCustomer'][] = array(
-					'type' => 'input',
-					'label' => 'CRITICAL LEVEL',
-					'name' => 'customer_criticallevel',
-					'readonly' => $readonly,
-					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_criticallevel']) ? $params['customerinfo']['customer_criticallevel'] : '',
-				);
-
-				$params['tbCustomer'][] = array(
-					'type' => 'input',
-					'label' => 'CREDIT BALANCE',
-					'name' => 'customer_creditbalance',
-					'readonly' => true,
-					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_creditbalance']) ? $params['customerinfo']['customer_creditbalance'] : '',
-				);
-
-				$params['tbCustomer'][] = array(
-					'type' => 'input',
-					'label' => 'CREDIT DUE',
-					'name' => 'customer_creditdue',
-					'readonly' => true,
-					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
-					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_creditdue']) ? $params['customerinfo']['customer_creditdue'] : '',
-				);
-
-				$params['tbCustomer'][] = array(
-					'type' => 'input',
-					'label' => 'PARENT',
-					'name' => 'customer_parent',
-					'readonly' => $readonly,
-					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_parent']) ? $params['customerinfo']['customer_parent'] : '',
-				);
-
-				/*$params['tbIdentification'][] = array(
-					'type' => 'upload',
-					'label' => 'ID',
-					'inputWidth' => 330,
-					'url' => "/templates/default/dhtmlx/dhtmlxform_item_upload.php",
-					'_swfLogs' => "enabled",
-					'swfPath' => "/templates/default/dhtmlx/uploader.swf",
-					'swfUrl' => "/templates/default/dhtmlx/dhtmlxform_item_upload.php",
-				);*/
-
-// {type: "image", name: "photo", label: "Photo", imageWidth: 126, imageHeight: 126, url: "../common/type_image/dhxform_image.php"}
 
 				$imagepost = $post;
 				$imagepost['method'] = 'contactphotoget';
-				$imagepost['name'] = 'customer_photo';
+				$imagepost['name'] = 'remitcust_photo';
+				$imagepost['_method'] = $post['method'];
 
 				$imagedata = urlencode(base64_encode(gzcompress(json_encode($imagepost),9)));
 
 				$params['tbIdentification'][] = array(
 					'type' => 'image',
-					'label' => 'Customer Photo',
+					'label' => 'Remittance Customer Photo',
 					'labelWidth' => 120,
-					'name' => 'customer_photo',
+					'name' => 'remitcust_photo',
 					'inputWidth' => 300,
 					'inputHeight' => 300,
 					'imageWidth' => 300,
@@ -3871,7 +3810,7 @@ $block[] = array(
 					'formid' => $post['formid'],
 					'module' => $post['module'],
 					'method' => 'contactphotoupload',
-					'rowid' => $post['rowid'],
+					'rowid' => !empty($post['rowid']) ? $post['rowid'] : 0,
 					'formval' => $post['formval'],
 				);
 
@@ -3882,15 +3821,16 @@ $block[] = array(
 
 				$imagepost = $post;
 				$imagepost['method'] = 'contactphotoget';
-				$imagepost['name'] = 'customer_idphoto';
+				$imagepost['name'] = 'remitcust_idphoto';
+				$imagepost['_method'] = $post['method'];
 
 				$imagedata = urlencode(base64_encode(gzcompress(json_encode($imagepost),9)));
 
 				$params['tbIdentification'][] = array(
 					'type' => 'image',
-					'label' => 'Customer ID',
+					'label' => 'Remittance Cust ID',
 					'labelWidth' => 120,
-					'name' => 'customer_idphoto',
+					'name' => 'remitcust_idphoto',
 					'inputWidth' => 300,
 					'inputHeight' => 300,
 					'imageWidth' => 300,
@@ -3903,7 +3843,7 @@ $block[] = array(
 					'formid' => $post['formid'],
 					'module' => $post['module'],
 					'method' => 'contactphotoupload',
-					'rowid' => $post['rowid'],
+					'rowid' => !empty($post['rowid']) ? $post['rowid'] : 0,
 					'formval' => $post['formval'],
 				);
 
@@ -3915,46 +3855,46 @@ $block[] = array(
 				$params['tbAddress'][] = array(
 					'type' => 'input',
 					'label' => 'HOUSE NO / STREET NAME',
-					'name' => 'customer_pahouseno',
+					'name' => 'remitcust_pahouseno',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_pahouseno']) ? $params['customerinfo']['customer_pahouseno'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_pahouseno']) ? $params['remitcustinfo']['remitcust_pahouseno'] : '',
 				);
 
 				$params['tbAddress'][] = array(
 					'type' => 'input',
 					'label' => 'BARANGAY',
-					'name' => 'customer_pabarangay',
+					'name' => 'remitcust_pabarangay',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_pabarangay']) ? $params['customerinfo']['customer_pabarangay'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_pabarangay']) ? $params['remitcustinfo']['remitcust_pabarangay'] : '',
 				);
 
 				$params['tbAddress'][] = array(
 					'type' => 'input',
 					'label' => 'MUNICIPALITY',
-					'name' => 'customer_pamunicipality',
+					'name' => 'remitcust_pamunicipality',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_pamunicipality']) ? $params['customerinfo']['customer_pamunicipality'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_pamunicipality']) ? $params['remitcustinfo']['remitcust_pamunicipality'] : '',
 				);
 
 				$params['tbAddress'][] = array(
 					'type' => 'input',
 					'label' => 'PROVINCE',
-					'name' => 'customer_paprovince',
+					'name' => 'remitcust_paprovince',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_paprovince']) ? $params['customerinfo']['customer_paprovince'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_paprovince']) ? $params['remitcustinfo']['remitcust_paprovince'] : '',
 				);
 
 				$params['tbAddress'][] = array(
 					'type' => 'input',
 					'label' => 'ZIP CODE',
-					'name' => 'customer_pazipcode',
+					'name' => 'remitcust_pazipcode',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_pazipcode']) ? $params['customerinfo']['customer_pazipcode'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_pazipcode']) ? $params['remitcustinfo']['remitcust_pazipcode'] : '',
 				);
 
 				$params['tbAddress'][] = array(
@@ -3971,81 +3911,62 @@ $block[] = array(
 				$params['tbAddress'][] = array(
 					'type' => 'input',
 					'label' => 'HOUSE NO / STREET NAME',
-					'name' => 'customer_aahouseno',
+					'name' => 'remitcust_aahouseno',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_aahouseno']) ? $params['customerinfo']['customer_aahouseno'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_aahouseno']) ? $params['remitcustinfo']['remitcust_aahouseno'] : '',
 				);
 
 				$params['tbAddress'][] = array(
 					'type' => 'input',
 					'label' => 'BARANGAY',
-					'name' => 'customer_aabarangay',
+					'name' => 'remitcust_aabarangay',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_aabarangay']) ? $params['customerinfo']['customer_aabarangay'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_aabarangay']) ? $params['remitcustinfo']['remitcust_aabarangay'] : '',
 				);
 
 				$params['tbAddress'][] = array(
 					'type' => 'input',
 					'label' => 'MUNICIPALITY',
-					'name' => 'customer_aamunicipality',
+					'name' => 'remitcust_aamunicipality',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_aamunicipality']) ? $params['customerinfo']['customer_aamunicipality'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_aamunicipality']) ? $params['remitcustinfo']['remitcust_aamunicipality'] : '',
 				);
 
 				$params['tbAddress'][] = array(
 					'type' => 'input',
 					'label' => 'PROVINCE',
-					'name' => 'customer_aaprovince',
+					'name' => 'remitcust_aaprovince',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_aaprovince']) ? $params['customerinfo']['customer_aaprovince'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_aaprovince']) ? $params['remitcustinfo']['remitcust_aaprovince'] : '',
 				);
 
 				$params['tbAddress'][] = array(
 					'type' => 'input',
 					'label' => 'ZIP CODE',
-					'name' => 'customer_aazipcode',
+					'name' => 'remitcust_aazipcode',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
-					'value' => !empty($params['customerinfo']['customer_aazipcode']) ? $params['customerinfo']['customer_aazipcode'] : '',
+					'value' => !empty($params['remitcustinfo']['remitcust_aazipcode']) ? $params['remitcustinfo']['remitcust_aazipcode'] : '',
 				);
 
-				$params['tbVirtualNumbers'][] = array(
+				$params['tbRemitCustNumbers'][] = array(
 					'type' => 'container',
-					'name' => 'customer_virtualnumbers',
+					'name' => 'remitcust_remitcustnumbers',
 					'inputWidth' => 450,
 					'inputHeight' => 200,
+					'className' => 'remitcust_remitcustnumbers_'.$post['formval'],
 				);
 
-				$params['tbDownline'][] = array(
+				$params['tbTransactions'][] = array(
 					'type' => 'container',
-					'name' => 'customer_downline',
+					'name' => 'remitcust_remitcusttransactions',
 					'inputWidth' => 450,
 					'inputHeight' => 200,
-				);
-
-				$params['tbDownlineRebate'][] = array(
-					'type' => 'container',
-					'name' => 'customer_downlinesettings',
-					'inputWidth' => 450,
-					'inputHeight' => 200,
-				);
-
-				$params['tbChild'][] = array(
-					'type' => 'container',
-					'name' => 'customer_child',
-					'inputWidth' => 450,
-					'inputHeight' => 200,
-				);
-
-				$params['tbChildRebate'][] = array(
-					'type' => 'container',
-					'name' => 'customer_childsettings',
-					'inputWidth' => 450,
-					'inputHeight' => 200,
+					'className' => 'remitcust_remitcusttransactions_'.$post['formval'],
 				);
 
 
@@ -5049,6 +4970,26 @@ $block[] = array(
 						}
 
 					} else
+					if($this->post['table']=='remittance') {
+						if(!($result = $appdb->query("select * from tbl_remitcust order by remitcust_id asc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+						//pre(array('$result'=>$result));
+
+						if(!empty($result['rows'][0]['remitcust_id'])) {
+							$rows = array();
+
+							foreach($result['rows'] as $k=>$v) {
+								$custid = $v['remitcust_ymd'] . sprintf('%04d', $v['remitcust_id']);
+
+								$rows[] = array('id'=>$v['remitcust_id'],'data'=>array(0,$custid,$v['remitcust_mobileno'],$v['remitcust_lastname'],$v['remitcust_firstname'],$v['remitcust_middlename'],$v['remitcust_suffix']));
+							}
+
+							$retval = array('rows'=>$rows);
+						}
+
+					} else
 					if($this->post['table']=='virtualnumber') {
 						if(!($result = $appdb->query("select * from tbl_virtualnumber where virtualnumber_customerid=".$this->post['rowid']." order by virtualnumber_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -5089,6 +5030,32 @@ $block[] = array(
 						if(!empty($result['rows'][0]['suppliernumber_id'])) {
 							foreach($result['rows'] as $k=>$v) {
 								$rows[] = array('id'=>$ctr,'data'=>array($ctr,$v['suppliernumber_mobileno'],$v['suppliernumber_remittanceno'],$v['suppliernumber_trademoney'],$v['suppliernumber_provider']));
+								$ctr++;
+							}
+						}
+
+						while($ctr<=10) {
+							$rows[] = array('id'=>$ctr,'data'=>array($ctr,'','','',''));
+							$ctr++;
+						}
+
+						$retval = array('rows'=>$rows);
+
+					} else
+					if($this->post['table']=='remitcustcontactnumber') {
+						if(!($result = $appdb->query("select * from tbl_remitcustnumber where remitcustnumber_remitcustid=".$this->post['rowid']." order by remitcustnumber_id asc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+						//pre(array('$result'=>$result));
+
+						$ctr=1;
+
+						$rows = array();
+
+						if(!empty($result['rows'][0]['remitcustnumber_id'])) {
+							foreach($result['rows'] as $k=>$v) {
+								$rows[] = array('id'=>$ctr,'data'=>array($ctr,$v['remitcustnumber_mobileno'],$v['remitcustnumber_remittanceno'],$v['remitcustnumber_trademoney'],$v['remitcustnumber_provider']));
 								$ctr++;
 							}
 						}

@@ -1,6 +1,6 @@
 <?php
-$moduleid = 'contact';
-$submod = 'remittance';
+$moduleid = 'smartmoney';
+$submod = 'servicefees';
 $templatemainid = $moduleid.'main';
 $templatedetailid = $moduleid.'detail';
 
@@ -97,21 +97,12 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%").height(dim[1]-123);
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%").width(dim[0]-36);
 
-		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .remitcust_remitcustnumbers_%formval% .dhxform_container").height(dim[1]-150);
-		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .remitcust_remitcustnumbers_%formval% .dhxform_container").width(dim[0]-54);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .servicefees_container_%formval% .dhxform_container").height(dim[1]-210);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .servicefees_container_%formval% .dhxform_container").width(dim[0]-54);
 
-		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .remitcust_remitcusttransactions_%formval% .dhxform_container").height(dim[1]-150);
-		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .remitcust_remitcusttransactions_%formval% .dhxform_container").width(dim[0]-54);
-
-		if(typeof(myWinObj.myGridRemitCustNumbers)!='undefined') {
+		if(typeof(myWinObj.myGridSmartMoneyScheme)!='undefined') {
 			try {
-				myWinObj.myGridRemitCustNumbers.setSizes();
-			} catch(e) {}
-		}
-
-		if(typeof(myWinObj.myGridRemitCustTransactions)!='undefined') {
-			try {
-				myWinObj.myGridRemitCustTransactions.setSizes();
+				myWinObj.myGridSmartMoneyScheme.setSizes();
 			} catch(e) {}
 		}
 
@@ -134,7 +125,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		//obj.title = 'Sim Cards / '+myGrid.cells(rowId,2).getValue()+' / '+myGrid.cells(rowId,3).getValue();
 
-		obj.title = 'Remittance Customer';
+		obj.title = 'Service Fees';
 
 		openWindow(obj, function(winobj,obj){
 			console.log(obj);
@@ -192,18 +183,12 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myTabbar.setArrowsMode("auto");
 
-		myTabbar.addTab("tbCustomer", "Customer");
-		//myTabbar.addTab("tbDetails", "Details");
-		myTabbar.addTab("tbIdentification", "Identification");
-		myTabbar.addTab("tbAddress", "Address");
-		myTabbar.addTab("tbRemitCustNumbers", "Customer Numbers");
-		myTabbar.addTab("tbTransactions", "Transactions");
-		//myTabbar.addTab("tbDownline", "Downline");
-		//myTabbar.addTab("tbDownlineRebate", "Downline Rebate Settings");
-		//myTabbar.addTab("tbChild", "Child");
-		//myTabbar.addTab("tbChildRebate", "Child Rebate Settings");
+		myTabbar.addTab("tbDetails", "Details");
+		//myTabbar.addTab("tbPayments", "Payments");
+		//myTabbar.addTab("tbMessage", "Message");
+		//myTabbar.addTab("tbHistory", "History");
 
-		myTabbar.tabs("tbCustomer").setActive();
+		myTabbar.tabs("tbDetails").setActive();
 
 		myWinToolbar.resetAll();
 
@@ -219,12 +204,10 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
 			]},
-			{type: "block", name: "tbCustomer", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbCustomer']); ?>},
-			//{type: "block", name: "tbDetails", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDetails']); ?>},
-			{type: "block", name: "tbIdentification", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbIdentification']); ?>},
-			{type: "block", name: "tbAddress", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbAddress']); ?>},
-			{type: "block", name: "tbRemitCustNumbers", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbRemitCustNumbers']); ?>},
-			{type: "block", name: "tbTransactions", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbTransactions']); ?>},
+			{type: "block", name: "tbDetails", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDetails']); ?>},
+			//{type: "block", name: "tbPayments", hidden: true, width: 1500, blockOffset: 0, offsetTop:0, list:[]},
+			//{type: "block", name: "tbMessage", hidden: true, width: 1500, blockOffset: 0, offsetTop:0, list:[]},
+			//{type: "block", name: "tbHistory", hidden: true, width: 1500, blockOffset: 0, offsetTop:0, list:[]},
 			{type: "label", label: ""}
 		];
 
@@ -249,112 +232,101 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myFormStatus_%formval% = '<?php echo $method; ?>';
 
-		//myForm.hideItem('tbDetails');
-		myForm.hideItem('tbIdentification');
-		myForm.hideItem('tbAddress');
-		myForm.hideItem('tbRemitCustNumbers');
-		myForm.hideItem('tbTransactions');
-
 ///////////////////////////////////
 
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=remitcustcontactnumber&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=servicefeeslist&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
 		}, function(ddata,odata){
 
-			if(typeof(myWinObj.myGridRemitCustNumbers)!='null'&&typeof(myWinObj.myGridRemitCustNumbers)!='undefined'&&myWinObj.myGridRemitCustNumbers!=null) {
+			if(typeof(myWinObj.myGridSmartMoneyScheme)!='null'&&typeof(myWinObj.myGridSmartMoneyScheme)!='undefined'&&myWinObj.myGridSmartMoneyScheme!=null) {
 				try {
-					myWinObj.myGridRemitCustNumbers.destructor();
-					myWinObj.myGridRemitCustNumbers = null;
+					myWinObj.myGridSmartMoneyScheme.destructor();
+					myWinObj.myGridSmartMoneyScheme = null;
 				} catch(e) {
 					console.log(e);
 				}
 			}
 
-			var myGridRemitCustNumbers = myWinObj.myGridRemitCustNumbers = new dhtmlXGridObject(myForm.getContainer('remitcust_remitcustnumbers'));
+			var myGridSmartMoneyScheme = myWinObj.myGridSmartMoneyScheme = new dhtmlXGridObject(myForm.getContainer('servicefees_container'));
 
-			myGridRemitCustNumbers.setImagePath("/codebase/imgs/")
+			myGridSmartMoneyScheme.setImagePath("/codebase/imgs/")
 
-			myGridRemitCustNumbers.setHeader("No, Mobile Number, Remittance Number, Trade Money Number/Code, Provider");
+			myGridSmartMoneyScheme.setHeader("No, Minimum Amount, Maximum Amount, Send Agent Commission, Transfer Fee, Receive Agent Commission, &nbsp;");
 
-			myGridRemitCustNumbers.setInitWidths("50,180,180,200,180");
+			myGridSmartMoneyScheme.setInitWidths("50,200,200,200,200,200,*");
 
-			myGridRemitCustNumbers.setColAlign("center,left,left,left,left");
+			myGridSmartMoneyScheme.setColAlign("center,right,right,right,right,right,right");
 
-			myGridRemitCustNumbers.setColTypes("ro,edtxt,edtxt,edtxt,ro");
+			myGridSmartMoneyScheme.setColTypes("ro,edn,edn,edn,edn,edn,ro");
 
-			//myGridRemitCustNumbers.setNumberFormat("00000000000",1,"","");
+			//myGridSmartMoneyScheme.setNumberFormat("00000000000",1,"","");
 
-			myGridRemitCustNumbers.setColSorting("str,str,str,str,str");
+			//myGridSmartMoneyScheme.setNumberFormat("0,000.00",1,".",",");
+			//myGridSmartMoneyScheme.setNumberFormat("0,000.00",2,".",",");
+			//myGridSmartMoneyScheme.setNumberFormat("0,000.00",3,".",",");
+			//myGridSmartMoneyScheme.setNumberFormat("0,000.00",4,".",",");
+			//myGridSmartMoneyScheme.setNumberFormat("0,000.00",5,".",",");
 
-			//var combobox = myGridRemitCustNumbers.getCombo(2);
+			myGridSmartMoneyScheme.setColSorting("str,int,int,int,int,int,int");
+
+			//var combobox = myGridSmartMoneyScheme.getCombo(2);
 			//combobox.put("Smart","Smart");
 			//combobox.put("Globe","Globe");
 			//combobox.put("Sun","Sun");
 
-			myGridRemitCustNumbers.init();
+			myGridSmartMoneyScheme.init();
 
-			myGridRemitCustNumbers.setSizes();
+			myGridSmartMoneyScheme.setSizes();
 
-			/*myGridRemitCustNumbers.addRow(1,"1,09493621618,,1,1");
-			myGridRemitCustNumbers.addRow(2,"2,,,,");
-			myGridRemitCustNumbers.addRow(3,"3,,,,");
-			myGridRemitCustNumbers.addRow(4,"4,,,,");
-			myGridRemitCustNumbers.addRow(5,"5,,,,");
-			myGridRemitCustNumbers.addRow(6,"6,,,,");
-			myGridRemitCustNumbers.addRow(7,"7,,,,");
-			myGridRemitCustNumbers.addRow(8,"8,,,,");
-			myGridRemitCustNumbers.addRow(9,"9,,,,");
-			myGridRemitCustNumbers.addRow(10,"10,,,,");*/
+			/*myGridSmartMoneyScheme.addRow(1,"1,RETAIL,SMART,SRET9988,0,-10,1%,100,1000");
+			myGridSmartMoneyScheme.addRow(2,"2,,,,");
+			myGridSmartMoneyScheme.addRow(3,"3,,,,");
+			myGridSmartMoneyScheme.addRow(4,"4,,,,");
+			myGridSmartMoneyScheme.addRow(5,"5,,,,");
+			myGridSmartMoneyScheme.addRow(6,"6,,,,");
+			myGridSmartMoneyScheme.addRow(7,"7,,,,");
+			myGridSmartMoneyScheme.addRow(8,"8,,,,");
+			myGridSmartMoneyScheme.addRow(9,"9,,,,");
+			myGridSmartMoneyScheme.addRow(10,"10,,,,");*/
 
-			/*myGridRemitCustNumbers.attachEvent("onCheck", function(rId,cInd,state){
-				var mobileNo = trim(myGridRemitCustNumbers.cells(rId,1).getValue());
+			<?php /*
+			myGridSmartMoneyScheme.attachEvent("onCheck", function(rId,cInd,state){
+				var mobileNo = trim(myGridSmartMoneyScheme.cells(rId,1).getValue());
 
 				//showMessage('rId=>'+rId+', cInd=>'+cInd+', state=>'+state+', mobileNo=>'+mobileNo,10000);
 
 				if(state==true&&(cInd==3||cInd==4)) {
 					if(mobileNo=='') {
-						myGridRemitCustNumbers.cells(rId,cInd).setValue(false);
+						myGridSmartMoneyScheme.cells(rId,cInd).setValue(false);
 					} else {
 						if(cInd==3) {
-							myGridRemitCustNumbers.forEachRow(function(id){
+							myGridSmartMoneyScheme.forEachRow(function(id){
 								if(rId!=id) {
-									myGridRemitCustNumbers.cells(id,3).setValue(false);
+									myGridSmartMoneyScheme.cells(id,3).setValue(false);
 								}
 							});
 						}
 					}
 				}
-			});*/
+			});
+			*/ ?>
 
-			myGridRemitCustNumbers.attachEvent("onCellChanged", function(rId,cInd,nValue){
+			<?php /*
+			myGridSmartMoneyScheme.attachEvent("onCellChanged", function(rId,cInd,nValue){
 				//showMessage('rId=>'+rId+', cInd=>'+cInd+', nValue=>'+nValue,10000);
 
 				if(cInd==1) {
-					//var mobileNo = trim(myGridRemitCustNumbers.cells(rId,cInd).getValue());
+					//var mobileNo = trim(myGridSmartMoneyScheme.cells(rId,cInd).getValue());
 					var mobileNo = trim(nValue);
 
 					if(mobileNo!='') {
 
 						if(!ValidMobileNo(mobileNo)) {
-							myGridRemitCustNumbers.cells(rId,cInd).setValue('');
+							myGridSmartMoneyScheme.cells(rId,cInd).setValue('');
 							showErrorMessage('Invalid Mobile Number!',5000);
 							return false;
 						}
-
-						/*if(mobileNo.length>11) {
-							myGridRemitCustNumbers.cells(rId,cInd).setValue('');
-							showErrorMessage('Invalid Mobile Number!',5000);
-							return false;
-						}
-
-						//var chkMatches = name.match(/txt\_atcommands\_regx(\d+)\[(\d+)\]/);
-
-						if(!mobileNo.match(/^0\d{10}$/)) {
-							myGridRemitCustNumbers.cells(rId,cInd).setValue('');
-							showErrorMessage('Invalid Mobile Number!',5000);
-							return false;
-						}*/
 
 						myTab.postData('/'+settings.router_id+'/json/', {
 							odata: {},
@@ -365,42 +337,34 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 									showErrorMessage('Invalid Mobile Number!',5000);
 									return false;
 								}
-								myGridRemitCustNumbers.cells(rId,4).setValue(ddata.network);
+								myGridSmartMoneyScheme.cells(rId,2).setValue(ddata.network);
 							}
 						});
 					} else {
-						myGridRemitCustNumbers.cells(rId,2).setValue('');
-						myGridRemitCustNumbers.cells(rId,3).setValue('');
-						myGridRemitCustNumbers.cells(rId,4).setValue('');
-					}
-				} else
-				if(cInd==2) {
-					var remittanceNo = trim(nValue);
-
-					if(remittanceNo!='') {
-
-						if(!ValidRemittanceNo(remittanceNo)) {
-							myGridRemitCustNumbers.cells(rId,cInd).setValue('');
-							showErrorMessage('Invalid Remittance Number!',5000);
-							return false;
-						}
+						myGridSmartMoneyScheme.cells(rId,2).setValue('');
+						myGridSmartMoneyScheme.cells(rId,3).setValue(0);
+						myGridSmartMoneyScheme.cells(rId,4).setValue(0);
 					}
 				}
 
 			});
+			*/ ?>
 
-			myGridRemitCustNumbers.attachEvent("onEditCell", function(stage,rId,cInd,nValue,oValue){
+			myGridSmartMoneyScheme.attachEvent("onEditCell", function(stage,rId,cInd,nValue,oValue){
 				//showMessage('state=>'+stage+', rId=>'+rId+', cInd=>'+cInd+', nValue=>'+nValue+', oValue=>'+oValue,10000);
 
-				if(stage==1&&cInd==1) {
-					myGridRemitCustNumbers.cells(rId,cInd).inputMask({mask:'99999999999',placeholder:''});
-					//myGridRemitCustNumbers.cells(rId,cInd).inputMask('99999999999');
-					//myGridRemitCustNumbers.cells(rId,cInd).numeric();
-					//jQuery(myGridRemitCustNumbers.cells(rId,cInd).cell).first().numeric();
-					//jQuery(myGridRemitCustNumbers.cells(rId,cInd).cell).first().attr('maxlength', 11);
-				} else
-				if(stage==1&&cInd==2) {
-					myGridRemitCustNumbers.cells(rId,cInd).inputMask({mask:'9999999999999999',placeholder:''});
+				//if(stage==1&&cInd==6) {
+					//myGridSmartMoneyScheme.cells(rId,cInd).inputMask({alias:'percentage',placeholder:'',min:-100,allowMinus:true,autoUnmask:false});
+					//myGridSmartMoneyScheme.cells(rId,cInd).inputMask('99999999999');
+					//myGridSmartMoneyScheme.cells(rId,cInd).numeric();
+					//jQuery(myGridSmartMoneyScheme.cells(rId,cInd).cell).first().numeric();
+					//jQuery(myGridSmartMoneyScheme.cells(rId,cInd).cell).first().attr('maxlength', 11);
+				//} else
+				//if(stage==1&&(cInd==4||cInd==5)) {
+				//	myGridSmartMoneyScheme.cells(rId,cInd).inputMask({alias:'currency',prefix:'',placeholder:'',allowMinus:true,allowPlus:false,autoUnmask:false});
+				//} else
+				if(stage==1&&(cInd==1||cInd==2||cInd==3||cInd==4||cInd==5)) {
+					myGridSmartMoneyScheme.cells(rId,cInd).inputMask({alias:'currency',prefix:'',placeholder:'',allowMinus:false,allowPlus:false,autoUnmask:false});
 				}
 
 				return true;
@@ -408,72 +372,72 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			try {
 
-				if(ddata.rows[0].id) {
+				myGridSmartMoneyScheme.parse(ddata,function(){
 
-					myGridRemitCustNumbers.parse(ddata,function(){
+					/*if(typeof(f)!='undefined'&&rowid!=null) {
+						myGridSmartMoneyScheme.selectRowById(rowid,false,true,true);
+					} else
+					if(typeof(f)=='undefined'&&ddata.rows.length>0) {
+						myGridSmartMoneyScheme.selectRowById(ddata.rows[0].id,false,true,true);
+					}*/
 
-						/*if(typeof(f)!='undefined'&&rowid!=null) {
-							myGridRemitCustNumbers.selectRowById(rowid,false,true,true);
-						} else
-						if(typeof(f)=='undefined'&&ddata.rows.length>0) {
-							myGridRemitCustNumbers.selectRowById(ddata.rows[0].id,false,true,true);
-						}*/
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
-						<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
+					myGridSmartMoneyScheme.forEachRow(function(id){
+						myGridSmartMoneyScheme.cells(id,1).setDisabled(true);
+						myGridSmartMoneyScheme.cells(id,2).setDisabled(true);
+						myGridSmartMoneyScheme.cells(id,3).setDisabled(true);
+						myGridSmartMoneyScheme.cells(id,4).setDisabled(true);
+						myGridSmartMoneyScheme.cells(id,5).setDisabled(true);
+						//myGridSmartMoneyScheme.cells(id,6).setDisabled(true);
+						//myGridSmartMoneyScheme.cells(id,7).setDisabled(true);
+						//myGridSmartMoneyScheme.cells(id,8).setDisabled(true);
+					});
 
-						myGridRemitCustNumbers.forEachRow(function(id){
-							myGridRemitCustNumbers.cells(id,1).setDisabled(true);
-							myGridRemitCustNumbers.cells(id,2).setDisabled(true);
-							myGridRemitCustNumbers.cells(id,3).setDisabled(true);
-						});
+					<?php } ?>
 
-						<?php } ?>
+					<?php /*
+					var x;
 
-						<?php /*
-						if(ddata.rows.length>0) {
+					if(ddata.rows&&ddata.rows.length>0) {
+						for(x in ddata.rows) {
+							if(ddata.rows[x].type) {
+								//alert(JSON.stringify(ddata.rows[x].type));
+								var myCombo = myGridSmartMoneyScheme.getColumnCombo(1);
 
-							for(var i=0;i<ddata.rows.length;i++) {
-								//var cell = myGrid_%formval%.cells(ddata.rows[i].id,0);
+								myCombo.load(JSON.stringify(ddata.rows[x].type));
 
-								var o = myGrid.cells(ddata.rows[i].id,0).getRowObj();
-
-								if(ddata.rows[i].unread&&parseInt(ddata.rows[i].unread)===1) {
-									o.style.fontWeight = 'bold';
-									//o.style.color = '#f00';
-								} else {
-									o.style.fontWeight = 'normal';
-								}
+								myCombo.enableFilteringMode(true);
 							}
+							if(ddata.rows[x].provider) {
+								//alert(JSON.stringify(ddata.rows[x].options));
+								var myCombo = myGridSmartMoneyScheme.getColumnCombo(2);
+
+								myCombo.load(JSON.stringify(ddata.rows[x].provider));
+
+								myCombo.enableFilteringMode(true);
+							}
+							if(ddata.rows[x].simcard) {
+								//alert(JSON.stringify(ddata.rows[x].options));
+								var myCombo = myGridSmartMoneyScheme.getColumnCombo(3);
+
+								myCombo.load(JSON.stringify(ddata.rows[x].simcard));
+
+								myCombo.enableFilteringMode(true);
+							}
+							break;
 						}
-						*/ ?>
+					}
+					*/ ?>
 
-					},'json');
-
-				}
+				},'json');
 
 			} catch(e) {
-				console.log(e);
+				console.log('myGridSmartMoneyScheme.parse error: '+e);
 			}
 
+
 		});
-
-///////////////////////////////////
-
-			var myGridRemitCustTransactions = myWinObj.myGridRemitCustTransactions = new dhtmlXGridObject(myForm.getContainer('remitcust_remitcusttransactions'));
-
-			myGridRemitCustTransactions.setImagePath("/codebase/imgs/")
-
-			myGridRemitCustTransactions.setHeader("Customer ID, Virtual Number, Customer Name, Total Rebate");
-
-			myGridRemitCustTransactions.setInitWidths("120,120,120,120");
-
-			myGridRemitCustTransactions.setColAlign("left,left,left,right");
-
-			myGridRemitCustTransactions.setColTypes("ro,ro,ro,ro");
-
-			myGridRemitCustTransactions.setColSorting("str,str,str,str");
-
-			myGridRemitCustTransactions.init();
 
 ///////////////////////////////////
 
@@ -483,11 +447,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		myForm.setItemFocus("remitcust_lastname");
-
-		//jQuery("#<?php echo $templatedetailid.$submod; ?>detailsform_%formval% input[name='customer_creditlimit']").numeric();
-		//jQuery("#<?php echo $templatedetailid.$submod; ?>detailsform_%formval% input[name='customer_criticallevel']").numeric();
-		//jQuery("#<?php echo $templatedetailid.$submod; ?>detailsform_%formval% input[name='customer_creditbalance']").numeric();
+		myForm.setItemFocus("smartmoneyservicefees_desc");
 
 		myWinToolbar.showOnly(myToolbar);
 
@@ -654,7 +614,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			this.clearNote(id);
 		});
 
-		/*myWinToolbar.getToolbarData('<?php echo $moduleid; ?>new').onClick = function(id,formval) {
+		/*myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>new').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);
 
 			myTab.postData('/'+settings.router_id+'/json/', {
@@ -724,6 +684,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		};
 
+
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>save').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
 
@@ -731,15 +692,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			var myForm = myWinObj.form;
 
-			//var txt_optionnumber = parseInt($("#messagingdetailsoptionsdetailsform_%formval% input[name='txt_optionnumber']").val());
-
-			//if(isNaN(txt_optionnumber)) {
-			//	txt_optionnumber = '';
-			//}
-
-			//myForm.setItemValue('txt_optionnumber', txt_optionnumber);
-
-			//$("#messagingdetailsoptionsdetailsform_%formval% input[name='txt_optionnumber']").val(txt_optionnumber);
+			//var myForm = myForm2_%formval%;
 
 			myForm.trimAllInputs();
 
@@ -755,19 +708,27 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			//$("#messagingdetailsoptionsdetailsform_%formval% input[name='method']").val(id);
 
-			var obj = {o:this,id:id};
-
 			var extra = [];
 
-			myWinObj.myGridRemitCustNumbers.forEachRow(function(id){
-				var m = myWinObj.myGridRemitCustNumbers.cells(id,1).getValue();
-				if(m) {
-					extra['remitcustnumber_mobileno['+id+']'] = m;
-					extra['remitcustnumber_remittanceno['+id+']'] = myWinObj.myGridRemitCustNumbers.cells(id,2).getValue();
-					extra['remitcustnumber_trademoney['+id+']'] = myWinObj.myGridRemitCustNumbers.cells(id,3).getValue();
-					extra['remitcustnumber_provider['+id+']'] = myWinObj.myGridRemitCustNumbers.cells(id,4).getValue();
+			myWinObj.myGridSmartMoneyScheme.forEachRow(function(id){
+				var m = myWinObj.myGridSmartMoneyScheme.cells(id,0).getValue();
+				var n = myWinObj.myGridSmartMoneyScheme.cells(id,1).getValue();
+				var o = myWinObj.myGridSmartMoneyScheme.cells(id,2).getValue();
+				var p = myWinObj.myGridSmartMoneyScheme.cells(id,3).getValue();
+				if(m&&n) {
+					//extra['itemassignedsim_seq['+id+']'] = m;
+					extra['smartmoneyservicefeeslist_minamount['+id+']'] = n; //myGridSmartMoneyScheme_%formval%.cells(id,1).getValue();
+					extra['smartmoneyservicefeeslist_maxamount['+id+']'] = o; //myGridSmartMoneyScheme_%formval%.cells(id,2).getValue();
+					extra['smartmoneyservicefeeslist_sendcommission['+id+']'] = p; //myGridSmartMoneyScheme_%formval%.cells(id,3).getValue();
+					extra['smartmoneyservicefeeslist_transferfee['+id+']'] = myWinObj.myGridSmartMoneyScheme.cells(id,4).getValue();
+					extra['smartmoneyservicefeeslist_receivecommission['+id+']'] =myWinObj.myGridSmartMoneyScheme.cells(id,5).getValue();
+					//extra['discountlist_rate['+id+']'] = myWinObj.myGridSmartMoneyScheme.cells(id,6).getValue();
+					//extra['discountlist_min['+id+']'] = myWinObj.myGridSmartMoneyScheme.cells(id,7).getValue();
+					//extra['discountlist_max['+id+']'] = myWinObj.myGridSmartMoneyScheme.cells(id,8).getValue();
 				}
 			});
+
+			var obj = {o:this,id:id};
 
 			$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%").ajaxSubmit({
 				url: "/"+settings.router_id+"/json/",
@@ -867,7 +828,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		};
 
-		/*myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval) {
+		/*myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);
 			//doSelect_%formval%("retail");
 

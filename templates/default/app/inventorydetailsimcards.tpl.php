@@ -125,6 +125,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .simcard_transactions_%formval% .dhxform_container").height(dim[1]-150);
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .simcard_transactions_%formval% .dhxform_container").width(dim[0]-54);
 
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .simcard_smartmoney_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .simcard_smartmoney_%formval% .dhxform_container").width(dim[0]-54);
+
 		if(typeof(myWinObj.myGridSMSFunction)!='undefined') {
 			try {
 				myWinObj.myGridSMSFunction.setSizes();
@@ -135,6 +138,13 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			try {
 				myWinObj.myGridSimTransaction.setSizes();
 			} catch(e) {}
+		}
+
+		if(typeof(myWinObj.myGridSmartMoney)!='undefined') {
+			try {
+				console.log('myGridSmartMoney');
+				myWinObj.myGridSmartMoney.setSizes();
+			} catch(e) {console.log('error: myGridSmartMoney');}
 		}
 	}
 
@@ -214,9 +224,23 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		myTabbar.setArrowsMode("auto");
 
 		myTabbar.addTab("tbSimcards", "Sim Card");
+
+		<?php if(!empty($params['tbSmartMoney'])) { ?>
+			myTabbar.addTab("tbSmartMoney", "Smart Money");
+		<?php } ?>
+
+		<?php if(!empty($params['tbGCash'])) { ?>
+			myTabbar.addTab("tbGCash", "GCash");
+		<?php } ?>
+
 		myTabbar.addTab("tbFeatures", "Features");
 		myTabbar.addTab("tbSmsfunctions", "SMS Function");
 		myTabbar.addTab("tbTransactions", "Transactions");
+
+		<?php if(!empty($params['tbSmartMoney'])) { ?>
+			myTabbar.addTab("tbSmartMoneyTransactions", "SM Transactions");
+		<?php } ?>
+
 
 		myTabbar.tabs("tbSimcards").setActive();
 
@@ -235,6 +259,12 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
 			]},
 			{type: "block", name: "tbSimcards", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbSimcards']); ?>},
+			<?php if(!empty($params['tbSmartMoney'])) { ?>
+			{type: "block", name: "tbSmartMoney", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbSmartMoney']); ?>},
+			<?php } ?>
+			<?php if(!empty($params['tbGCash'])) { ?>
+			{type: "block", name: "tbGCash", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbGCash']); ?>},
+			<?php } ?>
 			{type: "block", name: "tbFeatures", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbFeatures']); ?>},
 			{type: "block", name: "tbSmsfunctions", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbSmsfunctions']); ?>},
 			{type: "block", name: "tbTransactions", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbTransactions']); ?>},
@@ -272,6 +302,14 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		myForm.hideItem('tbSmsfunctions');
 		myForm.hideItem('tbTransactions');
 
+		<?php if(!empty($params['tbSmartMoney'])) { ?>
+			myForm.hideItem('tbSmartMoney');
+			myForm.hideItem('tbSmartMoneyTransactions');
+		<?php } ?>
+
+		<?php if(!empty($params['tbGCash'])) { ?>
+			myForm.hideItem('tbGCash');
+		<?php } ?>
 
 ///////////////////////////////////
 
@@ -383,6 +421,37 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			}
 
 		});
+
+///////////////////////////////////
+
+<?php if(!empty($params['tbSmartMoney'])) { ?>
+
+		if(typeof(myWinObj.myGridSmartMoney)!='null'&&typeof(myWinObj.myGridSmartMoney)!='undefined'&&myWinObj.myGridSmartMoney!=null) {
+			try {
+				myWinObj.myGridSmartMoney.destructor();
+				myWinObj.myGridSmartMoney = null;
+			} catch(e) {
+				console.log(e);
+			}
+		}
+
+		var myGridSmartMoney = myWinObj.myGridSmartMoney = new dhtmlXGridObject(myForm.getContainer('simcard_smartmoney'));
+
+		myGridSmartMoney.setImagePath("/codebase/imgs/")
+
+		myGridSmartMoney.setHeader("ID, Smart Money Number, Label, PIN Code, &nbsp;");
+
+		myGridSmartMoney.setInitWidths("50,250,200,200,*");
+
+		myGridSmartMoney.setColAlign("center,left,left,left,left");
+
+		myGridSmartMoney.setColTypes("ro,edtxt,edtxt,edtxt,ro");
+
+		myGridSmartMoney.setColSorting("int,str,str,str,str");
+
+		myGridSmartMoney.init();
+
+<?php } ?>
 
 ///////////////////////////////////
 
@@ -585,7 +654,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myWinToolbar.enableOnly(myToolbar);
 
-		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>recompute']);
+		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+
+		//myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>recompute']);
 
 		<?php 	if(empty($vars['post']['rowid'])) { ?>
 

@@ -1269,7 +1269,7 @@ if(!class_exists('APP_app_setting')) {
 
 				//if(!empty($params['atcommandsinfo'])) {
 
-					for($i=0;$i<20;$i++) {
+					for($i=0;$i<50;$i++) {
 
 						if($readonly) {
 							if(!empty($params['atcommandsinfo'][$i]['atcommands_at'])) {

@@ -1,11 +1,11 @@
 <?php
-$moduleid = 'contact';
-$submod = 'remittance';
+$moduleid = 'smartmoney';
+$submod = 'moneytransfer';
 $templatemainid = $moduleid.'main';
 $templatedetailid = $moduleid.'detail';
 $mainheight = 250;
 
-$myToolbar = array($moduleid.'new',$moduleid.'refresh');
+$myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
 
 ?>
 <!--
@@ -42,8 +42,6 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 	myTab.layout.cells('c').setText('');
 
 	myTab.layout.cells('b').hideArrow();
-
-	//myTab.layout.cells('c').expand();
 
 	//myTab.layout.cells('b').setHeight(<?php echo $mainheight; ?>);
 
@@ -106,9 +104,12 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 ///////////////
 
+		var datefrom = myTab.toolbar.getValue("<?php echo $moduleid; ?>datefrom");
+		var dateto = myTab.toolbar.getValue("<?php echo $moduleid; ?>dateto");
+
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=<?php echo $submod; ?>&formval=%formval%",
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=<?php echo $submod; ?>&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto),
 		}, function(ddata,odata){
 
 			if(typeof(myGrid_%formval%)!='null'&&typeof(myGrid_%formval%)!='undefined'&&myGrid_%formval%!=null) {
@@ -124,15 +125,15 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 			myGrid.setImagePath("/codebase/imgs/")
 
-			myGrid.setHeader("#master_checkbox,Customer ID, Primary Mobile No, Last Name, First Name, Middle Name, Suffix");
+			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Sender, Card, Amount, Sender Agent, Transfer Fee, Receive Agent, Other Charges, Amnt Due, Status");
 
-			myGrid.setInitWidths("50,100,150,200,200,200,*");
+			myGrid.setInitWidths("50,50,120,120,120,120,120,120,120,120,120,120,150");
 
-			myGrid.setColAlign("center,right,left,left,left,left,left");
+			myGrid.setColAlign("center,center,left,left,left,center,left,center,center,right,right,right,left");
 
-			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro");
+			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
-			myGrid.setColSorting("int,int,str,str,str,str,str");
+			myGrid.setColSorting("int,int,str,str,str,str,str,str,str,str,str,str,str");
 
 			myGrid.enablePaging(true,100,10,"<?php echo $templatemainid.$submod; ?>gridpagingArea",true,"<?php echo $templatemainid.$submod; ?>gridrecinfoArea");
 
@@ -147,9 +148,9 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 				if(ddata.rows[0].id) {
 
-					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter,#text_filter,#text_filter,&nbsp;,&nbsp;");
+					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter");
 
-					/*myGrid.attachEvent("onBeforeSelect", function(new_row,old_row,new_col_index){
+					myGrid.attachEvent("onBeforeSelect", function(new_row,old_row,new_col_index){
 
 						var method = myFormStatus_%formval%;
 
@@ -158,23 +159,10 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 						}
 
 						return true;
-					});*/
+					});
 
 					myGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
 						layout_resize_%formval%();
-
-						/*myTab.toolbar.disableAll();
-
-						myTab.postData('/'+settings.router_id+'/json/', {
-							odata: {},
-							pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=onrowselect&rowid="+rowId+"&formval=%formval%",
-						}, function(ddata,odata){
-							if(ddata.html) {
-								jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-								layout_resize_%formval%();
-							}
-						});*/
-
 					});
 
 					myGrid.attachEvent("onRowDblClicked", function(rowId,cellIndex){
@@ -188,7 +176,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 						obj.rowid = rowId;
 						obj.formval = '%formval%';
 
-						obj.title = 'Remittance / '+myGrid.cells(rowId,3).getValue()+' / '+myGrid.cells(rowId,4).getValue()+' / '+myGrid.cells(rowId,5).getValue();
+						obj.title = 'Money Transfer / '+myGrid.cells(rowId,3).getValue()+' / '+myGrid.cells(rowId,5).getValue();
 
 						openWindow(obj, function(winobj,obj){
 							console.log(obj);
@@ -283,6 +271,16 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 				layout_resize_%formval%();
 
+				<?php /*myTab.postData('/'+settings.router_id+'/json/', {
+					odata: {},
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=nodata&formval=%formval%",
+				}, function(ddata,odata){
+					if(ddata.html) {
+						jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+						layout_resize_%formval%();
+					}
+				});*/ ?>
+
 			}
 
 		});
@@ -312,7 +310,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 			obj.rowid = 0;
 			obj.formval = '%formval%';
 
-			obj.title = 'New Remittance Customer';
+			obj.title = 'New Money Transfer';
 
 			openWindow(obj, function(winobj,obj){
 				console.log(obj);
@@ -321,6 +319,11 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 					odata: {winobj:winobj,obj:obj},
 					pdata: "routerid="+settings.router_id+"&action="+obj.action+"&formid="+obj.formid+"&module="+obj.module+"&method="+obj.method+"&rowid="+obj.rowid+"&formval="+obj.formval+"&wid="+obj.wid,
 				}, function(ddata,odata){
+					if(ddata.return_code&&ddata.return_code=='ERROR') {
+						showAlert(ddata.return_message);
+						closeWindow(odata.obj.wid);
+						return;
+					}
 					if(ddata.toolbar) {
 						console.log(ddata.toolbar);
 						odata.winobj.toolbar = odata.winobj.attachToolbar({

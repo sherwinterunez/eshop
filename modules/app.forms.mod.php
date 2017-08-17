@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -51,6 +51,9 @@ $forms['app']['receivablesdetail'] = '<div id="receivablesdetail"></div>';
 $forms['app']['remittancemain'] = '<div id="remittancemain"></div>';
 $forms['app']['remittancedetail'] = '<div id="remittancedetail"></div>';
 
+$forms['app']['smartmoneymain'] = '<div id="smartmoneymain"></div>';
+$forms['app']['smartmoneydetail'] = '<div id="smartmoneydetail"></div>';
+
 $forms['app']['reportsmain'] = '<div id="reportsmain"></div>';
 $forms['app']['reportsdetail'] = '<div id="reportsdetail"></div>';
 
@@ -66,5 +69,3 @@ $forms['app']['contactdetail'] = '<div id="contactdetail"></div>';
 //$forms['app']['samplecontrol'] = '<div id="samplecontrol">&nbsp;#samplecontrol</div>';
 $forms['app']['samplemain'] = '<div id="samplemain">&nbsp;#samplemain</div>';
 $forms['app']['sampledetail'] = '<div id="sampledetail">&nbsp;#sampledetail</div>';
-
-
