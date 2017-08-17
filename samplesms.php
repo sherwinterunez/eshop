@@ -139,7 +139,7 @@ function sampleSMS() {
 
 $message = "CONFIRM Ref:8ce57d66c530\nCustomer Cellphone#:09493621255\nReceiver Cellphone#:09088853095";
 
-sendToOutBox('09477409000','8890',$message);
+sendToOutBox('8890','09477409000',$message);
 
 }
 
