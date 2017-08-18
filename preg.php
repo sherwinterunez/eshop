@@ -347,9 +347,10 @@ foreach($str as $k=>$v) {
 */
 
 //$regx = 'CONFIRM.+?Ref\:(?<REF>.{12}).+?Customer.+?Cellphone.+?Receiver.+?Cellphone';
-//$regx = '.+?Sent.+?PHP(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<LABEL>.+?)\s+to\s+(?<CARDNO>.{16}).+?at\s+\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12})';
-//$regx = '.+?Remittance.+?PHP(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?fee.+?PHP(?<FEE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?deducted.+?bal.+?PHP(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref\:(?<REF>.{12})';
-$regx = '.+?Remittance .+?PHP(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission.+?PHP(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?received.+?\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12}).+?Bal.+?PHP(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
+$regx = '.+?Sent.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<LABEL>.+?)\s+to\s+(?<CARDNO>.{16}).+?at\s+\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12})';
+//$regx = '.+?Remittance.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?fee.+?P(?<FEE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?deducted.+?bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref\:(?<REF>.{12})';
+//$regx = '.+?Remittance .+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission.+?P(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?received.+?\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12}).+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
+//$regx = '.+?Remittance .+?PHP(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
 
 $str = array();
 //$str[] = '17Aug 2143:Sent PHP500.00 from LOADING to 557751******8104 at 639092701100.Ref:f620ccf870f6.Sa next msg,i-type ang customer &receiver cellphone# &send to 8890.';
@@ -358,6 +359,7 @@ $str = array();
 $str[] = "CONFIRM Ref:8ce57d66c530\nCustomer Cellphone#:\nReceiver Cellphone#:";
 $str[] = '18Aug 0009:Sent PHP500.00 from LOADING to 557751******8104 at 639092701100.Ref:8ce57d66c530.Sa next msg,i-type ang customer &receiver cellphone# &send to 8890.';
 $str[] = '18Aug 0009:Remittance of PHP500.00 & fee of PHP18.50 was deducted from your account.Avail bal:PHP9,074.00.Ref:8ce57d66c530';
+$str[] = '18Aug 0049: We have sent a text message to your customer on the Smart Padala transaction details. Thank you! Ref:8ce57d66c530';
 
 $str[] = '18Aug 0009:Remittance of PHP500.00 & commission of PHP11.50 was received from 639477409000.LIBRE ang pag-claim ng iyong customer.Ref:8ce57d66c530 Bal:PHP511.50';
 

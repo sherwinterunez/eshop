@@ -426,6 +426,11 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 <?php if(!empty($params['tbSmartMoney'])) { ?>
 
+	myTab.postData('/'+settings.router_id+'/json/', {
+		odata: {},
+		pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=smartmoney&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
+	}, function(ddata,odata){
+
 		if(typeof(myWinObj.myGridSmartMoney)!='null'&&typeof(myWinObj.myGridSmartMoney)!='undefined'&&myWinObj.myGridSmartMoney!=null) {
 			try {
 				myWinObj.myGridSmartMoney.destructor();
@@ -439,17 +444,85 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myGridSmartMoney.setImagePath("/codebase/imgs/")
 
-		myGridSmartMoney.setHeader("ID, Smart Money Number, Label, PIN Code, &nbsp;");
+		myGridSmartMoney.setHeader("ID, SMART MONEY NUMBER, LABEL, PIN CODE, SIM COMMAND, BALANCE, &nbsp;");
 
-		myGridSmartMoney.setInitWidths("50,250,200,200,*");
+		myGridSmartMoney.setInitWidths("50,250,200,200,250,150,*");
 
-		myGridSmartMoney.setColAlign("center,left,left,left,left");
+		myGridSmartMoney.setColAlign("center,left,left,left,left,right,left");
 
-		myGridSmartMoney.setColTypes("ro,edtxt,edtxt,edtxt,ro");
+		myGridSmartMoney.setColTypes("ro,edtxt,edtxt,edtxt,combo,ro,ro");
 
-		myGridSmartMoney.setColSorting("int,str,str,str,str");
+		myGridSmartMoney.setColSorting("int,str,str,str,str,int,str");
 
 		myGridSmartMoney.init();
+
+		try {
+			myGridSmartMoney.parse(ddata,function(){
+
+				<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
+
+				myGridSmartMoney.forEachRow(function(id){
+					myGridSmartMoney.cells(id,1).setDisabled(true);
+					myGridSmartMoney.cells(id,2).setDisabled(true);
+					myGridSmartMoney.cells(id,3).setDisabled(true);
+					myGridSmartMoney.cells(id,4).setDisabled(true);
+				});
+
+				<?php } ?>
+
+				var x;
+
+				if(ddata.rows&&ddata.rows.length>0) {
+					for(x in ddata.rows) {
+						/*if(ddata.rows[x].loadcommands) {
+							//alert(JSON.stringify(ddata.rows[x].type));
+							var myCombo = myGridSmartMoney.getColumnCombo(1);
+
+							myCombo.load(JSON.stringify(ddata.rows[x].loadcommands));
+
+							//myCombo.setComboText(ddata.rows[x].simcardfunctions_loadcommandid);
+
+							myCombo.enableFilteringMode(true);
+
+							//myGridSmartMoney.cells(ddata.rows[x].id,1).setValue(ddata.rows[x].simcardfunctions_loadcommandid);
+
+							//myCombo.setComboValue(ddata.rows[x].data[1]);
+						}*/
+						if(ddata.rows[x].modemcommands) {
+							//alert(JSON.stringify(ddata.rows[x].options));
+							var myCombo = myGridSmartMoney.getColumnCombo(4);
+
+							myCombo.load(JSON.stringify(ddata.rows[x].modemcommands));
+
+							myCombo.enableFilteringMode(true);
+						}
+						break;
+						/*
+						if(ddata.rows[x].category) {
+							//alert(JSON.stringify(ddata.rows[x].options));
+							var myCombo = myGridSmartMoney.getColumnCombo(2);
+
+							myCombo.load(JSON.stringify(ddata.rows[x].category));
+
+							myCombo.enableFilteringMode(true);
+						}
+						if(ddata.rows[x].discount) {
+							//alert(JSON.stringify(ddata.rows[x].options));
+							var myCombo = myGridSmartMoney.getColumnCombo(4);
+
+							myCombo.load(JSON.stringify(ddata.rows[x].discount));
+
+							myCombo.enableFilteringMode(true);
+						}
+						*/
+					}
+				}
+			},'json');
+		} catch(e) {
+			console.log(e);
+		}
+
+	});
 
 <?php } ?>
 
@@ -929,6 +1002,25 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				if(m&&n) {
 					extra['simcardfunctions_loadcommandid['+id+']'] = m;
 					extra['simcardfunctions_modemcommandsname['+id+']'] = n;
+				}
+			});
+
+			myWinObj.myGridSmartMoney.forEachRow(function(id){
+				var m = myWinObj.myGridSmartMoney.cells(id,1).getValue();
+				var n = myWinObj.myGridSmartMoney.cells(id,2).getValue();
+				var o = myWinObj.myGridSmartMoney.cells(id,3).getValue();
+				var p = myWinObj.myGridSmartMoney.cells(id,4).getValue();
+				var q = myWinObj.myGridSmartMoney.cells(id,5).getValue();
+				if(m&&n&&o) {
+					extra['smartmoney_number['+id+']'] = m;
+					extra['smartmoney_label['+id+']'] = n;
+					extra['smartmoney_pincode['+id+']'] = o;
+					extra['smartmoney_balance['+id+']'] = q;
+					if(p) {
+						extra['smartmoney_modemcommand['+id+']'] = p;
+					} else {
+						extra['smartmoney_modemcommand['+id+']'] = '';
+					}
 				}
 			});
 

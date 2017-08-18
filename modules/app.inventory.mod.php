@@ -374,6 +374,10 @@ if(!class_exists('APP_app_inventory')) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
+						if(!($result = $appdb->query("delete from tbl_smartmoney where smartmoney_simcardid=".$retval['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
 					}
 
 					if(!empty($retval['rowid'])&&!empty($post['simcardfunctions_loadcommandid'])&&is_array($post['simcardfunctions_loadcommandid'])&&!empty($post['simcardfunctions_modemcommandsname'])&&is_array($post['simcardfunctions_modemcommandsname'])) {
@@ -392,6 +396,25 @@ if(!class_exists('APP_app_inventory')) {
 							$content['simcardfunctions_modemcommandsname'] = !empty($post['simcardfunctions_modemcommandsname'][$k]) ? $post['simcardfunctions_modemcommandsname'][$k] : '';
 
 							if(!($result = $appdb->insert("tbl_simcardfunctions",$content,"simcardfunctions_id"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+						}
+					}
+
+					if(!empty($retval['rowid'])&&!empty($post['smartmoney_number'])&&is_array($post['smartmoney_number'])&&!empty($post['smartmoney_label'])&&is_array($post['smartmoney_label'])&&!empty($post['smartmoney_pincode'])&&is_array($post['smartmoney_pincode'])&&!empty($post['smartmoney_modemcommand'])&&is_array($post['smartmoney_modemcommand'])) {
+
+						foreach($post['smartmoney_number'] as $k=>$v) {
+
+							$content = array();
+							$content['smartmoney_simcardid'] = $retval['rowid'];
+							$content['smartmoney_number'] = !empty($post['smartmoney_number'][$k]) ? $post['smartmoney_number'][$k] : '';
+							$content['smartmoney_label'] = !empty($post['smartmoney_label'][$k]) ? $post['smartmoney_label'][$k] : '';
+							$content['smartmoney_pincode'] = !empty($post['smartmoney_pincode'][$k]) ? $post['smartmoney_pincode'][$k] : '';
+							$content['smartmoney_modemcommand'] = !empty($post['smartmoney_modemcommand'][$k]) ? $post['smartmoney_modemcommand'][$k] : '';
+							$content['smartmoney_balance'] = !empty($post['smartmoney_balance'][$k]) ? str_replace(',','',$post['smartmoney_balance'][$k]) : 0;
+
+							if(!($result = $appdb->insert("tbl_smartmoney",$content,"smartmoney_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
@@ -3831,6 +3854,50 @@ if($readonly) {
 
 						while($ctr<=$max) {
 							$rows[] = array('id'=>$ctr,'loadcommands'=>array('options'=>$optloadcommands),'modemcommands'=>array('options'=>$optmodemcommands),'data'=>array($ctr,'',''));
+							$ctr++;
+						}
+
+						$retval = array('rows'=>$rows);
+
+					} else
+					if($this->post['table']=='smartmoney') {
+
+						if(!($result = $appdb->query("select * from tbl_smartmoney where smartmoney_simcardid=".$this->post['rowid']." order by smartmoney_id asc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						$ctr=1;
+						$max=10;
+
+						$rows = array();
+
+						$loadcommands = getLoadCommands();
+						$modemcommands = getModemCommands(1);
+
+						$optloadcommands = array(array('text'=>'','value'=>''));
+						$optmodemcommands = array(array('text'=>'','value'=>''));
+
+						foreach($loadcommands as $k=>$v) {
+							$optloadcommands[] = array('text'=>$v['smscommands_name'],'value'=>$v['smscommands_name']);
+						}
+
+						foreach($modemcommands as $k=>$v) {
+							$optmodemcommands[] = array('text'=>$v,'value'=>$v);
+						}
+
+						if(!empty($result['rows'][0]['smartmoney_id'])) {
+							foreach($result['rows'] as $k=>$v) {
+								//$rows[] = array('id'=>$ctr,'data'=>array($ctr,htmlentities(getLoadCommandName($v['simcardfunctions_loadcommandid'])),$v['simcardfunctions_modemcommandsname']));
+								//$rows[] = array('id'=>$ctr,'loadcommands'=>array('options'=>$optloadcommands),'modemcommands'=>array('options'=>$optmodemcommands),'simcardfunctions_loadcommandid'=>htmlentities(getLoadCommandName($v['simcardfunctions_loadcommandid'])),'data'=>array($ctr,$v['simcardfunctions_loadcommandid'],$v['simcardfunctions_modemcommandsname']));
+								$rows[] = array('id'=>$ctr,'loadcommands'=>array('options'=>$optloadcommands),'modemcommands'=>array('options'=>$optmodemcommands),'data'=>array($ctr,$v['smartmoney_number'],$v['smartmoney_label'],$v['smartmoney_pincode'],$v['smartmoney_modemcommand'],number_format($v['smartmoney_balance'],2)));
+								$ctr++;
+								$max++;
+							}
+						}
+
+						while($ctr<=$max) {
+							$rows[] = array('id'=>$ctr,'loadcommands'=>array('options'=>$optloadcommands),'modemcommands'=>array('options'=>$optmodemcommands),'data'=>array($ctr,'','','','',''));
 							$ctr++;
 						}
 

@@ -1221,10 +1221,40 @@ CREATE TABLE tbl_remittance (
     remittance_active integer DEFAULT 0 NOT NULL,
     remittance_deleted integer DEFAULT 0 NOT NULL,
     remittance_flag integer DEFAULT 0 NOT NULL,
-    remitcustnumber_createstamp timestamp with time zone DEFAULT now()
+    remittance_createstamp timestamp with time zone DEFAULT now()
 );
 
 ALTER TABLE ONLY tbl_remittance ADD CONSTRAINT tbl_remittance_primary_key PRIMARY KEY (remittance_id);
+
+-- tbl_smartmoney
+
+DROP SEQUENCE IF EXISTS tbl_smartmoney_seq CASCADE;
+
+CREATE SEQUENCE tbl_smartmoney_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_smartmoney;
+
+CREATE TABLE tbl_smartmoney (
+    smartmoney_id bigint DEFAULT nextval(('tbl_smartmoney_seq'::text)::regclass) NOT NULL,
+    smartmoney_simcardid integer DEFAULT 0 NOT NULL,
+    smartmoney_number text DEFAULT ''::text NOT NULL,
+    smartmoney_label text DEFAULT ''::text NOT NULL,
+    smartmoney_pincode text DEFAULT ''::text NOT NULL,
+    smartmoney_modemcommand text DEFAULT ''::text NOT NULL,
+    smartmoney_balance numeric DEFAULT 0 NOT NULL,
+    smartmoney_active integer DEFAULT 0 NOT NULL,
+    smartmoney_deleted integer DEFAULT 0 NOT NULL,
+    smartmoney_flag integer DEFAULT 0 NOT NULL,
+    smartmoney_createstamp timestamp with time zone DEFAULT now(),
+    smartmoney_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_smartmoney ADD CONSTRAINT tbl_smartmoney_primary_key PRIMARY KEY (smartmoney_id);
 
 ---------------------------------------------------------------------
 
@@ -1260,6 +1290,11 @@ alter table tbl_loadtransaction add column loadtransaction_receiveagentcommissio
 alter table tbl_loadtransaction add column loadtransaction_otherchargespercent numeric NOT NULL DEFAULT 0;
 alter table tbl_loadtransaction add column loadtransaction_otherchargesamount numeric NOT NULL DEFAULT 0;
 alter table tbl_loadtransaction add column loadtransaction_changed numeric NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_cardlabel text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_cardmobileno text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_remittancefee numeric NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_destcardno text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_destcardmobileno text DEFAULT ''::text NOT NULL;
 
 ------------------------------------------------------------------------------------------------------------------
 
