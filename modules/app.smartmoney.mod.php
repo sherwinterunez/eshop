@@ -617,6 +617,147 @@ if(!class_exists('APP_app_smartmoney')) {
 					$readonly = false;
 				}
 
+				if(!empty($post['method'])&&$post['method']=='getsenderdata') {
+
+					$senderid = !empty($post['senderid']) ? $post['senderid'] : false;
+
+					$retval = array();
+					$retval['error_code'] = '345325';
+					$retval['error_message'] = 'Invalid Sender ID!';
+
+					if(!empty($senderid)) {
+					} else {
+						json_encode_return($retval);
+						die;
+					}
+
+					$sql = "select * from tbl_remitcust where remitcust_id=$senderid";
+
+					if(!($result = $appdb->query($sql))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
+
+					if(!empty($result['rows'][0]['remitcust_id'])) {
+						$remitcust = $result['rows'][0];
+
+						$sql = "select * from tbl_remitcustnumber where remitcustnumber_remitcustid=$senderid order by remitcustnumber_id asc limit 1";
+
+						if(!($result = $appdb->query($sql))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['rows'][0]['remitcustnumber_mobileno'])) {
+
+							$address = '';
+
+							// remitcust_pahouseno | remitcust_pabarangay | remitcust_pamunicipality | remitcust_paprovince | remitcust_pazipcode
+
+							if(!empty($remitcust['remitcust_pahouseno'])) {
+								$address .= trim($remitcust['remitcust_pahouseno']).' ';
+							}
+
+							if(!empty($remitcust['remitcust_pabarangay'])) {
+								$address .= trim($remitcust['remitcust_pabarangay']).' ';
+							}
+
+							if(!empty($remitcust['remitcust_pamunicipality'])) {
+								$address .= trim($remitcust['remitcust_pamunicipality']).' ';
+							}
+
+							if(!empty($remitcust['remitcust_paprovince'])) {
+								$address .= trim($remitcust['remitcust_paprovince']).' ';
+							}
+
+							if(!empty($remitcust['remitcust_pazipcode'])) {
+								$address .= trim($remitcust['remitcust_pazipcode']).' ';
+							}
+
+							$remitcustnumber_mobileno = $result['rows'][0]['remitcustnumber_mobileno'];
+
+							$retval = array();
+							$retval['post'] = $post;
+							$retval['data'] = array(
+								'senderaddress'=>trim($address),
+								'sendernumber'=>$remitcustnumber_mobileno,
+								'senderidtype'=>$remitcust['remitcust_idtype'],
+								'senderspecifyid'=>$remitcust['remitcust_specifyid'],
+								'senderidnumber'=>$remitcust['remitcust_idnumber'],
+								'senderidexpiration'=>$remitcust['remitcust_idexpiration'],
+							);
+
+						}
+					}
+
+
+					json_encode_return($retval);
+					die;
+
+				} else
+				if(!empty($post['method'])&&$post['method']=='getservicefee') {
+
+					$transaction = array();
+
+					$transaction['PADALA'] = getOption('$SMARTMONEYSETTINGS_SMARTPADALASERVICEFEES',false);
+					$transaction['TOPUP'] = getOption('$SMARTMONEYSETTINGS_TOPUPSERVICEFEES',false);
+					$transaction['PAYMAYA'] = getOption('$SMARTMONEYSETTINGS_PAYMAYASERVICEFEES',false);
+					$transaction['PICKUP'] = getOption('$SMARTMONEYSETTINGS_PICKUPANYWHERESERVICEFEES',false);
+
+					$cardno = !empty($post['cardno']) ? $post['cardno'] : false;
+					$transactiontype = !empty($post['transactiontype']) ? $post['transactiontype'] : false;
+					$amount = !empty($post['amount'])&&is_numeric($post['amount']) ? $post['amount'] : false;
+
+					$retval = array();
+					$retval['error_code'] = '345345';
+					$retval['error_message'] = 'Invalid Amount!';
+
+					if(!empty($amount)&&$amount>=100) {
+					} else {
+						json_encode_return($retval);
+						die;
+					}
+
+					$retval = array();
+					$retval['error'] = true;
+					//$retval['error_message'] = 'Invalid Card/Mobile Number!';
+
+					if(isSmartMoneyCardNo($cardno)) {
+					} else {
+						if(isSmartMobileNo($cardno)) {
+						} else {
+							json_encode_return($retval);
+							die;
+						}
+					}
+
+					$retval = array();
+					$retval['error_code'] = '345378';
+					$retval['error_message'] = 'Invalid/No Service Fee!';
+					$retval['post'] = $post;
+
+					if(!empty($transactiontype)&&!empty($transaction[$transactiontype])) {
+						$servicefee = $transaction[$transactiontype];
+					} else {
+						json_encode_return($retval);
+						die;
+					}
+
+					$fees = getSmartMoneyServiceFee($servicefee,$amount);
+
+					if(!empty($fees)) {
+					} else {
+						json_encode_return($retval);
+						die;
+					}
+
+					$retval = array();
+					$retval['fees'] = $fees;
+
+					json_encode_return($retval);
+					die;
+
+				} else
 				if(!empty($post['method'])&&$post['method']=='smartmoneynew') {
 
 					$retval = array();
@@ -741,6 +882,150 @@ if(!class_exists('APP_app_smartmoney')) {
 				} else
 				if(!empty($post['method'])&&$post['method']=='smartmoneysave') {
 
+					$retval = array();
+					$retval['error_code'] = '345345';
+					$retval['error_message'] = 'Invalid Card/Mobile Number!';
+
+					$loadtransaction_cardno = !empty($post['loadtransaction_cardno']) ? $post['loadtransaction_cardno'] : false;
+					$loadtransaction_amount = !empty($post['loadtransaction_amount'])&&is_numeric($post['loadtransaction_amount']) ? intval(str_replace(',','',$post['loadtransaction_amount'])) : false;
+					$loadtransaction_cashreceived = !empty($post['loadtransaction_cashreceived'])&&is_numeric($post['loadtransaction_cashreceived']) ? $post['loadtransaction_cashreceived'] : false;
+					$loadtransaction_assignedsim = !empty($post['loadtransaction_assignedsim']) ? $post['loadtransaction_assignedsim'] : false;
+
+					if(isSmartMoneyCardNo($loadtransaction_cardno)) {
+					} else {
+						if(isSmartMobileNo($loadtransaction_cardno)) {
+						} else {
+							json_encode_return($retval);
+							die;
+						}
+					}
+
+					$retval = array();
+					$retval['error_code'] = '345346';
+					$retval['error_message'] = 'Invalid Amount!';
+
+					if(!empty($loadtransaction_amount)) {
+					} else {
+						json_encode_return($retval);
+						die;
+					}
+
+					$retval = array();
+					$retval['error_code'] = '345347';
+					$retval['error_message'] = 'Invalid Cash Received!';
+
+					if(!empty($loadtransaction_cashreceived)) {
+						if($loadtransaction_cashreceived>=$loadtransaction_amount) {
+						} else {
+							json_encode_return($retval);
+							die;
+						}
+					} else {
+						json_encode_return($retval);
+						die;
+					}
+
+					$smartmoney_sendernumber = !empty($post['smartmoney_sendernumber']) ? $post['smartmoney_sendernumber'] : '';
+					$smartmoney_receivernumber = !empty($post['smartmoney_receivernumber']) ? $post['smartmoney_receivernumber'] : '';
+					$smartmoney_transactiontype = !empty($post['smartmoney_transactiontype']) ? $post['smartmoney_transactiontype'] : '';
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'SmartMoney Remittance successfully saved!';
+					$retval['post'] = $post;
+
+					//$message = "SMARTMONEY PADALA $loadtransaction_cardno $loadtransaction_amount $smartmoney_sendernumber $smartmoney_receivernumber <STATUS> <LOADTRANSACTIONID>\r\n";
+
+					$status = 'APPROVED';
+
+					$message = "SMARTMONEY $smartmoney_transactiontype $loadtransaction_cardno $loadtransaction_amount $smartmoney_sendernumber $smartmoney_receivernumber $status <LOADTRANSACTIONID>\r\n";
+
+					$content = array();
+					$content['loadtransaction_ymd'] = $loadtransaction_ymd = date('Ymd');
+					$content['loadtransaction_customerid'] = !empty($post['smartmoney_sendername']) ? $post['smartmoney_sendername'] : 0;
+					$content['loadtransaction_customernumber'] = $smartmoney_sendernumber;
+					//$content['loadtransaction_customername'] = getCustomerNickByNumber($loadtransaction_customernumber);
+					//$content['loadtransaction_simhotline'] = $loadtransaction_simhotline;
+					$content['loadtransaction_keyword'] = $message;
+					$content['loadtransaction_recipientnumber'] = $smartmoney_receivernumber;
+					$content['loadtransaction_destcardno'] = $loadtransaction_cardno;
+					$content['loadtransaction_smartmoneytype'] = $smartmoney_transactiontype;
+					$content['loadtransaction_amount'] = $loadtransaction_amount;
+					$content['loadtransaction_amountdue'] = !empty($post['loadtransaction_amountdue']) ? str_replace(',','',$post['loadtransaction_amountdue']) : 0;
+					$content['loadtransaction_cashreceived'] = !empty($post['loadtransaction_cashreceived']) ? str_replace(',','',$post['loadtransaction_cashreceived']) : 0;
+					$content['loadtransaction_changed'] = !empty($post['loadtransaction_changed']) ? str_replace(',','',$post['loadtransaction_changed']) : 0;
+					$content['loadtransaction_sendagentcommissionamount'] = !empty($post['smartmoney_sendagentcommissionamount']) ? str_replace(',','',$post['smartmoney_sendagentcommissionamount']) : 0;
+					$content['loadtransaction_transferfeeamount'] = !empty($post['smartmoney_transferfeeamount']) ? str_replace(',','',$post['smartmoney_transferfeeamount']) : 0;
+					$content['loadtransaction_receiveagentcommissionamount'] = !empty($post['smartmoney_receiveagentcommissionamount']) ? str_replace(',','',$post['smartmoney_receiveagentcommissionamount']) : 0;
+					$content['loadtransaction_otherchargesamount'] = !empty($post['smartmoney_otherchargesamount']) ? str_replace(',','',$post['smartmoney_otherchargesamount']) : 0;
+					//$content['loadtransaction_load'] = $item_quantity;
+					//$content['loadtransaction_cost'] = $item_cost;
+					//$content['loadtransaction_provider'] = $loadtransaction_provider;
+					//$content['loadtransaction_assignedsim'] = $loadtransaction_assignedsim;
+					//$content['loadtransaction_simcommand'] = $loadtransaction_simcommand;
+					$content['loadtransaction_type'] = 'smartmoney';
+					$content['loadtransaction_status'] = TRN_DRAFT;
+					//$content['loadtransaction_itemthreshold'] = $item_threshold;
+
+					if(!($result = $appdb->insert("tbl_loadtransaction",$content,"loadtransaction_id"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
+
+					if(!empty($result['returning'][0]['loadtransaction_id'])) {
+						$retval['rowid'] = $loadtransaction_id = $result['returning'][0]['loadtransaction_id'];
+					}
+
+					if(!empty($retval['rowid'])) {
+						$message = str_replace('<LOADTRANSACTIONID>',$loadtransaction_id,$message);
+
+						$content = array();
+						$content['loadtransaction_keyword'] = $message;
+
+						if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction_id))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						$asims = getAllSims(10);
+
+						if(!empty($asims[0]['simcard_number'])) {
+							$hotlime = $asims[0]['simcard_number'];
+						} else {
+							$retval = array();
+			        $retval['error_code'] = '3453431';
+			        $retval['error_message'] = 'There is no Sim Hot Line!';
+
+			        json_encode_return($retval);
+			        die;
+						}
+
+						$content = array();
+
+						if(!empty($user_staffid)) {
+							$content['smsinbox_contactsid'] = $user_staffid;
+						}
+
+						$content['smsinbox_contactnumber'] = $smartmoney_sendernumber;
+						$content['smsinbox_simnumber'] = $hotlime; //'09197708008';
+						$content['smsinbox_message'] = $message;
+						$content['smsinbox_unread'] = 1;
+
+						//pre(array('$content'=>$content));
+
+						ob_start();
+
+						processSMS($content);
+
+						$out = ob_get_clean();
+
+						$retval['out'] = $out;
+
+					}
+
+					json_encode_return($retval);
+					die;
+
 				}
 
 				$params['hello'] = 'Hello, Sherwin!';
@@ -762,7 +1047,9 @@ if(!class_exists('APP_app_smartmoney')) {
 				//	$opt[] = array('text'=>'','value'=>'','selected'=>false);
 				//}
 
-				$transactiontype = array('SMART PADALA','TOP-UP','PAYMAYA','PICK-UP ANYWHERE');
+				//$transactiontype = array('SMART PADALA','TOP-UP','PAYMAYA','PICK-UP ANYWHERE');
+
+				$transactiontype = array('PADALA','TOPUP','PAYMAYA','PICKUP');
 
 				foreach($transactiontype as $v) {
 					$selected = false;
@@ -781,7 +1068,7 @@ if(!class_exists('APP_app_smartmoney')) {
 				$params['tbDetails'][] = array(
 					'type' => 'combo',
 					'label' => 'TRANSACTION TYPE',
-					'name' => 'smartmoney_type',
+					'name' => 'smartmoney_transactiontype',
 					'labelWidth' => 200,
 					'readonly' => true,
 					//'required' => !$readonly,
@@ -816,7 +1103,9 @@ if(!class_exists('APP_app_smartmoney')) {
 					'labelWidth' => 200,
 					'readonly' => $readonly,
 					'required' => !$readonly,
-					'value' => '',
+					'numeric' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['moneytransferinfo']['loadtransaction_amount']) ? number_format($params['moneytransferinfo']['loadtransaction_amount'],2) : '',
 				);
 
 				$params['tbDetails'][] = array(
@@ -835,7 +1124,7 @@ if(!class_exists('APP_app_smartmoney')) {
 							//'required' => !$readonly,
 							'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
 							//'value' => !empty($percent) ? number_format($percent,2) : 0,
-							'value' => !empty($params['moneytransferinfo']['loadtransaction_discountpercent']) ? number_format($params['moneytransferinfo']['loadtransaction_discountpercent'],2) : '',
+							'value' => !empty($params['moneytransferinfo']['loadtransaction_sendagentcommissionpercent']) ? number_format($params['moneytransferinfo']['loadtransaction_sendagentcommissionpercent'],2) : '',
 							'inputWidth' => 90,
 						),
 						array(
@@ -849,7 +1138,7 @@ if(!class_exists('APP_app_smartmoney')) {
 							//'required' => !$readonly,
 							'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 							//'value' => !empty($discount) ? number_format($discount,2) : 0,
-							'value' => !empty($params['moneytransferinfo']['loadtransaction_discount']) ? number_format($params['moneytransferinfo']['loadtransaction_discount'],2) : '',
+							'value' => !empty($params['moneytransferinfo']['loadtransaction_sendagentcommissionamount']) ? number_format($params['moneytransferinfo']['loadtransaction_sendagentcommissionamount'],2) : '',
 							'inputWidth' => 100,
 						),
 					),
@@ -871,7 +1160,7 @@ if(!class_exists('APP_app_smartmoney')) {
 							//'required' => !$readonly,
 							'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
 							//'value' => !empty($percent) ? number_format($percent,2) : 0,
-							'value' => !empty($params['moneytransferinfo']['loadtransaction_discountpercent']) ? number_format($params['moneytransferinfo']['loadtransaction_discountpercent'],2) : '',
+							'value' => !empty($params['moneytransferinfo']['loadtransaction_transferfeepercent']) ? number_format($params['moneytransferinfo']['loadtransaction_transferfeepercent'],2) : '',
 							'inputWidth' => 90,
 						),
 						array(
@@ -885,7 +1174,7 @@ if(!class_exists('APP_app_smartmoney')) {
 							//'required' => !$readonly,
 							'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 							//'value' => !empty($discount) ? number_format($discount,2) : 0,
-							'value' => !empty($params['moneytransferinfo']['loadtransaction_discount']) ? number_format($params['moneytransferinfo']['loadtransaction_discount'],2) : '',
+							'value' => !empty($params['moneytransferinfo']['loadtransaction_transferfeeamount']) ? number_format($params['moneytransferinfo']['loadtransaction_transferfeeamount'],2) : '',
 							'inputWidth' => 100,
 						),
 					),
@@ -907,7 +1196,7 @@ if(!class_exists('APP_app_smartmoney')) {
 							//'required' => !$readonly,
 							'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
 							//'value' => !empty($percent) ? number_format($percent,2) : 0,
-							'value' => !empty($params['moneytransferinfo']['loadtransaction_discountpercent']) ? number_format($params['moneytransferinfo']['loadtransaction_discountpercent'],2) : '',
+							'value' => !empty($params['moneytransferinfo']['loadtransaction_receiveagentcommissionpercent']) ? number_format($params['moneytransferinfo']['loadtransaction_receiveagentcommissionpercent'],2) : '',
 							'inputWidth' => 90,
 						),
 						array(
@@ -921,7 +1210,7 @@ if(!class_exists('APP_app_smartmoney')) {
 							//'required' => !$readonly,
 							'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 							//'value' => !empty($discount) ? number_format($discount,2) : 0,
-							'value' => !empty($params['moneytransferinfo']['loadtransaction_discount']) ? number_format($params['moneytransferinfo']['loadtransaction_discount'],2) : '',
+							'value' => !empty($params['moneytransferinfo']['loadtransaction_receiveagentcommissionamount']) ? number_format($params['moneytransferinfo']['loadtransaction_receiveagentcommissionamount'],2) : '',
 							'inputWidth' => 100,
 						),
 					),
@@ -943,7 +1232,7 @@ if(!class_exists('APP_app_smartmoney')) {
 							//'required' => !$readonly,
 							'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
 							//'value' => !empty($percent) ? number_format($percent,2) : 0,
-							'value' => !empty($params['moneytransferinfo']['loadtransaction_discountpercent']) ? number_format($params['moneytransferinfo']['loadtransaction_discountpercent'],2) : '',
+							'value' => !empty($params['moneytransferinfo']['loadtransaction_otherchargespercent']) ? number_format($params['moneytransferinfo']['loadtransaction_otherchargespercent'],2) : '',
 							'inputWidth' => 90,
 						),
 						array(
@@ -953,11 +1242,11 @@ if(!class_exists('APP_app_smartmoney')) {
 						array(
 							'type' => 'input',
 							'name' => 'smartmoney_otherchargesamount',
-							'readonly' => true,
+							'readonly' => $readonly,
 							//'required' => !$readonly,
 							'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 							//'value' => !empty($discount) ? number_format($discount,2) : 0,
-							'value' => !empty($params['moneytransferinfo']['loadtransaction_discount']) ? number_format($params['moneytransferinfo']['loadtransaction_discount'],2) : '',
+							'value' => !empty($params['moneytransferinfo']['loadtransaction_otherchargesamount']) ? number_format($params['moneytransferinfo']['loadtransaction_otherchargesamount'],2) : '',
 							'inputWidth' => 100,
 						),
 					),
@@ -970,6 +1259,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					//'inputWidth' => 100,
 					'name' => 'loadtransaction_amountdue',
 					'readonly' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
 					'value' => '',
 				);
@@ -980,9 +1270,11 @@ if(!class_exists('APP_app_smartmoney')) {
 					'label' => 'CASH RECEIVED',
 					'labelWidth' => 200,
 					//'inputWidth' => 100,
-					'name' => 'simcards_balance',
+					'name' => 'loadtransaction_cashreceived',
 					'readonly' => $readonly,
 					'required' => !$readonly,
+					'numeric' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					'value' => '',
 				);
 
@@ -991,9 +1283,10 @@ if(!class_exists('APP_app_smartmoney')) {
 					'label' => 'CHANGE',
 					'labelWidth' => 200,
 					//'inputWidth' => 100,
-					'name' => 'simcards_criticallevel',
+					'name' => 'loadtransaction_changed',
 					'readonly' => true,
 					//'required' => !$readonly,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					'value' => '',
 				);
 
@@ -1003,11 +1296,11 @@ if(!class_exists('APP_app_smartmoney')) {
 				//	$opt[] = array('text'=>'','value'=>'','selected'=>false);
 				//}
 
-				$transactiontype = array('AUTOMATIC');
+				$assignedsim = array('AUTOMATIC');
 
-				foreach($transactiontype as $v) {
+				foreach($assignedsim as $v) {
 					$selected = false;
-					if(!empty($params['moneytransferinfo']['transaction_type'])&&$params['moneytransferinfo']['transaction_type']==$v) {
+					if(!empty($params['moneytransferinfo']['loadtransaction_assignedsim'])&&$params['moneytransferinfo']['loadtransaction_assignedsim']==$v) {
 						$selected = true;
 					}
 					if($readonly) {
@@ -1024,7 +1317,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					'label' => 'ASSIGNED SIM CARD',
 					'labelWidth' => 200,
 					//'inputWidth' => 100,
-					'name' => 'simcards_assignedsimcard',
+					'name' => 'loadtransaction_assignedsim',
 					'readonly' => true,
 					//'required' => !$readonly,
 					//'value' => '',
@@ -1036,20 +1329,31 @@ if(!class_exists('APP_app_smartmoney')) {
 					'offset' => 0,
 				);
 
-				$params['tbDetails'][] = array(
+				/*$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'SENDER NAME',
-					'name' => 'simcards_sendername',
+					'name' => 'smartmoney_sendername',
 					'labelWidth' => 150,
 					'readonly' => $readonly,
 					'required' => !$readonly,
 					'value' => '',
+				);*/
+
+				$params['tbDetails'][] = array(
+					'type' => 'combo',
+					'label' => 'SENDER NAME',
+					'name' => 'smartmoney_sendername',
+					'labelWidth' => 150,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					//'numeric' => true,
+					'options' => array(),
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'SENDER ADDRESS',
-					'name' => 'simcards_senderaddress',
+					'name' => 'smartmoney_senderaddress',
 					'labelWidth' => 150,
 					'readonly' => $readonly,
 					'required' => !$readonly,
@@ -1059,7 +1363,7 @@ if(!class_exists('APP_app_smartmoney')) {
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'SENDER NUMBER',
-					'name' => 'simcards_sendernumber',
+					'name' => 'smartmoney_sendernumber',
 					'labelWidth' => 150,
 					'readonly' => $readonly,
 					'required' => !$readonly,
@@ -1076,7 +1380,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 				foreach($idtype as $v) {
 					$selected = false;
-					if(!empty($params['moneytransferinfo']['id_type'])&&$params['moneytransferinfo']['id_type']==$v) {
+					if(!empty($params['moneytransferinfo']['smartmoney_idtype'])&&$params['moneytransferinfo']['smartmoney_idtype']==$v) {
 						$selected = true;
 					}
 					if($readonly) {
@@ -1091,7 +1395,7 @@ if(!class_exists('APP_app_smartmoney')) {
 				$params['tbDetails'][] = array(
 					'type' => 'combo',
 					'label' => 'ID TYPE',
-					'name' => 'id_type',
+					'name' => 'smartmoney_idtype',
 					'labelWidth' => 150,
 					'readonly' => true,
 					//'required' => !$readonly,
@@ -1101,7 +1405,7 @@ if(!class_exists('APP_app_smartmoney')) {
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'SPECIFY ID',
-					'name' => 'id_number',
+					'name' => 'smartmoney_specifyid',
 					'labelWidth' => 150,
 					'readonly' => $readonly,
 					//'required' => !$readonly,
@@ -1111,27 +1415,39 @@ if(!class_exists('APP_app_smartmoney')) {
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'ID NUMBER',
-					'name' => 'id_number',
+					'name' => 'smartmoney_idnumber',
 					'labelWidth' => 150,
 					'readonly' => $readonly,
 					'required' => !$readonly,
 					'value' => '',
 				);
 
-				$params['tbDetails'][] = array(
+				/*$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'EXPIRATION DATE',
-					'name' => 'simcards_ipaddress',
+					'name' => 'smartmoney_idexpiration',
 					'labelWidth' => 150,
 					'readonly' => $readonly,
 					'required' => !$readonly,
 					'value' => '',
+				);*/
+
+				$params['tbDetails'][] = array(
+					'type' => 'calendar',
+					'label' => 'EXPIRATION DATE',
+					'name' => 'smartmoney_idexpiration',
+					'labelWidth' => 150,
+					'readonly' => true,
+					'calendarPosition' => 'right',
+					'dateFormat' => '%m-%d-%Y',
+					//'required' => !$readonly,
+					'value' => !empty($params['moneytransferinfo']['smartmoney_idexpiration']) ? $params['moneytransferinfo']['smartmoney_idexpiration'] : '',
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'RECEIVER NUMBER',
-					'name' => 'simcards_comport',
+					'name' => 'smartmoney_receivernumber',
 					'labelWidth' => 150,
 					'readonly' => $readonly,
 					'required' => !$readonly,
@@ -1145,14 +1461,14 @@ if(!class_exists('APP_app_smartmoney')) {
 
 				$receiptno = '';
 
-				if(!empty($params['retailinfo']['loadtransaction_id'])&&!empty($params['retailinfo']['loadtransaction_ymd'])) {
-					$receiptno = $params['retailinfo']['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['retailinfo']['loadtransaction_id']));
+				if(!empty($params['moneytransferinfo']['loadtransaction_id'])&&!empty($params['moneytransferinfo']['loadtransaction_ymd'])) {
+					$receiptno = $params['moneytransferinfo']['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['moneytransferinfo']['loadtransaction_id']));
 				}
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'RECEIPT NO',
-					'name' => 'retail_receiptno',
+					'name' => 'smartmoney_receiptno',
 					'readonly' => true,
 					'inputWidth' => 150,
 					//'required' => !$readonly,
@@ -1163,18 +1479,18 @@ if(!class_exists('APP_app_smartmoney')) {
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'RECEIPT DATE/TIME',
-					'name' => 'retail_date',
+					'name' => 'smartmoney_date',
 					'readonly' => true,
 					'inputWidth' => 150,
 					//'required' => !$readonly,
-					'value' => !empty($params['retailinfo']['loadtransaction_createstamp']) ? pgDate($params['retailinfo']['loadtransaction_createstamp']) : '',
+					'value' => !empty($params['moneytransferinfo']['loadtransaction_createstamp']) ? pgDate($params['moneytransferinfo']['loadtransaction_createstamp']) : '',
 				);
 
-				$fund_username = !empty($params['retailinfo']['loadtransaction_staffid']) ? getCustomerNameByID($params['retailinfo']['loadtransaction_staffid']) : '';
+				$fund_username = !empty($params['moneytransferinfo']['loadtransaction_staffid']) ? getCustomerNameByID($params['moneytransferinfo']['loadtransaction_staffid']) : '';
 
 				if(!empty($fund_username)) {
 				} else {
-					$fund_username = !empty($params['retailinfo']['loadtransaction_username']) ? $params['retailinfo']['loadtransaction_username'] : $applogin->fullname();
+					$fund_username = !empty($params['moneytransferinfo']['loadtransaction_username']) ? $params['moneytransferinfo']['loadtransaction_username'] : $applogin->fullname();
 				}
 
 				$params['tbDetails'][] = array(
@@ -1195,7 +1511,8 @@ if(!class_exists('APP_app_smartmoney')) {
 					'readonly' => true,
 					'inputWidth' => 150,
 					//'required' => !$readonly,
-					'value' => TRN_DRAFT,
+					//'value' => TRN_DRAFT,
+					'value' => !empty($params['moneytransferinfo']['loadtransaction_status']) ? $params['moneytransferinfo']['loadtransaction_status'] : TRN_DRAFT,
 				);
 
 				$params['tbDetails'][] = array(
@@ -1205,7 +1522,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					'readonly' => true,
 					'inputWidth' => 150,
 					//'required' => !$readonly,
-					'value' => getLoadTransactionStatusString(TRN_DRAFT),
+					'value' => !empty($params['moneytransferinfo']['loadtransaction_status']) ? getLoadTransactionStatusString($params['moneytransferinfo']['loadtransaction_status']) : getLoadTransactionStatusString(TRN_DRAFT),
 				);
 
 				$templatefile = $this->templatefile($routerid,$formid);

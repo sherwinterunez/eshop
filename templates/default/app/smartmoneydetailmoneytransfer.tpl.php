@@ -279,16 +279,16 @@ pre(array('$vars'=>$vars));
 		dhxCombo.attachEvent("onChange", function(value, text){
 			console.log('onChange: '+value+', '+text);
 
-			var t = myForm.getItemValue('smartmoney_type');
+			//var t = myForm.getItemValue('smartmoney_type');
 
-			console.log('smartmoney_type',t);
+			//console.log('smartmoney_type',t);
 
-			if(ValidMobileNo(value)) {
-				console.log('onChange is valid: '+value+', '+text);
-				myForm.setItemValue('loadtransaction_cardno',value);
-			} else {
-				myForm.setItemValue('loadtransaction_cardno','');
-			}
+			//if(ValidMobileNo(value)) {
+				//console.log('onChange is valid: '+value+', '+text);
+				//myForm.setItemValue('loadtransaction_cardno',value);
+			//} else {
+				//myForm.setItemValue('loadtransaction_cardno','');
+			//}
 
 		});
 
@@ -300,13 +300,22 @@ pre(array('$vars'=>$vars));
 			var value = myForm.getItemValue('loadtransaction_cardno');
 			console.log('onBlur: '+value);
 
-			myForm.setItemValue('smartmoney_type','TOP-UP');
+			myForm.setItemValue('loadtransaction_amount',0.00);
+			myForm.setItemValue('smartmoney_sendagentcommissionamount',0.00);
+			myForm.setItemValue('smartmoney_transferfeeamount',0.00);
+			myForm.setItemValue('smartmoney_receiveagentcommissionamount',0.00);
+			myForm.setItemValue('smartmoney_otherchargesamount',0.00);
+			myForm.setItemValue('loadtransaction_amountdue',0.00);
+			myForm.setItemValue('loadtransaction_cashreceived',0.00);
+			myForm.setItemValue('loadtransaction_changed',0.00);
 
-			if(ValidMobileNo(value)) {
-				myForm.setItemValue('loadtransaction_cardno',value);
-			} else {
-				myForm.setItemValue('loadtransaction_cardno','');
-			}
+			//myForm.setItemValue('smartmoney_type','TOP-UP');
+
+			//if(ValidMobileNo(value)) {
+			//	myForm.setItemValue('loadtransaction_cardno',value);
+			//} else {
+			//	myForm.setItemValue('loadtransaction_cardno','');
+			//}
 
 			var value = myForm.getItemValue('loadtransaction_cardno');
 			console.log('onBlur: '+value);
@@ -314,6 +323,81 @@ pre(array('$vars'=>$vars));
 		});
 
 ///////////////////////////////////////
+
+		var dhxCombo = myForm.getCombo("smartmoney_sendername");
+
+		dhxCombo.enableFilteringMode('between','/app/api/smartmoneysendername/',false);
+
+		dhxCombo.attachEvent("onChange", function(value, text){
+			console.log('onChange: '+value+', '+text);
+		});
+
+		dhxCombo.attachEvent("onClose", function(){
+			console.log('onClose: '+myForm.getItemValue('smartmoney_sendername'));
+		});
+
+		dhxCombo.attachEvent("onBlur", function(){
+			var value = myForm.getItemValue('smartmoney_sendername');
+			console.log('onBlur: '+value);
+
+			if(value) {
+				myTab.postData('/'+settings.router_id+'/json/', {
+					odata: {},
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getsenderdata&senderid="+value+"&formval=%formval%",
+				}, function(ddata,odata){
+					//console.log(JSON.stringify(ddata));
+					if(ddata.data) {
+						console.log(JSON.stringify(ddata.data));
+
+						myForm.setItemValue('smartmoney_senderaddress',ddata.data.senderaddress);
+						myForm.setItemValue('smartmoney_sendernumber',ddata.data.sendernumber);
+						myForm.setItemValue('smartmoney_idtype',ddata.data.senderidtype);
+						myForm.setItemValue('smartmoney_specifyid',ddata.data.senderspecifyid);
+						myForm.setItemValue('smartmoney_idnumber',ddata.data.senderidnumber);
+						myForm.setItemValue('smartmoney_idexpiration',ddata.data.senderidexpiration);
+						//myForm.setItemValue('smartmoney_receiveagentcommissionamount',ddata.fees.smartmoneyservicefeeslist_receivecommission);
+						//myForm.setItemValue('smartmoney_otherchargesamount',0.00);
+						//myForm.setItemValue('loadtransaction_amountdue',odata.amount);
+
+						//myForm.setItemValue('loadtransaction_amount',0.00);
+						//myForm.setItemValue('smartmoney_sendagentcommissionamount',0.00);
+						//myForm.setItemValue('smartmoney_transferfeeamount',0.00);
+						//myForm.setItemValue('smartmoney_receiveagentcommissionamount',0.00);
+						//myForm.setItemValue('smartmoney_otherchargesamount',0.00);
+						//myForm.setItemValue('loadtransaction_cashreceived',0.00);
+						//myForm.setItemValue('loadtransaction_changed',0.00);
+
+						//myForm.setItemValue('retail_load',ddata.quantity);
+						//myForm.setItemValue('retail_discountpercent',ddata.percent);
+						//myForm.setItemValue('retail_discount',ddata.discount);
+						//myForm.setItemValue('retail_amountdue',ddata.amountdue);
+						//myForm.setItemValue('retail_processingfee',ddata.processingfee);
+
+						//myForm.setItemValue('retail_itemcost',ddata.data.item_cost);
+						//myForm.setItemValue('retail_itemquantity',ddata.data.item_quantity);
+						//myForm.setItemValue('retail_itemsrp',ddata.data.item_srp);
+						//myForm.setItemValue('retail_itemeshopsrp',ddata.data.item_eshopsrp);
+
+						//if(ddata.data.item_regularload) {
+						//	myForm.setItemValue('retail_itemregularload',ddata.data.item_regularload);
+						//}
+
+						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+						//jQuery("#"+odata.wid).html(ddata.html);
+						//odata.dhxCombo2.clearAll();
+						//odata.dhxCombo2.addOption(ddata.option);
+					} else
+					if(ddata.error) {
+						//myForm.setItemValue('smartmoney_sendagentcommissionamount',0.00);
+						//myForm.setItemValue('smartmoney_transferfeeamount',0.00);
+						//myForm.setItemValue('smartmoney_receiveagentcommissionamount',0.00);
+						//myForm.setItemValue('smartmoney_otherchargesamount',0.00);
+						//showAlertError('ERROR(345345) Invalid Card/Mobile Number!');
+					}
+				});
+			}
+
+		});
 
 ///////////////////////////////////////
 		<?php /*
@@ -583,6 +667,96 @@ pre(array('$vars'=>$vars));
 
 			if(typeof(name)!='undefined') {
 			} else return false;
+
+			if(name=='loadtransaction_cashreceived') {
+				var loadtransaction_cashreceived = parseFloat(myForm.getItemValue('loadtransaction_cashreceived'));
+				var loadtransaction_amountdue = parseFloat(myForm.getItemValue('loadtransaction_amountdue'));
+
+				if(loadtransaction_amountdue>0&&loadtransaction_cashreceived>0) {
+					var change = loadtransaction_cashreceived - loadtransaction_amountdue;
+
+					if(change<0) {
+						showAlertError('ERROR(345335) Invalid Cash Received!');
+						myForm.setItemValue('loadtransaction_cashreceived',0.00);
+					} else {
+						myForm.setItemValue('loadtransaction_changed',change);
+					}
+				}
+
+			} else
+			if(name=='smartmoney_otherchargesamount') {
+				var loadtransaction_amount = parseFloat(myForm.getItemValue('loadtransaction_amount'));
+				var smartmoney_otherchargesamount = parseFloat(myForm.getItemValue('smartmoney_otherchargesamount'));
+
+				if(smartmoney_otherchargesamount>0&&loadtransaction_amount>0) {
+					var total = loadtransaction_amount + smartmoney_otherchargesamount;
+					myForm.setItemValue('loadtransaction_amountdue',total);
+				}
+
+			} else
+			if(name=='loadtransaction_amount') {
+
+				var smartmoney_transactiontype = myForm.getItemValue('smartmoney_transactiontype');
+				var loadtransaction_amount = parseFloat(myForm.getItemValue('loadtransaction_amount'));
+				var loadtransaction_cardno = myForm.getItemValue('loadtransaction_cardno');
+
+				if(loadtransaction_amount>0) {
+				} else {
+					showMessage("Invalid Amount!",5000);
+					return false;
+				}
+
+				myTab.postData('/'+settings.router_id+'/json/', {
+					odata: {amount:loadtransaction_amount},
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getservicefee&amount="+loadtransaction_amount+"&transactiontype="+smartmoney_transactiontype+"&cardno="+loadtransaction_cardno+"&formval=%formval%",
+				}, function(ddata,odata){
+					//console.log(JSON.stringify(ddata));
+					if(ddata.fees) {
+						console.log(JSON.stringify(ddata.fees));
+
+						myForm.setItemValue('smartmoney_sendagentcommissionamount',ddata.fees.smartmoneyservicefeeslist_sendcommission);
+						myForm.setItemValue('smartmoney_transferfeeamount',ddata.fees.smartmoneyservicefeeslist_transferfee);
+						myForm.setItemValue('smartmoney_receiveagentcommissionamount',ddata.fees.smartmoneyservicefeeslist_receivecommission);
+						myForm.setItemValue('smartmoney_otherchargesamount',0.00);
+						myForm.setItemValue('loadtransaction_amountdue',odata.amount);
+
+						//myForm.setItemValue('loadtransaction_amount',0.00);
+						//myForm.setItemValue('smartmoney_sendagentcommissionamount',0.00);
+						//myForm.setItemValue('smartmoney_transferfeeamount',0.00);
+						//myForm.setItemValue('smartmoney_receiveagentcommissionamount',0.00);
+						//myForm.setItemValue('smartmoney_otherchargesamount',0.00);
+						//myForm.setItemValue('loadtransaction_cashreceived',0.00);
+						//myForm.setItemValue('loadtransaction_changed',0.00);
+
+						//myForm.setItemValue('retail_load',ddata.quantity);
+						//myForm.setItemValue('retail_discountpercent',ddata.percent);
+						//myForm.setItemValue('retail_discount',ddata.discount);
+						//myForm.setItemValue('retail_amountdue',ddata.amountdue);
+						//myForm.setItemValue('retail_processingfee',ddata.processingfee);
+
+						//myForm.setItemValue('retail_itemcost',ddata.data.item_cost);
+						//myForm.setItemValue('retail_itemquantity',ddata.data.item_quantity);
+						//myForm.setItemValue('retail_itemsrp',ddata.data.item_srp);
+						//myForm.setItemValue('retail_itemeshopsrp',ddata.data.item_eshopsrp);
+
+						//if(ddata.data.item_regularload) {
+						//	myForm.setItemValue('retail_itemregularload',ddata.data.item_regularload);
+						//}
+
+						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+						//jQuery("#"+odata.wid).html(ddata.html);
+						//odata.dhxCombo2.clearAll();
+						//odata.dhxCombo2.addOption(ddata.option);
+					} else
+					if(ddata.error) {
+						myForm.setItemValue('smartmoney_sendagentcommissionamount',0.00);
+						myForm.setItemValue('smartmoney_transferfeeamount',0.00);
+						myForm.setItemValue('smartmoney_receiveagentcommissionamount',0.00);
+						myForm.setItemValue('smartmoney_otherchargesamount',0.00);
+						showAlertError('ERROR(345345) Invalid Card/Mobile Number!');
+					}
+				});
+			}
 
 			if(name=='retail_processingfee') {
 				var retail_processingfee = parseFloat(myForm.getItemValue('retail_processingfee'));

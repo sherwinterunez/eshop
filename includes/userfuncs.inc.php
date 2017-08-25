@@ -3356,7 +3356,7 @@ function getNetworkName($number=false) {
 	return 'Unknown';
 }
 
-function getAllSims($mode=0,$all=false) {
+function getAllSims($mode=0,$all=false,$cat=false) {
 	global $appdb;
 
 	if(!empty($all)) {
@@ -3455,9 +3455,79 @@ function getAllSims($mode=0,$all=false) {
 
 			return $sims;
 		}
+		if($mode==11) {
+			foreach($result['rows'] as $v) {
+				if(!empty($v['simcard_online'])&&!empty($cat)&&!empty($v['simcard_category'])&&$v['simcard_category']==$cat) {
+					$sims[] = $v;
+				}
+			}
+
+			return $sims;
+		}
 
 
 		return $result['rows'];
+	}
+
+	return false;
+}
+
+function getSmartMoneyOfSim($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_smartmoney where smartmoney_simcardid=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['smartmoney_number'])) {
+		$sm = array();
+
+		foreach($result['rows'] as $k=>$v) {
+			if(!empty($v['smartmoney_number'])&&!empty($v['smartmoney_label'])&&!empty($v['smartmoney_pincode'])&&!empty($v['smartmoney_modemcommand'])) {
+				$sm[] = $v;
+			}
+		}
+
+		if(!empty($sm)) {
+			return $sm;
+		}
+	}
+
+	return false;
+}
+
+function getAllSmartMoney() {
+
+	$asims = getAllSims(11,false,'SMARTMONEY');
+
+	//pre(array('$asims'=>$asims));
+
+	$asm = array();
+
+	foreach($asims as $k=>$v) {
+		$sm = getSmartMoneyOfSim($v['simcard_id']);
+
+		if(!empty($sm)) {
+			//pre(array('$sm'=>$sm));
+
+			foreach($sm as $n=>$m) {
+				$m['simcard_number'] = $v['simcard_number'];
+				$asm[] = $m;
+			}
+		}
+	}
+
+	//pre(array('$asm'=>$asm));
+
+	if(!empty($asm)) {
+		return $asm;
 	}
 
 	return false;
@@ -5625,6 +5695,85 @@ function moveToGateway($smsoutboxid=false,$gatewayno=false) {
 
 			}
 
+		}
+
+	}
+
+	return false;
+}
+
+function isSmartMoneyCardNo($number=false) {
+	if(!empty($number)&&is_numeric($number)) {
+	} else {
+		return false;
+	}
+
+	if(strlen($number)==16) {
+		return true;
+	}
+
+	return false;
+}
+
+function isSmartMobileNo($number=false) {
+	if(!empty($number)&&is_numeric($number)) {
+	} else {
+		return false;
+	}
+
+	if(strlen($number)==11) {
+
+		$res = parseMobileNo($number);
+
+		if($res) {
+
+			$netname = getNetworkName($number);
+
+			if(preg_match('/smart/si',$netname)) {
+				return true;
+			}
+
+		}
+	}
+
+
+	return false;
+}
+
+function getSmartMoneyServiceFee($desc=false,$amount=false) {
+	global $appdb;
+
+	if(!empty($desc)&&!empty($amount)&&is_numeric($amount)) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_smartmoneyservicefees where smartmoneyservicefees_desc='$desc'";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['smartmoneyservicefees_id'])) {
+
+		$smartmoneyservicefees = $result['rows'][0];
+		$smartmoneyservicefees_id = $result['rows'][0]['smartmoneyservicefees_id'];
+
+		$sql = "select * from tbl_smartmoneyservicefeeslist where smartmoneyservicefeeslist_smartmoneyservicefeesid=$smartmoneyservicefees_id order by smartmoneyservicefeeslist_id asc";
+
+		if(!($result = $appdb->query($sql))) {
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['smartmoneyservicefeeslist_id'])) {
+			foreach($result['rows'] as $k=>$v) {
+				if($amount>=$v['smartmoneyservicefeeslist_minamount']&&$amount<=$v['smartmoneyservicefeeslist_maxamount']) {
+					$v['sendcommissionpercentage'] = $smartmoneyservicefees['smartmoneyservicefees_sendcommissionpercentage'];
+					$v['receivecommissionpercentage'] = $smartmoneyservicefees['smartmoneyservicefees_receivecommissionpercentage'];
+					$v['transferfeepercentage'] = $smartmoneyservicefees['smartmoneyservicefees_transferfeepercentage'];
+					return $v;
+				}
+			}
 		}
 
 	}

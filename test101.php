@@ -68,9 +68,42 @@ date_default_timezone_set('Asia/Manila');
 	}
 }*/
 
+/*
 $x = getSmartMoneyServiceFees();
 
 pre(array('$x'=>$x));
+
+$y = getSmartMoneyServiceFee('SMART PADALA SERVICE FEE',200);
+
+pre(array('$y'=>$y));
+*/
+
+/*
+$asims = getAllSims(11,false,'SMARTMONEY');
+
+pre(array('$asims'=>$asims));
+
+$asm = array();
+
+foreach($asims as $k=>$v) {
+	$sm = getSmartMoneyOfSim($v['simcard_id']);
+
+	if(!empty($sm)) {
+		//pre(array('$sm'=>$sm));
+
+		foreach($sm as $n=>$m) {
+			$m['simcard_number'] = $v['simcard_number'];
+			$asm[] = $m;
+		}
+	}
+}
+
+pre(array('$asm'=>$asm));
+*/
+
+$asm = getAllSmartMoney();
+
+pre(array('$asm'=>$asm));
 
 
 ////

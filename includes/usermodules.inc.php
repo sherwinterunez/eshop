@@ -5955,6 +5955,22 @@ function _SmartPadalaCustomerPayment($vars=array()) {
 
 } // function _SmartPadalaCustomerPayment($vars=array()) {
 
+function _SmartMoneyPadalaProcess($vars=array()) {
+	global $appdb;
+
+	if(empty($vars)) {
+		return false;
+	}
+
+	print_r(array('_SmartMoneyPadalaProcess'=>$vars));
+
+	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
+
+		print_r(array('$match'=>$match));
+
+	}
+
+} // function _SmartMoneyPadalaProcess($vars=array()) {
 
 /* INCLUDES_END */
 

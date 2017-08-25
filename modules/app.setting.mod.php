@@ -3735,7 +3735,7 @@ if(!class_exists('APP_app_setting')) {
 
 					$allNotifications = getAllNotifications();
 
-					$lnotification = explode(',', $params['smscommandsinfo']['smscommands_checkprovidernotification']);
+					$lnotification = !empty($params['smscommandsinfo']['smscommands_checkprovidernotification']) ? explode(',', $params['smscommandsinfo']['smscommands_checkprovidernotification']) : array();
 
 					foreach($allNotifications as $k=>$v) {
 						$checked = false;
@@ -3796,6 +3796,7 @@ if(!class_exists('APP_app_setting')) {
 				//$actionOptions[] = array('text'=>'_eShopVL','value'=>'_eShopVL');
 				//$actionOptions[] = array('text'=>'_MobileDTR','value'=>'_MobileDTR');
 				$actionOptions[] = array('text'=>'_SmartPadalaCustomerPayment','value'=>'_SmartPadalaCustomerPayment');
+				$actionOptions[] = array('text'=>'_SmartMoneyPadalaProcess','value'=>'_SmartMoneyPadalaProcess');
 
 				$opt = array();
 
@@ -3805,7 +3806,7 @@ if(!class_exists('APP_app_setting')) {
 
 				foreach($actionOptions as $v) {
 					$selected = false;
-					if($v['value']==$params['smscommandsinfo']['smscommands_action0']) {
+					if(!empty($params['smscommandsinfo']['smscommands_action0'])&&$v['value']==$params['smscommandsinfo']['smscommands_action0']) {
 						$selected = true;
 					}
 					if($readonly) {
@@ -3963,7 +3964,7 @@ if(!class_exists('APP_app_setting')) {
 
 						$allNotifications = getAllNotifications();
 
-						$lnotification = explode(',', $params['smscommandsinfo']['smscommands_notification'.$i]);
+						$lnotification = !empty($params['smscommandsinfo']['smscommands_notification'.$i]) ? explode(',', $params['smscommandsinfo']['smscommands_notification'.$i]) : array();
 
 						//pre(array('$lnotification'=>$lnotification));
 

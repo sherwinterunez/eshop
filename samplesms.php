@@ -137,9 +137,32 @@ function sampleSMS() {
 	//echo $out;
 */
 
+/*
 $message = "CONFIRM Ref:8ce57d66c530\nCustomer Cellphone#:09493621255\nReceiver Cellphone#:09088853095";
 
 sendToOutBox('8890','09477409000',$message);
+*/
+
+//$message = "SMARTMONEY PADALA 5577519462838104 500 09088853095 09493621255 APPROVED <LOADTRANSACTIONID>\r\n";
+
+$message = "SMARTMONEY PADALA 5577519462838104 500 09088853095 09493621255 APPROVED 12345\r\n";
+
+$content = array();
+$content['smsinbox_contactsid'] = 138;
+$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
+//$content['smsinbox_contactnumber'] = 'SMARTMoney';
+//$content['smsinbox_contactnumber'] = 'SMARTLoad';
+$content['smsinbox_simnumber'] = '09197708008';
+$content['smsinbox_message'] = $message;
+$content['smsinbox_unread'] = 1;
+
+processSMS($content);
+
+//$result = $appdb->insert('tbl_smsinbox',$content,'smsinbox_id');
+
+$tstop = timer_stop();
+
+echo "\nsampleSMS done (".$tstop." secs).\n";
 
 }
 

@@ -3443,6 +3443,10 @@ $block[] = array(
 					$content['remitcust_aaprovince'] = !empty($post['remitcust_aaprovince']) ? $post['remitcust_aaprovince'] : '';
 					$content['remitcust_aazipcode'] = !empty($post['remitcust_aazipcode']) ? $post['remitcust_aazipcode'] : '';
 					$content['remitcust_creditlimit'] = !empty($post['remitcust_creditlimit']) ? floatval($post['remitcust_creditlimit']) : 0;
+					$content['remitcust_idtype'] = !empty($post['remitcust_idtype']) ? $post['remitcust_idtype'] : '';
+					$content['remitcust_specifyid'] = !empty($post['remitcust_specifyid']) ? $post['remitcust_specifyid'] : '';
+					$content['remitcust_idnumber'] = !empty($post['remitcust_idnumber']) ? $post['remitcust_idnumber'] : '';
+					$content['remitcust_idexpiration'] = !empty($post['remitcust_idexpiration']) ? $post['remitcust_idexpiration'] : '';
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
@@ -3608,7 +3612,7 @@ $block[] = array(
 
 				$params['tbCustomer'][] = array(
 					'type' => 'input',
-					'label' => 'REMITTANCE CUST ID',
+					'label' => 'CUSTOMER ID',
 					'name' => 'remitcust_id',
 					'readonly' => true,
 					//'required' => !$readonly,
@@ -3659,11 +3663,6 @@ $block[] = array(
 					'readonly' => $readonly,
 					//'required' => !$readonly,
 					'value' => !empty($params['remitcustinfo']['remitcust_company']) ? $params['remitcustinfo']['remitcust_company'] : '',
-				);
-
-				$params['tbCustomer'][] = array(
-					'type' => 'newcolumn',
-					'offset' => $newcolumnoffset,
 				);
 
 				$params['tbCustomer'][] = array(
@@ -3732,6 +3731,11 @@ $block[] = array(
 				}
 
 				$params['tbCustomer'][] = array(
+					'type' => 'newcolumn',
+					'offset' => $newcolumnoffset,
+				);
+
+				$params['tbCustomer'][] = array(
 					'type' => 'combo',
 					'label' => 'CIVIL STATUS',
 					'name' => 'remitcust_civilstatus',
@@ -3784,6 +3788,66 @@ $block[] = array(
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					//'required' => !$readonly,
 					'value' => !empty($params['remitcustinfo']['customer_creditlimit']) ? $params['remitcustinfo']['customer_creditlimit'] : '',
+				);
+
+				$opt = array();
+
+				$idtype = array('VOTER\'S ID','DRIVER\'S LICENSE','SSS','GSIS','COMPANY ID','OTHERS');
+
+				foreach($idtype as $v) {
+					$selected = false;
+					if(!empty($params['remitcustinfo']['remitcust_idtype'])&&$params['remitcustinfo']['remitcust_idtype']==$v) {
+						$selected = true;
+					}
+					if($readonly) {
+						if($selected) {
+							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+						}
+					} else {
+						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+					}
+				}
+
+				$params['tbCustomer'][] = array(
+					'type' => 'combo',
+					'label' => 'ID TYPE',
+					'name' => 'remitcust_idtype',
+					//'labelWidth' => 150,
+					'readonly' => true,
+					//'required' => !$readonly,
+					'options' => $opt,
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'SPECIFY ID',
+					'name' => 'remitcust_specifyid',
+					//'labelWidth' => 150,
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['remitcustinfo']['remitcust_specifyid']) ? $params['remitcustinfo']['remitcust_specifyid'] : '',
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'input',
+					'label' => 'ID NUMBER',
+					'name' => 'remitcust_idnumber',
+					//'labelWidth' => 150,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => !empty($params['remitcustinfo']['remitcust_idnumber']) ? $params['remitcustinfo']['remitcust_idnumber'] : '',
+				);
+
+				$params['tbCustomer'][] = array(
+					'type' => 'calendar',
+					'label' => 'EXPIRATION DATE',
+					'name' => 'remitcust_idexpiration',
+					//'labelWidth' => 150,
+					'readonly' => true,
+					'calendarPosition' => 'right',
+					'dateFormat' => '%m-%d-%Y',
+					//'required' => !$readonly,
+					'value' => !empty($params['remitcustinfo']['remitcust_idexpiration']) ? $params['remitcustinfo']['remitcust_idexpiration'] : '',
 				);
 
 				$imagepost = $post;

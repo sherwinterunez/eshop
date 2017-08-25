@@ -1005,6 +1005,8 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				}
 			});
 
+			<?php if(!empty($params['tbSmartMoney'])) { ?>
+
 			myWinObj.myGridSmartMoney.forEachRow(function(id){
 				var m = myWinObj.myGridSmartMoney.cells(id,1).getValue();
 				var n = myWinObj.myGridSmartMoney.cells(id,2).getValue();
@@ -1023,6 +1025,8 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 					}
 				}
 			});
+
+			<?php } ?>
 
 			$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%").ajaxSubmit({
 				url: "/"+settings.router_id+"/json/",
