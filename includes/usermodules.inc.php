@@ -6002,9 +6002,7 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 		$loadtransaction_simcardbalance = !empty($match['BALANCE']) ? str_replace(',','',$match['BALANCE']) : false;
 
-		$where = '1=1';
-
-		$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_type='smartmoney' and loadtransaction_invalid=0 and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_id asc limit 1";
+		$sql = "select * from tbl_loadtransaction where loadtransaction_status=".TRN_SENT." and loadtransaction_type='smartmoney' and loadtransaction_invalid=0 and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_id asc limit 1";
 
 		print_r(array('$sql'=>$sql));
 
@@ -6063,6 +6061,45 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 				$message = "CONFIRM Ref:".$content['loadtransaction_refnumber']."\nCustomer Cellphone#:".$content['loadtransaction_customernumber']."\nReceiver Cellphone#:".$content['loadtransaction_recipientnumber'];
 
 				sendToOutBox('8890',$content['loadtransaction_assignedsim'],$message);
+
+			}
+
+		} else {
+
+			if(!empty($loadtransaction_refnumber)) {
+
+				$sql = "select * from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_invalid=0 and loadtransaction_assignedsim='$loadtransaction_assignedsim' and loadtransaction_refnumber='$loadtransaction_refnumber' order by loadtransaction_id asc limit 1";
+
+				print_r(array('$sql'=>$sql));
+
+				if(!($result = $appdb->query($sql))) {
+					return false;
+				}
+
+				print_r(array('$result'=>$result));
+
+				if(!empty($result['rows'][0]['loadtransaction_id'])) {
+					$content = $result['rows'][0];
+
+					$loadtransaction_id = $content['loadtransaction_id'];
+
+					unset($content['loadtransaction_id']);
+					unset($content['loadtransaction_createstamp']);
+					unset($content['loadtransaction_execstamp']);
+
+					if(trim($content['loadtransaction_confirmation'])=='') {
+						$content['loadtransaction_confirmation'] = $confirmation;
+					} else {
+						$content['loadtransaction_confirmation'] = $content['loadtransaction_confirmation'] . ' ' . $confirmation;
+					}
+
+					print_r(array('$content'=>$content));
+
+					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction_id))) {
+						return false;
+					}
+
+				}
 
 			}
 
