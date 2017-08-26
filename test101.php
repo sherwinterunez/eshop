@@ -122,7 +122,7 @@ pre(array('$asm'=>$asm));
 
 //pre(array('$asm'=>$asm));
 
-
+/*
 $mobileNo = '09477409000';
 $dev = '/dev/ttyUSB0';
 $ip = '192.168.1.200';
@@ -134,10 +134,15 @@ $sms->mobileNo = $mobileNo;
 $sms->ip = $ip;
 
 doSMSCommands3($sms,$mobileNo,$ip);
+*/
 
 
 //$name = getRemitCustName(1);
 
 //print_r(array('$name'=>$name));
+
+$masked = maskedSmartMoneyNumber('5577519462838104');
+
+print_r(array('$masked'=>$masked));
 
 ////

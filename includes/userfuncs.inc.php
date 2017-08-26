@@ -5702,6 +5702,18 @@ function moveToGateway($smsoutboxid=false,$gatewayno=false) {
 	return false;
 }
 
+function maskedSmartMoneyNumber($n=false) {
+	if(!empty($n)&&is_numeric($n)&&isSmartMoneyCardNo($n)) {
+	} else return false;
+
+	$n1 = substr($n,0,6);
+	$n2 = substr($n,12);
+
+	return $n1.'******'.$n2;
+
+	return false;
+}
+
 function isSmartMoneyCardNo($number=false) {
 	if(!empty($number)&&is_numeric($number)) {
 	} else {

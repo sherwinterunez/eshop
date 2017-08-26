@@ -1296,6 +1296,7 @@ alter table tbl_loadtransaction add column loadtransaction_remittancefee numeric
 alter table tbl_loadtransaction add column loadtransaction_destcardno text DEFAULT ''::text NOT NULL;
 alter table tbl_loadtransaction add column loadtransaction_destcardmobileno text DEFAULT ''::text NOT NULL;
 alter table tbl_loadtransaction add column loadtransaction_smartmoneytype text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_destcardnomasked text DEFAULT ''::text NOT NULL;
 
 ------------------------------------------------------------------------------------------------------------------
 

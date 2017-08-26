@@ -964,6 +964,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					$content['loadtransaction_keyword'] = $message;
 					$content['loadtransaction_recipientnumber'] = $smartmoney_receivernumber;
 					$content['loadtransaction_destcardno'] = $loadtransaction_cardno;
+					$content['loadtransaction_destcardnomasked'] = maskedSmartMoneyNumber($loadtransaction_cardno);
 					$content['loadtransaction_smartmoneytype'] = $smartmoney_transactiontype;
 					$content['loadtransaction_amount'] = $loadtransaction_amount;
 					$content['loadtransaction_amountdue'] = !empty($post['loadtransaction_amountdue']) ? str_replace(',','',$post['loadtransaction_amountdue']) : 0;

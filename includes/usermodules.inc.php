@@ -5985,6 +5985,87 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 		print_r(array('$match'=>$match));
 
+		$confirmationFrom = $vars['smsinbox']['smsinbox_contactnumber'];
+
+		$confirmation = $vars['smsinbox']['smsinbox_message'];
+
+		$loadtransaction_assignedsim = $vars['smsinbox']['smsinbox_simnumber'];
+
+		//if(!empty($match['CARDNO'])) {
+		//	$loadtransaction_destcardnomasked = $match['CARDNO'];
+		//	$where .= " loadtransaction_destcardnomasked='$loadtransaction_destcardnomasked'";
+		//}
+
+		$loadtransaction_destcardmobileno = !empty($match['MOBILENO']) ? '0'.$match['MOBILENO'] : false;
+
+		$loadtransaction_refnumber = !empty($match['REF']) ? $match['REF'] : false;
+
+		$loadtransaction_simcardbalance = !empty($match['BALANCE']) ? str_replace(',','',$match['BALANCE']) : false;
+
+		$where = '1=1';
+
+		$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_type='smartmoney' and loadtransaction_invalid=0 and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_id asc limit 1";
+
+		print_r(array('$sql'=>$sql));
+
+		if(!($result = $appdb->query($sql))) {
+			return false;
+		}
+
+		print_r(array('$result'=>$result));
+
+		if(!empty($result['rows'][0]['loadtransaction_id'])) {
+			$content = $result['rows'][0];
+
+			unset($content['loadtransaction_id']);
+			unset($content['loadtransaction_createstamp']);
+			unset($content['loadtransaction_execstamp']);
+
+			if(trim($content['loadtransaction_confirmation'])=='') {
+				$content['loadtransaction_confirmation'] = $confirmation;
+			} else {
+				$content['loadtransaction_confirmation'] = $content['loadtransaction_confirmation'] . ' ' . $confirmation;
+			}
+
+			if(!empty($loadtransaction_destcardmobileno)) {
+				$content['loadtransaction_destcardmobileno'] = $loadtransaction_destcardmobileno;
+			}
+
+			if(!empty($loadtransaction_refnumber)) {
+				$content['loadtransaction_refnumber'] = $loadtransaction_refnumber;
+			}
+
+			if(!empty($loadtransaction_simcardbalance)) {
+				$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance;
+			}
+
+			if(!empty($content['loadtransaction_confirmation'])&&!empty($content['loadtransaction_refnumber'])&&!empty($content['loadtransaction_simcardbalance'])) {
+				$content['loadtransaction_status'] = TRN_COMPLETED;
+				$content['loadtransaction_confirmationstamp'] = 'now()';
+			}
+
+			if(!empty($confirmationFrom)&&empty($content['loadtransaction_confirmationfrom'])) {
+				$content['loadtransaction_confirmationfrom'] = $confirmationFrom;
+			}
+
+			$content['loadtransaction_updatestamp'] = 'now()';
+
+			print_r(array('$content'=>$content));
+
+			if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction_id))) {
+				return false;
+			}
+
+			if($content['loadtransaction_status'] == TRN_COMPLETED) {
+
+				$message = "CONFIRM Ref:".$content['loadtransaction_refnumber']."\nCustomer Cellphone#:".$content['loadtransaction_customernumber']."\nReceiver Cellphone#:".$content['loadtransaction_recipientnumber'];
+
+				sendToOutBox('8890',$content['loadtransaction_assignedsim'],$message);
+
+			}
+
+		}
+
 	}
 
 } // function _SmartMoneyPadalaExpression($vars=array()) {
@@ -6001,6 +6082,29 @@ function _SmartMoneyPadalaConfirmExpression($vars=array()) {
 	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
 
 		print_r(array('$match'=>$match));
+
+		/*$confirmationFrom = $vars['smsinbox']['smsinbox_contactnumber'];
+
+		$confirmation = $vars['smsinbox']['smsinbox_message'];
+
+		$loadtransaction_assignedsim = $vars['smsinbox']['smsinbox_simnumber'];
+
+		$where = '1=1';
+
+		$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_type='smartmoney' and loadtransaction_invalid=0 and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_id asc limit 1";
+
+		print_r(array('$sql'=>$sql));
+
+		if(!($result = $appdb->query($sql))) {
+			return false;
+		}
+
+		print_r(array('$result'=>$result));
+
+
+		$message = "CONFIRM Ref:8ce57d66c530\nCustomer Cellphone#:09493621255\nReceiver Cellphone#:09088853095";
+
+		sendToOutBox('8890','09477409000',$message);*/
 
 	}
 
