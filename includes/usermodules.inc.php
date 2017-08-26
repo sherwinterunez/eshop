@@ -5972,6 +5972,57 @@ function _SmartMoneyPadalaProcess($vars=array()) {
 
 } // function _SmartMoneyPadalaProcess($vars=array()) {
 
+function _SmartMoneyPadalaExpression($vars=array()) {
+	global $appdb;
+
+	if(empty($vars)) {
+		return false;
+	}
+
+	print_r(array('_SmartMoneyPadalaExpression'=>$vars));
+
+	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
+
+		print_r(array('$match'=>$match));
+
+	}
+
+} // function _SmartMoneyPadalaExpression($vars=array()) {
+
+function _SmartMoneyPadalaConfirmExpression($vars=array()) {
+	global $appdb;
+
+	if(empty($vars)) {
+		return false;
+	}
+
+	print_r(array('_SmartMoneyPadalaConfirmExpression'=>$vars));
+
+	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
+
+		print_r(array('$match'=>$match));
+
+	}
+
+} // function _SmartMoneyPadalaConfirmExpression($vars=array()) {
+
+function _SmartMoneyPadalaReceivedExpression($vars=array()) {
+	global $appdb;
+
+	if(empty($vars)) {
+		return false;
+	}
+
+	print_r(array('_SmartMoneyPadalaReceivedExpression'=>$vars));
+
+	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
+
+		print_r(array('$match'=>$match));
+
+	}
+
+} // function _SmartMoneyPadalaReceivedExpression($vars=array()) {
+
 /* INCLUDES_END */
 
 
