@@ -1629,6 +1629,35 @@ if(!class_exists('APP_app_smartmoney')) {
 					'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? getLoadTransactionStatusString($params['smartmoneyinfo']['loadtransaction_status']) : getLoadTransactionStatusString(TRN_DRAFT),
 				);
 
+				$params['tbMessage'][] = array(
+		      'type' => 'input',
+		      'label' => 'FROM',
+		      'name' => 'retail_confirmationfrom',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'value' => !empty($params['smartmoneyinfo']['loadtransaction_confirmationfrom']) ? $params['smartmoneyinfo']['loadtransaction_confirmationfrom'] : '',
+		    );
+
+		    $params['tbMessage'][] = array(
+		      'type' => 'input',
+		      'label' => 'DATE/TIME',
+		      'name' => 'retail_confirmationstamp',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'value' => !empty($params['smartmoneyinfo']['loadtransaction_confirmationstamp']) ? pgDate($params['smartmoneyinfo']['loadtransaction_confirmationstamp']) : '',
+		    );
+
+		    $params['tbMessage'][] = array(
+		      'type' => 'input',
+		      'label' => 'CONFIRMATION',
+		      'name' => 'retail_confirmation',
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'inputWidth' => 500,
+		      'rows' => 5,
+		      'value' => !empty($params['smartmoneyinfo']['loadtransaction_confirmation']) ? $params['smartmoneyinfo']['loadtransaction_confirmation'] : '',
+		    );
+
 				$templatefile = $this->templatefile($routerid,$formid);
 
 				if(file_exists($templatefile)) {
