@@ -109,7 +109,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=<?php echo $submod; ?>&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto),
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=smartmoney&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto),
 		}, function(ddata,odata){
 
 			if(typeof(myGrid_%formval%)!='null'&&typeof(myGrid_%formval%)!='undefined'&&myGrid_%formval%!=null) {
@@ -127,9 +127,9 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 
 			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Sender, Card, Amount, Sender Agent, Transfer Fee, Receive Agent, Other Charges, Amnt Due, Status");
 
-			myGrid.setInitWidths("50,50,120,120,120,120,120,120,120,120,120,120,150");
+			myGrid.setInitWidths("50,50,120,120,200,120,80,100,100,100,100,120,120");
 
-			myGrid.setColAlign("center,center,left,left,left,center,left,center,center,right,right,right,left");
+			myGrid.setColAlign("center,center,left,left,left,center,right,right,right,right,right,right,center");
 
 			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
@@ -148,7 +148,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 
 				if(ddata.rows[0].id) {
 
-					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter");
+					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter");
 
 					myGrid.attachEvent("onBeforeSelect", function(new_row,old_row,new_col_index){
 

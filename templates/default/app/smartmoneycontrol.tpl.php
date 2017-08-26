@@ -215,6 +215,66 @@ pre(array('$_SESSION'=>$_SESSION));
 			doSelect_%formval%(id, lastId);
 		});
 
+		var input_from = myTab.toolbar.getInput("<?php echo $moduleid; ?>datefrom");
+		input_from.setAttribute("readOnly", "true");
+		//input_from.onclick = function(){ setSens(input_till,"max"); }
+
+		var input_till = myTab.toolbar.getInput("<?php echo $moduleid; ?>dateto");
+		input_till.setAttribute("readOnly", "true");
+		//input_till.onclick = function(){ setSens(input_from,"min"); }
+
+		myCalendar1_%formval% = new dhtmlXCalendarObject([input_from]);
+		myCalendar1_%formval%.setDateFormat("%m-%d-%Y %H:%i");
+
+		myCalendar2_%formval% = new dhtmlXCalendarObject([input_till]);
+		myCalendar2_%formval%.setDateFormat("%m-%d-%Y %H:%i");
+
+		<?php /*
+		myTab.toolbar.setValue("<?php echo $moduleid; ?>datefrom","<?php $dt=getDbDate(1); echo $dt['date']; ?> 00:00");
+		myTab.toolbar.setValue("<?php echo $moduleid; ?>dateto","<?php echo getDbDate(); ?>");
+		*/ ?>
+
+		myTab.toolbar.setValue("<?php echo $moduleid; ?>datefrom","<?php $dt=getDbDate(1); echo $dt['date']; ?> 00:00");
+		myTab.toolbar.setValue("<?php echo $moduleid; ?>dateto","<?php $dt=getDbDate(2); echo $dt['date']; ?> 00:00");
+
+		var cdt = myCalendar1_%formval%.getDate();
+
+		myCalendar2_%formval%.setSensitiveRange(cdt, null);
+
+		myCalendar1_%formval%.attachEvent("onBeforeChange", function(date){
+
+			var cdt = myCalendar2_%formval%.getDate();
+
+			myCalendar2_%formval%.setSensitiveRange(date, null);
+
+			var edt = myCalendar2_%formval%.getDate();
+
+			if(date.getTime()>=edt.getTime()) {
+				edt.setDate(date.getDate());
+				//myForm.setItemValue('promos_enddate',edt);
+
+				var mm, dd, yy, hh, mn, dt;
+
+				if(edt.getMonth()<10) {
+					mm = '0' + (edt.getMonth()+1);
+				} else {
+					mm = edt.getMonth() + 1;
+				}
+
+				dd = edt.getDate();
+				yy = edt.getFullYear();
+
+				hh = edt.getHours();
+				mn = edt.getMinutes();
+
+				dt = mm+'-'+dd+'-'+yy+' '+hh+':'+mn;
+
+				myTab.toolbar.setValue("<?php echo $moduleid; ?>dateto",dt);
+			}
+
+			return true;
+		});
+
 		myTab.onTabClose = function(id,formval) {
 			//alert('onTabClose: '+id+', '+formval);
 

@@ -1113,7 +1113,7 @@ pre(array('$vars'=>$vars));
 			myForm.setItemValue('method', '<?php echo $moduleid; ?>save');
 
 			if(id=='<?php echo $moduleid; ?>approved') {
-				myForm.setItemValue('retail_approved', 1);
+				myForm.setItemValue('smartmoney_approved', 1);
 			}
 
 			//$("#messagingdetailsoptionsdetailsform_%formval% input[name='method']").val(id);

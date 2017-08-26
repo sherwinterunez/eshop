@@ -45,6 +45,23 @@ require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
 date_default_timezone_set('Asia/Manila');
 
+define ("DEVICE_NOTSET", 0);
+define ("DEVICE_SET", 1);
+define ("DEVICE_OPENED", 2);
+
+class APP_SMS extends SMS {
+
+	public function deviceInit($device=false,$baudrate=115200) {
+
+		if(!($this->deviceSet($device)&&$this->deviceOpen('w+')&&$this->setBaudRate($baudrate))) {
+			return false;
+		}
+
+		return true;
+	}
+
+}
+
 //echo "running...\n";
 //sleep(10);
 //echo date('l jS \of F Y h:i:s A')."\n";
@@ -101,9 +118,26 @@ foreach($asims as $k=>$v) {
 pre(array('$asm'=>$asm));
 */
 
-$asm = getAllSmartMoney();
+//$asm = getAllSmartMoney();
 
-pre(array('$asm'=>$asm));
+//pre(array('$asm'=>$asm));
 
+
+$mobileNo = '09477409000';
+$dev = '/dev/ttyUSB0';
+$ip = '192.168.1.200';
+
+$sms = new APP_SMS;
+
+$sms->dev = $dev;
+$sms->mobileNo = $mobileNo;
+$sms->ip = $ip;
+
+doSMSCommands3($sms,$mobileNo,$ip);
+
+
+//$name = getRemitCustName(1);
+
+//print_r(array('$name'=>$name));
 
 ////

@@ -5740,6 +5740,93 @@ function isSmartMobileNo($number=false) {
 	return false;
 }
 
+function getRemitCustName($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else {
+		return false;
+	}
+
+	$sql = "select remitcust_id,concat(remitcust_firstname,' ',remitcust_middlename,' ',remitcust_lastname) as fullname from tbl_remitcust where remitcust_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['remitcust_id'])) {
+		return $result['rows'][0]['fullname'];
+	}
+
+	return false;
+}
+
+function getRemitCustData($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_remitcust where remitcust_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['remitcust_id'])) {
+		$remitcust = $result['rows'][0];
+
+		$sql = "select * from tbl_remitcustnumber where remitcustnumber_remitcustid=$id order by remitcustnumber_id asc limit 1";
+
+		if(!($result = $appdb->query($sql))) {
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['remitcustnumber_mobileno'])) {
+
+			$address = '';
+
+			if(!empty($remitcust['remitcust_pahouseno'])) {
+				$address .= trim($remitcust['remitcust_pahouseno']).' ';
+			}
+
+			if(!empty($remitcust['remitcust_pabarangay'])) {
+				$address .= trim($remitcust['remitcust_pabarangay']).' ';
+			}
+
+			if(!empty($remitcust['remitcust_pamunicipality'])) {
+				$address .= trim($remitcust['remitcust_pamunicipality']).' ';
+			}
+
+			if(!empty($remitcust['remitcust_paprovince'])) {
+				$address .= trim($remitcust['remitcust_paprovince']).' ';
+			}
+
+			if(!empty($remitcust['remitcust_pazipcode'])) {
+				$address .= trim($remitcust['remitcust_pazipcode']).' ';
+			}
+
+			$remitcustnumber_mobileno = $result['rows'][0]['remitcustnumber_mobileno'];
+
+			$retval = array(
+				'senderaddress'=>trim($address),
+				'sendernumber'=>$remitcustnumber_mobileno,
+				'senderidtype'=>$remitcust['remitcust_idtype'],
+				'senderspecifyid'=>$remitcust['remitcust_specifyid'],
+				'senderidnumber'=>$remitcust['remitcust_idnumber'],
+				'senderidexpiration'=>$remitcust['remitcust_idexpiration'],
+			);
+
+			return $retval;
+
+		}
+	}
+
+	return false;
+}
+
 function getSmartMoneyServiceFee($desc=false,$amount=false) {
 	global $appdb;
 
@@ -9677,6 +9764,10 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 		$loadtransaction_assignedsim = $loadtransaction['loadtransaction_assignedsim'];
 
+		$loadtransaction_amount = $loadtransaction['loadtransaction_amount'];
+
+		$loadtransaction_destcardno = $loadtransaction['loadtransaction_destcardno'];
+
 		if(!empty($loadtransaction['loadtransaction_load'])) {
 			$loadtransaction_load = $loadtransaction['loadtransaction_load'];
 		}
@@ -9792,7 +9883,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 					$validModemCommands = $result['rows'][0]['modemcommands_id'];
 				} else {
 					$content = array();
-					$content['loadtransaction_status'] = $loadtransaction_status = TRNS_INVALID_SIM_COMMANDS; // invalid modem commands
+					$content['loadtransaction_status'] = $loadtransaction_status = TRN_INVALID_SIM_COMMANDS; // invalid modem commands
 					$content['loadtransaction_invalid'] = 1;
 					$content['loadtransaction_updatestamp'] = 'now()';
 
@@ -9834,7 +9925,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 				$validModemCommands = $result['rows'][0]['modemcommands_id'];
 			} else {
 				$content = array();
-				$content['loadtransaction_status'] = $loadtransaction_status = TRNS_INVALID_SIM_COMMANDS; // invalid modem commands
+				$content['loadtransaction_status'] = $loadtransaction_status = TRN_INVALID_SIM_COMMANDS; // invalid modem commands
 				$content['loadtransaction_invalid'] = 1;
 				$content['loadtransaction_updatestamp'] = 'now()';
 
@@ -9900,6 +9991,14 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 
 				if(!empty($loadtransaction_load)) {
 					$at = str_replace('$QUANTITY',intval($loadtransaction_load),$at);
+				}
+
+				if(!empty($loadtransaction_amount)) {
+					$at = str_replace('$AMOUNT',intval($loadtransaction_amount),$at);
+				}
+
+				if(!empty($loadtransaction_destcardno)) {
+					$at = str_replace('$CARDNUMBER',intval($loadtransaction_destcardno),$at);
 				}
 
 				$pin = getSimCardPinByNumber($mobileNo);
@@ -10066,6 +10165,665 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 	}
 
 } // function doSMSCommands($sms=false,$mobileNo=false) {
+
+function doSMSCommands3($sms=false,$mobileNo=false) {
+	global $appdb;
+
+	$validModemCommands = false;
+
+	if(!empty($sms)&&!empty($mobileNo)) {
+	} else return false;
+
+/////
+	if(!($result=$appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_execstamp)) as elapsedtime,(extract(epoch from now()) - extract(epoch from loadtransaction_balanceinquirystamp)) as balanceinquiryelapsed from tbl_loadtransaction where loadtransaction_status=".TRN_SENT." and loadtransaction_assignedsim='$mobileNo' order by loadtransaction_id asc limit 1"))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+		$loadtransaction = $result['rows'][0];
+
+		$loadtransaction_type = $result['rows'][0]['loadtransaction_type'];
+
+		$content = array();
+		$content['loadtransaction_attempt'] = intval($result['rows'][0]['loadtransaction_attempt']) + 1;
+		$content['loadtransaction_updatestamp'] = 'now()';
+
+		//if($content['loadtransaction_attempt2']>10||$result['rows'][0]['elapsedtime']>60) {  /// 10 attempts or 60 seconds
+
+		if(!($general_waitingforconfirmationmessagetimer = getSimWaitingForConfirmationMessageTimer($mobileNo))) {
+			$general_waitingforconfirmationmessagetimer = 60;
+		}
+
+		//$general_waitingforconfirmationmessagetimer = getOption('$GENERALSETTINGS_WAITINGFORCONFIRMATIONMESSAGETIMER',60);
+
+		if($loadtransaction['elapsedtime']>$general_waitingforconfirmationmessagetimer) {  /// default is 60 seconds
+
+			if($loadtransaction_type=='retail'||$loadtransaction_type=='dealer') {
+
+				if(isSimNoConfirmationPerformBalanceInquiry($mobileNo)||!empty($loadtransaction['loadtransaction_smserrorid'])) {
+
+					//pre(array('isSimNoConfirmationPerformBalanceInquiry'=>$loadtransaction));
+
+					if(!($general_balanceinquirytimer = getSimBalanceInquiryTimer($mobileNo))) {
+						//$general_balanceinquirytimer = getOption('$GENERALSETTINGS_BALANCEINQUIRYTIMER',30);
+						$general_balanceinquirytimer = 30;
+					}
+
+					if(!($general_balanceinquiryretries = getSimBalanceInquiryRetryCounter($mobileNo))) {
+						//$general_balanceinquiryretries = getOption('$GENERALSETTINGS_BALANCEINQUIRYRETRIES',1);
+						$general_balanceinquiryretries = 2;
+					}
+
+					if(!($general_reloadretries = getSimReloadRetry($mobileNo))) {
+						//$general_reloadretries = getOption('$GENERALSETTINGS_RELOADRETRIES',2);
+						$general_reloadretries = 2;
+					}
+
+
+					//$totaltime = $general_waitingforconfirmationmessagetimer + ($general_balanceinquirytimer * $general_balanceinquiryretries);
+
+					// loadtransaction_balanceinquirystamp
+
+					// $loadtransaction['loadtransaction_balanceinquiry']
+
+					//if($loadtransaction['elapsedtime']<$totaltime) {
+
+					//}
+
+					$bypass = false;
+
+					if($loadtransaction['loadtransaction_balanceinquiry']>0&&$loadtransaction['loadtransaction_balanceinquiry']<=$general_balanceinquiryretries) {
+						if($loadtransaction['balanceinquiryelapsed']>$general_balanceinquirytimer) {
+
+						} else {
+							return false;
+						}
+					}
+
+					if($loadtransaction['loadtransaction_balanceinquiry']>=$general_balanceinquiryretries) {
+						$bypass = true;
+					}
+
+					if($loadtransaction['loadtransaction_loadretries']>=$general_reloadretries) {
+						$bypass = true;
+					}
+
+					//pre(array('loadtransaction_balanceinquiry'=>$loadtransaction['loadtransaction_balanceinquiry'],'balanceinquiryelapsed'=>$loadtransaction['balanceinquiryelapsed']));
+
+					//$bypass = true;
+
+					if(!$bypass) {
+
+						if(!empty($loadtransaction['loadtransaction_smserrorid'])) {
+							$simcommand = getSmsErrorCheckBalanceSimCommand($loadtransaction['loadtransaction_smserrorid']);
+						} else {
+							$simcommand = getSimNoConfirmationPerformBalanceInquirySimCommand($mobileNo);
+						}
+
+						if(!($result = $appdb->query("select * from tbl_modemcommands where modemcommands_name='$simcommand'"))) {
+							return false;
+						}
+
+						$validModemCommands = false;
+
+						if(!empty($result['rows'][0]['modemcommands_id'])) {
+							//print_r(array('$result'=>$result['rows']));
+							$validModemCommands = $result['rows'][0]['modemcommands_id'];
+						}
+
+						if(!empty($validModemCommands)) {
+
+	///////////////////////////////////////
+
+							if(!($result = $appdb->query("select * from tbl_atcommands where atcommands_modemcommandsid='$validModemCommands' order by atcommands_id asc"))) {
+								return false;
+							}
+
+							if(!empty($result['rows'][0]['atcommands_id'])) {
+
+								//print_r(array('$result'=>$result['rows'])); die;
+
+								$atsc = array();
+
+								foreach($result['rows'] as $row) {
+									$t = array();
+
+									$at = $row['atcommands_at'];
+
+									//foreach($matched['matched'] as $ak=>$am) {
+									//	$at = str_replace($ak,$am,$at);
+									//}
+
+									$pin = getSimCardPinByNumber($mobileNo);
+
+									if($pin===false) {
+									} else {
+										$at = str_replace('$PIN',$pin,$at);
+									}
+
+									$t['command'] = $at;
+									$t['resultindex'] = $row['atcommands_resultindex'];
+									$t['expectedresult'] = !empty($row['atcommands_expectedresult']) ? $row['atcommands_expectedresult'] : false;
+									$t['repeat'] = !empty($row['atcommands_repeat']) ? $row['atcommands_repeat'] : false;
+									$t['regx'] = array();
+
+									for($i=0;$i<10;$i++) {
+										if(!empty($row['atcommands_regx'.$i])) {
+											$o = getOption($row['atcommands_regx'.$i]);
+											if(!empty($row['atcommands_param'.$i])) {
+												$o = str_replace('%param%',$row['atcommands_param'.$i],$o);
+											}
+											$t['regx'][] = $o;
+										}
+									}
+
+									$atsc[] = $t;
+								}
+
+								pre(array('$atsc'=>$atsc));
+
+								//$content = array();
+								//$content['loadtransaction_status'] = TRN_PROCESSING; // at commands starts processing
+								//$content['loadtransaction_updatestamp'] = 'now()';
+
+								//if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+								//	return false;
+								//}
+
+								$content = array();
+
+								if(modemFunction($sms,$atsc)) {
+
+									//$content['loadtransaction_status'] = TRN_SENT; // at commands sent successfully
+									//$content['loadtransaction_execstamp'] = 'now()';
+
+									//if($loadtransaction['loadtransaction_type']=='balance') {
+									//	$content['loadtransaction_status'] = TRN_COMPLETED;
+									//}
+
+								} else {
+
+									//$content['loadtransaction_attempt'] = (intval($loadtransaction['loadtransaction_attempt']) + 1);
+
+									//if($content['loadtransaction_attempt']>2) {
+
+										//$content['loadtransaction_status'] = TRN_FAILED; // not successful
+
+									//}
+
+								}
+
+								$content['loadtransaction_balanceinquiry'] = $loadtransaction['loadtransaction_balanceinquiry'] + 1;
+
+								$content['loadtransaction_balanceinquirystamp'] = 'now()';
+
+								$content['loadtransaction_updatestamp'] = 'now()';
+
+								if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+									return false;
+								}
+
+								return false;
+							}
+
+	///////////////////////////////////////
+
+						}
+					}
+
+				}
+
+				$content['loadtransaction_status'] = $loadtransaction_status = TRN_PENDING; // pending
+
+			} else {
+				$content['loadtransaction_status'] = $loadtransaction_status = TRN_PENDING; // pending
+			}
+
+			//print_r(array('$content'=>$content));
+		}
+
+		if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+			return false;
+		}
+
+		return false;
+	}
+/////
+
+	//if(!($result=$appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_status=".TRN_APPROVED." and loadtransaction_assignedsim='$mobileNo' order by loadtransaction_id asc limit 1"))) {
+	//	return false;
+	//}
+
+	if(!($result=$appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_status in (".TRN_APPROVED.",".TRN_QUEUED.") and loadtransaction_assignedsim='$mobileNo' order by loadtransaction_id asc limit 1"))) {
+		return false;
+	}
+
+	//pre(array('$result'=>$result));
+
+	if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+		$loadtransaction = $result['rows'][0];
+
+		$loadtransaction_type = $loadtransaction['loadtransaction_type'];
+
+		$loadtransaction_regularload = $loadtransaction['loadtransaction_regularload'];
+
+		$loadtransaction_item = $loadtransaction['loadtransaction_item'];
+
+		$loadtransaction_provider = $loadtransaction['loadtransaction_provider'];
+
+		$loadtransaction_assignedsim = $loadtransaction['loadtransaction_assignedsim'];
+
+		$loadtransaction_amount = $loadtransaction['loadtransaction_amount'];
+
+		$loadtransaction_destcardno = $loadtransaction['loadtransaction_destcardno'];
+
+		if(!empty($loadtransaction['loadtransaction_load'])) {
+			$loadtransaction_load = $loadtransaction['loadtransaction_load'];
+		}
+
+		if($loadtransaction_type=='retail'&&$loadtransaction['loadtransaction_status']==TRN_QUEUED&&$loadtransaction['elapsedtime']>=30) {  /// elapsed time
+
+			if(!empty(($simassignment = getItemSimAssign($loadtransaction_item,$loadtransaction_provider)))) {
+
+				$simcount = count($simassignment);
+				$sctr = 0;
+
+				if($simcount>1) {
+					do {
+						shuffle($simassignment);
+
+						//print_r(array('MOVING ASSIGNED SIM'=>$loadtransaction));
+
+						if($simassignment[0]['itemassignedsim_simnumber']!=$loadtransaction_assignedsim) {
+
+							//print_r(array('$loadtransaction_assignedsim'=>$loadtransaction_assignedsim,'new sim card'=>$simassignment[0]['itemassignedsim_simnumber']));
+
+							$content = array();
+							$content['loadtransaction_assignedsim'] = $simassignment[0]['itemassignedsim_simnumber'];
+							$content['loadtransaction_status'] = $loadtransaction_status = TRN_APPROVED; // pending
+							$content['loadtransaction_updatestamp'] = 'now()';
+
+							if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+								return false;
+							}
+
+							break;
+						} else {
+							unset($simassignment[0]);
+						}
+						sleep(1);
+						$sctr++;
+					} while($sctr<=$simcount);
+				} else {
+					print_r(array('$simassignment1'=>$simassignment));
+
+					$content = array();
+					//$content['loadtransaction_assignedsim'] = $simassignment[0]['itemassignedsim_simnumber'];
+					$content['loadtransaction_status'] = $loadtransaction_status = TRN_APPROVED; // pending
+					$content['loadtransaction_updatestamp'] = 'now()';
+
+					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+						return false;
+					}
+
+				}
+
+			} else {
+
+				print_r(array('MODEM FUNCTION FAILED! #1','MODEM FUNCTION FAILED! #1','MODEM FUNCTION FAILED! #1','MODEM FUNCTION FAILED! #1'));
+
+				print_r(array('$simassignment2'=>$simassignment));
+
+				/*$content = array();
+				$content['loadtransaction_status'] = $loadtransaction_status = TRN_FAILED; // pending
+				$content['loadtransaction_updatestamp'] = 'now()';
+
+				if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+					return false;
+				}*/
+
+			}
+
+		/*}
+
+		if($loadtransaction['elapsedtime']>(60*5)) {  /// retail transaction approved more than 5 minutes will be set to failed
+
+			if($loadtransaction_type=='retail') {
+
+				$content = array();
+				$content['loadtransaction_status'] = $loadtransaction_status = TRN_FAILED; // pending
+				$content['loadtransaction_updatestamp'] = 'now()';
+
+				if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+					return false;
+				}
+
+			}*/
+
+			return false;
+
+		} else {
+
+			//print_r(array('$loadtransaction1'=>$loadtransaction));
+
+			$content = array();
+			$content['smsinbox_message'] = $loadtransaction['loadtransaction_keyword'];
+			$content['smsinbox_contactnumber'] = $loadtransaction['loadtransaction_customernumber'];
+			$content['smsinbox_simnumber'] = $loadtransaction['loadtransaction_simhotline'];
+
+			//if(!($matched=smsCommandMatched($content))) {
+			if(!($matched=smsLoadCommandMatched($content))) {
+				//return false;
+				$matched = false;
+			}
+
+			print_r(array('$matched'=>$matched));
+
+			//if(!empty($matched)&&!empty($loadtransaction['loadtransaction_simcommand'])) {
+
+			if($matched) {
+
+				$loadtransaction_matched = $matched;
+
+				if(!($result = $appdb->query("select * from tbl_modemcommands where modemcommands_name='".$loadtransaction['loadtransaction_simcommand']."'"))) {
+					return false;
+				}
+
+				print_r(array('$result'=>$result));
+
+				if(!empty($result['rows'][0]['modemcommands_id'])) {
+					//print_r(array('$result'=>$result['rows']));
+					$validModemCommands = $result['rows'][0]['modemcommands_id'];
+				} else {
+					$content = array();
+					$content['loadtransaction_status'] = $loadtransaction_status = TRN_INVALID_SIM_COMMANDS; // invalid modem commands
+					$content['loadtransaction_invalid'] = 1;
+					$content['loadtransaction_updatestamp'] = 'now()';
+
+					print_r(array('$content'=>$content));
+
+					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+						return false;
+					}
+
+					print_r(array('$result'=>$result));
+				}
+
+			}
+		}
+
+	}
+
+	if(!empty($validModemCommands)) {
+	} else {
+
+		$sql = "select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_status=".TRN_APPROVED." and loadtransaction_assignedsim='$mobileNo' order by loadtransaction_id asc limit 1";
+
+		//print_r(array('$validModemCommands'=>$sql));
+
+		if(!($result=$appdb->query($sql))) {
+			return false;
+		}
+
+		//pre(array('$result'=>$result));
+
+		if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+			$loadtransaction = $result['rows'][0];
+
+			//print_r(array('$loadtransaction2'=>$loadtransaction));
+
+			if(!($result = $appdb->query("select * from tbl_modemcommands where modemcommands_name='".$loadtransaction['loadtransaction_simcommand']."'"))) {
+				return false;
+			}
+
+			if(!empty($result['rows'][0]['modemcommands_id'])) {
+				//print_r(array('$result'=>$result['rows']));
+				$validModemCommands = $result['rows'][0]['modemcommands_id'];
+			} else {
+				$content = array();
+				$content['loadtransaction_status'] = $loadtransaction_status = TRN_INVALID_SIM_COMMANDS; // invalid modem commands
+				$content['loadtransaction_invalid'] = 1;
+				$content['loadtransaction_updatestamp'] = 'now()';
+
+				if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+					return false;
+				}
+			}
+
+		}
+
+	}
+
+	if(!empty($validModemCommands)) {
+
+		if(!($result = $appdb->query("select * from tbl_atcommands where atcommands_modemcommandsid='$validModemCommands' order by atcommands_id asc"))) {
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['atcommands_id'])) {
+
+			//print_r(array('$result'=>$result['rows']));
+
+			$atsc = array();
+
+			//$pout = prebuf(array('$loadtransaction_matched'=>$loadtransaction_matched['matched']));
+			//$pout = printrbuf(array('$loadtransaction_matched'=>$loadtransaction_matched));
+			//$aout = explode("\n",$pout);
+
+			if(!empty($loadtransaction_matched)) {
+				$aout = arrayprintrbuf(array('$loadtransaction_matched'=>$loadtransaction_matched));
+			} else
+			if(!empty($loadtransaction)) {
+				$aout = arrayprintrbuf(array('$loadtransaction'=>$loadtransaction));
+			} else {
+				$aout = arrayprintrbuf(array('$nothing'=>'nothing'));
+			}
+
+			foreach($aout as $bk=>$str) {
+				$dt = logdt(time());
+				$str = trim($str);
+				doLog("DOSMSCOMMANDS $dt $mobileNo $str",$mobileNo);
+			}
+
+			foreach($result['rows'] as $row) {
+				$t = array();
+
+				$at = $row['atcommands_at'];
+
+				if(!empty($loadtransaction_matched)) {
+					foreach($loadtransaction_matched['matched'] as $ak=>$am) {
+						$oldat = $at;
+						$at = str_replace($ak,$am,$at);
+						print_r(array('str_replace($ak,$am,$at)'=>$at,'$ak'=>$ak,'$am'=>$am,'$oldat'=>$oldat));
+						$dt = logdt(time());
+						$str = 'str_replace('.$ak.','.$am.','.$oldat.') => '.$at;
+						doLog("DOSMSCOMMANDS $dt $mobileNo $str",$mobileNo);
+					}
+				}
+
+				if(!empty($loadtransaction_regularload)) {
+					$at = str_replace('$REGULARLOAD',intval($loadtransaction_regularload),$at);
+				}
+
+				if(!empty($loadtransaction_load)) {
+					$at = str_replace('$QUANTITY',intval($loadtransaction_load),$at);
+				}
+
+				if(!empty($loadtransaction_amount)) {
+					$at = str_replace('$AMOUNT',intval($loadtransaction_amount),$at);
+				}
+
+				if(!empty($loadtransaction_destcardno)) {
+					$at = str_replace('$CARDNUMBER',intval($loadtransaction_destcardno),$at);
+				}
+
+				$pin = getSimCardPinByNumber($mobileNo);
+
+				if($pin===false) {
+				} else {
+					$at = str_replace('$PIN',$pin,$at);
+				}
+
+				$t['command'] = $at;
+				$t['resultindex'] = $row['atcommands_resultindex'];
+				$t['expectedresult'] = !empty($row['atcommands_expectedresult']) ? $row['atcommands_expectedresult'] : false;
+				$t['repeat'] = !empty($row['atcommands_repeat']) ? $row['atcommands_repeat'] : false;
+				$t['regx'] = array();
+
+				for($i=0;$i<10;$i++) {
+					if(!empty($row['atcommands_regx'.$i])) {
+						$o = getOption($row['atcommands_regx'.$i]);
+						if(!empty($row['atcommands_param'.$i])) {
+							$o = str_replace('%param%',$row['atcommands_param'.$i],$o);
+						}
+						$t['regx'][] = $o;
+					}
+				}
+
+				$atsc[] = $t;
+			}
+
+			$receiptno = '';
+
+			if(!empty($loadtransaction['loadtransaction_id'])&&!empty($loadtransaction['loadtransaction_ymd'])) {
+				$receiptno = $loadtransaction['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($loadtransaction['loadtransaction_id']));
+			}
+
+			pre(array('loadtransaction receiptno'=>$receiptno,'doSMSCommands'=>$loadtransaction,'$loadtransaction_load'=>!empty($loadtransaction_load)?$loadtransaction_load:false));
+			pre(array('$atsc'=>$atsc));
+
+			$content = array();
+			$content['loadtransaction_status'] = $loadtransaction_status = TRN_PROCESSING; // at commands starts processing
+			$content['loadtransaction_updatestamp'] = 'now()';
+
+			if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+				return false;
+			}
+
+			$content = array();
+
+			if(modemFunction($sms,$atsc)) {
+
+				$content['loadtransaction_status'] = $loadtransaction_status = TRN_SENT; // at commands sent successfully
+				$content['loadtransaction_execstamp'] = 'now()';
+
+				//if($loadtransaction['loadtransaction_type']=='balance') {
+				//	$content['loadtransaction_status'] = TRN_COMPLETED;
+				//}
+
+			} else {
+
+				//$content['loadtransaction_attempt'] = (intval($loadtransaction['loadtransaction_attempt']) + 1);
+
+				//if($content['loadtransaction_attempt']>2) {
+
+					print_r(array('MODEM FUNCTION FAILED!','MODEM FUNCTION FAILED!','MODEM FUNCTION FAILED!','MODEM FUNCTION FAILED!'));
+
+					$content['loadtransaction_status'] = $loadtransaction_status = TRN_FAILED; // not successful
+
+				//}
+
+				if(!empty($loadtransaction['loadtransaction_failedtransid'])) { // this is balance force complete
+					//$loadtransaction_failedtransid = $loadtransaction['loadtransaction_failedtransid'];
+					$content['loadtransaction_status'] = $loadtransaction_status = TRN_APPROVED;
+
+					$content['loadtransaction_balanceinquiry'] = $loadtransaction['loadtransaction_balanceinquiry'] + 1;
+
+					$content['loadtransaction_balanceinquirystamp'] = 'now()';
+
+					if($content['loadtransaction_balanceinquiry']>3) {
+						$content['loadtransaction_status'] = $loadtransaction_status = TRN_COMPLETED;
+					}
+				}
+
+			}
+
+			$content['loadtransaction_updatestamp'] = 'now()';
+
+			if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+				return false;
+			}
+
+			$loadtransaction_id = $loadtransaction['loadtransaction_id'];
+
+			$loadtransaction_loadretries = $loadtransaction['loadtransaction_loadretries'];
+
+			if($loadtransaction_status==TRN_FAILED&&isSimFailedPerformBalanceInquiry($mobileNo)) {
+
+				$simcommand = getSimFailedPerformBalanceInquirySimCommand($mobileNo);
+
+				if(!empty($simcommand)) {
+
+					if(!($result = $appdb->query("select * from tbl_modemcommands where modemcommands_name='$simcommand'"))) {
+						return false;
+					}
+
+					if(!empty($result['rows'][0]['modemcommands_id'])) {
+						//print_r(array('$result'=>$result['rows']));
+
+						$content = array();
+
+						$content['loadtransaction_ymd'] = date('Ymd');
+						$content['loadtransaction_assignedsim'] = $mobileNo;
+						$content['loadtransaction_simcommand'] = $simcommand;
+						$content['loadtransaction_type'] = 'balance';
+						$content['loadtransaction_status'] = TRN_APPROVED;
+						$content['loadtransaction_failedtransid'] = $loadtransaction_id;
+
+						if(!empty($loadtransaction_failedtransid)) {
+							$content['loadtransaction_failedtransid'] = $loadtransaction_failedtransid;
+						}
+
+						//pre(array('$content'=>$content));
+
+						if(!empty($content)) {
+							$aout = arrayprintrbuf(array('$content'=>$content));
+						}
+
+						foreach($aout as $bk=>$str) {
+							$dt = logdt(time());
+							$str = trim($str);
+							doLog("DOFAILEDBALANCEINQUIRY $dt $mobileNo $str",$mobileNo);
+						}
+
+						if(!($result = $appdb->insert("tbl_loadtransaction",$content,"loadtransaction_id"))) {
+							return false;
+						}
+
+						if(!empty($result['returning'][0]['loadtransaction_id'])) {
+
+							$lid = $result['returning'][0]['loadtransaction_id'];
+
+							$cupdate = array();
+							$cupdate['loadtransaction_createstampunix'] = '#extract(epoch from loadtransaction_updatestamp)#';
+
+							if(!($appdb->update("tbl_loadtransaction",$cupdate,"loadtransaction_id=".$lid))) {
+								return false;
+							}
+						}
+					}
+				}
+
+			} else
+			if($loadtransaction_status==TRN_FAILED&&isSimSetStatusToPending($mobileNo)) {
+
+				$content['loadtransaction_updatestamp'] = 'now()';
+				$content['loadtransaction_status'] = TRN_PENDING; // set to pending
+
+				if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction['loadtransaction_id']))) {
+					return false;
+				}
+
+			}
+
+		}
+
+	}
+
+} // function doSMSCommands3($sms=false,$mobileNo=false) {
 
 function doSMSCommands2($sms=false,$mobileNo=false) {
 	global $appdb;
