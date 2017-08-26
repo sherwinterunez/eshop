@@ -6022,9 +6022,9 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 			unset($content['loadtransaction_execstamp']);
 
 			if(trim($content['loadtransaction_confirmation'])=='') {
-				$content['loadtransaction_confirmation'] = $confirmation;
+				$content['loadtransaction_confirmation'] = tocrlf($confirmation);
 			} else {
-				$content['loadtransaction_confirmation'] = $content['loadtransaction_confirmation'] . ' ' . $confirmation;
+				$content['loadtransaction_confirmation'] = $content['loadtransaction_confirmation'] . ' ' . tocrlf($confirmation);
 			}
 
 			if(!empty($loadtransaction_destcardmobileno)) {
