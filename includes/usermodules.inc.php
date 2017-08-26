@@ -6017,6 +6017,8 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 		if(!empty($result['rows'][0]['loadtransaction_id'])) {
 			$content = $result['rows'][0];
 
+			$loadtransaction_id = $content['loadtransaction_id'];
+
 			unset($content['loadtransaction_id']);
 			unset($content['loadtransaction_createstamp']);
 			unset($content['loadtransaction_execstamp']);
