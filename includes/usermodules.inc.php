@@ -6002,6 +6002,8 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 		$loadtransaction_simcardbalance = !empty($match['BALANCE']) ? str_replace(',','',$match['BALANCE']) : false;
 
+		$loadtransaction_cardlabel = !empty($match['LABEL']) ? $match['LABEL'] : false;
+
 		$sql = "select * from tbl_loadtransaction where loadtransaction_status=".TRN_SENT." and loadtransaction_type='smartmoney' and loadtransaction_invalid=0 and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_id asc limit 1";
 
 		print_r(array('$sql'=>$sql));
@@ -6037,6 +6039,10 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 			if(!empty($loadtransaction_simcardbalance)) {
 				$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance;
+			}
+
+			if(!empty($loadtransaction_cardlabel)) {
+				$content['loadtransaction_cardlabel'] = $loadtransaction_cardlabel;
 			}
 
 			if(!empty($content['loadtransaction_confirmation'])&&!empty($content['loadtransaction_refnumber'])&&!empty($content['loadtransaction_simcardbalance'])) {
@@ -6092,6 +6098,33 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 					} else {
 						$content['loadtransaction_confirmation'] = $content['loadtransaction_confirmation'] . ' ' . $confirmation;
 					}
+
+					if(!empty($loadtransaction_destcardmobileno)) {
+						$content['loadtransaction_destcardmobileno'] = $loadtransaction_destcardmobileno;
+					}
+
+					if(!empty($loadtransaction_refnumber)) {
+						$content['loadtransaction_refnumber'] = $loadtransaction_refnumber;
+					}
+
+					if(!empty($loadtransaction_simcardbalance)) {
+						$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance;
+					}
+
+					if(!empty($loadtransaction_cardlabel)) {
+						$content['loadtransaction_cardlabel'] = $loadtransaction_cardlabel;
+					}
+
+					if(!empty($content['loadtransaction_confirmation'])&&!empty($content['loadtransaction_refnumber'])&&!empty($content['loadtransaction_simcardbalance'])) {
+						$content['loadtransaction_status'] = TRN_COMPLETED;
+						$content['loadtransaction_confirmationstamp'] = 'now()';
+					}
+
+					if(!empty($confirmationFrom)&&empty($content['loadtransaction_confirmationfrom'])) {
+						$content['loadtransaction_confirmationfrom'] = $confirmationFrom;
+					}
+
+					$content['loadtransaction_updatestamp'] = 'now()';
 
 					print_r(array('$content'=>$content));
 
