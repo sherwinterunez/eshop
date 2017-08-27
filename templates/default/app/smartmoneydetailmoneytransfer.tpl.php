@@ -30,7 +30,7 @@ if(!empty($vars['post']['wid'])) {
 
 //$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'transfer',$moduleid.'approved',$moduleid.'manually',$moduleid.'cancelled',$moduleid.'hold');
 
-$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved');
+$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved',$moduleid.'manually',$moduleid.'cancelled',$moduleid.'hold');
 
 /*if(!empty($vars['params']['optionsinfo']['options_name'])) {
 	$options_name = $vars['params']['optionsinfo']['options_name'];
@@ -525,13 +525,55 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		<?php 	if(!empty($vars['params']['smartmoneyinfo']['loadtransaction_status'])&&!($vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_DRAFT)) { ?>
+		<?php 	if(!empty($vars['params']['smartmoneyinfo']['loadtransaction_status'])&&!($vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_DRAFT||$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_FAILED||$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_PENDING||$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_APPROVED||$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_HOLD||$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_QUEUED)) { ?>
 
 		//myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>approved');
 
-		//myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
+
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
+
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
+
+		<?php 	} ?>
+
+		<?php   if(!empty($vars['params']['smartmoneyinfo']['loadtransaction_status'])&&$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_QUEUED) { ?>
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
+
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>approved');
+
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
+
+		<?php 	} ?>
+
+		<?php   if(!empty($vars['params']['smartmoneyinfo']['loadtransaction_status'])&&$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_APPROVED) { ?>
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
+
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>approved');
+
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
+
+		<?php 	} ?>
+
+		<?php   if(!empty($vars['params']['smartmoneyinfo']['loadtransaction_status'])&&$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_DRAFT) { ?>
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
+
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>approved');
+
+		myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
 
 		//myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
 

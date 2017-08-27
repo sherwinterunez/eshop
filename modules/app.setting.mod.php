@@ -1876,7 +1876,6 @@ if(!class_exists('APP_app_setting')) {
 				$actionOptions[] = array('text'=>'_LoadAirtimeBalanceExpressionProcessSMS','value'=>'_LoadAirtimeBalanceExpressionProcessSMS');
 				$actionOptions[] = array('text'=>'_SmartPadalaExpression','value'=>'_SmartPadalaExpression');
 				$actionOptions[] = array('text'=>'_SmartMoneyPadalaExpression','value'=>'_SmartMoneyPadalaExpression');
-				$actionOptions[] = array('text'=>'_SmartMoneyPadalaConfirmExpression','value'=>'_SmartMoneyPadalaConfirmExpression');
 				$actionOptions[] = array('text'=>'_SmartMoneyPadalaReceivedExpression','value'=>'_SmartMoneyPadalaReceivedExpression');
 
 				$opt = array();

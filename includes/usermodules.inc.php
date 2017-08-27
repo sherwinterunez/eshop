@@ -6094,9 +6094,9 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 					unset($content['loadtransaction_execstamp']);
 
 					if(trim($content['loadtransaction_confirmation'])=='') {
-						$content['loadtransaction_confirmation'] = $confirmation;
+						$content['loadtransaction_confirmation'] = tocrlf($confirmation);
 					} else {
-						$content['loadtransaction_confirmation'] = $content['loadtransaction_confirmation'] . ' ' . $confirmation;
+						$content['loadtransaction_confirmation'] = $content['loadtransaction_confirmation'] . ' ' . tocrlf($confirmation);
 					}
 
 					if(!empty($loadtransaction_destcardmobileno)) {
@@ -6141,46 +6141,6 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 	}
 
 } // function _SmartMoneyPadalaExpression($vars=array()) {
-
-function _SmartMoneyPadalaConfirmExpression($vars=array()) {
-	global $appdb;
-
-	if(empty($vars)) {
-		return false;
-	}
-
-	print_r(array('_SmartMoneyPadalaConfirmExpression'=>$vars));
-
-	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
-
-		print_r(array('$match'=>$match));
-
-		/*$confirmationFrom = $vars['smsinbox']['smsinbox_contactnumber'];
-
-		$confirmation = $vars['smsinbox']['smsinbox_message'];
-
-		$loadtransaction_assignedsim = $vars['smsinbox']['smsinbox_simnumber'];
-
-		$where = '1=1';
-
-		$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_type='smartmoney' and loadtransaction_invalid=0 and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_id asc limit 1";
-
-		print_r(array('$sql'=>$sql));
-
-		if(!($result = $appdb->query($sql))) {
-			return false;
-		}
-
-		print_r(array('$result'=>$result));
-
-
-		$message = "CONFIRM Ref:8ce57d66c530\nCustomer Cellphone#:09493621255\nReceiver Cellphone#:09088853095";
-
-		sendToOutBox('8890','09477409000',$message);*/
-
-	}
-
-} // function _SmartMoneyPadalaConfirmExpression($vars=array()) {
 
 function _SmartMoneyPadalaReceivedExpression($vars=array()) {
 	global $appdb;
