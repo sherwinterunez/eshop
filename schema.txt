@@ -1297,6 +1297,9 @@ alter table tbl_loadtransaction add column loadtransaction_destcardno text DEFAU
 alter table tbl_loadtransaction add column loadtransaction_destcardmobileno text DEFAULT ''::text NOT NULL;
 alter table tbl_loadtransaction add column loadtransaction_smartmoneytype text DEFAULT ''::text NOT NULL;
 alter table tbl_loadtransaction add column loadtransaction_destcardnomasked text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_senderid integer NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_sendername text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_sendernumber text DEFAULT ''::text NOT NULL;
 
 ------------------------------------------------------------------------------------------------------------------
 

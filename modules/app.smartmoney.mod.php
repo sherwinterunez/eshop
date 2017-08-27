@@ -873,15 +873,17 @@ if(!class_exists('APP_app_smartmoney')) {
 					$retval['return_code'] = 'SUCCESS';
 					$retval['return_message'] = 'Smart Money Transfer successfully updated!';
 
-					if(!empty($post['retail_status'])) {
+					if(!empty($post['smartmoney_status'])) {
 						$content = array();
-						$content['loadtransaction_status'] = $post['retail_status'];
+						$content['loadtransaction_status'] = $post['smartmoney_status'];
 						$content['loadtransaction_updatestamp'] = 'now()';
 
 						if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
+
+						$retval['rowid'] = $post['rowid'];
 					}
 
 					json_encode_return($retval);
@@ -954,12 +956,15 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$content = array();
 					$content['loadtransaction_ymd'] = $loadtransaction_ymd = date('Ymd');
+
 					$content['loadtransaction_customerid'] = !empty($post['smartmoney_sendername']) ? $post['smartmoney_sendername'] : 0;
 					$content['loadtransaction_customernumber'] = $smartmoney_sendernumber;
-
-
-
 					$content['loadtransaction_customername'] = !empty($content['loadtransaction_customerid']) ? getRemitCustName($content['loadtransaction_customerid']) : '';
+
+					$content['loadtransaction_senderid'] = !empty($post['smartmoney_sendername']) ? $post['smartmoney_sendername'] : 0;
+					$content['loadtransaction_sendernumber'] = $smartmoney_sendernumber;
+					$content['loadtransaction_sendername'] = !empty($content['loadtransaction_customerid']) ? getRemitCustName($content['loadtransaction_customerid']) : '';
+
 					//$content['loadtransaction_simhotline'] = $loadtransaction_simhotline;
 					$content['loadtransaction_keyword'] = $message;
 					$content['loadtransaction_recipientnumber'] = $smartmoney_receivernumber;
@@ -1608,26 +1613,75 @@ if(!class_exists('APP_app_smartmoney')) {
 					'value' => $fund_username,
 				);
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'STATUS CODE',
-					'name' => 'retail_status',
-					'readonly' => true,
-					'inputWidth' => 150,
-					//'required' => !$readonly,
-					//'value' => TRN_DRAFT,
-					'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? $params['smartmoneyinfo']['loadtransaction_status'] : TRN_DRAFT,
-				);
+				if($post['method']=='smartmoneynew') {
 
-				$params['tbDetails'][] = array(
-					'type' => 'input',
-					'label' => 'STATUS',
-					'name' => 'retail_statustext',
-					'readonly' => true,
-					'inputWidth' => 150,
-					//'required' => !$readonly,
-					'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? getLoadTransactionStatusString($params['smartmoneyinfo']['loadtransaction_status']) : getLoadTransactionStatusString(TRN_DRAFT),
-				);
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'STATUS CODE',
+						'name' => 'smartmoney_status',
+						'readonly' => true,
+						'inputWidth' => 150,
+						'value' => TRN_DRAFT,
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'STATUS',
+						'name' => 'smartmoney_statustext',
+						'readonly' => true,
+						'inputWidth' => 150,
+						//'required' => !$readonly,
+						'value' => getLoadTransactionStatusString(TRN_DRAFT),
+					);
+
+				} else
+				if($post['method']=='smartmoneyapproved') {
+
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'STATUS CODE',
+						'name' => 'smartmoney_status',
+						'readonly' => true,
+						'inputWidth' => 150,
+						//'required' => !$readonly,
+						//'value' => TRN_DRAFT,
+						'value' => TRN_APPROVED,
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'STATUS',
+						'name' => 'smartmoney_statustext',
+						'readonly' => true,
+						'inputWidth' => 150,
+						//'required' => !$readonly,
+						'value' => getLoadTransactionStatusString(TRN_APPROVED),
+					);
+
+				} else {
+
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'STATUS CODE',
+						'name' => 'smartmoney_status',
+						'readonly' => true,
+						'inputWidth' => 150,
+						//'required' => !$readonly,
+						//'value' => TRN_DRAFT,
+						'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? $params['smartmoneyinfo']['loadtransaction_status'] : TRN_DRAFT,
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'STATUS',
+						'name' => 'smartmoney_statustext',
+						'readonly' => true,
+						'inputWidth' => 150,
+						//'required' => !$readonly,
+						'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? getLoadTransactionStatusString($params['smartmoneyinfo']['loadtransaction_status']) : getLoadTransactionStatusString(TRN_DRAFT),
+					);
+
+				}
 
 				$params['tbMessage'][] = array(
 		      'type' => 'input',
@@ -2113,7 +2167,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 								$statusString = getLoadTransactionStatusString($v['loadtransaction_status']);
 
-								$rows[] = array('id'=>$v['loadtransaction_id'],'data'=>array(0,$v['loadtransaction_id'],pgDate($v['loadtransaction_createstamp']),$receiptno,$v['loadtransaction_customername'],$v['loadtransaction_destcardno'],number_format($v['loadtransaction_amount'],2),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($v['loadtransaction_amountdue'],2),$statusString));
+								$rows[] = array('id'=>$v['loadtransaction_id'],'data'=>array(0,$v['loadtransaction_id'],pgDate($v['loadtransaction_createstamp']),$receiptno,$v['loadtransaction_sendername'],$v['loadtransaction_destcardno'],number_format($v['loadtransaction_amount'],2),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($v['loadtransaction_amountdue'],2),$statusString));
 							}
 
 							$retval = array('rows'=>$rows);

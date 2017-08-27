@@ -525,17 +525,17 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		<?php 	if(!empty($vars['params']['retailinfo']['loadtransaction_status'])&&!($vars['params']['retailinfo']['loadtransaction_status']==TRN_DRAFT)) { ?>
+		<?php 	if(!empty($vars['params']['smartmoneyinfo']['loadtransaction_status'])&&!($vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_DRAFT)) { ?>
 
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>transfer');
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>approved');
 
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>manually');
 
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>cancelled');
 
-		myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
+		//myWinToolbar.disableItem('<?php echo $moduleid; ?>hold');
 
 		<?php 	} ?>
 
