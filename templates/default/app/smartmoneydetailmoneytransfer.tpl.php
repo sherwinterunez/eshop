@@ -730,8 +730,17 @@ pre(array('$vars'=>$vars));
 				var loadtransaction_amount = parseFloat(myForm.getItemValue('loadtransaction_amount'));
 				var smartmoney_otherchargesamount = parseFloat(myForm.getItemValue('smartmoney_otherchargesamount'));
 
+				var smartmoney_sendagentcommissionamount = parseFloat(myForm.getItemValue('smartmoney_sendagentcommissionamount'));
+				var smartmoney_transferfeeamount = parseFloat(myForm.getItemValue('smartmoney_transferfeeamount'));
+				var smartmoney_receiveagentcommissionamount = parseFloat(myForm.getItemValue('smartmoney_receiveagentcommissionamount'));
+
 				if(smartmoney_otherchargesamount>0&&loadtransaction_amount>0) {
 					var total = loadtransaction_amount + smartmoney_otherchargesamount;
+
+					total = total + smartmoney_sendagentcommissionamount;
+					total = total + smartmoney_transferfeeamount;
+					total = total + smartmoney_receiveagentcommissionamount;
+
 					myForm.setItemValue('loadtransaction_amountdue',total);
 				}
 
@@ -756,11 +765,31 @@ pre(array('$vars'=>$vars));
 					if(ddata.fees) {
 						console.log(JSON.stringify(ddata.fees));
 
+						var amountdue = 0.00;
+
 						myForm.setItemValue('smartmoney_sendagentcommissionamount',ddata.fees.smartmoneyservicefeeslist_sendcommission);
 						myForm.setItemValue('smartmoney_transferfeeamount',ddata.fees.smartmoneyservicefeeslist_transferfee);
 						myForm.setItemValue('smartmoney_receiveagentcommissionamount',ddata.fees.smartmoneyservicefeeslist_receivecommission);
 						myForm.setItemValue('smartmoney_otherchargesamount',0.00);
-						myForm.setItemValue('loadtransaction_amountdue',odata.amount);
+
+						if(odata.amount) {
+							amountdue = amountdue + parseFloat(odata.amount);
+						}
+
+						if(ddata.fees.smartmoneyservicefeeslist_sendcommission) {
+							amountdue = amountdue + parseFloat(ddata.fees.smartmoneyservicefeeslist_sendcommission);
+						}
+
+						if(ddata.fees.smartmoneyservicefeeslist_transferfee) {
+							amountdue = amountdue + parseFloat(ddata.fees.smartmoneyservicefeeslist_transferfee);
+						}
+
+						if(ddata.fees.smartmoneyservicefeeslist_receivecommission) {
+							amountdue = amountdue + parseFloat(ddata.fees.smartmoneyservicefeeslist_receivecommission);
+						}
+
+						//myForm.setItemValue('loadtransaction_amountdue',odata.amount);
+						myForm.setItemValue('loadtransaction_amountdue',amountdue);
 
 						//myForm.setItemValue('loadtransaction_amount',0.00);
 						//myForm.setItemValue('smartmoney_sendagentcommissionamount',0.00);
