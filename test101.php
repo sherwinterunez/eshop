@@ -141,8 +141,13 @@ doSMSCommands3($sms,$mobileNo,$ip);
 
 //print_r(array('$name'=>$name));
 
-$masked = maskedSmartMoneyNumber('5577519462838104');
+//$masked = maskedSmartMoneyNumber('5577519462838104');
 
-print_r(array('$masked'=>$masked));
+//print_r(array('$masked'=>$masked));
+
+$asm = getAllSmartMoney();
+
+print_r(array('$asm'=>$asm));
+
 
 ////

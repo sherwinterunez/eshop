@@ -1041,7 +1041,18 @@ if(!class_exists('APP_app_smartmoney')) {
 						}
 					} else
 					if(!empty($post['loadtransaction_assignedsim'])) {
+						$asm = getAllSmartMoney();
+
 						$content['loadtransaction_assignedsim'] = $post['loadtransaction_assignedsim'];
+
+						if(!empty($asm)) {
+							foreach($asm as $k=>$v) {
+								if(!empty($v['smartmoney_modemcommand'])&&!empty($v['simcard_number'])&&$v['simcard_number']==$content['loadtransaction_assignedsim']) {
+									$content['loadtransaction_simcommand'] = $v['smartmoney_modemcommand'];
+									break;
+								}
+							}
+						}
 					}
 
 					if(!($result = $appdb->insert("tbl_loadtransaction",$content,"loadtransaction_id"))) {
