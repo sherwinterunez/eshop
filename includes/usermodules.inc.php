@@ -826,7 +826,11 @@ function _eLoadProcessSMS($vars=array()) {
 
 					//print_r(array('$itemDiscountRate'=>$itemDiscountRate,'$itemProcessingFee'=>$itemProcessingFee));
 
+
 					$item_cost = $loadtransaction_regularload * $itemDiscountRate;
+
+					$item_cost = floatval(number_format($item_cost,2,'.',''));
+
 					$item_quantity = $loadtransaction_regularload;
 					$item_srp = $loadtransaction_regularload;
 					$item_eshopsrp = $item_cost;
