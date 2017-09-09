@@ -4471,7 +4471,19 @@ function getItemSimAssign($item=false,$provider=false) {
 		}
 
 		if(!empty($result['rows'][0]['itemassignedsim_id'])) {
-			return $result['rows'];
+			$retval = array();
+
+			foreach($result['rows'] as $k=>$v) {
+				if(isSimEnabled($v['itemassignedsim_simnumber'])&&isSimOnline($v['itemassignedsim_simnumber'])) {
+					$retval[] = $v;
+				}
+			}
+
+			//return $result['rows'];
+
+			if(!empty($retval)) {
+				return $retval;
+			}
 		}
 	}
 
