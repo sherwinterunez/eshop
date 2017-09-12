@@ -1256,6 +1256,33 @@ CREATE TABLE tbl_smartmoney (
 
 ALTER TABLE ONLY tbl_smartmoney ADD CONSTRAINT tbl_smartmoney_primary_key PRIMARY KEY (smartmoney_id);
 
+-- tbl_smartmoneynumber
+
+DROP SEQUENCE IF EXISTS tbl_smartmoneynumber_seq CASCADE;
+
+CREATE SEQUENCE tbl_smartmoneynumber_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_smartmoneynumber;
+
+CREATE TABLE tbl_smartmoneynumber (
+    smartmoneynumber_id bigint DEFAULT nextval(('tbl_smartmoneynumber_seq'::text)::regclass) NOT NULL,
+    smartmoneynumber_number text DEFAULT ''::text NOT NULL,
+    smartmoneynumber_type text DEFAULT ''::text NOT NULL,
+    smartmoneynumber_active integer DEFAULT 0 NOT NULL,
+    smartmoneynumber_deleted integer DEFAULT 0 NOT NULL,
+    smartmoneynumber_flag integer DEFAULT 0 NOT NULL,
+    smartmoneynumber_createstamp timestamp with time zone DEFAULT now(),
+    smartmoneynumber_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_smartmoneynumber ADD CONSTRAINT tbl_smartmoneynumber_primary_key PRIMARY KEY (smartmoneynumber_id);
+CREATE UNIQUE INDEX indx_smartmoneynumber_number ON tbl_smartmoneynumber USING btree (smartmoneynumber_number);
+
 ---------------------------------------------------------------------
 
 

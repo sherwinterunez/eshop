@@ -31,6 +31,11 @@ $sidebar[] = array(
 	'text'=>'Settings',
 	'icon'=>'recent.png',
 );
+$sidebar[] = array(
+	'id'=>'cards',
+	'text'=>'Cards',
+	'icon'=>'music.png',
+);
 
 /*
 $sidebar[] = array(

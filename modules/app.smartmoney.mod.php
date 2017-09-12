@@ -104,6 +104,26 @@ if(!class_exists('APP_app_smartmoney')) {
 
 		} // _form_smartmoneymainmoneytransfer
 
+		function _form_smartmoneymaincards($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				$params = array();
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_smartmoneymaincards
+
 		function _form_smartmoneymainsettings($routerid=false,$formid=false) {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
 
@@ -594,6 +614,197 @@ if(!class_exists('APP_app_smartmoney')) {
 
 		} // _form_smartmoneydetailservicefees
 
+		function _form_smartmoneydetailcards($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				$readonly = true;
+
+				$params = array();
+
+				$post = $this->vars['post'];
+
+				if(!empty($this->vars['post']['method'])&&($this->vars['post']['method']=='smartmoneynew'||$this->vars['post']['method']=='smartmoneyedit')) {
+					$readonly = false;
+				}
+
+				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='smartmoneyedit')) {
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+						if(!($result = $appdb->query("select * from tbl_smartmoneynumber where smartmoneynumber_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['rows'][0]['smartmoneynumber_id'])) {
+							$params['cardinfo'] = $result['rows'][0];
+						}
+					}
+				} else
+				if(!empty($post['method'])&&$post['method']=='smartmoneysave') {
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Card number successfully saved!';
+
+					$content = array();
+					$content['smartmoneynumber_number'] = !empty($post['smartmoneynumber_number']) ? $post['smartmoneynumber_number'] : '';
+					$content['smartmoneynumber_type'] = !empty($post['smartmoneynumber_type']) ? $post['smartmoneynumber_type'] : '';
+
+					//pre(array('$post'=>$post));
+
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+
+						$retval['rowid'] = $post['rowid'];
+
+						$content['smartmoneynumber_updatestamp'] = 'now()';
+
+						if(!($result = $appdb->update("tbl_smartmoneynumber",$content,"smartmoneynumber_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+					} else {
+
+						if(!($result = $appdb->insert("tbl_smartmoneynumber",$content,"smartmoneynumber_id"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['returning'][0]['smartmoneynumber_id'])) {
+							$retval['rowid'] = $result['returning'][0]['smartmoneynumber_id'];
+						}
+
+					}
+
+					json_encode_return($retval);
+					die;
+				} else
+				if(!empty($post['method'])&&$post['method']=='smartmoneydelete') {
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Card number successfully deleted!';
+
+					if(!empty($post['rowids'])) {
+
+						$rowids = explode(',', $post['rowids']);
+
+						$arowid = array();
+
+						for($i=0;$i<count($rowids);$i++) {
+							$rowid = intval(trim($rowids[$i]));
+							if(!empty($rowid)) {
+								$arowid[] = $rowid;
+							}
+						}
+
+						if(!empty($arowid)) {
+							$rowids = implode(',', $arowid);
+
+							if(!($result = $appdb->query("delete from tbl_smartmoneynumber where smartmoneynumber_id in (".$rowids.")"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							json_encode_return($retval);
+							die;
+						}
+
+					}
+
+					if(!empty($post['rowid'])) {
+						if(!($result = $appdb->query("delete from tbl_smartmoneynumber where smartmoneynumber_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+					}
+
+					json_encode_return($retval);
+					die;
+				}
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$newcolumnoffset = 50;
+
+				$position = 'right';
+
+/*
+		myTabbar.addTab("tbSimcards", "Sim Card");
+		myTabbar.addTab("tbDetails", "Details");
+		myTabbar.addTab("tbSmsfunctions", "SMS Function");
+		myTabbar.addTab("tbTransactions", "Transactions");
+*/
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'DESCRIPTION',
+					'labelWidth' => 200,
+					'name' => 'smartmoneynumber_number',
+					'inputWidth' => 500,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => !empty($params['cardinfo']['smartmoneynumber_number']) ? $params['cardinfo']['smartmoneynumber_number'] : '',
+				);
+
+				$opt = array();
+
+				//if(!$readonly) {
+				//	$opt[] = array('text'=>'','value'=>'','selected'=>false);
+				//}
+
+				//$transactiontype = array('SMART PADALA','TOP-UP','PAYMAYA','PICK-UP ANYWHERE');
+
+				$transactiontype = array('PADALA','TOPUP','PAYMAYA','PICKUP');
+
+				foreach($transactiontype as $v) {
+					$selected = false;
+					if(!empty($params['cardinfo']['smartmoneynumber_type'])&&$params['cardinfo']['smartmoneynumber_type']==$v) {
+						$selected = true;
+					}
+					if($readonly) {
+						if($selected) {
+							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+						}
+					} else {
+						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+					}
+				}
+
+				if($post['method']=='smartmoneynew'||$post['method']=='smartmoneyedit') {
+					$params['tbDetails'][] = array(
+						'type' => 'combo',
+						'label' => 'TRANSACTION TYPE',
+						'name' => 'smartmoneynumber_type',
+						'labelWidth' => 200,
+						'readonly' => true,
+						//'required' => !$readonly,
+						'options' => $opt,
+					);
+				} else {
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'TRANSACTION TYPE',
+						'name' => 'smartmoneynumber_type',
+						'labelWidth' => 200,
+						'readonly' => true,
+						//'required' => !$readonly,
+						'value' => !empty($params['cardinfo']['smartmoneynumber_type']) ? $params['cardinfo']['smartmoneynumber_type'] : '',
+					);
+				}
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_smartmoneydetailcards
+
 		function _form_smartmoneydetailmoneytransfer($routerid=false,$formid=false) {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
 
@@ -1073,6 +1284,21 @@ if(!class_exists('APP_app_smartmoney')) {
 						if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction_id))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
+						}
+
+						$content = array();
+						$content['smartmoneynumber_number'] = $loadtransaction_cardno;
+						$content['smartmoneynumber_type'] = $smartmoney_transactiontype;
+
+						if(!($result = $appdb->insert("tbl_smartmoneynumber",$content,"smartmoneynumber_id"))) {
+							//json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							//die;
+							if(preg_match('/duplicate\s+key/gi')) {
+								if(!($result = $appdb->update("tbl_smartmoneynumber",$content,"smartmoneynumber_number=".$loadtransaction_cardno))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
+							}
 						}
 
 						$asims = getAllSims(10);
@@ -2338,6 +2564,24 @@ if(!class_exists('APP_app_smartmoney')) {
 								$statusString = getLoadTransactionStatusString($v['loadtransaction_status']);
 
 								$rows[] = array('id'=>$v['loadtransaction_id'],'data'=>array(0,$v['loadtransaction_id'],pgDate($v['loadtransaction_createstamp']),$receiptno,$v['loadtransaction_sendername'],$v['loadtransaction_destcardno'],number_format($v['loadtransaction_amount'],2),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($v['loadtransaction_amountdue'],2),$statusString));
+							}
+
+							$retval = array('rows'=>$rows);
+						}
+
+					} else
+					if($this->post['table']=='cards') {
+						if(!($result = $appdb->query("select * from tbl_smartmoneynumber order by smartmoneynumber_id asc"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+						//pre(array('$result'=>$result));
+
+						if(!empty($result['rows'][0]['smartmoneynumber_id'])) {
+							$rows = array();
+
+							foreach($result['rows'] as $k=>$v) {
+								$rows[] = array('id'=>$v['smartmoneynumber_id'],'data'=>array(0,$v['smartmoneynumber_id'],$v['smartmoneynumber_number'],$v['smartmoneynumber_type']));
 							}
 
 							$retval = array('rows'=>$rows);

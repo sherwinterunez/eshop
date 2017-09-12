@@ -5882,6 +5882,22 @@ function getSmartMoneyServiceFee($desc=false,$amount=false) {
 					$v['sendcommissionpercentage'] = $smartmoneyservicefees['smartmoneyservicefees_sendcommissionpercentage'];
 					$v['receivecommissionpercentage'] = $smartmoneyservicefees['smartmoneyservicefees_receivecommissionpercentage'];
 					$v['transferfeepercentage'] = $smartmoneyservicefees['smartmoneyservicefees_transferfeepercentage'];
+
+					if(!empty($v['sendcommissionpercentage'])) {
+						$v['smartmoneyservicefeeslist_sendcommissionpercent'] = $v['smartmoneyservicefeeslist_sendcommission'];
+						$v['smartmoneyservicefeeslist_sendcommission'] = $amount * ($v['smartmoneyservicefeeslist_sendcommission'] / 100);
+					}
+
+					if(!empty($v['receivecommissionpercentage'])) {
+						$v['smartmoneyservicefeeslist_receivecommissionpercent'] = $v['smartmoneyservicefeeslist_receivecommission'];
+						$v['smartmoneyservicefeeslist_receivecommission'] = $amount * ($v['smartmoneyservicefeeslist_receivecommission'] / 100);
+					}
+
+					if(!empty($v['transferfeepercentage'])) {
+						$v['smartmoneyservicefeeslist_transferfeepercent'] = $v['smartmoneyservicefeeslist_transferfee'];
+						$v['smartmoneyservicefeeslist_transferfee'] = $amount * ($v['smartmoneyservicefeeslist_transferfee'] / 100);
+					}
+
 					return $v;
 				}
 			}

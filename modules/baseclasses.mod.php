@@ -482,16 +482,18 @@ if(!class_exists('APP_Base')) {
 				}
 				mysql_free_result($r);*/
 
-				$sql = "select * from tbl_contact where contact_number ilike '%$mask%'";
+				$sql = "select * from tbl_smartmoneynumber where smartmoneynumber_number ilike '%$mask%'";
+
+				//pre(array('$sql'=>$sql));
 
 				if(!($result = $appdb->query($sql))) {
 					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 					die;
 				}
 
-				if(!empty($result['rows'][0]['contact_id'])) {
+				if(!empty($result['rows'][0]['smartmoneynumber_id'])) {
 					foreach($result['rows'] as $k=>$v) {
-						$xml .= '<option value="'.$v['contact_number'].'"><![CDATA['.$v['contact_number'].' | '.$v['contact_nick'].']]></option>';
+						$xml .= '<option value="'.$v['smartmoneynumber_number'].'|'.$v['smartmoneynumber_type'].'"><![CDATA['.$v['smartmoneynumber_number'].']]></option>';
 					}
 				}
 

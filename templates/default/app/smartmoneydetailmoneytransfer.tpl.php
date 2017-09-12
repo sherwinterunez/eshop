@@ -309,6 +309,20 @@ pre(array('$vars'=>$vars));
 			myForm.setItemValue('loadtransaction_cashreceived',0.00);
 			myForm.setItemValue('loadtransaction_changed',0.00);
 
+			if(value) {
+				var vv = value;
+
+				var va = vv.split('|');
+
+				console.log(va);
+
+				if(va[1]) {
+					console.log('va[1]',va[1]);
+					myForm.setItemValue('smartmoney_transactiontype',va[1]);
+					myForm.setItemValue('loadtransaction_cardno',va[0]);
+				}
+			}
+
 			//myForm.setItemValue('smartmoney_type','TOP-UP');
 
 			//if(ValidMobileNo(value)) {
@@ -767,9 +781,24 @@ pre(array('$vars'=>$vars));
 
 						var amountdue = 0.00;
 
+						if(ddata.fees.smartmoneyservicefeeslist_sendcommissionpercent) {
+							myForm.setItemValue('smartmoney_sendagentcommissionpercent',ddata.fees.smartmoneyservicefeeslist_sendcommissionpercent);
+						}
+
 						myForm.setItemValue('smartmoney_sendagentcommissionamount',ddata.fees.smartmoneyservicefeeslist_sendcommission);
+
+						if(ddata.fees.smartmoneyservicefeeslist_transferfeepercent) {
+							myForm.setItemValue('smartmoney_transferfeepercent',ddata.fees.smartmoneyservicefeeslist_transferfeepercent);
+						}
+
 						myForm.setItemValue('smartmoney_transferfeeamount',ddata.fees.smartmoneyservicefeeslist_transferfee);
+
+						if(ddata.fees.smartmoneyservicefeeslist_receivecommissionpercent) {
+							myForm.setItemValue('smartmoney_receiveagentcommissionpercent',ddata.fees.smartmoneyservicefeeslist_receivecommissionpercent);
+						}
+						
 						myForm.setItemValue('smartmoney_receiveagentcommissionamount',ddata.fees.smartmoneyservicefeeslist_receivecommission);
+
 						myForm.setItemValue('smartmoney_otherchargesamount',0.00);
 
 						if(odata.amount) {
