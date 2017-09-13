@@ -140,6 +140,16 @@ if(!class_exists('APP_app_smartmoney')) {
 				$smartmoneysettings_paymayaservicefees = getOption('$SMARTMONEYSETTINGS_PAYMAYASERVICEFEES',false);
 				$smartmoneysettings_pickupanywhereservicefees = getOption('$SMARTMONEYSETTINGS_PICKUPANYWHERESERVICEFEES',false);
 
+				$smartmoneysettings_smartpadaladigits = getOption('$SMARTMONEYSETTINGS_SMARTPADALADIGITS',false);
+				$smartmoneysettings_topupdigits = getOption('$SMARTMONEYSETTINGS_TOPUPDIGITS',false);
+				$smartmoneysettings_paymayadigits = getOption('$SMARTMONEYSETTINGS_PAYMAYADIGITS',false);
+				$smartmoneysettings_pickupanywheredigits = getOption('$SMARTMONEYSETTINGS_PICKUPANYWHEREDIGITS',false);
+
+				$smartmoneysettings_smartpadalaprefix = getOption('$SMARTMONEYSETTINGS_SMARTPADALAPREFIX',false);
+				$smartmoneysettings_topupprefix = getOption('$SMARTMONEYSETTINGS_TOPUPPREFIX',false);
+				$smartmoneysettings_paymayaprefix = getOption('$SMARTMONEYSETTINGS_PAYMAYAPREFIX',false);
+				$smartmoneysettings_pickupanywhereprefix = getOption('$SMARTMONEYSETTINGS_PICKUPANYWHEREPREFIX',false);
+
 				if(!empty($post['method'])&&$post['method']=='smartmoneyedit') {
 					$readonly = false;
 				} else
@@ -152,6 +162,16 @@ if(!class_exists('APP_app_smartmoney')) {
 					setSetting('$SMARTMONEYSETTINGS_TOPUPSERVICEFEES',!empty($post['smartmoneysettings_topupservicefees'])?$post['smartmoneysettings_topupservicefees']:false);
 					setSetting('$SMARTMONEYSETTINGS_PAYMAYASERVICEFEES',!empty($post['smartmoneysettings_paymayaservicefees'])?$post['smartmoneysettings_paymayaservicefees']:false);
 					setSetting('$SMARTMONEYSETTINGS_PICKUPANYWHERESERVICEFEES',!empty($post['smartmoneysettings_pickupanywhereservicefees'])?$post['smartmoneysettings_pickupanywhereservicefees']:false);
+
+					setSetting('$SMARTMONEYSETTINGS_SMARTPADALADIGITS',!empty($post['smartmoneysettings_smartpadaladigits'])?$post['smartmoneysettings_smartpadaladigits']:false);
+					setSetting('$SMARTMONEYSETTINGS_TOPUPDIGITS',!empty($post['smartmoneysettings_topupdigits'])?$post['smartmoneysettings_topupdigits']:false);
+					setSetting('$SMARTMONEYSETTINGS_PAYMAYADIGITS',!empty($post['smartmoneysettings_paymayadigits'])?$post['smartmoneysettings_paymayadigits']:false);
+					setSetting('$SMARTMONEYSETTINGS_PICKUPANYWHEREDIGITS',!empty($post['smartmoneysettings_pickupanywheredigits'])?$post['smartmoneysettings_pickupanywheredigits']:false);
+
+					setSetting('$SMARTMONEYSETTINGS_SMARTPADALAPREFIX',!empty($post['smartmoneysettings_smartpadalaprefix'])?$post['smartmoneysettings_smartpadalaprefix']:false);
+					setSetting('$SMARTMONEYSETTINGS_TOPUPPREFIX',!empty($post['smartmoneysettings_topupprefix'])?$post['smartmoneysettings_topupprefix']:false);
+					setSetting('$SMARTMONEYSETTINGS_PAYMAYAPREFIX',!empty($post['smartmoneysettings_paymayaprefix'])?$post['smartmoneysettings_paymayaprefix']:false);
+					setSetting('$SMARTMONEYSETTINGS_PICKUPANYWHEREPREFIX',!empty($post['smartmoneysettings_pickupanywhereprefix'])?$post['smartmoneysettings_pickupanywhereprefix']:false);
 
 					json_encode_return($retval);
 					die;
@@ -166,15 +186,81 @@ if(!class_exists('APP_app_smartmoney')) {
 				$params['tbDetails'] = array();
 
 				if($readonly) {
-					$params['tbDetails'][] = array(
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'SMART PADALA',
+						'labelWidth' => 110,
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
+
+					$block[] = array(
 						'type' => 'input',
-						'label' => 'SMART PADALA SERVICE FEES',
-						'labelWidth' => 300,
+						'label' => 'SERVICE FEES',
+						'labelWidth' => 100,
 						'name' => 'smartmoneysettings_smartpadalaservicefees',
 						'readonly' => true,
 						'value' => !empty($smartmoneysettings_smartpadalaservicefees) ? $smartmoneysettings_smartpadalaservicefees : '',
 					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'DIGITS',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_smartpadaladigits',
+						'readonly' => true,
+						'value' => !empty($smartmoneysettings_smartpadaladigits) ? $smartmoneysettings_smartpadaladigits : '',
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'PREFIX',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_smartpadalaprefix',
+						'readonly' => true,
+						'value' => !empty($smartmoneysettings_smartpadalaprefix) ? $smartmoneysettings_smartpadalaprefix : '',
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+					);
+
 				} else {
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'SMART PADALA',
+						'labelWidth' => 110,
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
 					$opt = array();
 
@@ -198,10 +284,10 @@ if(!class_exists('APP_app_smartmoney')) {
 						}
 					}
 
-					$params['tbDetails'][] = array(
+					$block[] = array(
 						'type' => 'combo',
-						'label' => 'SMART PADALA SERVICE FEES',
-						'labelWidth' => 300,
+						'label' => 'SERVICE FEES',
+						'labelWidth' => 100,
 						//'inputWidth' => 200,
 						//'comboType' => 'checkbox',
 						'name' => 'smartmoneysettings_smartpadalaservicefees',
@@ -209,18 +295,125 @@ if(!class_exists('APP_app_smartmoney')) {
 						//'required' => !$readonly,
 						'options' => $opt,
 					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'DIGITS',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_smartpadaladigits',
+						'readonly' => false,
+						'numeric' => true,
+						'value' => !empty($smartmoneysettings_smartpadaladigits) ? $smartmoneysettings_smartpadaladigits : '',
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'PREFIX',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_smartpadalaprefix',
+						'readonly' => false,
+						'numeric' => true,
+						'value' => !empty($smartmoneysettings_smartpadalaprefix) ? $smartmoneysettings_smartpadalaprefix : '',
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+					);
+
 				}
 
 				if($readonly) {
-					$params['tbDetails'][] = array(
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'TOP-UP',
+						'labelWidth' => 110,
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
+
+					$block[] = array(
 						'type' => 'input',
-						'label' => 'TOP-UP SERVICE FEES',
-						'labelWidth' => 300,
+						'label' => 'SERVICE FEES',
+						'labelWidth' => 100,
 						'name' => 'smartmoneysettings_topupservicefees',
 						'readonly' => true,
 						'value' => !empty($smartmoneysettings_topupservicefees) ? $smartmoneysettings_topupservicefees : '',
 					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'DIGITS',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_topupdigits',
+						'readonly' => true,
+						'value' => !empty($smartmoneysettings_topupdigits) ? $smartmoneysettings_topupdigits : '',
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'PREFIX',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_topupprefix',
+						'readonly' => true,
+						'value' => !empty($smartmoneysettings_topupprefix) ? $smartmoneysettings_topupprefix : '',
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+					);
+
 				} else {
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'TOP-UP',
+						'labelWidth' => 110,
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
 					$opt = array();
 
@@ -244,10 +437,10 @@ if(!class_exists('APP_app_smartmoney')) {
 						}
 					}
 
-					$params['tbDetails'][] = array(
+					$block[] = array(
 						'type' => 'combo',
-						'label' => 'TOP-UP SERVICE FEES',
-						'labelWidth' => 300,
+						'label' => 'SERVICE FEES',
+						'labelWidth' => 100,
 						//'inputWidth' => 200,
 						//'comboType' => 'checkbox',
 						'name' => 'smartmoneysettings_topupservicefees',
@@ -255,18 +448,124 @@ if(!class_exists('APP_app_smartmoney')) {
 						//'required' => !$readonly,
 						'options' => $opt,
 					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'DIGITS',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_topupdigits',
+						'readonly' => false,
+						'numeric' => true,
+						'value' => !empty($smartmoneysettings_topupdigits) ? $smartmoneysettings_topupdigits : '',
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'PREFIX',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_topupprefix',
+						'readonly' => false,
+						'numeric' => true,
+						'value' => !empty($smartmoneysettings_topupprefix) ? $smartmoneysettings_topupprefix : '',
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+					);
 				}
 
 				if($readonly) {
-					$params['tbDetails'][] = array(
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'PAYMAYA',
+						'labelWidth' => 110,
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
+
+					$block[] = array(
 						'type' => 'input',
-						'label' => 'PAYMAYA SERVICE FEES',
-						'labelWidth' => 300,
+						'label' => 'SERVICE FEES',
+						'labelWidth' => 100,
 						'name' => 'smartmoneysettings_paymayaservicefees',
 						'readonly' => true,
 						'value' => !empty($smartmoneysettings_paymayaservicefees) ? $smartmoneysettings_paymayaservicefees : '',
 					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'DIGITS',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_paymayadigits',
+						'readonly' => true,
+						'value' => !empty($smartmoneysettings_paymayadigits) ? $smartmoneysettings_paymayadigits : '',
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'PREFIX',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_paymayaprefix',
+						'readonly' => true,
+						'value' => !empty($smartmoneysettings_paymayaprefix) ? $smartmoneysettings_paymayaprefix : '',
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+					);
+
 				} else {
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'PAYMAYA',
+						'labelWidth' => 110,
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
 					$opt = array();
 
@@ -290,10 +589,10 @@ if(!class_exists('APP_app_smartmoney')) {
 						}
 					}
 
-					$params['tbDetails'][] = array(
+					$block[] = array(
 						'type' => 'combo',
-						'label' => 'PAYMAYA SERVICE FEES',
-						'labelWidth' => 300,
+						'label' => 'SERVICE FEES',
+						'labelWidth' => 100,
 						//'inputWidth' => 200,
 						//'comboType' => 'checkbox',
 						'name' => 'smartmoneysettings_paymayaservicefees',
@@ -301,18 +600,124 @@ if(!class_exists('APP_app_smartmoney')) {
 						//'required' => !$readonly,
 						'options' => $opt,
 					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'DIGITS',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_paymayadigits',
+						'readonly' => false,
+						'numeric' => true,
+						'value' => !empty($smartmoneysettings_paymayadigits) ? $smartmoneysettings_paymayadigits : '',
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'PREFIX',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_paymayaprefix',
+						'readonly' => false,
+						'numeric' => true,
+						'value' => !empty($smartmoneysettings_paymayaprefix) ? $smartmoneysettings_paymayaprefix : '',
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+					);
 				}
 
 				if($readonly) {
-					$params['tbDetails'][] = array(
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'PICK-UP',
+						'labelWidth' => 110,
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
+
+					$block[] = array(
 						'type' => 'input',
-						'label' => 'PICK-UP ANYWHERE SERVICE FEES',
-						'labelWidth' => 300,
+						'label' => 'SERVICE FEES',
+						'labelWidth' => 100,
 						'name' => 'smartmoneysettings_pickupanywhereservicefees',
 						'readonly' => true,
 						'value' => !empty($smartmoneysettings_pickupanywhereservicefees) ? $smartmoneysettings_pickupanywhereservicefees : '',
 					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'DIGITS',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_pickupanywheredigits',
+						'readonly' => true,
+						'value' => !empty($smartmoneysettings_pickupanywheredigits) ? $smartmoneysettings_pickupanywheredigits : '',
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'PREFIX',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_pickupanywhereprefix',
+						'readonly' => true,
+						'value' => !empty($smartmoneysettings_pickupanywhereprefix) ? $smartmoneysettings_pickupanywhereprefix : '',
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+					);
+
 				} else {
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'PICK-UP',
+						'labelWidth' => 110,
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
 					$opt = array();
 
@@ -336,10 +741,10 @@ if(!class_exists('APP_app_smartmoney')) {
 						}
 					}
 
-					$params['tbDetails'][] = array(
+					$block[] = array(
 						'type' => 'combo',
-						'label' => 'PICK-UP ANYWHERE SERVICE FEES',
-						'labelWidth' => 300,
+						'label' => 'SERVICE FEES',
+						'labelWidth' => 100,
 						//'inputWidth' => 200,
 						//'comboType' => 'checkbox',
 						'name' => 'smartmoneysettings_pickupanywhereservicefees',
@@ -347,6 +752,47 @@ if(!class_exists('APP_app_smartmoney')) {
 						//'required' => !$readonly,
 						'options' => $opt,
 					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'DIGITS',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_pickupanywheredigits',
+						'readonly' => false,
+						'numeric' => true,
+						'value' => !empty($smartmoneysettings_pickupanywheredigits) ? $smartmoneysettings_pickupanywheredigits : '',
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'PREFIX',
+						'labelWidth' => 55,
+						'inputWidth' => 60,
+						'name' => 'smartmoneysettings_pickupanywhereprefix',
+						'readonly' => false,
+						'numeric' => true,
+						'value' => !empty($smartmoneysettings_pickupanywhereprefix) ? $smartmoneysettings_pickupanywhereprefix : '',
+					);
+
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+					);
+
 				}
 
 				$templatefile = $this->templatefile($routerid,$formid);
@@ -1155,9 +1601,44 @@ if(!class_exists('APP_app_smartmoney')) {
 					$loadtransaction_cashreceived = !empty($post['loadtransaction_cashreceived'])&&is_numeric($post['loadtransaction_cashreceived']) ? $post['loadtransaction_cashreceived'] : false;
 					$loadtransaction_assignedsim = !empty($post['loadtransaction_assignedsim']) ? $post['loadtransaction_assignedsim'] : false;
 
+					$smartmoney_transactiontype = !empty($post['smartmoney_transactiontype']) ? $post['smartmoney_transactiontype'] : '';
+
+					if(!empty($smartmoney_transactiontype)) {
+					} else {
+						$retval = array();
+						$retval['error_code'] = '345349';
+						$retval['error_message'] = 'Invalid Transaction Type!';
+						json_encode_return($retval);
+						die;
+					}
+
+					$digit = array();
+
+					$digit['PADALA'] = getOption('$SMARTMONEYSETTINGS_SMARTPADALADIGITS',false);
+					$digit['TOPUP'] = getOption('$SMARTMONEYSETTINGS_TOPUPDIGITS',false);
+					$digit['PAYMAYA'] = getOption('$SMARTMONEYSETTINGS_PAYMAYADIGITS',false);
+					$digit['PICKUP'] = getOption('$SMARTMONEYSETTINGS_PICKUPANYWHEREDIGITS',false);
+
+					$prefix = array();
+
+					$prefix['PADALA'] = getOption('$SMARTMONEYSETTINGS_SMARTPADALAPREFIX',false);
+					$prefix['TOPUP'] = getOption('$SMARTMONEYSETTINGS_TOPUPPREFIX',false);
+					$prefix['PAYMAYA'] = getOption('$SMARTMONEYSETTINGS_PAYMAYAPREFIX',false);
+					$prefix['PICKUP'] = getOption('$SMARTMONEYSETTINGS_PICKUPANYWHEREPREFIX',false);
+
+					if(!empty($digit[$smartmoney_transactiontype])&&is_numeric($digit[$smartmoney_transactiontype])&&isValidCardNo($loadtransaction_cardno,$digit[$smartmoney_transactiontype])) {
+					} else
 					if(isSmartMoneyCardNo($loadtransaction_cardno)) {
 					} else {
 						if(isSmartMobileNo($loadtransaction_cardno)) {
+						} else {
+							json_encode_return($retval);
+							die;
+						}
+					}
+
+					if(!empty($prefix[$smartmoney_transactiontype])&&is_numeric($prefix[$smartmoney_transactiontype])) {
+						if(isValidCardNoPrefix($loadtransaction_cardno,$prefix[$smartmoney_transactiontype])) {
 						} else {
 							json_encode_return($retval);
 							die;
@@ -1191,7 +1672,6 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$smartmoney_sendernumber = !empty($post['smartmoney_sendernumber']) ? $post['smartmoney_sendernumber'] : '';
 					$smartmoney_receivernumber = !empty($post['smartmoney_receivernumber']) ? $post['smartmoney_receivernumber'] : '';
-					$smartmoney_transactiontype = !empty($post['smartmoney_transactiontype']) ? $post['smartmoney_transactiontype'] : '';
 
 					$retval = array();
 					$retval['return_code'] = 'SUCCESS';

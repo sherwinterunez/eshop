@@ -5739,6 +5739,34 @@ function isSmartMoneyCardNo($number=false) {
 	return false;
 }
 
+function isValidCardNo($number=false, $digit=16) {
+	if(!empty($number)&&is_numeric($number)) {
+	} else {
+		return false;
+	}
+
+	if(strlen($number)==$digit) {
+		return true;
+	}
+
+	return false;
+}
+
+function isValidCardNoPrefix($number=false, $prefix=false) {
+	if(!empty($number)&&is_numeric($number)&&!empty($prefix)&&is_numeric($prefix)) {
+	} else {
+		return false;
+	}
+
+	$len = strlen($prefix);
+
+	if(substr($number,0,$len)==$prefix) {
+		return true;
+	}
+
+	return false;
+}
+
 function isSmartMobileNo($number=false) {
 	if(!empty($number)&&is_numeric($number)) {
 	} else {
