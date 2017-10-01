@@ -22,7 +22,7 @@ $sidebar[] = array(
 	'icon'=>'documents.png',
 );
 $sidebar[] = array(
-	'id'=>'moneyencashment',
+	'id'=>'encashment',
 	'text'=>'Encashment',
 	'icon'=>'documents.png',
 );

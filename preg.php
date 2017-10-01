@@ -352,9 +352,13 @@ foreach($str as $k=>$v) {
 //$regx = '.+?Remittance .+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission.+?P(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?received.+?\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12}).+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
 //$regx = '.+?Remittance .+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
 
+//$regx = '.+?Remittance .+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission.+?P(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?received.+?\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12})';
+
+$regx = '.+?Received.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?with.+?P(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission\s+from\s+\d+(?<MOBILENO>\d{10})\s+to\s+(?<LABEL>.+?)\..+?Ref\:(?<REF>.{12}).+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
+
 //$regx = '.+?We\s+have\s+sent.+?Thank\s+you.+?Ref\:(?<REF>.{12})';
 
-$regx = '\d+(?<SIMCARD>\d{10})\s+has\s+loaded\s+(?<PRODUCT>.+?)\(.+?(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+)\)\s+to\s+\d+(?<MOBILENO>\d{10}).+?Wallet\s+Balance.+?P(?<BALANCE>\d+\.\d+|\d+).+?Ref.+?(?<REFERENCE>\d+)';
+//$regx = '\d+(?<SIMCARD>\d{10})\s+has\s+loaded\s+(?<PRODUCT>.+?)\(.+?(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+)\)\s+to\s+\d+(?<MOBILENO>\d{10}).+?Wallet\s+Balance.+?P(?<BALANCE>\d+\.\d+|\d+).+?Ref.+?(?<REFERENCE>\d+)';
 
 $str = array();
 //$str[] = '17Aug 2143:Sent PHP500.00 from LOADING to 557751******8104 at 639092701100.Ref:f620ccf870f6.Sa next msg,i-type ang customer &receiver cellphone# &send to 8890.';
@@ -375,9 +379,13 @@ $str[] = "CONFIRM Ref:a1e65ae6793a\nCustomer Cellphone#:\nReceiver Cellphone#:";
 $str[] = '1/2 26Aug 1558:Remittance of PHP600.00 & commission of PHP11.50 was received from 639477409000.LIBRE ang pag-claim ng iyong customer.Ref:a1e65ae6793a';
 $str[] = '2/2 Bal:PHP1,123.00';
 
+$str[] = '17Aug 2143:Remittance of PHP500.00 & commission of PHP11.50 was received from 639477409000.LIBRE ang pag-claim ng iyong customer.Ref:f620ccf870f6 Bal:PHP511.50';
+
 $str[] = '26Aug 2347: We have sent a text message to your customer on the Smart Padala transaction details. Thank you! Ref:a464a0761a12';
 
 $str[] = '5-Sep 16:31:639471617115 has loaded 50 Load (P47.78) to 09460036139. New Load Wallet Balance:P3521.64. Ref:800058079190';
+
+$str[] = '01Oct 1004: Received P500.00 with P11.50 commission from 09282573535 to LOADING.LIBRE ang pag-claim! Ref:3152f53eeab6 Bal:P9,459.00';
 
 foreach($str as $k=>$v) {
 	if(preg_match('/'.$regx.'/si',$v,$matches)) {

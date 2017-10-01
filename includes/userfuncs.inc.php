@@ -4641,6 +4641,13 @@ function getLoadTransactionMobileNumber($id=false) {
 }
 
 function getLoadTransactionStatusString($status=0) {
+	global $_CONSTANTS;
+
+	if(!empty($status)&&!empty($_CONSTANTS['STATUS'][$status])) {
+		return $_CONSTANTS['STATUS'][$status];
+	}
+
+	/*
 	if(!empty($status)) {
 		if($status==TRN_APPROVED) {
 			return TRNS_APPROVED;
@@ -4686,8 +4693,12 @@ function getLoadTransactionStatusString($status=0) {
 		} else
 		if($status==TRN_POSTED) {
 			return TRNS_POSTED;
+		} else
+		if($status==TRN_RECEIVED) {
+			return TRNS_RECEIVED;
 		}
 	}
+	*/
 
 	return 'UNKNOWN';
 }

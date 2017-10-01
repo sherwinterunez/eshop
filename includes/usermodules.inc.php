@@ -6159,6 +6159,88 @@ function _SmartMoneyPadalaReceivedExpression($vars=array()) {
 
 		print_r(array('$match'=>$match));
 
+		$confirmationFrom = $vars['smsinbox']['smsinbox_contactnumber'];
+
+		$confirmation = $vars['smsinbox']['smsinbox_message'];
+
+		$smsinbox_contactnumber = $vars['smsinbox']['smsinbox_contactnumber'];
+
+		$smsinbox_simnumber = $vars['smsinbox']['smsinbox_simnumber'];
+
+		print_r(array('$match'=>$match));
+
+		$content = array();
+
+		//if(!empty($match['DATETIME'])) {
+		//	$content['loadtransaction_datetime'] = $match['DATETIME'];
+		//}
+
+		if(!empty($match['AMOUNT'])) {
+			$content['loadtransaction_amount'] = $loadtransaction_amount = str_replace(',','',$match['AMOUNT']);
+		}
+
+		if(!empty($match['MOBILENO'])) {
+			$content['loadtransaction_fromnumber'] = '0'.$match['MOBILENO'];
+		}
+
+		if(!empty($match['COMMISSION'])) {
+			$content['loadtransaction_receiveagentcommissionamount'] = str_replace(',','',$match['COMMISSION']);
+		}
+
+		if(!empty($match['LABEL'])) {
+			$content['loadtransaction_cardlabel'] = $match['LABEL'];
+		}
+
+		//if(!empty($match['CARDNO'])) {
+		//	$content['loadtransaction_cardno'] = $match['CARDNO'];
+		//}
+
+		//if(!empty($match['DESTINATION'])) {
+		//	$content['loadtransaction_destination'] = $match['DESTINATION'];
+		//}
+
+		if(!empty($match['BALANCE'])) {
+			$content['loadtransaction_simcardbalance'] = str_replace(',','',$match['BALANCE']);
+		}
+
+		if(!empty($match['REF'])) {
+			$content['loadtransaction_refnumber'] = $match['REF'];
+		}
+
+		if(!empty($content['loadtransaction_amount'])&&!empty($content['loadtransaction_refnumber'])) {
+
+			$content['loadtransaction_ymd'] = date('Ymd');
+			$content['loadtransaction_confirmationfrom'] = $confirmationFrom;
+			$content['loadtransaction_confirmation'] = $confirmation;
+			//$content['loadtransaction_customerid'] = $loadtransaction_customerid;
+			//$content['loadtransaction_customernumber'] = $loadtransaction_customernumber;
+			//$content['loadtransaction_customername'] = getCustomerNickByNumber($loadtransaction_customernumber);
+			$content['loadtransaction_simhotline'] = $smsinbox_simnumber;
+			$content['loadtransaction_assignedsim'] = $smsinbox_simnumber;
+			//$content['loadtransaction_keyword'] = $loadtransaction_keyword;
+			//$content['loadtransaction_recipientnumber'] = $loadtransaction_recipientnumber;
+			//$content['loadtransaction_item'] = $loadtransaction_item;
+			//$content['loadtransaction_load'] = $itemData['item_quantity'];
+			//$content['loadtransaction_cost'] = $itemData['item_cost'];
+			//$content['loadtransaction_provider'] = $loadtransaction_provider;
+			//$content['loadtransaction_assignedsim'] = $simcard['simcard_number'];
+			//$content['loadtransaction_simcommand'] = $func['simcardfunctions_modemcommandsname'];
+			//$content['loadtransaction_type'] = 'balance';
+			$content['loadtransaction_status'] = TRN_RECEIVED;
+
+			$content['loadtransaction_type'] = 'smartmoney';
+			$content['loadtransaction_smartmoneytype'] = 'RECEIVED';
+
+			pre(array('$content'=>$content));
+
+			if(!($result = $appdb->insert("tbl_loadtransaction",$content,"loadtransaction_id"))) {
+
+				pre(array('$appdb'=>$appdb));
+
+				return false;
+			}
+
+		}
 	}
 
 } // function _SmartMoneyPadalaReceivedExpression($vars=array()) {
