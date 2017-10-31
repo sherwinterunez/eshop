@@ -4593,7 +4593,7 @@ function _childReload($vars=array()) {
 
 // You have received %VAMOUNT% credits. Your current VFUND is P%balance% as of %DATETIME%. Thank you.
 
-				$errmsg = smsdt()." ".getNotification('CHILD RELOAD CHILD NOTIFICATION');
+				$errmsg = smsdt()." ".getNotification('CHILD NOTIFICATION');
 				$errmsg = str_replace('%balance%', number_format($childBalance,2), $errmsg);
 				$errmsg = str_replace('%VBALANCE%', number_format($childBalance,2), $errmsg);
 				$errmsg = str_replace('%DATETIME%', $ledger_datetime, $errmsg);
