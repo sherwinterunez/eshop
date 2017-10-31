@@ -4577,7 +4577,7 @@ function _childReload($vars=array()) {
 				$content['ledger_credit'] = $fund_amountdue;
 				$content['ledger_type'] = 'CHILDRELOAD '.$fund_amountdue;
 				$content['ledger_datetimeunix'] = $fund_datetimeunix;
-				$content['ledger_datetime'] = pgDateUnix($fund_datetimeunix);
+				$content['ledger_datetime'] = $ledger_datetime = pgDateUnix($fund_datetimeunix);
 				$content['ledger_user'] = $fund_recepientid;
 				$content['ledger_seq'] = '0';
 				$content['ledger_receiptno'] = $receiptno;
@@ -4591,8 +4591,13 @@ function _childReload($vars=array()) {
 
 				$childBalance = getCustomerBalance($fund_recepientid);
 
+// You have received %VAMOUNT% credits. Your current VFUND is P%balance% as of %DATETIME%. Thank you.
+
 				$errmsg = smsdt()." ".getNotification('CHILD RELOAD CHILD NOTIFICATION');
 				$errmsg = str_replace('%balance%', number_format($childBalance,2), $errmsg);
+				$errmsg = str_replace('%VBALANCE%', number_format($childBalance,2), $errmsg);
+				$errmsg = str_replace('%DATETIME%', $ledger_datetime, $errmsg);
+				$errmsg = str_replace('%VAMOUNT%', number_format($fund_amountdue,2), $errmsg);
 
 				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
 				sendToGateway($childNumber,$smsinbox_simnumber,$errmsg);
@@ -4611,8 +4616,19 @@ function _childReload($vars=array()) {
 
 				$parentBalance = getCustomerBalance($fund_userid);
 
+// You have reloaded your Child %VCUSTNUMBER% with %VAMOUNT% credits. Your remaining VFUND as of %DATETIME% is P%balance%.
+
 				$errmsg = smsdt()." ".getNotification('CHILD RELOAD PARENT NOTIFICATION');
 				$errmsg = str_replace('%balance%', number_format($parentBalance,2), $errmsg);
+				$errmsg = str_replace('%VBALANCE%', number_format($parentBalance,2), $errmsg);
+				$errmsg = str_replace('%VCUSTNUMBER%', $childNumber, $errmsg);
+				$errmsg = str_replace('%DATETIME%', $ledger_datetime, $errmsg);
+				$errmsg = str_replace('%VAMOUNT%', number_format($fund_amountdue,2), $errmsg);
+
+				// $childNumber
+
+				//$errmsg = str_replace('%VBALANCE%', number_format($childBalance,2), $errmsg);
+				//$errmsg = str_replace('%FRRECEIPTNO%', $receiptno, $errmsg);
 
 				//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
 				sendToGateway($smsinbox_contactnumber,$smsinbox_simnumber,$errmsg);

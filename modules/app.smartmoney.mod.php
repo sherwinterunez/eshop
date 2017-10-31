@@ -1282,100 +1282,333 @@ if(!class_exists('APP_app_smartmoney')) {
 
 				$post = $this->vars['post'];
 
-				if(!empty($this->vars['post']['method'])&&($this->vars['post']['method']=='smartmoneynew'||$this->vars['post']['method']=='smartmoneyedit')) {
-					$readonly = false;
-				}
+				$userId = $applogin->getUserID();
+		    $userData = $applogin->getUserData();
 
-				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='smartmoneyedit')) {
-					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
-						if(!($result = $appdb->query("select * from tbl_smartmoneynumber where smartmoneynumber_id=".$post['rowid']))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
+		    if(!empty($userData['user_staffid'])) {
+		      $user_staffid = $userData['user_staffid'];
+		      $customer_type = getCustomerType($userData['user_staffid']);
+		    }
 
-						if(!empty($result['rows'][0]['smartmoneynumber_id'])) {
-							$params['cardinfo'] = $result['rows'][0];
-						}
-					}
-				} else
-				if(!empty($post['method'])&&$post['method']=='smartmoneysave') {
+		    if(!empty($this->vars['post']['method'])&&($this->vars['post']['method']=='smartmoneynew'||$this->vars['post']['method']=='smartmoneyedit')) {
+		      $readonly = false;
+		    }
+
+				if(!empty($post['method'])&&$post['method']=='getencashmentinfo') {
+
+					$refnumber = !empty($post['refnumber']) ? trim($post['refnumber']) : false;
 
 					$retval = array();
-					$retval['return_code'] = 'SUCCESS';
-					$retval['return_message'] = 'Card number successfully saved!';
+		      $retval['error_code'] = '345385';
+		      $retval['error_message'] = 'Invalid Reference Number!';
 
-					$content = array();
-					$content['smartmoneynumber_number'] = !empty($post['smartmoneynumber_number']) ? $post['smartmoneynumber_number'] : '';
-					$content['smartmoneynumber_type'] = !empty($post['smartmoneynumber_type']) ? $post['smartmoneynumber_type'] : '';
+					if(!empty($refnumber)) {
+		      } else {
+		        json_encode_return($retval);
+		        die;
+		      }
 
-					//pre(array('$post'=>$post));
+					$sql = "select * from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_status=".TRN_RECEIVED." and loadtransaction_refnumber='$refnumber' limit 1";
 
-					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+					if(!($result = $appdb->query($sql))) {
+		        json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+		        die;
+		      }
 
-						$retval['rowid'] = $post['rowid'];
-
-						$content['smartmoneynumber_updatestamp'] = 'now()';
-
-						if(!($result = $appdb->update("tbl_smartmoneynumber",$content,"smartmoneynumber_id=".$post['rowid']))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-
-					} else {
-
-						if(!($result = $appdb->insert("tbl_smartmoneynumber",$content,"smartmoneynumber_id"))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-
-						if(!empty($result['returning'][0]['smartmoneynumber_id'])) {
-							$retval['rowid'] = $result['returning'][0]['smartmoneynumber_id'];
-						}
-
+					if(!empty($result['rows'][0]['loadtransaction_id'])) {
+						$retval = array();
+						$retval['post'] = $post;
+						$retval['data'] = $result['rows'][0];
+						$retval['data']['loadtransaction_statusstr'] = getLoadTransactionStatusString($retval['data']['loadtransaction_status']);
 					}
 
 					json_encode_return($retval);
-					die;
+		      die;
+
 				} else
-				if(!empty($post['method'])&&$post['method']=='smartmoneydelete') {
+		    if(!empty($post['method'])&&$post['method']=='getsenderdata') {
+
+		      $senderid = !empty($post['senderid']) ? $post['senderid'] : false;
+
+		      $retval = array();
+		      $retval['error_code'] = '345325';
+		      $retval['error_message'] = 'Invalid Sender ID!';
+
+		      if(!empty($senderid)) {
+		      } else {
+		        json_encode_return($retval);
+		        die;
+		      }
+
+		      $sql = "select * from tbl_remitcust where remitcust_id=$senderid";
+
+		      if(!($result = $appdb->query($sql))) {
+		        json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+		        die;
+		      }
+
+		      if(!empty($result['rows'][0]['remitcust_id'])) {
+		        $remitcust = $result['rows'][0];
+
+		        $sql = "select * from tbl_remitcustnumber where remitcustnumber_remitcustid=$senderid order by remitcustnumber_id asc limit 1";
+
+		        if(!($result = $appdb->query($sql))) {
+		          json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+		          die;
+		        }
+
+		        if(!empty($result['rows'][0]['remitcustnumber_mobileno'])) {
+
+		          $address = '';
+
+		          // remitcust_pahouseno | remitcust_pabarangay | remitcust_pamunicipality | remitcust_paprovince | remitcust_pazipcode
+
+		          if(!empty($remitcust['remitcust_pahouseno'])) {
+		            $address .= trim($remitcust['remitcust_pahouseno']).' ';
+		          }
+
+		          if(!empty($remitcust['remitcust_pabarangay'])) {
+		            $address .= trim($remitcust['remitcust_pabarangay']).' ';
+		          }
+
+		          if(!empty($remitcust['remitcust_pamunicipality'])) {
+		            $address .= trim($remitcust['remitcust_pamunicipality']).' ';
+		          }
+
+		          if(!empty($remitcust['remitcust_paprovince'])) {
+		            $address .= trim($remitcust['remitcust_paprovince']).' ';
+		          }
+
+		          if(!empty($remitcust['remitcust_pazipcode'])) {
+		            $address .= trim($remitcust['remitcust_pazipcode']).' ';
+		          }
+
+		          $remitcustnumber_mobileno = $result['rows'][0]['remitcustnumber_mobileno'];
+
+		          $retval = array();
+		          $retval['post'] = $post;
+		          $retval['data'] = array(
+		            'senderaddress'=>trim($address),
+		            'sendernumber'=>$remitcustnumber_mobileno,
+		            'senderidtype'=>$remitcust['remitcust_idtype'],
+		            'senderspecifyid'=>$remitcust['remitcust_specifyid'],
+		            'senderidnumber'=>$remitcust['remitcust_idnumber'],
+		            'senderidexpiration'=>$remitcust['remitcust_idexpiration'],
+		          );
+
+		        }
+		      }
+
+
+		      json_encode_return($retval);
+		      die;
+
+		    } else
+		    if(!empty($post['method'])&&$post['method']=='getservicefee') {
+
+		      $transaction = array();
+
+		      $transaction['PADALA'] = getOption('$SMARTMONEYSETTINGS_SMARTPADALASERVICEFEES',false);
+		      $transaction['TOPUP'] = getOption('$SMARTMONEYSETTINGS_TOPUPSERVICEFEES',false);
+		      $transaction['PAYMAYA'] = getOption('$SMARTMONEYSETTINGS_PAYMAYASERVICEFEES',false);
+		      $transaction['PICKUP'] = getOption('$SMARTMONEYSETTINGS_PICKUPANYWHERESERVICEFEES',false);
+
+		      $cardno = !empty($post['cardno']) ? $post['cardno'] : false;
+		      $transactiontype = !empty($post['transactiontype']) ? $post['transactiontype'] : false;
+		      $amount = !empty($post['amount'])&&is_numeric($post['amount']) ? $post['amount'] : false;
+
+		      $retval = array();
+		      $retval['error_code'] = '345345';
+		      $retval['error_message'] = 'Invalid Amount!';
+
+		      if(!empty($amount)&&$amount>=100) {
+		      } else {
+		        json_encode_return($retval);
+		        die;
+		      }
+
+		      $retval = array();
+		      $retval['error'] = true;
+		      //$retval['error_message'] = 'Invalid Card/Mobile Number!';
+
+		      if(isSmartMoneyCardNo($cardno)) {
+		      } else {
+		        if(isSmartMobileNo($cardno)) {
+		        } else {
+		          json_encode_return($retval);
+		          die;
+		        }
+		      }
+
+		      $retval = array();
+		      $retval['error_code'] = '345378';
+		      $retval['error_message'] = 'Invalid/No Service Fee!';
+		      $retval['post'] = $post;
+
+		      if(!empty($transactiontype)&&!empty($transaction[$transactiontype])) {
+		        $servicefee = $transaction[$transactiontype];
+		      } else {
+		        json_encode_return($retval);
+		        die;
+		      }
+
+		      $fees = getSmartMoneyServiceFee($servicefee,$amount);
+
+		      if(!empty($fees)) {
+		      } else {
+		        json_encode_return($retval);
+		        die;
+		      }
+
+		      $retval = array();
+		      $retval['fees'] = $fees;
+
+		      json_encode_return($retval);
+		      die;
+
+		    } else
+		    if(!empty($post['method'])&&$post['method']=='smartmoneynew') {
+
+		      $retval = array();
+
+		      if(!empty($customer_type)&&$customer_type=='STAFF') {
+
+		        if(isCustomerFreezed($user_staffid)) {
+		          $retval['return_code'] = 'ERROR';
+		          $retval['return_message'] = 'Your account is currently freezed. Please contact administrator!';
+		          json_encode_return($retval);
+		          die;
+		        }
+
+		        if(isFreezeLevel($user_staffid)) {
+
+		          setCustomerFreeze($user_staffid);
+
+		          $retval['return_code'] = 'ERROR';
+		          $retval['return_message'] = 'Your account is currently freezed. Please contact administrator!';
+		          json_encode_return($retval);
+		          die;
+		        }
+
+		        if(isCriticalLevel($user_staffid)) {
+		          $params['return_code'] = 'ALERT';
+		          $params['return_message'] = 'Your account has reached its critical level. Please contact administrator!';
+		        }
+
+		        if(($availableCredit = getStaffAvailableCredit($user_staffid))) {
+
+		          $creditLimit = getStaffCreditLimit($user_staffid);
+
+		          if($availableCredit!=$creditLimit) {
+
+		            if(($terms = getStaffTerms($user_staffid))) {
+
+		              if(!empty(($unpaidTran = getStaffFirstUnpaidTransactions($user_staffid)))) {
+
+		                $currentDate = getDbUnixDate();
+
+		                $unpaidDate = pgDateUnix($unpaidTran['ledger_datetimeunix'],'m-d-Y') . ' 23:59';
+
+		                $unpaidStamp = date2timestamp($unpaidDate, getOption('$DISPLAY_DATE_FORMAT','r'));
+
+		                //$dueDate = floatval(86400 * ($terms-1)) + floatval($unpaidTran['ledger_datetimeunix']);
+
+		                $dueDate = floatval(86400 * ($terms-1)) + $unpaidStamp;
+
+		                setCustomerCreditDue($user_staffid,$dueDate);
+
+		                //pre(array('$unpaidStamp'=>$unpaidStamp,'$unpaidDate'=>$unpaidDate,'ledger_datetimeunix'=>$unpaidTran['ledger_datetimeunix'],'ledger_datetimeunix2'=>pgDateUnix($unpaidTran['ledger_datetimeunix']),'$dueDate'=>$dueDate,'$dueDate2'=>pgDateUnix($dueDate),'$currentDate'=>$currentDate,'$currentDate2'=>pgDateUnix($currentDate),'$unpaidTran'=>$unpaidTran));
+
+		                if($currentDate>$dueDate) {
+
+		                  setCustomerFreeze($user_staffid);
+
+		                  $retval['return_code'] = 'ERROR';
+		                  $retval['return_message'] = 'Your account is currently freezed. Please contact administrator!';
+		                  json_encode_return($retval);
+		                  die;
+		                }
+		              }
+
+		            }
+
+		            //pre(array('$terms'=>$terms));
+		          }
+
+		          unsetCustomerCreditDue($user_staffid);
+
+		        } else {
+		          $retval['return_code'] = 'ERROR';
+		          $retval['return_message'] = 'You have not enough available credits to continue!';
+		          json_encode_return($retval);
+		          die;
+		        }
+
+		      } else {
+
+		        if(!$applogin->isSystemAdministrator()) {
+		          $retval['return_code'] = 'ERROR';
+		          $retval['return_message'] = 'You are not allowed to access this module!';
+		          json_encode_return($retval);
+		          die;
+		        }
+		      }
+
+		    } else
+				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='smartmoneyedit'||$post['method']=='smartmoneyapproved'||$post['method']=='smartmoneymanually'||$post['method']=='smartmoneycancelled'||$post['method']=='smartmoneyhold'||$post['method']=='smartmoneytransfer')) {
+		    //if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='loadedit')) {
+		      if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+		        if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id=".$post['rowid']))) {
+		          json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+		          die;
+		        }
+
+		        if(!empty($result['rows'][0]['loadtransaction_id'])) {
+		          $params['smartmoneyinfo'] = $result['rows'][0];
+
+		          $custData = getRemitCustData($params['smartmoneyinfo']['loadtransaction_customerid']);
+
+		          if(!empty($custData)&&is_array($custData)) {
+		            foreach($custData as $k=>$v) {
+		              $params['smartmoneyinfo'][$k] = $v;
+		            }
+		          }
+		        }
+		      }
+		    } else
+				if(!empty($post['method'])&&$post['method']=='smartmoneysave') {
 
 					$retval = array();
-					$retval['return_code'] = 'SUCCESS';
-					$retval['return_message'] = 'Card number successfully deleted!';
+		      $retval['error_code'] = '345925';
+		      $retval['error_message'] = 'Invalid Reference Number!';
 
-					if(!empty($post['rowids'])) {
+					$refnumber = !empty($post['loadtransaction_refnumber']) ? $post['loadtransaction_refnumber'] : false;
 
-						$rowids = explode(',', $post['rowids']);
+					if(!empty($refnumber)) {
+		      } else {
+		        json_encode_return($retval);
+		        die;
+		      }
 
-						$arowid = array();
+					$sql = "select * from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_status=".TRN_RECEIVED." and loadtransaction_refnumber='$refnumber' limit 1";
 
-						for($i=0;$i<count($rowids);$i++) {
-							$rowid = intval(trim($rowids[$i]));
-							if(!empty($rowid)) {
-								$arowid[] = $rowid;
-							}
-						}
+					if(!($result = $appdb->query($sql))) {
+		        json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+		        die;
+		      }
 
-						if(!empty($arowid)) {
-							$rowids = implode(',', $arowid);
-
-							if(!($result = $appdb->query("delete from tbl_smartmoneynumber where smartmoneynumber_id in (".$rowids.")"))) {
-								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;
-							}
-
-							json_encode_return($retval);
-							die;
-						}
-
+					if(!empty($result['rows'][0]['loadtransaction_id'])) {
+						$smartmoneyinfo = $result['rows'][0];
+					} else {
+						json_encode_return($retval);
+		        die;
 					}
 
-					if(!empty($post['rowid'])) {
-						if(!($result = $appdb->query("delete from tbl_smartmoneynumber where smartmoneynumber_id=".$post['rowid']))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-					}
+					$retval = array();
+		      $retval['return_code'] = 'SUCCESS';
+		      $retval['return_message'] = 'SmartMoney Remittance successfully saved!';
+					$retval['post'] = $post;
+					$retval['smartmoneyinfo'] = $smartmoneyinfo;
 
 					json_encode_return($retval);
 					die;
@@ -1387,69 +1620,337 @@ if(!class_exists('APP_app_smartmoney')) {
 
 				$position = 'right';
 
-/*
-		myTabbar.addTab("tbSimcards", "Sim Card");
-		myTabbar.addTab("tbDetails", "Details");
-		myTabbar.addTab("tbSmsfunctions", "SMS Function");
-		myTabbar.addTab("tbTransactions", "Transactions");
-*/
+				$params['tbDetails'] = array();
+				$params['tbMessage'] = array();
+
+				$receiptno = '';
+
+				if(!empty($params['smartmoneyinfo']['loadtransaction_id'])&&!empty($params['smartmoneyinfo']['loadtransaction_ymd'])) {
+					$receiptno = $params['smartmoneyinfo']['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['smartmoneyinfo']['loadtransaction_id']));
+				}
+
+				$params['tbDetails'][] = array(
+		      'type' => 'hidden',
+		      'name' => 'smartmoney_approved',
+		      'value' => 0,
+		    );
 
 				$params['tbDetails'][] = array(
 					'type' => 'input',
-					'label' => 'DESCRIPTION',
-					'labelWidth' => 200,
-					'name' => 'smartmoneynumber_number',
-					'inputWidth' => 500,
+					'label' => 'RECEIPT NO',
+					'labelWidth' => 150,
+					'name' => 'encashment_receiptno',
+					'readonly' => true,
+					//'required' => !$readonly,
+					//'labelAlign' => $position,
+					'value' => $receiptno,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'RECEIPT DATE/TIME',
+					'labelWidth' => 150,
+					'name' => 'encashment_date',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => !empty($params['smartmoneyinfo']['loadtransaction_createstamp']) ? pgDate($params['smartmoneyinfo']['loadtransaction_createstamp']) : '',
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'REFERENCE NO.',
+					'labelWidth' => 150,
+					'name' => 'loadtransaction_refnumber',
 					'readonly' => $readonly,
-					'required' => !$readonly,
-					'value' => !empty($params['cardinfo']['smartmoneynumber_number']) ? $params['cardinfo']['smartmoneynumber_number'] : '',
+		      'required' => !$readonly,
+					'value' => !empty($params['smartmoneyinfo']['loadtransaction_refnumber']) ? $params['smartmoneyinfo']['loadtransaction_refnumber'] : '',
+				);
+
+				$params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'AMOUNT',
+		      'name' => 'loadtransaction_amount',
+		      'labelWidth' => 150,
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'numeric' => true,
+		      'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		      'value' => !empty($params['smartmoneyinfo']['loadtransaction_amount']) ? number_format($params['smartmoneyinfo']['loadtransaction_amount'],2) : '',
+		    );
+
+				$params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'COMMISSION',
+		      'name' => 'loadtransaction_receiveagentcommissionamount',
+		      'labelWidth' => 150,
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'numeric' => true,
+		      'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		      'value' => !empty($params['smartmoneyinfo']['loadtransaction_receiveagentcommissionamount']) ? number_format($params['smartmoneyinfo']['loadtransaction_receiveagentcommissionamount'],2) : '',
+		    );
+
+				$params['tbDetails'][] = array(
+		      'type' => 'block',
+		      'name' => 'otherchargesblock',
+		      'blockOffset' => 0,
+		      'offsetTop' => 0,
+		      'width' => 450,
+		      'list' => array(
+		        array(
+		          'type' => 'input',
+		          'label' => 'SERVICE CHARGE',
+		          'name' => 'smartmoney_otherchargespercent',
+		          'labelWidth' => 150,
+		          'readonly' => true,
+		          //'required' => !$readonly,
+		          'inputMask' => array('alias'=>'percentage','prefix'=>'','autoUnmask'=>true),
+		          //'value' => !empty($percent) ? number_format($percent,2) : 0,
+		          'value' => !empty($params['smartmoneyinfo']['loadtransaction_otherchargespercent']) ? number_format($params['smartmoneyinfo']['loadtransaction_otherchargespercent'],2) : '',
+		          'inputWidth' => 90,
+		        ),
+		        array(
+		          'type' => 'newcolumn',
+		          'offset' => 5,
+		        ),
+		        array(
+		          'type' => 'input',
+		          'name' => 'smartmoney_otherchargesamount',
+		          'readonly' => $readonly,
+		          //'required' => !$readonly,
+		          'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		          //'value' => !empty($discount) ? number_format($discount,2) : 0,
+		          'value' => !empty($params['smartmoneyinfo']['loadtransaction_otherchargesamount']) ? number_format($params['smartmoneyinfo']['loadtransaction_otherchargesamount'],2) : '',
+		          'inputWidth' => 100,
+		        ),
+		      ),
+		    );
+
+				$params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'AMOUNT DUE',
+		      'labelWidth' => 150,
+		      //'inputWidth' => 100,
+		      'name' => 'loadtransaction_amountdue',
+		      'readonly' => true,
+		      'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+		      //'required' => !$readonly,
+		      'value' => !empty($params['smartmoneyinfo']['loadtransaction_amountdue']) ? number_format($params['smartmoneyinfo']['loadtransaction_amountdue'],2) : '',
+		    );
+
+				if($post['method']=='smartmoneynew') {
+		      $params['tbDetails'][] = array(
+		        'type' => 'combo',
+		        'label' => 'RECIPIENT NAME',
+		        'name' => 'smartmoney_recipientname',
+		        'labelWidth' => 150,
+		        'readonly' => $readonly,
+		        'required' => !$readonly,
+		        //'numeric' => true,
+		        'options' => array(),
+		      );
+		    } else {
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'RECIPIENT NAME',
+		        'name' => 'smartmoney_recipientname',
+		        'labelWidth' => 150,
+		        'readonly' => $readonly,
+		        'required' => !$readonly,
+		        //'numeric' => true,
+		        'value' => !empty($params['smartmoneyinfo']['loadtransaction_customername']) ? $params['smartmoneyinfo']['loadtransaction_customername'] : '',
+		      );
+		    }
+
+				$params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'RECIPIENT NUMBER',
+		      'name' => 'smartmoney_recipientnumber',
+		      'labelWidth' => 150,
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'value' => !empty($params['smartmoneyinfo']['recipientnumber']) ? $params['smartmoneyinfo']['recipientnumber'] : '',
+		    );
+
+				$params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'RECIPIENT ADDRESS',
+		      'name' => 'smartmoney_recipientaddress',
+		      'labelWidth' => 150,
+					'inputWidth' => 300,
+		      'readonly' => true,
+					'rows' => 2,
+		      //'required' => !$readonly,
+		      'value' => !empty($params['smartmoneyinfo']['recipientaddress']) ? $params['smartmoneyinfo']['recipientaddress'] : '',
+		    );
+
+				$params['tbDetails'][] = array(
+		      'type' => 'newcolumn',
+		      'offset' => 50,
+		    );
+
+				$fund_username = !empty($params['smartmoneyinfo']['loadtransaction_staffid']) ? getCustomerNameByID($params['smartmoneyinfo']['loadtransaction_staffid']) : '';
+
+		    if(!empty($fund_username)) {
+		    } else {
+		      $fund_username = !empty($params['smartmoneyinfo']['loadtransaction_username']) ? $params['smartmoneyinfo']['loadtransaction_username'] : $applogin->fullname();
+		    }
+
+		    $params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'USER',
+					'labelWidth' => 150,
+		      'name' => 'fund_username',
+		      'readonly' => true,
+		      //'inputWidth' => 150,
+		      //'required' => !$readonly,
+		      //'value' => $applogin->fullname(),
+		      'value' => $fund_username,
+		    );
+
+		    if($post['method']=='smartmoneynew') {
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS CODE',
+						'labelWidth' => 150,
+		        'name' => 'smartmoney_status',
+		        'readonly' => true,
+		        //'inputWidth' => 150,
+		        'value' => TRN_DRAFT,
+		      );
+
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'STATUS',
+						'labelWidth' => 150,
+		        'name' => 'smartmoney_statustext',
+		        'readonly' => true,
+		        //'inputWidth' => 150,
+		        //'required' => !$readonly,
+		        'value' => getLoadTransactionStatusString(TRN_DRAFT),
+		      );
+
+		    }
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'CUSTOMER NAME',
+					'name' => 'smartmoney_customername',
+					'labelWidth' => 150,
+					'readonly' => true,
+					//'required' => !$readonly,
+					//'numeric' => true,
+					'value' => !empty($params['smartmoneyinfo']['loadtransaction_customername']) ? $params['smartmoneyinfo']['loadtransaction_customername'] : '',
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'CUSTOMER NUMBER',
+					'name' => 'smartmoney_customernumber',
+					'labelWidth' => 150,
+					'readonly' => true,
+					//'required' => !$readonly,
+					//'numeric' => true,
+					'value' => !empty($params['smartmoneyinfo']['loadtransaction_customernumber']) ? $params['smartmoneyinfo']['loadtransaction_customernumber'] : '',
 				);
 
 				$opt = array();
 
-				//if(!$readonly) {
-				//	$opt[] = array('text'=>'','value'=>'','selected'=>false);
-				//}
+		    //if(!$readonly) {
+		    //	$opt[] = array('text'=>'','value'=>'','selected'=>false);
+		    //}
 
-				//$transactiontype = array('SMART PADALA','TOP-UP','PAYMAYA','PICK-UP ANYWHERE');
+		    $idtype = array('VOTER\'S ID','DRIVER\'S LICENSE','SSS','GSIS','COMPANY ID','OTHERS');
 
-				$transactiontype = array('PADALA','TOPUP','PAYMAYA','PICKUP');
+		    foreach($idtype as $v) {
+		      $selected = false;
+		      if(!empty($params['moneytransferinfo']['smartmoney_idtype'])&&$params['moneytransferinfo']['smartmoney_idtype']==$v) {
+		        $selected = true;
+		      }
+		      if($readonly) {
+		        if($selected) {
+		          $opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+		        }
+		      } else {
+		        $opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+		      }
+		    }
 
-				foreach($transactiontype as $v) {
-					$selected = false;
-					if(!empty($params['cardinfo']['smartmoneynumber_type'])&&$params['cardinfo']['smartmoneynumber_type']==$v) {
-						$selected = true;
-					}
-					if($readonly) {
-						if($selected) {
-							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
-						}
-					} else {
-						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
-					}
-				}
+		    /*if($post['method']=='smartmoneynew') {
+		      $params['tbDetails'][] = array(
+		        'type' => 'combo',
+		        'label' => 'ID TYPE',
+		        'name' => 'smartmoney_idtype',
+		        'labelWidth' => 150,
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'options' => $opt,
+		      );
+		    } else {*/
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'ID TYPE',
+		        'name' => 'smartmoney_idtype',
+		        'labelWidth' => 150,
+		        'readonly' => true,
+		        //'required' => !$readonly,
+		        'value' => !empty($params['smartmoneyinfo']['senderidtype']) ? $params['smartmoneyinfo']['senderidtype'] : '',
+		      );
+		    //}
 
-				if($post['method']=='smartmoneynew'||$post['method']=='smartmoneyedit') {
-					$params['tbDetails'][] = array(
-						'type' => 'combo',
-						'label' => 'TRANSACTION TYPE',
-						'name' => 'smartmoneynumber_type',
-						'labelWidth' => 200,
-						'readonly' => true,
-						//'required' => !$readonly,
-						'options' => $opt,
-					);
-				} else {
-					$params['tbDetails'][] = array(
-						'type' => 'input',
-						'label' => 'TRANSACTION TYPE',
-						'name' => 'smartmoneynumber_type',
-						'labelWidth' => 200,
-						'readonly' => true,
-						//'required' => !$readonly,
-						'value' => !empty($params['cardinfo']['smartmoneynumber_type']) ? $params['cardinfo']['smartmoneynumber_type'] : '',
-					);
-				}
+		    $params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'SPECIFY ID',
+		      'name' => 'smartmoney_specifyid',
+		      'labelWidth' => 150,
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'value' => !empty($params['smartmoneyinfo']['senderspecifyid']) ? $params['smartmoneyinfo']['senderspecifyid'] : '',
+		    );
+
+		    $params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'ID NUMBER',
+		      'name' => 'smartmoney_idnumber',
+		      'labelWidth' => 150,
+		      'readonly' => true,
+		      //'required' => !$readonly,
+		      'value' => !empty($params['smartmoneyinfo']['senderidnumber']) ? $params['smartmoneyinfo']['senderidnumber'] : '',
+		    );
+
+		    /*$params['tbDetails'][] = array(
+		      'type' => 'input',
+		      'label' => 'EXPIRATION DATE',
+		      'name' => 'smartmoney_idexpiration',
+		      'labelWidth' => 150,
+		      'readonly' => $readonly,
+		      'required' => !$readonly,
+		      'value' => '',
+		    );*/
+
+		    if($post['method']=='smartmoneynew') {
+		      $params['tbDetails'][] = array(
+		        'type' => 'calendar',
+		        'label' => 'EXPIRATION DATE',
+		        'name' => 'smartmoney_idexpiration',
+		        'labelWidth' => 150,
+		        'readonly' => true,
+		        'calendarPosition' => 'right',
+		        'dateFormat' => '%m-%d-%Y',
+		        //'required' => !$readonly,
+		        'value' => !empty($params['smartmoneyinfo']['senderidexpiration']) ? $params['smartmoneyinfo']['senderidexpiration'] : '',
+		      );
+		    } else {
+		      $params['tbDetails'][] = array(
+		        'type' => 'input',
+		        'label' => 'EXPIRATION DATE',
+		        'name' => 'smartmoney_idexpiration',
+		        'labelWidth' => 150,
+		        'readonly' => true,
+		        'value' => !empty($params['smartmoneyinfo']['senderidexpiration']) ? $params['smartmoneyinfo']['senderidexpiration'] : '',
+		      );
+		    }
 
 				$templatefile = $this->templatefile($routerid,$formid);
 

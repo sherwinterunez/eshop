@@ -176,7 +176,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 						obj.rowid = rowId;
 						obj.formval = '%formval%';
 
-						obj.title = 'Money Transfer / '+myGrid.cells(rowId,3).getValue()+' / '+myGrid.cells(rowId,5).getValue();
+						obj.title = 'Encashment / '+myGrid.cells(rowId,3).getValue()+' / '+myGrid.cells(rowId,5).getValue();
 
 						openWindow(obj, function(winobj,obj){
 							console.log(obj);
@@ -310,7 +310,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 			obj.rowid = 0;
 			obj.formval = '%formval%';
 
-			obj.title = 'New Money Transfer';
+			obj.title = 'New Encashment';
 
 			openWindow(obj, function(winobj,obj){
 				console.log(obj);

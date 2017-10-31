@@ -1328,6 +1328,8 @@ alter table tbl_loadtransaction add column loadtransaction_senderid integer NOT 
 alter table tbl_loadtransaction add column loadtransaction_sendername text DEFAULT ''::text NOT NULL;
 alter table tbl_loadtransaction add column loadtransaction_sendernumber text DEFAULT ''::text NOT NULL;
 
+alter table tbl_loadtransaction add column loadtransaction_claimedstamp timestamp with time zone DEFAULT now()
+
 ------------------------------------------------------------------------------------------------------------------
 
 alter table tbl_remitcust add column remitcust_idtype text DEFAULT ''::text NOT NULL;

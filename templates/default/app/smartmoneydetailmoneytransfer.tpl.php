@@ -796,7 +796,7 @@ pre(array('$vars'=>$vars));
 						if(ddata.fees.smartmoneyservicefeeslist_receivecommissionpercent) {
 							myForm.setItemValue('smartmoney_receiveagentcommissionpercent',ddata.fees.smartmoneyservicefeeslist_receivecommissionpercent);
 						}
-						
+
 						myForm.setItemValue('smartmoney_receiveagentcommissionamount',ddata.fees.smartmoneyservicefeeslist_receivecommission);
 
 						myForm.setItemValue('smartmoney_otherchargesamount',0.00);

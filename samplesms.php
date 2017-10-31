@@ -162,6 +162,7 @@ processSMS($content);
 
 //$message = "1/2 26Aug 1558:Remittance of PHP600.00 & commission of PHP11.50 was received from 639477409000.LIBRE ang pag-claim ng iyong customer.Ref:a1e65ae6793a\r\n";
 
+/*
 $message = "01Oct 1004: Received P500.00 with P11.50 commission from 09282573535 to LOADING.LIBRE ang pag-claim! Ref:3152f53eeab6 Bal:P9,459.00\r\n";
 
 $content = array();
@@ -170,6 +171,26 @@ $content = array();
 //$content['smsinbox_contactnumber'] = 'SMARTMoney';
 $content['smsinbox_contactnumber'] = 'SmartPadala';
 $content['smsinbox_simnumber'] = '09092701100';
+$content['smsinbox_message'] = $message;
+$content['smsinbox_unread'] = 1;
+
+processSMS($content);
+
+//$result = $appdb->insert('tbl_smsinbox',$content,'smsinbox_id');
+
+$tstop = timer_stop();
+
+echo "\nsampleSMS done (".$tstop." secs).\n";
+*/
+
+$message = "AIRTIME GOSURF99 09173621234\r\n";
+
+$content = array();
+$content['smsinbox_contactsid'] = 138;
+$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
+//$content['smsinbox_contactnumber'] = 'SMARTMoney';
+//$content['smsinbox_contactnumber'] = 'SMARTLoad';
+$content['smsinbox_simnumber'] = '09197708008';
 $content['smsinbox_message'] = $message;
 $content['smsinbox_unread'] = 1;
 
