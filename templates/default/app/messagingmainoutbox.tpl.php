@@ -24,9 +24,9 @@
 
 		var myTab = srt.getTabUsingFormVal('%formval%');
 
-		//var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingforward','messagingdelete','messagingrefresh'];
+		var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingforward','messagingdelete','messagingrefresh'];
 
-		var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingforward','messagingdelete','messagingrefresh','messagingfrom','messagingdatefrom','messagingto','messagingdateto'];
+		//var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingforward','messagingdelete','messagingrefresh','messagingfrom','messagingdatefrom','messagingto','messagingdateto'];
 
 		myChanged_%formval% = false;
 
@@ -66,12 +66,9 @@
 			}
 		}
 
-		var datefrom = myTab.toolbar.getValue("messagingdatefrom");
-		var dateto = myTab.toolbar.getValue("messagingdateto");
-
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=messagingmainoutboxgrid&module=messaging&table=outbox&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto),
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=messagingmainoutboxgrid&module=messaging&table=outbox&formval=%formval%",
 		}, function(ddata,odata){
 			$ = jQuery;
 			//$("#formdiv_%formval% #usermanagementmanage").parent().html(ddata.html);
