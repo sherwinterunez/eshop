@@ -709,7 +709,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 				if(ddata.rows&&ddata.rows.length>0) {
 
-					myGridSmartMoneyTransactions.attachHeader("&nbsp;,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+					myGridUnassignedSmartMoneyTransactions.attachHeader("&nbsp;,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
 
 					for(x in ddata.rows) {
 						if(ddata.rows[x].cardlabel) {
