@@ -45,6 +45,13 @@ require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
 date_default_timezone_set('Asia/Manila');
 
+$sql = "update tbl_loadtransaction set loadtransaction_status=".TRN_RECEIVED." where loadtransaction_id in (select loadtransaction_id from (select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_status=".TRN_LOCKED.") a where elapsedtime>300);";
+
+if(!($result = $appdb->query($sql))) {
+  print_r(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+  die;
+}
+
 if(!($result = $appdb->query("select * from tbl_customer order by customer_id asc"))) {
   print_r(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
   die;
