@@ -4032,6 +4032,10 @@ if($readonly) {
 									if($v['loadtransaction_smartmoneytype']=='PADALA'||$v['loadtransaction_smartmoneytype']=='TOPUP'||$v['loadtransaction_smartmoneytype']=='PAYMAYA'||$v['loadtransaction_smartmoneytype']=='TOPUP') {
 										$prefix = 'SM';
 										$out = $v['loadtransaction_amount'];
+									} else
+									if($v['loadtransaction_smartmoneytype']=='RECEIVED') {
+										$prefix = 'SM';
+										$in = $v['loadtransaction_amount'];
 									}
 
 									$transid = $prefix . $v['loadtransaction_ymd'] . sprintf('%04d', $v['loadtransaction_id']);
@@ -4083,6 +4087,10 @@ if($readonly) {
 									if($v['loadtransaction_smartmoneytype']=='PADALA'||$v['loadtransaction_smartmoneytype']=='TOPUP'||$v['loadtransaction_smartmoneytype']=='PAYMAYA'||$v['loadtransaction_smartmoneytype']=='TOPUP') {
 										$prefix = 'SM';
 										$out = $v['loadtransaction_amount'];
+									} else
+									if($v['loadtransaction_smartmoneytype']=='RECEIVED') {
+										$prefix = 'SM';
+										$in = $v['loadtransaction_amount'];
 									}
 
 									$transid = $prefix . $v['loadtransaction_ymd'] . sprintf('%04d', $v['loadtransaction_id']);
