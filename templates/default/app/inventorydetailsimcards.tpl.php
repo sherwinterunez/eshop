@@ -693,7 +693,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
 				myGridUnassignedSmartMoneyTransactions.forEachRow(function(id){
-					myGridUnassignedSmartMoneyTransactions.cells(id,11).setDisabled(true);
+					myGridUnassignedSmartMoneyTransactions.cells(id,10).setDisabled(true);
 					//myGridUnassignedSmartMoneyTransactions.cells(id,2).setDisabled(true);
 					//myGridUnassignedSmartMoneyTransactions.cells(id,3).setDisabled(true);
 					//myGridUnassignedSmartMoneyTransactions.cells(id,4).setDisabled(true);
