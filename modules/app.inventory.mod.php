@@ -3995,6 +3995,108 @@ if($readonly) {
 						}
 
 					} else
+					if($this->post['table']=='smartmoneytransactions') {
+
+						$simcard = getSimCardByID($this->post['rowid']);
+
+						//pre(array('$simcard'=>$simcard));
+
+						$simcard_number = $simcard['simcard_number'];
+
+						if(!empty($simcard_number)) {
+
+							if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_assignedsim='$simcard_number' and loadtransaction_type in ('smartmoney') order by loadtransaction_createstampunix desc"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!empty($result['rows'][0]['loadtransaction_id'])) {
+								$rows = array();
+
+								foreach($result['rows'] as $k=>$v) {
+
+									if($v['loadtransaction_status']==TRN_COMPLETED||$v['loadtransaction_status']==TRN_COMPLETED_MANUALLY||$v['loadtransaction_status']==TRN_CLAIMED) {
+									} else {
+										continue;
+									}
+
+									if(trim($v['loadtransaction_cardlabel'])!='') {
+									} else {
+										continue;
+									}
+
+									$prefix = '';
+									$in = 0;
+									$out = 0;
+
+									if($v['loadtransaction_type']=='smartmoney') {
+										$prefix = 'SM';
+										$in = $v['loadtransaction_amount'];
+									}
+
+									$transid = $prefix . $v['loadtransaction_ymd'] . sprintf('%04d', $v['loadtransaction_id']);
+
+									$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDate($v['loadtransaction_createstamp'],'m-d-Y'),pgDate($v['loadtransaction_createstamp'],'H:i'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_destcardno'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_cardlabel']),strtoupper($v['loadtransaction_smartmoneytype']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
+								}
+
+								$retval = array('rows'=>$rows);
+							}
+
+
+						}
+
+					} else
+					if($this->post['table']=='unassignedsmartmoneytransactions') {
+
+						$simcard = getSimCardByID($this->post['rowid']);
+
+						//pre(array('$simcard'=>$simcard));
+
+						$simcard_number = $simcard['simcard_number'];
+
+						if(!empty($simcard_number)) {
+
+							if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_assignedsim='$simcard_number' and loadtransaction_type in ('smartmoney') order by loadtransaction_createstampunix desc"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!empty($result['rows'][0]['loadtransaction_id'])) {
+								$rows = array();
+
+								foreach($result['rows'] as $k=>$v) {
+
+									if($v['loadtransaction_status']==TRN_COMPLETED||$v['loadtransaction_status']==TRN_COMPLETED_MANUALLY||$v['loadtransaction_status']==TRN_CLAIMED) {
+									} else {
+										continue;
+									}
+
+									if(trim($v['loadtransaction_cardlabel'])=='') {
+									} else {
+										continue;
+									}
+
+									$prefix = '';
+									$in = 0;
+									$out = 0;
+
+									if($v['loadtransaction_type']=='smartmoney') {
+										$prefix = 'SM';
+										$in = $v['loadtransaction_amount'];
+									}
+
+									$transid = $prefix . $v['loadtransaction_ymd'] . sprintf('%04d', $v['loadtransaction_id']);
+
+									$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDate($v['loadtransaction_createstamp'],'m-d-Y'),pgDate($v['loadtransaction_createstamp'],'H:i'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_destcardno'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_cardlabel']),strtoupper($v['loadtransaction_smartmoneytype']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
+								}
+
+								$retval = array('rows'=>$rows);
+							}
+
+
+						}
+
+					} else
 					if($this->post['table']=='adjustment') {
 						if(!($result = $appdb->query("select * from tbl_adjustment order by adjustment_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
