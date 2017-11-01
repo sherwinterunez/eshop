@@ -6247,6 +6247,15 @@ function _SmartMoneyPadalaReceivedExpression($vars=array()) {
 			$content['loadtransaction_type'] = 'smartmoney';
 			$content['loadtransaction_smartmoneytype'] = 'RECEIVED';
 
+			if(!empty($content['loadtransaction_cardlabel'])) {
+			} else {
+				$sm = getSmartMoneyOfSimNumber($smsinbox_simnumber);
+
+				if(!empty($sm)&&is_array($sm)&&count($sm)==1) {
+					$content['loadtransaction_cardlabel'] = $sm[0]['smartmoney_label'];
+				}
+			}
+
 			pre(array('$content'=>$content));
 
 			if(!($result = $appdb->insert("tbl_loadtransaction",$content,"loadtransaction_id"))) {

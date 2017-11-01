@@ -3503,6 +3503,45 @@ function getSmartMoneyOfSim($id=false) {
 	return false;
 }
 
+function getSmartMoneyOfSimNumber($sim=false) {
+	global $appdb;
+
+	if(!empty($sim)) {
+	} else {
+		return false;
+	}
+
+	$asims = getAllSims(11,false,'SMARTMONEY');
+
+	//pre(array('$asims'=>$asims));
+
+	$asm = array();
+
+	foreach($asims as $k=>$v) {
+		if($v['simcard_number']==$sim) {
+			$sm = getSmartMoneyOfSim($v['simcard_id']);
+
+			if(!empty($sm)) {
+				//pre(array('$sm'=>$sm));
+
+				foreach($sm as $n=>$m) {
+					$m['simcard_number'] = $v['simcard_number'];
+					$asm[] = $m;
+				}
+			}
+			break;
+		}
+	}
+
+	//pre(array('$asm'=>$asm));
+
+	if(!empty($asm)) {
+		return $asm;
+	}
+
+	return false;
+}
+
 function getAllSmartMoney() {
 
 	$asims = getAllSims(11,false,'SMARTMONEY');

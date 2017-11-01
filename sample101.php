@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -45,6 +45,7 @@ require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
 date_default_timezone_set('Asia/Manila');
 
+/*
 define ("DEVICE_NOTSET", 0);
 define ("DEVICE_SET", 1);
 define ("DEVICE_OPENED", 2);
@@ -68,3 +69,21 @@ $gw = selectGateway($contactnumber);
 
 
 pre(array('$gw'=>$gw));
+*/
+
+
+$sm = getSmartMoneyOfSimNumber('09477409000');
+
+if(!empty($sm)&&is_array($sm)&&count($sm)==1) {
+	pre(array('$sm'=>$sm,'count'=>count($sm)));
+}
+
+$sm = getSmartMoneyOfSimNumber('09092701100');
+
+if(!empty($sm)&&is_array($sm)&&count($sm)==1) {
+	pre(array('$sm'=>$sm,'count'=>count($sm)));
+}
+
+
+
+///
