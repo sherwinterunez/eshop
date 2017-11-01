@@ -602,6 +602,10 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 				var x;
 
+				if(ddata.rows&&ddata.rows.length>0) {
+					myGridSmartMoneyTransactions.attachHeader("&nbsp;,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+				}
+
 				//if(ddata.rows&&ddata.rows.length>0) {
 					//for(x in ddata.rows) {
 						/*if(ddata.rows[x].loadcommands) {
@@ -681,7 +685,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myGridUnassignedSmartMoneyTransactions.setColAlign("center,left,left,left,left,left,left,left,left,left,left,left,right,right,right,right,right,right,right,right,right");
 
-		myGridUnassignedSmartMoneyTransactions.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,edtxt,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+		myGridUnassignedSmartMoneyTransactions.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,combo,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
 		myGridUnassignedSmartMoneyTransactions.setColSorting("int,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str");
 
@@ -702,6 +706,23 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				<?php } ?>
 
 				var x;
+
+				if(ddata.rows&&ddata.rows.length>0) {
+
+					myGridSmartMoneyTransactions.attachHeader("&nbsp;,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+
+					for(x in ddata.rows) {
+						if(ddata.rows[x].cardlabel) {
+							//alert(JSON.stringify(ddata.rows[x].cardlabel));
+							var myCombo = myGridUnassignedSmartMoneyTransactions.getColumnCombo(10);
+
+							myCombo.load(JSON.stringify(ddata.rows[x].cardlabel));
+
+							myCombo.enableFilteringMode(true);
+						}
+						break;
+					}
+				}
 
 				//if(ddata.rows&&ddata.rows.length>0) {
 					//for(x in ddata.rows) {
@@ -1253,6 +1274,22 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 					} else {
 						extra['smartmoney_modemcommand['+id+']'] = '';
 					}
+				}
+			});
+
+			<?php } ?>
+
+			<?php if(!empty($params['tbUnassignedSmartMoneyTransactions'])) { ?>
+
+			myWinObj.myGridUnassignedSmartMoneyTransactions.forEachRow(function(id){
+				var m = myWinObj.myGridUnassignedSmartMoneyTransactions.cells(id,0).getValue();
+				var n = myWinObj.myGridUnassignedSmartMoneyTransactions.cells(id,10).getValue();
+				//var o = myWinObj.myGridUnassignedSmartMoneyTransactions.cells(id,3).getValue();
+				//var p = myWinObj.myGridUnassignedSmartMoneyTransactions.cells(id,4).getValue();
+				//var q = myWinObj.myGridUnassignedSmartMoneyTransactions.cells(id,5).getValue();
+				if(m&&n) {
+					extra['unassignedsmartmoney_id['+id+']'] = m;
+					extra['unassignedsmartmoney_label['+id+']'] = n;
 				}
 			});
 
