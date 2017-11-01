@@ -90,9 +90,9 @@ if($savecancel) {
 
 	function messagingdetailssent_%formval%() {
 
-		<?php /* ?>
+		<?php /*
 		//var myToolbar = ['messagingresend','messagingforward','messagingdelete','messagingrefresh'];
-		<?php */ ?>
+		*/ ?>
 
 		var myToolbar = <?php echo json_encode($toolbars); ?>
 
@@ -105,7 +105,7 @@ if($savecancel) {
 		<?php if(!empty($vars['post']['rowid'])) { ?>
 		myTab.toolbar.enableOnly(myToolbar);
 		<?php } else { ?>
-		myTab.toolbar.enableOnly(['messagingrefresh']);
+    myTab.toolbar.enableOnly(['messagingrefresh','messagingdatefrom','messagingdateto']);
 		<?php } ?>
 
 		myTab.toolbar.showOnly(myToolbar);
