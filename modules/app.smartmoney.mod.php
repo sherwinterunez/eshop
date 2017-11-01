@@ -1697,7 +1697,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					$content['loadtransaction_receiverspecifyid'] = !empty($post['smartmoney_specifyid']) ? $post['smartmoney_specifyid'] : '';
 					$content['loadtransaction_amountdue'] = !empty($post['loadtransaction_amountdue']) ? $post['loadtransaction_amountdue'] : 0;
 					$content['loadtransaction_staffid'] = !empty($user_staffid) ? $user_staffid : 0;
-					
+
 					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$smartmoneyinfo['loadtransaction_id']))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 						die;
@@ -2563,6 +2563,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 							$content['loadtransaction_assignedsim'] = $asm[0]['simcard_number'];
 							$content['loadtransaction_simcommand'] = $asm[0]['smartmoney_modemcommand'];
+							$content['loadtransaction_cardlabel'] = $asm[0]['smartmoney_label'];
 						}
 					} else
 					if(!empty($post['loadtransaction_assignedsim'])) {
@@ -2574,6 +2575,7 @@ if(!class_exists('APP_app_smartmoney')) {
 							foreach($asm as $k=>$v) {
 								if(!empty($v['smartmoney_modemcommand'])&&!empty($v['simcard_number'])&&$v['simcard_number']==$content['loadtransaction_assignedsim']) {
 									$content['loadtransaction_simcommand'] = $v['smartmoney_modemcommand'];
+									$content['loadtransaction_cardlabel'] = $asm[0]['smartmoney_label'];
 									break;
 								}
 							}

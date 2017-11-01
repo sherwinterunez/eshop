@@ -574,15 +574,15 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myGridSmartMoneyTransactions.setImagePath("/codebase/imgs/")
 
-		myGridSmartMoneyTransactions.setHeader("ID, SMART MONEY NUMBER, LABEL, PIN CODE, SIM COMMAND, BALANCE, &nbsp;");
+		myGridSmartMoneyTransactions.setHeader("ID,Date/Time, SMS Date/Time, Date, Time, Receipt No., Customer Name, Reference No., Mobile No./Card No., Recipient No., Label, Transaction Type, Status, Send Agent Commission, Transfer Fee, Receive Agent Commission, Other Charges, In, Out, Balance, Running Balance");
 
-		myGridSmartMoneyTransactions.setInitWidths("50,250,200,200,250,150,*");
+		myGridSmartMoneyTransactions.setInitWidths("50,120,100,70,60,110,150,110,100,100,100,100,100,100,100,100,100,100,100,100,100");
 
-		myGridSmartMoneyTransactions.setColAlign("center,left,left,left,left,right,left");
+		myGridSmartMoneyTransactions.setColAlign("center,left,left,left,left,left,left,left,left,left,left,left,right,right,right,right,right,right,right,right,right");
 
-		myGridSmartMoneyTransactions.setColTypes("ro,edtxt,edtxt,edtxt,combo,ro,ro");
+		myGridSmartMoneyTransactions.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
-		myGridSmartMoneyTransactions.setColSorting("int,str,str,str,str,int,str");
+		myGridSmartMoneyTransactions.setColSorting("int,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str");
 
 		myGridSmartMoneyTransactions.init();
 
@@ -676,15 +676,15 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myGridUnassignedSmartMoneyTransactions.setImagePath("/codebase/imgs/")
 
-		myGridUnassignedSmartMoneyTransactions.setHeader("ID, SMART MONEY NUMBER, LABEL, PIN CODE, SIM COMMAND, BALANCE, &nbsp;");
+		myGridUnassignedSmartMoneyTransactions.setHeader("ID,Date/Time, SMS Date/Time, Date, Time, Receipt No., Customer Name, Reference No., Mobile No./Card No., Recipient No., Label, Transaction Type, Status, Send Agent Commission, Transfer Fee, Receive Agent Commission, Other Charges, In, Out, Balance, Running Balance");
 
-		myGridUnassignedSmartMoneyTransactions.setInitWidths("50,250,200,200,250,150,*");
+		myGridUnassignedSmartMoneyTransactions.setInitWidths("50,120,100,70,60,110,150,110,100,100,100,100,100,100,100,100,100,100,100,100,100");
 
-		myGridUnassignedSmartMoneyTransactions.setColAlign("center,left,left,left,left,right,left");
+		myGridUnassignedSmartMoneyTransactions.setColAlign("center,left,left,left,left,left,left,left,left,left,left,left,right,right,right,right,right,right,right,right,right");
 
-		myGridUnassignedSmartMoneyTransactions.setColTypes("ro,edtxt,edtxt,edtxt,combo,ro,ro");
+		myGridUnassignedSmartMoneyTransactions.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
-		myGridUnassignedSmartMoneyTransactions.setColSorting("int,str,str,str,str,int,str");
+		myGridUnassignedSmartMoneyTransactions.setColSorting("int,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str");
 
 		myGridUnassignedSmartMoneyTransactions.init();
 
