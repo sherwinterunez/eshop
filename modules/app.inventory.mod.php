@@ -4080,9 +4080,9 @@ if($readonly) {
 									$in = 0;
 									$out = 0;
 
-									if($v['loadtransaction_type']=='smartmoney') {
+									if($v['loadtransaction_smartmoneytype']=='PADALA'||$v['loadtransaction_smartmoneytype']=='TOPUP'||$v['loadtransaction_smartmoneytype']=='PAYMAYA'||$v['loadtransaction_smartmoneytype']=='TOPUP') {
 										$prefix = 'SM';
-										$in = $v['loadtransaction_amount'];
+										$out = $v['loadtransaction_amount'];
 									}
 
 									$transid = $prefix . $v['loadtransaction_ymd'] . sprintf('%04d', $v['loadtransaction_id']);
