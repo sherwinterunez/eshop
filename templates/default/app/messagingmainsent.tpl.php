@@ -81,9 +81,12 @@
 			}
 		}
 
+		var datefrom = myTab.toolbar.getValue("messagingdatefrom");
+		var dateto = myTab.toolbar.getValue("messagingdateto");
+
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=messagingmainsentgrid&module=messaging&table=sent&formval=%formval%",
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=messagingmainsentgrid&module=messaging&table=sent&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto),
 		}, function(ddata,odata){
 			$ = jQuery;
 			//$("#formdiv_%formval% #usermanagementmanage").parent().html(ddata.html);
@@ -104,9 +107,9 @@
 
 			myGrid.setHeader("#master_checkbox,ID, Recipient, SIM, Part, Type, Message, Date Created, Date Sent");
 
-			myGrid.attachHeader("&nbsp;,&nbsp;,#combo_filter,#combo_filter,&nbsp;,&nbsp;,#text_filter,&nbsp;,&nbsp;");
+			myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#combo_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter");
 
-			myGrid.setInitWidths("50,50,100,100,60,60,*,150,150");
+			myGrid.setInitWidths("50,50,100,100,60,60,*,120,120");
 
 			myGrid.setColAlign("center,center,left,left,center,center,left,left,left");
 

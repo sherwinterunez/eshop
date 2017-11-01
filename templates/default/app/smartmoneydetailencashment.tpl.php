@@ -32,7 +32,7 @@ if(!empty($vars['post']['wid'])) {
 
 //$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved',$moduleid.'manually',$moduleid.'cancelled',$moduleid.'hold');
 
-$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved');
+$myToolbar = array($moduleid.'lock',$moduleid.'unlock',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved');
 
 /*if(!empty($vars['params']['optionsinfo']['options_name'])) {
 	$options_name = $vars['params']['optionsinfo']['options_name'];
@@ -266,7 +266,9 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.disableAll();
 
-		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>approved']);
+		//myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>approved']);
+
+		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>approved']);
 
 		//myForm.setItemFocus("txt_optionsname");
 
@@ -648,7 +650,7 @@ pre(array('$vars'=>$vars));
 					myForm.setItemValue('loadtransaction_otherchargesamount',0.00);
 					myForm.setItemValue('loadtransaction_amountdue',0.00);
 					myForm.setItemValue('smartmoney_status',<?php echo TRN_DRAFT; ?>);
-					myForm.setItemValue('smartmoney_statustext',"'"+<?php echo getLoadTransactionStatusString(TRN_DRAFT)+"'"; ?>);
+					myForm.setItemValue('smartmoney_statustext','<?php echo getLoadTransactionStatusString(TRN_DRAFT); ?>');
 
 					myTab.postData('/'+settings.router_id+'/json/', {
 						odata: {refnumber:loadtransaction_refnumber},
@@ -679,8 +681,19 @@ pre(array('$vars'=>$vars));
 							myForm.setItemValue('smartmoney_status',ddata.data.loadtransaction_status);
 							myForm.setItemValue('smartmoney_statustext',ddata.data.loadtransaction_statusstr);
 
+							myWinToolbar.enableOnly(['<?php echo $moduleid; ?>lock','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>approved']);
+
 						}
 					});
+				} else {
+					myForm.setItemValue('loadtransaction_amount',0.00);
+					myForm.setItemValue('loadtransaction_receiveagentcommissionamount',0.00);
+					myForm.setItemValue('loadtransaction_otherchargesamount',0.00);
+					myForm.setItemValue('loadtransaction_amountdue',0.00);
+					myForm.setItemValue('smartmoney_status',<?php echo TRN_DRAFT; ?>);
+					myForm.setItemValue('smartmoney_statustext',"'"+<?php echo getLoadTransactionStatusString(TRN_DRAFT)+"'"; ?>);
+
+					myWinToolbar.enableOnly(['<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>approved']);
 				}
 			}
 
@@ -1096,6 +1109,70 @@ pre(array('$vars'=>$vars));
 				myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {rowid:rowid,wid:wid},
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&rowid="+rowid+"&formval="+formval+"&wid="+wid,
+				}, function(ddata,odata){
+					if(ddata.html) {
+						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+						jQuery("#"+odata.wid).html(ddata.html);
+					}
+				});
+			}
+		};
+
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>lock').onClick = function(id,formval,wid) {
+			//showMessage("toolbar: "+id,5000);
+
+			//console.log('ID: '+id);
+			//console.log('FORMVAL: '+formval);
+			//console.log('WID: '+wid);
+
+			//var rowid = myGrid_%formval%.getSelectedRowId();
+
+			//rowid = srt.windows[wid].form.getItemValue('rowid');
+
+			//showMessage('rowid: '+rowid,5000);
+
+			var loadtransaction_refnumber = srt.windows[wid].form.getItemValue('loadtransaction_refnumber');
+
+			if(loadtransaction_refnumber) {
+				myTab.postData('/'+settings.router_id+'/json/', {
+					odata: {wid:wid},
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&refnumber="+loadtransaction_refnumber+"&formval="+formval+"&wid="+wid,
+				}, function(ddata,odata){
+					//if(ddata.html) {
+						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
+						//jQuery("#"+odata.wid).html(ddata.html);
+					//}
+					if(ddata.return_code=='SUCCESS') {
+						srt.windows[odata.wid].form.disableItem('loadtransaction_refnumber');
+						//srt.windows[odata.wid].form.setReadonly('loadtransaction_refnumber',true);
+						srt.windows[odata.wid].form.setItemValue('smartmoney_status',<?php echo TRN_LOCKED; ?>);
+						srt.windows[odata.wid].form.setItemValue('smartmoney_statustext','<?php echo getLoadTransactionStatusString(TRN_LOCKED); ?>');
+
+						myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>unlock','<?php echo $moduleid; ?>approved']);
+					}
+				});
+			}
+		};
+
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>unlock').onClick = function(id,formval,wid) {
+			//showMessage("toolbar: "+id,5000);
+
+			//console.log('ID: '+id);
+			//console.log('FORMVAL: '+formval);
+			//console.log('WID: '+wid);
+
+			//var rowid = myGrid_%formval%.getSelectedRowId();
+
+			var loadtransaction_refnumber = srt.windows[wid].form.getItemValue('loadtransaction_refnumber');
+
+			//rowid = srt.windows[wid].form.getItemValue('rowid');
+
+			//showMessage('rowid: '+rowid,5000);
+
+			if(rowid) {
+				myTab.postData('/'+settings.router_id+'/json/', {
+					odata: {rowid:rowid,wid:wid},
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&refnumber="+loadtransaction_refnumber+"&formval="+formval+"&wid="+wid,
 				}, function(ddata,odata){
 					if(ddata.html) {
 						//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);

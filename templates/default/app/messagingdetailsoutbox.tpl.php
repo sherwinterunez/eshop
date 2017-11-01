@@ -68,7 +68,7 @@ if(!empty($vars['post']['method'])) {
 
 		myTab.toolbar.resetAll();
 
-		var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingforward','messagingdelete','messagingrefresh'];
+		var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingforward','messagingdelete','messagingrefresh','messagingfrom','messagingdatefrom','messagingto','messagingdateto'];
 
 		myTab.toolbar.getToolbarData('messagingresend').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);

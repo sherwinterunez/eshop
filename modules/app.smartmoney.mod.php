@@ -1467,7 +1467,7 @@ if(!class_exists('APP_app_smartmoney')) {
 		      die;
 
 		    } else
-		    if(!empty($post['method'])&&$post['method']=='smartmoneynew') {
+		    if(!empty($post['method'])&&($post['method']=='smartmoneynew')) {
 
 		      $retval = array();
 
@@ -1576,11 +1576,58 @@ if(!class_exists('APP_app_smartmoney')) {
 		        }
 		      }
 		    } else
+				if(!empty($post['method'])&&$post['method']=='smartmoneylock') {
+
+					$refnumber = !empty($post['refnumber']) ? trim($post['refnumber']) : false;
+
+					$retval = array();
+		      $retval['error_code'] = '345385';
+		      $retval['error_message'] = 'Invalid Reference Number!';
+
+					if(!empty($refnumber)) {
+		      } else {
+		        json_encode_return($retval);
+		        die;
+		      }
+
+					$sql = "select * from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_status=".TRN_RECEIVED." and loadtransaction_refnumber='$refnumber' limit 1";
+
+					if(!($result = $appdb->query($sql))) {
+		        json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+		        die;
+		      }
+
+					if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+						$retval = array();
+			      $retval['return_code'] = 'SUCCESS';
+			      $retval['return_message'] = 'Reference number has been locked!';
+						$retval['post'] = $post;
+
+						$content = array();
+						$content['loadtransaction_status'] = TRN_LOCKED;
+						$content['loadtransaction_updatestamp'] = 'now()';
+
+						if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_refnumber='$refnumber'"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+					} else {
+						$retval = array();
+			      $retval['error_code'] = '345385';
+			      $retval['error_message'] = 'Invalid Reference Number!';
+					}
+
+					json_encode_return($retval);
+					die;
+
+				} else
 				if(!empty($post['method'])&&$post['method']=='smartmoneysave') {
 
 					$retval = array();
 		      $retval['error_code'] = '345925';
-		      $retval['error_message'] = 'Invalid Reference Number!';
+		      $retval['error_message'] = 'Invalid reference number/Locked has expired! Please cancel and try again!';
 
 					$refnumber = !empty($post['loadtransaction_refnumber']) ? $post['loadtransaction_refnumber'] : false;
 
@@ -1590,7 +1637,7 @@ if(!class_exists('APP_app_smartmoney')) {
 		        die;
 		      }
 
-					$sql = "select * from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_status=".TRN_RECEIVED." and loadtransaction_refnumber='$refnumber' limit 1";
+					$sql = "select * from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_status=".TRN_LOCKED." and loadtransaction_refnumber='$refnumber' limit 1";
 
 					if(!($result = $appdb->query($sql))) {
 		        json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -1609,6 +1656,15 @@ if(!class_exists('APP_app_smartmoney')) {
 		      $retval['return_message'] = 'SmartMoney Remittance successfully saved!';
 					$retval['post'] = $post;
 					$retval['smartmoneyinfo'] = $smartmoneyinfo;
+
+					$content = array();
+					$content['loadtransaction_status'] = TRN_CLAIMED;
+					$content['loadtransaction_updatestamp'] = 'now()';
+
+					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$smartmoneyinfo['loadtransaction_id']))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
 
 					json_encode_return($retval);
 					die;
@@ -3762,7 +3818,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						}
 
 					} else
-					if($this->post['table']=='received') {
+					if($this->post['table']=='claimed') {
 
 						$where = '';
 
@@ -3774,7 +3830,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
               //pre(array('$datefrom'=>$datefrom,'$dtfrom'=>$dtfrom,'$dateto'=>$dateto,'$dtto'=>$dtto));
 
-              $where = " and extract(epoch from loadtransaction_createstamp)>=$datefrom and extract(epoch from loadtransaction_createstamp)<=$dateto";
+              $where = " and extract(epoch from loadtransaction_updatestamp)>=$datefrom and extract(epoch from loadtransaction_updatestamp)<=$dateto";
             }
 
 						if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype in ('RECEIVED') $where order by loadtransaction_id desc"))) {

@@ -1,10 +1,10 @@
 <!--
-<?php 
+<?php
 
 global $appaccess;
 global $applogin;
 
-//$appaccess->showrules(); 
+//$appaccess->showrules();
 
 pre(array('$_SESSION'=>$_SESSION));
 
@@ -715,7 +715,62 @@ $access = $applogin->getAccess();
 					<?php if(in_array('modemcommands',$access)) { ?>
 					{id: "modemcommands", text: "MODEM Commands", icon: "documents.png"},
 					<?php } */?>
-				]		
+				]
+		});
+
+		var input_from = myTab.toolbar.getInput("messagingdatefrom");
+		input_from.setAttribute("readOnly", "true");
+		//input_from.onclick = function(){ setSens(input_till,"max"); }
+
+		var input_till = myTab.toolbar.getInput("messagingdateto");
+		input_till.setAttribute("readOnly", "true");
+		//input_till.onclick = function(){ setSens(input_from,"min"); }
+
+		myCalendar1_%formval% = new dhtmlXCalendarObject([input_from]);
+		myCalendar1_%formval%.setDateFormat("%m-%d-%Y %H:%i");
+
+		myCalendar2_%formval% = new dhtmlXCalendarObject([input_till]);
+		myCalendar2_%formval%.setDateFormat("%m-%d-%Y %H:%i");
+
+		myTab.toolbar.setValue("messagingdatefrom","<?php $dt=getDbDate(1); echo $dt['date']; ?> 00:00");
+		myTab.toolbar.setValue("messagingdateto","<?php $dt=getDbDate(2); echo $dt['date']; ?> 00:00");
+
+		var cdt = myCalendar1_%formval%.getDate();
+
+		myCalendar2_%formval%.setSensitiveRange(cdt, null);
+
+		myCalendar1_%formval%.attachEvent("onBeforeChange", function(date){
+
+			var cdt = myCalendar2_%formval%.getDate();
+
+			myCalendar2_%formval%.setSensitiveRange(date, null);
+
+			var edt = myCalendar2_%formval%.getDate();
+
+			if(date.getTime()>=edt.getTime()) {
+				edt.setDate(date.getDate());
+				//myForm.setItemValue('promos_enddate',edt);
+
+				var mm, dd, yy, hh, mn, dt;
+
+				if(edt.getMonth()<10) {
+					mm = '0' + (edt.getMonth()+1);
+				} else {
+					mm = edt.getMonth() + 1;
+				}
+
+				dd = edt.getDate();
+				yy = edt.getFullYear();
+
+				hh = edt.getHours();
+				mn = edt.getMinutes();
+
+				dt = mm+'-'+dd+'-'+yy+' '+hh+':'+mn;
+
+				myTab.toolbar.setValue("messagingdateto",dt);
+			}
+
+			return true;
 		});
 
 		myTab.layout.cells('c').hideHeader();
@@ -823,7 +878,7 @@ $access = $applogin->getAccess();
 			if(roleid==1&&userid==1) {
 				myTab.toolbar.disableOnly(['usermanagementdelete','usermanagementsave']);
 			} else {
-				myTab.toolbar.disableOnly(['usermanagementsave']);					
+				myTab.toolbar.disableOnly(['usermanagementsave']);
 			}*/
 			$("#formdiv_%formval% #messagingmain").parent().html(ddata.html);
 		});
@@ -861,7 +916,7 @@ $access = $applogin->getAccess();
 				if(roleid==1&&userid==1) {
 					myTab.toolbar.disableOnly(['usermanagementdelete','usermanagementsave']);
 				} else {
-					myTab.toolbar.disableOnly(['usermanagementsave']);					
+					myTab.toolbar.disableOnly(['usermanagementsave']);
 				}*/
 				$("#formdiv_%formval% #messagingmain").parent().html(ddata.html);
 			});
@@ -880,7 +935,7 @@ $access = $applogin->getAccess();
 				if(roleid==1&&userid==1) {
 					myTab.toolbar.disableOnly(['usermanagementdelete','usermanagementsave']);
 				} else {
-					myTab.toolbar.disableOnly(['usermanagementsave']);					
+					myTab.toolbar.disableOnly(['usermanagementsave']);
 				}*/
 				$("#formdiv_%formval% #messagingmain").parent().html(ddata.html);
 			});

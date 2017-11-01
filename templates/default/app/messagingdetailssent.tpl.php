@@ -14,7 +14,7 @@ $access = $applogin->getAccess();
 
 $savecancel = false;
 
-$toolbars = array('messagingresend','messagingforward','messagingrefresh');
+$toolbars = array('messagingresend','messagingforward','messagingrefresh','messagingfrom','messagingdatefrom','messagingto','messagingdateto');
 
 if(in_array('sentdelete',$access)) {
 	$toolbars[] = 'messagingdelete';
@@ -108,7 +108,7 @@ if($savecancel) {
 		myTab.toolbar.enableOnly(['messagingrefresh']);
 		<?php } ?>
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		myTab.toolbar.getToolbarData('messagingresend').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);

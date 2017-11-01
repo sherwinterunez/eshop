@@ -14,7 +14,7 @@ $access = $applogin->getAccess();
 
 $savecancel = false;
 
-$toolbars = array('messagingreply','messagingforward','messagingrefresh');
+$toolbars = array('messagingreply','messagingforward','messagingrefresh','messagingfrom','messagingdatefrom','messagingto','messagingdateto');
 
 if(in_array('inboxdelete',$access)) {
 	$toolbars[] = 'messagingdelete';
@@ -90,9 +90,9 @@ if($savecancel) {
 
 	function messagingdetailsinbox_%formval%() {
 
-		<?php /* ?>
+		<?php /*
 		var myToolbar = ['messagingreply','messagingforward','messagingdelete','messagingrefresh'];
-		<?php */ ?>
+		*/ ?>
 
 		var myToolbar = <?php echo json_encode($toolbars); ?>
 
@@ -107,10 +107,10 @@ if($savecancel) {
 		<?php if(!empty($vars['post']['rowid'])) { ?>
 		myTab.toolbar.enableOnly(myToolbar);
 		<?php } else { ?>
-		myTab.toolbar.enableOnly(['messagingrefresh']);
+		myTab.toolbar.enableOnly(['messagingrefresh','messagingdatefrom','messagingdateto']);
 		<?php } ?>
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		myTab.toolbar.getToolbarData('messagingreply').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);

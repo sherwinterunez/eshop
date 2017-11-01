@@ -4040,7 +4040,23 @@ Indexes:
 						}
 					} else
 					if($this->post['table']=='inbox') {
-						if(!($result = $appdb->query("select * from tbl_smsinbox where smsinbox_deleted=0 order by smsinbox_id desc limit 10000"))) {
+
+						$limit = 10000;
+
+						$where = '';
+
+            if(!empty($this->post['datefrom'])&&!empty($this->post['dateto'])) {
+              $datefrom = date2timestamp($this->post['datefrom'],'m-d-Y H:i');
+              $dateto = date2timestamp($this->post['dateto'],'m-d-Y H:i');
+              $dtfrom = date('m-d-Y H:i',$datefrom);
+              $dtto = date('m-d-Y H:i',$dateto);
+
+              //pre(array('$datefrom'=>$datefrom,'$dtfrom'=>$dtfrom,'$dateto'=>$dateto,'$dtto'=>$dtto));
+
+              $where = " and extract(epoch from smsinbox_timestamp)>=$datefrom and extract(epoch from smsinbox_timestamp)<=$dateto";
+            }
+
+						if(!($result = $appdb->query("select * from tbl_smsinbox where smsinbox_deleted=0 $where order by smsinbox_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
@@ -4049,14 +4065,30 @@ Indexes:
 							$rows = array();
 
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$v['smsinbox_id'],'data'=>array(0,$v['smsinbox_id'],getCustomerNickByNumber($v['smsinbox_contactnumber']),$v['smsinbox_contactnumber'],getSimNameByNumber($v['smsinbox_simnumber']),$v['smsinbox_message'],getNetworkName($v['smsinbox_contactnumber']),$v['smsinbox_timestamp']));
+								$rows[] = array('id'=>$v['smsinbox_id'],'data'=>array(0,$v['smsinbox_id'],getCustomerNickByNumber($v['smsinbox_contactnumber']),$v['smsinbox_contactnumber'],getSimNameByNumber($v['smsinbox_simnumber']),$v['smsinbox_message'],getNetworkName($v['smsinbox_contactnumber']),pgDate($v['smsinbox_timestamp'],'m-d-Y H:i:s')));
 							}
 
 							$retval = array('rows'=>$rows);
 						}
 					} else
 					if($this->post['table']=='outbox') {
-						if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_sent=0 and smsoutbox_deleted=0 order by smsoutbox_id desc"))) {
+
+						$limit = 10000;
+
+						$where = '';
+
+            if(!empty($this->post['datefrom'])&&!empty($this->post['dateto'])) {
+              $datefrom = date2timestamp($this->post['datefrom'],'m-d-Y H:i');
+              $dateto = date2timestamp($this->post['dateto'],'m-d-Y H:i');
+              $dtfrom = date('m-d-Y H:i',$datefrom);
+              $dtto = date('m-d-Y H:i',$dateto);
+
+              //pre(array('$datefrom'=>$datefrom,'$dtfrom'=>$dtfrom,'$dateto'=>$dateto,'$dtto'=>$dtto));
+
+              $where = " and extract(epoch from smsoutbox_createstamp)>=$datefrom and extract(epoch from smsoutbox_createstamp)<=$dateto";
+            }
+
+						if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_sent=0 and smsoutbox_deleted=0 $where order by smsoutbox_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
@@ -4088,14 +4120,30 @@ Indexes:
 									$smsoutbox_status = 'FAILED';
 								}
 
-								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$v['smsoutbox_contactnumber'],getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_part'].'/'.$v['smsoutbox_total'],$smsoutbox_type,$v['smsoutbox_message'],$smsoutbox_status,$v['smsoutbox_createstamp'],$v['smsoutbox_sentstamp']));
+								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$v['smsoutbox_contactnumber'],getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_part'].'/'.$v['smsoutbox_total'],$smsoutbox_type,$v['smsoutbox_message'],$smsoutbox_status,pgDate($v['smsoutbox_createstamp'],'m-d-Y H:i:s'),pgDate($v['smsoutbox_sentstamp'],'m-d-Y H:i:s')));
 							}
 
 							$retval = array('rows'=>$rows);
 						}
 					} else
 					if($this->post['table']=='sent') {
-						if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_sent!=0 and smsoutbox_deleted=0 order by smsoutbox_id desc limit 10000"))) {
+
+						$limit = 10000;
+
+						$where = '';
+
+            if(!empty($this->post['datefrom'])&&!empty($this->post['dateto'])) {
+              $datefrom = date2timestamp($this->post['datefrom'],'m-d-Y H:i');
+              $dateto = date2timestamp($this->post['dateto'],'m-d-Y H:i');
+              $dtfrom = date('m-d-Y H:i',$datefrom);
+              $dtto = date('m-d-Y H:i',$dateto);
+
+              //pre(array('$datefrom'=>$datefrom,'$dtfrom'=>$dtfrom,'$dateto'=>$dateto,'$dtto'=>$dtto));
+
+              $where = " and extract(epoch from smsoutbox_createstamp)>=$datefrom and extract(epoch from smsoutbox_createstamp)<=$dateto";
+            }
+
+						if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_sent!=0 and smsoutbox_deleted=0 $where order by smsoutbox_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
@@ -4112,7 +4160,7 @@ Indexes:
 									$smsoutbox_type = 'SHORT';
 								}
 
-								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$v['smsoutbox_contactnumber'],getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_part'].'/'.$v['smsoutbox_total'],$smsoutbox_type,$v['smsoutbox_message'],$v['smsoutbox_createstamp'],$v['smsoutbox_sentstamp']));
+								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$v['smsoutbox_contactnumber'],getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_part'].'/'.$v['smsoutbox_total'],$smsoutbox_type,$v['smsoutbox_message'],$v['smsoutbox_createstamp'],pgDate($v['smsoutbox_sentstamp'],'m-d-Y H:i:s')));
 							}
 
 							$retval = array('rows'=>$rows);

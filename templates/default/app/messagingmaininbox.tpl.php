@@ -52,7 +52,7 @@
 
 		//myTab.toolbar.enableOnly(['messagingrefresh']);
 
-		//myTab.toolbar.showOnly(myToolbar);	
+		//myTab.toolbar.showOnly(myToolbar);
 
 		if(typeof(f)!='undefined'&&typeof(myGrid_%formval%)!='undefined') {
 			try {
@@ -84,9 +84,12 @@
 			}
 		}
 
+		var datefrom = myTab.toolbar.getValue("messagingdatefrom");
+		var dateto = myTab.toolbar.getValue("messagingdateto");
+
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=messagingmaininboxgrid&module=messaging&table=inbox&formval=%formval%",
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=messagingmaininboxgrid&module=messaging&table=inbox&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto),
 		}, function(ddata,odata){
 			$ = jQuery;
 			//$("#formdiv_%formval% #usermanagementmanage").parent().html(ddata.html);
@@ -107,7 +110,7 @@
 
 			myGrid.setHeader("#master_checkbox, ID, Name, Contact, SIM, Message, Network, Date Received");
 
-			myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#combo_filter,#combo_filter,#text_filter,#combo_filter,&nbsp;");
+			myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#combo_filter,#combo_filter,#text_filter,#combo_filter,#text_filter");
 
 			myGrid.setInitWidths("50,50,120,120,120,*,120,120");
 
@@ -172,9 +175,9 @@
 
 				}
 
-			} catch(e) { 
+			} catch(e) {
 
-				console.log('e => '+e); 
+				console.log('e => '+e);
 
 				$("#formdiv_%formval% #messagingmaininboxgrid div.objbox").html('<span style="display:block;width:200px;margin:0 auto;"><center>Inbox is empty!</center></span>');
 
