@@ -591,19 +591,19 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 				<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
-				myGridSmartMoneyTransactions.forEachRow(function(id){
+				/*myGridSmartMoneyTransactions.forEachRow(function(id){
 					myGridSmartMoneyTransactions.cells(id,1).setDisabled(true);
 					myGridSmartMoneyTransactions.cells(id,2).setDisabled(true);
 					myGridSmartMoneyTransactions.cells(id,3).setDisabled(true);
 					myGridSmartMoneyTransactions.cells(id,4).setDisabled(true);
-				});
+				});*/
 
 				<?php } ?>
 
 				var x;
 
-				if(ddata.rows&&ddata.rows.length>0) {
-					for(x in ddata.rows) {
+				//if(ddata.rows&&ddata.rows.length>0) {
+					//for(x in ddata.rows) {
 						/*if(ddata.rows[x].loadcommands) {
 							//alert(JSON.stringify(ddata.rows[x].type));
 							var myCombo = myGridSmartMoneyTransactions.getColumnCombo(1);
@@ -617,7 +617,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 							//myGridSmartMoneyTransactions.cells(ddata.rows[x].id,1).setValue(ddata.rows[x].simcardfunctions_loadcommandid);
 
 							//myCombo.setComboValue(ddata.rows[x].data[1]);
-						}*/
+						}
 						if(ddata.rows[x].modemcommands) {
 							//alert(JSON.stringify(ddata.rows[x].options));
 							var myCombo = myGridSmartMoneyTransactions.getColumnCombo(4);
@@ -627,7 +627,6 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 							myCombo.enableFilteringMode(true);
 						}
 						break;
-						/*
 						if(ddata.rows[x].category) {
 							//alert(JSON.stringify(ddata.rows[x].options));
 							var myCombo = myGridSmartMoneyTransactions.getColumnCombo(2);
@@ -645,8 +644,8 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 							myCombo.enableFilteringMode(true);
 						}
 						*/
-					}
-				}
+					//}
+				//}
 			},'json');
 		} catch(e) {
 			console.log(e);
@@ -682,7 +681,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myGridUnassignedSmartMoneyTransactions.setColAlign("center,left,left,left,left,left,left,left,left,left,left,left,right,right,right,right,right,right,right,right,right");
 
-		myGridUnassignedSmartMoneyTransactions.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+		myGridUnassignedSmartMoneyTransactions.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,edtxt,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
 		myGridUnassignedSmartMoneyTransactions.setColSorting("int,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str");
 
@@ -693,19 +692,19 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 				<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
-				myGridUnassignedSmartMoneyTransactions.forEachRow(function(id){
+				/*myGridUnassignedSmartMoneyTransactions.forEachRow(function(id){
 					myGridUnassignedSmartMoneyTransactions.cells(id,1).setDisabled(true);
 					myGridUnassignedSmartMoneyTransactions.cells(id,2).setDisabled(true);
 					myGridUnassignedSmartMoneyTransactions.cells(id,3).setDisabled(true);
 					myGridUnassignedSmartMoneyTransactions.cells(id,4).setDisabled(true);
-				});
+				});*/
 
 				<?php } ?>
 
 				var x;
 
-				if(ddata.rows&&ddata.rows.length>0) {
-					for(x in ddata.rows) {
+				//if(ddata.rows&&ddata.rows.length>0) {
+					//for(x in ddata.rows) {
 						/*if(ddata.rows[x].loadcommands) {
 							//alert(JSON.stringify(ddata.rows[x].type));
 							var myCombo = myGridUnassignedSmartMoneyTransactions.getColumnCombo(1);
@@ -719,7 +718,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 							//myGridUnassignedSmartMoneyTransactions.cells(ddata.rows[x].id,1).setValue(ddata.rows[x].simcardfunctions_loadcommandid);
 
 							//myCombo.setComboValue(ddata.rows[x].data[1]);
-						}*/
+						}
 						if(ddata.rows[x].modemcommands) {
 							//alert(JSON.stringify(ddata.rows[x].options));
 							var myCombo = myGridUnassignedSmartMoneyTransactions.getColumnCombo(4);
@@ -729,7 +728,6 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 							myCombo.enableFilteringMode(true);
 						}
 						break;
-						/*
 						if(ddata.rows[x].category) {
 							//alert(JSON.stringify(ddata.rows[x].options));
 							var myCombo = myGridUnassignedSmartMoneyTransactions.getColumnCombo(2);
@@ -747,8 +745,8 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 							myCombo.enableFilteringMode(true);
 						}
 						*/
-					}
-				}
+					//}
+				//}
 			},'json');
 		} catch(e) {
 			console.log(e);
