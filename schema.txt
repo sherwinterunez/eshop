@@ -1330,6 +1330,17 @@ alter table tbl_loadtransaction add column loadtransaction_sendernumber text DEF
 
 alter table tbl_loadtransaction add column loadtransaction_claimedstamp timestamp with time zone DEFAULT now()
 
+alter table tbl_loadtransaction add column loadtransaction_receiverid integer NOT NULL DEFAULT 0;
+alter table tbl_loadtransaction add column loadtransaction_receivername text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_receivernumber text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_receiveraddress text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_receiveridexpiration text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_receiveridnumber text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_receiveridtype text DEFAULT ''::text NOT NULL;
+alter table tbl_loadtransaction add column loadtransaction_receiverspecifyid text DEFAULT ''::text NOT NULL;
+
+alter table tbl_loadtransaction add column loadtransaction_staffid integer NOT NULL DEFAULT 0;
+
 ------------------------------------------------------------------------------------------------------------------
 
 alter table tbl_remitcust add column remitcust_idtype text DEFAULT ''::text NOT NULL;

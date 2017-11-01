@@ -4160,7 +4160,7 @@ Indexes:
 									$smsoutbox_type = 'SHORT';
 								}
 
-								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$v['smsoutbox_contactnumber'],getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_part'].'/'.$v['smsoutbox_total'],$smsoutbox_type,$v['smsoutbox_message'],$v['smsoutbox_createstamp'],pgDate($v['smsoutbox_sentstamp'],'m-d-Y H:i:s')));
+								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$v['smsoutbox_contactnumber'],getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_part'].'/'.$v['smsoutbox_total'],$smsoutbox_type,$v['smsoutbox_message'],pgDate($v['smsoutbox_createstamp'],'m-d-Y H:i:s'),pgDate($v['smsoutbox_sentstamp'],'m-d-Y H:i:s')));
 							}
 
 							$retval = array('rows'=>$rows);

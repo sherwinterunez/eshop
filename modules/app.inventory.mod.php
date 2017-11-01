@@ -1229,6 +1229,8 @@ if(!class_exists('APP_app_inventory')) {
 
 				if(!empty($params['simcardinfo']['simcard_category'])&&$params['simcardinfo']['simcard_category']=='SMARTMONEY') {
 					$params['tbSmartMoney'] = array();
+					$params['tbSmartMoneyTransactions'] = array();
+					$params['tbUnassignedSmartMoneyTransactions'] = array();
 
 					$params['tbSmartMoney'][] = array(
 						'type' => 'container',
@@ -1237,7 +1239,24 @@ if(!class_exists('APP_app_inventory')) {
 						'inputHeight' => 200,
 						'className' => 'simcard_smartmoney_'.$post['formval'],
 					);
+
+					$params['tbSmartMoneyTransactions'][] = array(
+						'type' => 'container',
+						'name' => 'simcard_smartmoneytransactions',
+						'inputWidth' => 600,
+						'inputHeight' => 200,
+						'className' => 'simcard_smartmoneytransactions_'.$post['formval'],
+					);
+
+					$params['tbUnassignedSmartMoneyTransactions'][] = array(
+						'type' => 'container',
+						'name' => 'simcard_unassignedsmartmoneytransactions',
+						'inputWidth' => 600,
+						'inputHeight' => 200,
+						'className' => 'simcard_unassignedsmartmoneytransactions_'.$post['formval'],
+					);
 				}
+
 
 				$templatefile = $this->templatefile($routerid,$formid);
 

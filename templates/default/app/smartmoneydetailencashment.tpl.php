@@ -32,7 +32,9 @@ if(!empty($vars['post']['wid'])) {
 
 //$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved',$moduleid.'manually',$moduleid.'cancelled',$moduleid.'hold');
 
-$myToolbar = array($moduleid.'lock',$moduleid.'unlock',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved');
+//$myToolbar = array($moduleid.'lock',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved');
+
+$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'lock');
 
 /*if(!empty($vars['params']['optionsinfo']['options_name'])) {
 	$options_name = $vars['params']['optionsinfo']['options_name'];
@@ -373,6 +375,7 @@ pre(array('$vars'=>$vars));
 						if(ddata.data) {
 							console.log(JSON.stringify(ddata.data));
 
+							myForm.setItemValue('smartmoney_fullname',ddata.data.sendername);
 							myForm.setItemValue('smartmoney_recipientaddress',ddata.data.senderaddress);
 							myForm.setItemValue('smartmoney_recipientnumber',ddata.data.sendernumber);
 							myForm.setItemValue('smartmoney_idtype',ddata.data.senderidtype);
@@ -453,7 +456,7 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.enableOnly(myToolbar);
 
-		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>lock']);
 
 		<?php 	if(!empty($vars['params']['smartmoneyinfo']['loadtransaction_status'])&&!($vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_DRAFT||$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_FAILED||$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_PENDING||$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_APPROVED||$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_HOLD||$vars['params']['smartmoneyinfo']['loadtransaction_status']==TRN_QUEUED)) { ?>
 
@@ -640,6 +643,8 @@ pre(array('$vars'=>$vars));
 			if(typeof(name)!='undefined') {
 			} else return false;
 
+			<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?>
+
 			if(name=='loadtransaction_refnumber') {
 				var loadtransaction_refnumber = myForm.getItemValue('loadtransaction_refnumber');
 
@@ -674,7 +679,9 @@ pre(array('$vars'=>$vars));
 								myForm.setItemValue('loadtransaction_receiveagentcommissionamount',ddata.data.loadtransaction_receiveagentcommissionamount);
 							}
 
-							loadtransaction_amountdue = loadtransaction_amount + loadtransaction_receiveagentcommissionamount;
+							//loadtransaction_amountdue = loadtransaction_amount + loadtransaction_receiveagentcommissionamount;
+
+							loadtransaction_amountdue = loadtransaction_amount;
 
 							myForm.setItemValue('loadtransaction_amountdue',loadtransaction_amountdue);
 
@@ -697,6 +704,8 @@ pre(array('$vars'=>$vars));
 				}
 			}
 
+			<?php } ?>
+
 			if(name=='loadtransaction_cashreceived') {
 				var loadtransaction_cashreceived = parseFloat(myForm.getItemValue('loadtransaction_cashreceived'));
 				var loadtransaction_amountdue = parseFloat(myForm.getItemValue('loadtransaction_amountdue'));
@@ -717,16 +726,12 @@ pre(array('$vars'=>$vars));
 				var loadtransaction_amount = parseFloat(myForm.getItemValue('loadtransaction_amount'));
 				var smartmoney_otherchargesamount = parseFloat(myForm.getItemValue('smartmoney_otherchargesamount'));
 
-				var smartmoney_sendagentcommissionamount = parseFloat(myForm.getItemValue('smartmoney_sendagentcommissionamount'));
-				var smartmoney_transferfeeamount = parseFloat(myForm.getItemValue('smartmoney_transferfeeamount'));
-				var smartmoney_receiveagentcommissionamount = parseFloat(myForm.getItemValue('smartmoney_receiveagentcommissionamount'));
+				//var smartmoney_sendagentcommissionamount = parseFloat(myForm.getItemValue('smartmoney_sendagentcommissionamount'));
+				//var smartmoney_transferfeeamount = parseFloat(myForm.getItemValue('smartmoney_transferfeeamount'));
+				//var smartmoney_receiveagentcommissionamount = parseFloat(myForm.getItemValue('smartmoney_receiveagentcommissionamount'));
 
 				if(smartmoney_otherchargesamount>0&&loadtransaction_amount>0) {
 					var total = loadtransaction_amount + smartmoney_otherchargesamount;
-
-					total = total + smartmoney_sendagentcommissionamount;
-					total = total + smartmoney_transferfeeamount;
-					total = total + smartmoney_receiveagentcommissionamount;
 
 					myForm.setItemValue('loadtransaction_amountdue',total);
 				}
