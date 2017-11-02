@@ -179,6 +179,24 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				myWinObj.myGridUnassignedSmartMoneyTransactions.setSizes();
 			} catch(e) {console.log('error: myGridUnassignedSmartMoneyTransactions');}
 		}
+
+		<?php
+		if(!empty($vars['post']['rowid'])) {
+			$sm = getSmartMoneyOfSim($vars['post']['rowid']);
+
+			if(!empty($sm)&&is_array($sm)) {
+				foreach($sm as $k=>$v) { ?>
+					if(typeof(myWinObj.myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>)!='undefined') {
+						try {
+							console.log('myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>');
+							myWinObj.myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.setSizes();
+						} catch(e) {console.log('error: myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>');}
+					}
+
+	<?php }
+			}
+		}
+	 	?>
 	}
 
 	function <?php echo $wid.$templatedetailid.$submod; ?>_openwindow_%formval%(rowid) {
@@ -274,9 +292,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			myTabbar.addTab("tbUnassignedSmartMoneyTransactions", "Unassigned SM Transactions");
 		<?php } ?>
 
-		<?php if(!empty($params['tbSmartMoneyTransactions'])) { ?>
+		<?php /*if(!empty($params['tbSmartMoneyTransactions'])) {
 			myTabbar.addTab("tbSmartMoneyTransactions", "SM Transactions");
-		<?php } ?>
+		}*/ ?>
 
 		<?php
 		if(!empty($vars['post']['rowid'])) {
@@ -319,9 +337,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			<?php if(!empty($params['tbUnassignedSmartMoneyTransactions'])) { ?>
 			{type: "block", name: "tbUnassignedSmartMoneyTransactions", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbUnassignedSmartMoneyTransactions']); ?>},
 			<?php } ?>
-			<?php if(!empty($params['tbSmartMoneyTransactions'])) { ?>
+			<?php /*if(!empty($params['tbSmartMoneyTransactions'])) {
 			{type: "block", name: "tbSmartMoneyTransactions", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbSmartMoneyTransactions']); ?>},
-			<?php } ?>
+			}*/ ?>
 			<?php
 			if(!empty($vars['post']['rowid'])) {
 				$sm = getSmartMoneyOfSim($vars['post']['rowid']);
@@ -375,9 +393,9 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			myForm.hideItem('tbUnassignedSmartMoneyTransactions');
 		<?php } ?>
 
-		<?php if(!empty($params['tbSmartMoneyTransactions'])) { ?>
+		<?php /*if(!empty($params['tbSmartMoneyTransactions'])) {
 			myForm.hideItem('tbSmartMoneyTransactions');
-		<?php } ?>
+		}*/ ?>
 
 		<?php
 		if(!empty($vars['post']['rowid'])) {
@@ -601,111 +619,6 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 						*/
 					}
 				}
-			},'json');
-		} catch(e) {
-			console.log(e);
-		}
-
-	});
-
-<?php } ?>
-
-<?php if(!empty($params['tbSmartMoneyTransactions'])) { ?>
-
-	myTab.postData('/'+settings.router_id+'/json/', {
-		odata: {},
-		pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=smartmoneytransactions&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
-	}, function(ddata,odata){
-
-		if(typeof(myWinObj.myGridSmartMoneyTransactions)!='null'&&typeof(myWinObj.myGridSmartMoneyTransactions)!='undefined'&&myWinObj.myGridSmartMoneyTransactions!=null) {
-			try {
-				myWinObj.myGridSmartMoneyTransactions.destructor();
-				myWinObj.myGridSmartMoneyTransactions = null;
-			} catch(e) {
-				console.log(e);
-			}
-		}
-
-		var myGridSmartMoneyTransactions = myWinObj.myGridSmartMoneyTransactions = new dhtmlXGridObject(myForm.getContainer('simcard_smartmoneytransactions'));
-
-		myGridSmartMoneyTransactions.setImagePath("/codebase/imgs/")
-
-		myGridSmartMoneyTransactions.setHeader("ID,Date/Time, SMS Date/Time, Date, Time, Receipt No., Customer Name, Reference No., Mobile No./Card No., Recipient No., Label, Transaction Type, Status, Send Agent Commission, Transfer Fee, Receive Agent Commission, Other Charges, In, Out, Balance, Running Balance");
-
-		myGridSmartMoneyTransactions.setInitWidths("50,120,100,70,60,110,150,110,100,100,100,100,100,100,100,100,100,100,100,100,100");
-
-		myGridSmartMoneyTransactions.setColAlign("center,left,left,left,left,left,left,left,left,left,left,left,right,right,right,right,right,right,right,right,right");
-
-		myGridSmartMoneyTransactions.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
-
-		myGridSmartMoneyTransactions.setColSorting("int,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str");
-
-		myGridSmartMoneyTransactions.init();
-
-		try {
-			myGridSmartMoneyTransactions.parse(ddata,function(){
-
-				<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
-
-				/*myGridSmartMoneyTransactions.forEachRow(function(id){
-					myGridSmartMoneyTransactions.cells(id,1).setDisabled(true);
-					myGridSmartMoneyTransactions.cells(id,2).setDisabled(true);
-					myGridSmartMoneyTransactions.cells(id,3).setDisabled(true);
-					myGridSmartMoneyTransactions.cells(id,4).setDisabled(true);
-				});*/
-
-				<?php } ?>
-
-				var x;
-
-				if(ddata.rows&&ddata.rows.length>0) {
-					myGridSmartMoneyTransactions.attachHeader("&nbsp;,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
-				}
-
-				//if(ddata.rows&&ddata.rows.length>0) {
-					//for(x in ddata.rows) {
-						/*if(ddata.rows[x].loadcommands) {
-							//alert(JSON.stringify(ddata.rows[x].type));
-							var myCombo = myGridSmartMoneyTransactions.getColumnCombo(1);
-
-							myCombo.load(JSON.stringify(ddata.rows[x].loadcommands));
-
-							//myCombo.setComboText(ddata.rows[x].simcardfunctions_loadcommandid);
-
-							myCombo.enableFilteringMode(true);
-
-							//myGridSmartMoneyTransactions.cells(ddata.rows[x].id,1).setValue(ddata.rows[x].simcardfunctions_loadcommandid);
-
-							//myCombo.setComboValue(ddata.rows[x].data[1]);
-						}
-						if(ddata.rows[x].modemcommands) {
-							//alert(JSON.stringify(ddata.rows[x].options));
-							var myCombo = myGridSmartMoneyTransactions.getColumnCombo(4);
-
-							myCombo.load(JSON.stringify(ddata.rows[x].modemcommands));
-
-							myCombo.enableFilteringMode(true);
-						}
-						break;
-						if(ddata.rows[x].category) {
-							//alert(JSON.stringify(ddata.rows[x].options));
-							var myCombo = myGridSmartMoneyTransactions.getColumnCombo(2);
-
-							myCombo.load(JSON.stringify(ddata.rows[x].category));
-
-							myCombo.enableFilteringMode(true);
-						}
-						if(ddata.rows[x].discount) {
-							//alert(JSON.stringify(ddata.rows[x].options));
-							var myCombo = myGridSmartMoneyTransactions.getColumnCombo(4);
-
-							myCombo.load(JSON.stringify(ddata.rows[x].discount));
-
-							myCombo.enableFilteringMode(true);
-						}
-						*/
-					//}
-				//}
 			},'json');
 		} catch(e) {
 			console.log(e);
