@@ -4057,6 +4057,11 @@ if($readonly) {
 										continue;
 									}
 
+									if(!empty($this->post['smartmoneylabel'])&&trim($v['loadtransaction_cardlabel'])==trim($this->post['smartmoneylabel'])) {
+									} else {
+										continue;
+									}
+
 									$prefix = '';
 									$in = 0;
 									$out = 0;

@@ -134,6 +134,19 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .simcard_unassignedsmartmoneytransactions_%formval% .dhxform_container").height(dim[1]-150);
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .simcard_unassignedsmartmoneytransactions_%formval% .dhxform_container").width(dim[0]-54);
 
+		<?php
+		if(!empty($vars['post']['rowid'])) {
+			$sm = getSmartMoneyOfSim($vars['post']['rowid']);
+
+			if(!empty($sm)&&is_array($sm)) {
+				foreach($sm as $k=>$v) { ?>
+					$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .simcard_smartmoneytransactions_<?php echo $v['smartmoney_number']; ?>_%formval% .dhxform_container").height(dim[1]-150);
+					$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .simcard_smartmoneytransactions_<?php echo $v['smartmoney_number']; ?>_%formval% .dhxform_container").width(dim[0]-54);
+	<?php }
+			}
+		}
+	 	?>
+
 		if(typeof(myWinObj.myGridSMSFunction)!='undefined') {
 			try {
 				myWinObj.myGridSMSFunction.setSizes();
@@ -257,11 +270,25 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		myTabbar.addTab("tbSmsfunctions", "SMS Function");
 		myTabbar.addTab("tbTransactions", "Transactions");
 
-		<?php if(!empty($params['tbSmartMoneyTransactions'])) { ?>
+		<?php if(!empty($params['tbUnassignedSmartMoneyTransactions'])) { ?>
 			myTabbar.addTab("tbUnassignedSmartMoneyTransactions", "Unassigned SM Transactions");
+		<?php } ?>
+
+		<?php if(!empty($params['tbSmartMoneyTransactions'])) { ?>
 			myTabbar.addTab("tbSmartMoneyTransactions", "SM Transactions");
 		<?php } ?>
 
+		<?php
+		if(!empty($vars['post']['rowid'])) {
+			$sm = getSmartMoneyOfSim($vars['post']['rowid']);
+
+			if(!empty($sm)&&is_array($sm)) {
+				foreach($sm as $k=>$v) { ?>
+					myTabbar.addTab("tbSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>", "SM/<?php echo $v['smartmoney_label']; ?>");
+	<?php }
+			}
+		}
+	 	?>
 
 		myTabbar.tabs("tbSimcards").setActive();
 
@@ -295,6 +322,17 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			<?php if(!empty($params['tbSmartMoneyTransactions'])) { ?>
 			{type: "block", name: "tbSmartMoneyTransactions", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbSmartMoneyTransactions']); ?>},
 			<?php } ?>
+			<?php
+			if(!empty($vars['post']['rowid'])) {
+				$sm = getSmartMoneyOfSim($vars['post']['rowid']);
+
+				if(!empty($sm)&&is_array($sm)) {
+					foreach($sm as $k=>$v) { ?>
+						{type: "block", name: "tbSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbSmartMoneyTransactions_'.$v['smartmoney_number']]); ?>},
+		<?php }
+				}
+			}
+		 	?>
 			{type: "label", label: ""}
 		];
 
@@ -331,9 +369,27 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		<?php if(!empty($params['tbSmartMoney'])) { ?>
 			myForm.hideItem('tbSmartMoney');
-			myForm.hideItem('tbSmartMoneyTransactions');
+		<?php } ?>
+
+		<?php if(!empty($params['tbUnassignedSmartMoneyTransactions'])) { ?>
 			myForm.hideItem('tbUnassignedSmartMoneyTransactions');
 		<?php } ?>
+
+		<?php if(!empty($params['tbSmartMoneyTransactions'])) { ?>
+			myForm.hideItem('tbSmartMoneyTransactions');
+		<?php } ?>
+
+		<?php
+		if(!empty($vars['post']['rowid'])) {
+			$sm = getSmartMoneyOfSim($vars['post']['rowid']);
+
+			if(!empty($sm)&&is_array($sm)) {
+				foreach($sm as $k=>$v) { ?>
+					myForm.hideItem('tbSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>');
+	<?php }
+			}
+		}
+	 	?>
 
 		<?php if(!empty($params['tbGCash'])) { ?>
 			myForm.hideItem('tbGCash');
@@ -658,6 +714,76 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 	});
 
 <?php } ?>
+
+<?php
+if(!empty($vars['post']['rowid'])) {
+	$sm = getSmartMoneyOfSim($vars['post']['rowid']);
+
+	if(!empty($sm)&&is_array($sm)) {
+		foreach($sm as $k=>$v) { ?>
+
+			myTab.postData('/'+settings.router_id+'/json/', {
+				odata: {},
+				pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=smartmoneytransactions&smartmoney=<?php echo $v['smartmoney_number']; ?>&smartmoneyid=<?php echo $v['smartmoney_id']; ?>&smartmoneylabel=<?php echo $v['smartmoney_label']; ?>&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
+			}, function(ddata,odata){
+
+				if(typeof(myWinObj.myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>)!='null'&&typeof(myWinObj.myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>)!='undefined'&&myWinObj.myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>!=null) {
+					try {
+						myWinObj.myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.destructor();
+						myWinObj.myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?> = null;
+					} catch(e) {
+						console.log(e);
+					}
+				}
+
+				var myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?> = myWinObj.myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?> = new dhtmlXGridObject(myForm.getContainer('simcard_smartmoneytransactions_<?php echo $v['smartmoney_number']; ?>'));
+
+				myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.setImagePath("/codebase/imgs/")
+
+				myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.setHeader("ID,Date/Time, SMS Date/Time, Date, Time, Receipt No., Customer Name, Reference No., Mobile No./Card No., Recipient No., Label, Transaction Type, Status, Send Agent Commission, Transfer Fee, Receive Agent Commission, Other Charges, In, Out, Balance, Running Balance");
+
+				myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.setInitWidths("50,120,100,70,60,110,150,110,100,100,100,100,100,100,100,100,100,100,100,100,100");
+
+				myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.setColAlign("center,left,left,left,left,left,left,left,left,left,left,left,right,right,right,right,right,right,right,right,right");
+
+				myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+
+				myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.setColSorting("int,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str");
+
+				myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.init();
+
+				try {
+					myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.parse(ddata,function(){
+
+						<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
+
+						/*myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.forEachRow(function(id){
+							myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.cells(id,1).setDisabled(true);
+							myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.cells(id,2).setDisabled(true);
+							myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.cells(id,3).setDisabled(true);
+							myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.cells(id,4).setDisabled(true);
+						});*/
+
+						<?php } ?>
+
+						var x;
+
+						if(ddata.rows&&ddata.rows.length>0) {
+							myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.attachHeader("&nbsp;,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+						}
+
+					},'json');
+				} catch(e) {
+					console.log(e);
+				}
+
+			});
+
+
+<?php }
+	}
+}
+?>
 
 <?php if(!empty($params['tbUnassignedSmartMoneyTransactions'])) { ?>
 
