@@ -1254,6 +1254,14 @@ if(!class_exists('APP_app_inventory')) {
 						'className' => 'simcard_smartmoney_'.$post['formval'],
 					);
 
+					$params['tbUnassignedSmartMoneyTransactions'][] = array(
+						'type' => 'container',
+						'name' => 'simcard_unassignedsmartmoneytransactions',
+						'inputWidth' => 600,
+						'inputHeight' => 200,
+						'className' => 'simcard_unassignedsmartmoneytransactions_'.$post['formval'],
+					);
+
 					$params['tbSmartMoneyTransactions'][] = array(
 						'type' => 'container',
 						'name' => 'simcard_smartmoneytransactions',
@@ -1262,13 +1270,23 @@ if(!class_exists('APP_app_inventory')) {
 						'className' => 'simcard_smartmoneytransactions_'.$post['formval'],
 					);
 
-					$params['tbUnassignedSmartMoneyTransactions'][] = array(
-						'type' => 'container',
-						'name' => 'simcard_unassignedsmartmoneytransactions',
-						'inputWidth' => 600,
-						'inputHeight' => 200,
-						'className' => 'simcard_unassignedsmartmoneytransactions_'.$post['formval'],
-					);
+					if(!empty($post['rowid'])) {
+						$sm = getSmartMoneyOfSim($post['rowid']);
+
+						//pre(array('$sm'=>$sm));
+
+						if(!empty($sm)&&is_array($sm)) {
+							foreach($sm as $k=>$v) {
+								$params['tbSmartMoneyTransactions_'.$v['smartmoney_number']][] = array(
+									'type' => 'container',
+									'name' => 'simcard_smartmoneytransactions_'.$v['smartmoney_number'],
+									'inputWidth' => 600,
+									'inputHeight' => 200,
+									'className' => 'simcard_smartmoneytransactions_'.$v['smartmoney_number'].'_'.$post['formval'],
+								);
+							}
+						}
+					}
 				}
 
 
@@ -4029,7 +4047,7 @@ if($readonly) {
 
 								foreach($result['rows'] as $k=>$v) {
 
-									if($v['loadtransaction_status']==TRN_COMPLETED||$v['loadtransaction_status']==TRN_COMPLETED_MANUALLY||$v['loadtransaction_status']==TRN_CLAIMED) {
+									if($v['loadtransaction_status']==TRN_COMPLETED||$v['loadtransaction_status']==TRN_COMPLETED_MANUALLY||$v['loadtransaction_status']==TRN_CLAIMED||$v['loadtransaction_status']==TRN_RECEIVED) {
 									} else {
 										continue;
 									}
@@ -4094,7 +4112,7 @@ if($readonly) {
 
 								foreach($result['rows'] as $k=>$v) {
 
-									if($v['loadtransaction_status']==TRN_COMPLETED||$v['loadtransaction_status']==TRN_COMPLETED_MANUALLY||$v['loadtransaction_status']==TRN_CLAIMED) {
+									if($v['loadtransaction_status']==TRN_COMPLETED||$v['loadtransaction_status']==TRN_COMPLETED_MANUALLY||$v['loadtransaction_status']==TRN_CLAIMED||$v['loadtransaction_status']==TRN_RECEIVED) {
 									} else {
 										continue;
 									}
