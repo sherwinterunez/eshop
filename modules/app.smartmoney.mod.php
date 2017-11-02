@@ -2589,6 +2589,13 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					if(!empty($result['returning'][0]['loadtransaction_id'])) {
 						$retval['rowid'] = $loadtransaction_id = $result['returning'][0]['loadtransaction_id'];
+
+						$cupdate = array();
+						$cupdate['loadtransaction_createstampunix'] = '#extract(epoch from loadtransaction_updatestamp)#';
+
+						if(!($result = $appdb->update("tbl_loadtransaction",$cupdate,"loadtransaction_id=".$loadtransaction_id))) {
+							return false;
+						}
 					}
 
 					if(!empty($retval['rowid'])) {
