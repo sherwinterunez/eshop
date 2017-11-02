@@ -354,11 +354,19 @@ foreach($str as $k=>$v) {
 
 //$regx = '.+?Remittance .+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission.+?P(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?received.+?\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12})';
 
-$regx = '.+?Received.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?with.+?P(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission\s+from\s+\d+(?<MOBILENO>\d{10})\s+to\s+(?<LABEL>.+?)\..+?Ref\:(?<REF>.{12}).+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
+//$regx = '.+?Received.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?with.+?P(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission\s+from\s+\d+(?<MOBILENO>\d{10})\s+to\s+(?<LABEL>.+?)\..+?Ref\:(?<REF>.{12}).+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
 
 //$regx = '.+?We\s+have\s+sent.+?Thank\s+you.+?Ref\:(?<REF>.{12})';
 
 //$regx = '\d+(?<SIMCARD>\d{10})\s+has\s+loaded\s+(?<PRODUCT>.+?)\(.+?(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+)\)\s+to\s+\d+(?<MOBILENO>\d{10}).+?Wallet\s+Balance.+?P(?<BALANCE>\d+\.\d+|\d+).+?Ref.+?(?<REFERENCE>\d+)';
+
+//----
+
+//$regx = '.+?Received.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from.+?\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12}).+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
+
+//$regx = '.+?Remittance.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission.+?P(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?added.+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref\:(?<REF>.{12})';
+
+$regx = '.+?Received.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<SOURCE>.+?)\s+.+?Ref\:(?<REF>.{12}).+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
 
 $str = array();
 //$str[] = '17Aug 2143:Sent PHP500.00 from LOADING to 557751******8104 at 639092701100.Ref:f620ccf870f6.Sa next msg,i-type ang customer &receiver cellphone# &send to 8890.';
@@ -385,7 +393,25 @@ $str[] = '26Aug 2347: We have sent a text message to your customer on the Smart 
 
 $str[] = '5-Sep 16:31:639471617115 has loaded 50 Load (P47.78) to 09460036139. New Load Wallet Balance:P3521.64. Ref:800058079190';
 
-$str[] = '01Oct 1004: Received P500.00 with P11.50 commission from 09282573535 to LOADING.LIBRE ang pag-claim! Ref:3152f53eeab6 Bal:P9,459.00';
+//$str[] = '01Oct 1004: Received P500.00 with P11.50 commission from 09282573535 to LOADING.LIBRE ang pag-claim! Ref:3152f53eeab6 Bal:P9,459.00';
+
+$str[] = '2017-09-24 17:08:38: Received PHP600.00 from +639216811152 w/commission kung ikaw ay Smart Padala Agent.LIBRE ang pag-claim ni suki! Ref:9b129a9b73fc Bal: PHP188173.15. Para malaman ang iyong komisyon, i-check ang balance sa Smart Money menu.';
+
+//$str[] = '06Oct 0926: Received P1,500.00 with P17.25 commission from 09478254176 to ENCASHMENT.LIBRE ang pag-claim! Ref:4e9feaa73642 Bal:P11,438.00';
+
+//$str[] = '28Sep 1437: Received P900.00 with P11.50 commission from 09984815444 to LOADING.LIBRE ang pag-claim! Ref:5c4ed4976d7b Bal:P505,608.62';
+
+$str[] = '27Sep 1346:Remittance of P500.00 & commission of P11.50 was added to your account.Avail Bal:P71,611.25.Ref:d9d9359b2e2d';
+
+$str[] = '2017-09-27 09:20:24: Received PHP1,000.00 from POSIBLE w/commission kung ikaw ay Smart Padala Agent.LIBRE ang pag-claim ni suki! Ref:3a5c3e85d7d4 Bal: PHP47143.50. Para malaman ang iyong komisyon, i-check ang balance sa Smart Money menu.';
+
+$str[] = '2017-09-24 19:34:38: Received PHP2,000.00 from Bayad Center w/commission kung ikaw ay Smart Padala Agent.LIBRE ang pag-claim ni suki! Ref:f3417e81e20e Bal: PHP199222.65. Para malaman ang iyong komisyon, i-check ang balance sa Smart Money menu.';
+
+$str[] = '2017-09-24 09:46:04: Received PHP800.00 from EXPRESSPAY w/commission kung ikaw ay Smart Padala Agent.LIBRE ang pag-claim ni suki! Ref:fd5b3732ac5d Bal: PHP62243.75. Para malaman ang iyong komisyon, i-check ang balance sa Smart Money menu.';
+
+$str[] = '2017-09-23 18:19:42: Received PHP700.00 from Payswitch w/commission kung ikaw ay Smart Padala Agent.LIBRE ang pag-claim ni suki! Ref:e5e19ce8f2d1 Bal: PHP460225.12. Para malaman ang iyong komisyon, i-check ang balance sa Smart Money menu.';
+
+$str[] = '30Oct 1813:Remittance of P1,500.00 & commission of P17.25 was added to your account.Avail Bal:P116,815.50.Ref:747136769ed3';
 
 foreach($str as $k=>$v) {
 	if(preg_match('/'.$regx.'/si',$v,$matches)) {

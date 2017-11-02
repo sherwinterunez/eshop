@@ -6197,6 +6197,9 @@ function _SmartMoneyPadalaReceivedExpression($vars=array()) {
 
 		if(!empty($match['MOBILENO'])) {
 			$content['loadtransaction_fromnumber'] = '0'.$match['MOBILENO'];
+		} else
+		if(!empty($match['SOURCE'])) {
+			$content['loadtransaction_fromnumber'] = $match['SOURCE'];
 		}
 
 		if(!empty($match['COMMISSION'])) {
