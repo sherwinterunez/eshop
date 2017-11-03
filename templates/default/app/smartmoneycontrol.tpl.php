@@ -36,6 +36,11 @@ $sidebar[] = array(
 	'text'=>'Cards',
 	'icon'=>'music.png',
 );
+$sidebar[] = array(
+	'id'=>'unassigned',
+	'text'=>'Unassigned',
+	'icon'=>'recent.png',
+);
 
 /*
 $sidebar[] = array(

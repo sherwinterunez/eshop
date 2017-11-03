@@ -6187,9 +6187,9 @@ function _SmartMoneyPadalaReceivedExpression($vars=array()) {
 
 		$content = array();
 
-		//if(!empty($match['DATETIME'])) {
-		//	$content['loadtransaction_datetime'] = $match['DATETIME'];
-		//}
+		if(!empty($match['DATETIME'])) {
+			$content['loadtransaction_datetime'] = trim($match['DATETIME']);
+		}
 
 		if(!empty($match['AMOUNT'])) {
 			$content['loadtransaction_amount'] = $loadtransaction_amount = str_replace(',','',$match['AMOUNT']);

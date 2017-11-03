@@ -144,6 +144,26 @@ if(!class_exists('APP_app_smartmoney')) {
 
 		} // _form_smartmoneymainencashment
 
+		function _form_smartmoneymainunassigned($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				$params = array();
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_smartmoneymainencashment
+
 		function _form_smartmoneymainsettings($routerid=false,$formid=false) {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
 
@@ -2085,6 +2105,285 @@ if(!class_exists('APP_app_smartmoney')) {
 
 		} // _form_smartmoneydetailencashment
 
+		function _form_smartmoneydetailunassigned($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				$readonly = true;
+
+				$params = array();
+
+				$post = $this->vars['post'];
+
+				if(!empty($this->vars['post']['method'])&&($this->vars['post']['method']=='smartmoneynew'||$this->vars['post']['method']=='smartmoneyedit')) {
+					$readonly = false;
+				}
+
+				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='smartmoneyedit')) {
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+						if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['rows'][0]['loadtransaction_id'])) {
+							$params['cardinfo'] = $result['rows'][0];
+						}
+					}
+				} else
+				if(!empty($post['method'])&&$post['method']=='smartmoneysave') {
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Card number successfully saved!';
+
+					$content = array();
+					$content['smartmoneynumber_number'] = !empty($post['smartmoneynumber_number']) ? $post['smartmoneynumber_number'] : '';
+					$content['smartmoneynumber_type'] = !empty($post['smartmoneynumber_type']) ? $post['smartmoneynumber_type'] : '';
+
+					//pre(array('$post'=>$post));
+
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+
+						$retval['rowid'] = $post['rowid'];
+
+						$content['smartmoneynumber_updatestamp'] = 'now()';
+
+						if(!($result = $appdb->update("tbl_smartmoneynumber",$content,"smartmoneynumber_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+					} else {
+
+						if(!($result = $appdb->insert("tbl_smartmoneynumber",$content,"smartmoneynumber_id"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['returning'][0]['smartmoneynumber_id'])) {
+							$retval['rowid'] = $result['returning'][0]['smartmoneynumber_id'];
+						}
+
+					}
+
+					json_encode_return($retval);
+					die;
+				} else
+				if(!empty($post['method'])&&$post['method']=='smartmoneydelete') {
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Card number successfully deleted!';
+
+					if(!empty($post['rowids'])) {
+
+						$rowids = explode(',', $post['rowids']);
+
+						$arowid = array();
+
+						for($i=0;$i<count($rowids);$i++) {
+							$rowid = intval(trim($rowids[$i]));
+							if(!empty($rowid)) {
+								$arowid[] = $rowid;
+							}
+						}
+
+						if(!empty($arowid)) {
+							$rowids = implode(',', $arowid);
+
+							if(!($result = $appdb->query("delete from tbl_smartmoneynumber where smartmoneynumber_id in (".$rowids.")"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							json_encode_return($retval);
+							die;
+						}
+
+					}
+
+					if(!empty($post['rowid'])) {
+						if(!($result = $appdb->query("delete from tbl_smartmoneynumber where smartmoneynumber_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+					}
+
+					json_encode_return($retval);
+					die;
+				}
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$newcolumnoffset = 50;
+
+				$position = 'right';
+
+/*
+		myTabbar.addTab("tbSimcards", "Sim Card");
+		myTabbar.addTab("tbDetails", "Details");
+		myTabbar.addTab("tbSmsfunctions", "SMS Function");
+		myTabbar.addTab("tbTransactions", "Transactions");
+*/
+
+
+//pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s');
+
+				$unassigned_messagedate = '';
+				$unassigned_messagetime = '';
+
+				if(!empty($params['cardinfo']['loadtransaction_createstampunix'])) {
+					$unassigned_messagedate = pgDateUnix($params['cardinfo']['loadtransaction_createstampunix'], 'm-d-Y');
+					$unassigned_messagetime = pgDateUnix($params['cardinfo']['loadtransaction_createstampunix'], 'H:i:s');
+				}
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'MESSAGE DATE',
+					'labelWidth' => 150,
+					'name' => 'unassigned_messagedate',
+					//'inputWidth' => 500,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => $unassigned_messagedate,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'AMOUNT',
+					'labelWidth' => 150,
+					'name' => 'loadtransaction_amount',
+					//'inputWidth' => 500,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'numeric' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['cardinfo']['loadtransaction_amount']) ? $params['cardinfo']['loadtransaction_amount'] : 0,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'BALANCE',
+					'labelWidth' => 150,
+					'name' => 'loadtransaction_simcardbalance',
+					//'inputWidth' => 500,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'numeric' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['cardinfo']['loadtransaction_simcardbalance']) ? $params['cardinfo']['loadtransaction_simcardbalance'] : 0,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'COMMISSION',
+					'labelWidth' => 150,
+					'name' => 'loadtransaction_receiveagentcommissionamount',
+					//'inputWidth' => 500,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'numeric' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['cardinfo']['loadtransaction_receiveagentcommissionamount']) ? $params['cardinfo']['loadtransaction_receiveagentcommissionamount'] : 0,
+				);
+
+				$opt = array();
+
+				//if(!$readonly) {
+				//	$opt[] = array('text'=>'','value'=>'','selected'=>false);
+				//}
+
+				//$transactiontype = array('SMART PADALA','TOP-UP','PAYMAYA','PICK-UP ANYWHERE');
+
+				$transactiontype = array('PADALA','TOPUP','PAYMAYA','PICKUP');
+
+				foreach($transactiontype as $v) {
+					$selected = false;
+					if(!empty($params['cardinfo']['smartmoneynumber_type'])&&$params['cardinfo']['smartmoneynumber_type']==$v) {
+						$selected = true;
+					}
+					if($readonly) {
+						if($selected) {
+							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+						}
+					} else {
+						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+					}
+				}
+
+				if($post['method']=='smartmoneynew'||$post['method']=='smartmoneyedit') {
+					$params['tbDetails'][] = array(
+						'type' => 'combo',
+						'label' => 'ASSIGNED CARD NO.',
+						'name' => 'smartmoneynumber_type',
+						'labelWidth' => 150,
+						'readonly' => true,
+						//'required' => !$readonly,
+						'options' => $opt,
+					);
+				} else {
+					$params['tbDetails'][] = array(
+						'type' => 'input',
+						'label' => 'ASSIGNED CARD NO.',
+						'name' => 'smartmoneynumber_type',
+						'labelWidth' => 150,
+						'readonly' => true,
+						//'required' => !$readonly,
+						'value' => !empty($params['cardinfo']['smartmoneynumber_type']) ? $params['cardinfo']['smartmoneynumber_type'] : '',
+					);
+				}
+
+				$params['tbDetails'][] = array(
+					'type' => 'newcolumn',
+					'offset' => 50,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'MESSAGE TIME',
+					'labelWidth' => 150,
+					'name' => 'unassigned_messagetime',
+					//'inputWidth' => 500,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => $unassigned_messagetime,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'REFERENCE NO.',
+					'labelWidth' => 150,
+					'name' => 'loadtransaction_refnumber',
+					//'inputWidth' => 500,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => !empty($params['cardinfo']['loadtransaction_refnumber']) ? $params['cardinfo']['loadtransaction_refnumber'] : '',
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'MOBILE NO./CARD NO.',
+					'labelWidth' => 150,
+					'name' => 'loadtransaction_fromnumber',
+					//'inputWidth' => 500,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => !empty($params['cardinfo']['loadtransaction_fromnumber']) ? $params['cardinfo']['loadtransaction_fromnumber'] : '',
+				);
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_smartmoneydetailunassigned
+
 		function _form_smartmoneydetailmoneytransfer($routerid=false,$formid=false) {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
 
@@ -4016,6 +4315,84 @@ if(!class_exists('APP_app_smartmoney')) {
 						if(!empty($rows)) {
 							$retval = array('rows'=>$rows);
 						}
+
+					} else
+					if($this->post['table']=='unassigned') {
+
+						//$simcard = getSimCardByID($this->post['rowid']);
+
+						//pre(array('$simcard'=>$simcard));
+
+						//$simcard_number = $simcard['simcard_number'];
+
+						//if(!empty($simcard_number)) {
+
+							if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_type in ('smartmoney') order by loadtransaction_createstampunix desc"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							/*$sm = getSmartMoneyOfSimNumber($simcard_number);
+
+							$optcardlabel = array(array('text'=>'','value'=>''));
+
+							if(!empty($sm)&&is_array($sm)) {
+								foreach($sm as $k=>$v) {
+									$optcardlabel[] = array('text'=>$v['smartmoney_label'],'value'=>$v['smartmoney_label']);
+								}
+							}*/
+
+							if(!empty($result['rows'][0]['loadtransaction_id'])) {
+								$rows = array();
+
+								foreach($result['rows'] as $k=>$v) {
+
+									if($v['loadtransaction_status']==TRN_COMPLETED||$v['loadtransaction_status']==TRN_COMPLETED_MANUALLY||$v['loadtransaction_status']==TRN_CLAIMED||$v['loadtransaction_status']==TRN_RECEIVED) {
+									} else {
+										continue;
+									}
+
+									if(trim($v['loadtransaction_cardlabel'])=='') {
+									} else {
+										continue;
+									}
+
+									$prefix = '';
+									$in = 0;
+									$out = 0;
+									$flag = 0;
+
+									if($v['loadtransaction_smartmoneytype']=='PADALA'||$v['loadtransaction_smartmoneytype']=='TOPUP'||$v['loadtransaction_smartmoneytype']=='PAYMAYA'||$v['loadtransaction_smartmoneytype']=='TOPUP') {
+										$prefix = 'SM';
+										$out = $v['loadtransaction_amount'];
+										$flag = 1;
+									} else
+									if($v['loadtransaction_smartmoneytype']=='RECEIVED') {
+										$prefix = 'SM';
+										$in = $v['loadtransaction_amount'];
+										$flag = 2;
+									}
+
+									$transid = $prefix . $v['loadtransaction_ymd'] . sprintf('%04d', $v['loadtransaction_id']);
+
+									//$rows[] = array('id'=>$v['loadtransaction_id'],'cardlabel'=>array('options'=>$optcardlabel),'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDate($v['loadtransaction_createstamp'],'m-d-Y'),pgDate($v['loadtransaction_createstamp'],'H:i'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_destcardno'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_cardlabel']),strtoupper($v['loadtransaction_smartmoneytype']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
+
+									if($flag==1) {
+										$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array(0,$v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),getSimNameByNumber($v['loadtransaction_assignedsim']),$v['loadtransaction_confirmationfrom'],$v['loadtransaction_datetime'],$v['loadtransaction_refnumber'],$v['loadtransaction_destcardno'],$v['loadtransaction_amount'],number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_simcardbalance'],2)));
+									} else
+									if($flag==2) {
+										$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array(0,$v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),getSimNameByNumber($v['loadtransaction_assignedsim']),$v['loadtransaction_confirmationfrom'],$v['loadtransaction_datetime'],$v['loadtransaction_refnumber'],$v['loadtransaction_fromnumber'],$v['loadtransaction_amount'],number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_simcardbalance'],2)));
+									} else {
+										$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array(0,$v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),getSimNameByNumber($v['loadtransaction_assignedsim']),$v['loadtransaction_confirmationfrom'],$v['loadtransaction_datetime'],$v['loadtransaction_refnumber'],$v['loadtransaction_destcardno'],$v['loadtransaction_amount'],number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_simcardbalance'],2)));
+									}
+
+								}
+
+								$retval = array('rows'=>$rows);
+							}
+
+
+						//}
 
 					}
 
