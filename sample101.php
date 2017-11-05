@@ -71,7 +71,7 @@ $gw = selectGateway($contactnumber);
 pre(array('$gw'=>$gw));
 */
 
-
+/*
 $sm = getSmartMoneyOfSimNumber('09477409000');
 
 if(!empty($sm)&&is_array($sm)&&count($sm)==1) {
@@ -83,7 +83,17 @@ $sm = getSmartMoneyOfSimNumber('09092701100');
 if(!empty($sm)&&is_array($sm)&&count($sm)==1) {
 	pre(array('$sm'=>$sm,'count'=>count($sm)));
 }
+*/
 
+$MOBILENUMBER = '09272067976';
+
+$loadtransaction_item = 'GOSURF10';
+
+$loadtransaction_provider = getNetworkName($MOBILENUMBER);
+
+$simassignment = getItemSimAssign($loadtransaction_item,$loadtransaction_provider);
+
+print_r(array('$loadtransaction_provider'=>$loadtransaction_provider,'$simassignment'=>$simassignment));
 
 
 ///
