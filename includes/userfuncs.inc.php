@@ -4531,6 +4531,52 @@ function getItemSimAssign($item=false,$provider=false) {
 	return false;
 }
 
+function getItemSimAssign2($item=false,$provider=false) {
+	global $appdb;
+
+	if(!empty($item)) {
+	} else {
+		return false;
+	}
+
+	if(($data = getItemData($item,$provider))) {
+		$sql = "select * from tbl_itemassignedsim where itemassignedsim_itemid=".$data['item_id']." and itemassignedsim_simcommand<>'' and itemassignedsim_active>0 order by itemassignedsim_seq asc";
+
+		print_r(array('getItemSimAssign2'=>array('$sql'=>$sql)));
+
+		if(!($result = $appdb->query($sql))) {
+			return false;
+		}
+
+		print_r(array('getItemSimAssign2'=>array('$result'=>$result)));
+
+		if(!empty($result['rows'][0]['itemassignedsim_id'])) {
+			$retval = array();
+
+			foreach($result['rows'] as $k=>$v) {
+				$isSimEnabled = isSimEnabled($v['itemassignedsim_simnumber']);
+				$isSimOnline = isSimOnline($v['itemassignedsim_simnumber']);
+
+				print_r(array('getItemSimAssign2'=>array('itemassignedsim_simnumber'=>$v['itemassignedsim_simnumber'],'$isSimEnabled'=>$isSimEnabled,'$isSimOnline'=>$isSimOnline)));
+
+				if(isSimEnabled($v['itemassignedsim_simnumber'])&&isSimOnline($v['itemassignedsim_simnumber'])) {
+					$retval[] = $v;
+				}
+			}
+
+			//return $result['rows'];
+
+			if(!empty($retval)) {
+				return $retval;
+			}
+		}
+	}
+
+	//pre(array('$data'=>$data));
+
+	return false;
+}
+
 function getLoadProducts($network=false) {
 	global $appdb;
 

@@ -634,13 +634,20 @@ function _eLoadProcessSMS($vars=array()) {
 			$itemProvider = false;
 		}
 
+		print_r(array('$loadtransaction_recipientnumber'=>$loadtransaction_recipientnumber,'$loadtransaction_item'=>$loadtransaction_item,'$itemProvider'=>$itemProvider));
+
 		if(!($simassignment = getItemSimAssign($loadtransaction_item,$itemProvider))) {
+
+			$simassignment2 = getItemSimAssign2($loadtransaction_item,$itemProvider);
+
 			//$errmsg = smsdt()." ".getNotification('$INVALID_ITEMCODE');
 
 			//$errmsg = smsdt()." ".getNotification('NETWORK AND MOBILE NUMBER NOT MATCH');
 
 			//sendToOutBox($loadtransaction_customernumber,$simhotline,$errmsg);
 			//sendToGateway($loadtransaction_customernumber,$simhotline,$errmsg);
+
+			print_r(array('$simassignment'=>$simassignment,'$simassignment2'=>$simassignment2));
 
 			if(!empty($vars['smscommands']['smscommands_checkprovidernotification'])) {
 				$noti = explode(',', $vars['smscommands']['smscommands_checkprovidernotification']);

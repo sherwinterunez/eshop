@@ -85,9 +85,16 @@ if(!empty($sm)&&is_array($sm)&&count($sm)==1) {
 }
 */
 
-$MOBILENUMBER = '09272067976';
+// GREG15 09273722295
 
-$loadtransaction_item = 'GOSURF10';
+//$MOBILENUMBER = '09272067976';
+
+//$loadtransaction_item = 'GOSURF10';
+
+$MOBILENUMBER = '09273722295';
+
+$loadtransaction_item = 'GREG15';
+
 
 $loadtransaction_provider = getNetworkName($MOBILENUMBER);
 
