@@ -125,6 +125,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 
 			myGrid.setImagePath("/codebase/imgs/")
 
+			<?php /*
 			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Assigned Sim, Remittance Name, SMS Date/Time, Reference No., Remittance Mobile No./Card No., Amount, Commission, Balance, &nbsp;");
 
 			myGrid.setInitWidths("50,50,130,130,120,120,130,150,100,100,100,*");
@@ -134,6 +135,17 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
 			myGrid.setColSorting("int,int,str,str,str,str,str,str,str,str,str,str");
+			*/ ?>
+
+			myGrid.setHeader("#master_checkbox,ID,Date/Time, SIM, SMS Date/Time, Date, Time, Receipt No., Customer Name, Reference No., Mobile No./Card No., Recipient No., Label, Transaction Type, Status, Send Agent Commission, Transfer Fee, Receive Agent Commission, Other Charges, In, Out, Balance, Running Balance");
+
+			myGrid.setInitWidths("50,50,120,120,100,70,60,110,150,110,100,100,100,100,100,100,100,100,100,100,100,100,100");
+
+			myGrid.setColAlign("center,center,left,left,left,left,left,left,left,left,left,left,left,left,right,right,right,right,right,right,right,right,right");
+
+			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,combo,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+
+			myGrid.setColSorting("int,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str");
 
 			myGrid.enablePaging(true,100,10,"<?php echo $templatemainid.$submod; ?>gridpagingArea",true,"<?php echo $templatemainid.$submod; ?>gridrecinfoArea");
 
@@ -148,7 +160,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 
 				if(ddata.rows[0].id) {
 
-					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#text_filter,#text_filter,#text_filter,&nbsp;");
+					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#text_filter,#text_filter,#text_filter,&nbsp;");
 
 					myGrid.attachEvent("onBeforeSelect", function(new_row,old_row,new_col_index){
 
