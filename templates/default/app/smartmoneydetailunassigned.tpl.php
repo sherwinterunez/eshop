@@ -34,7 +34,7 @@ if(!empty($vars['post']['wid'])) {
 
 //$myToolbar = array($moduleid.'lock',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved');
 
-$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'lock');
+$myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'lock');
 
 /*if(!empty($vars['params']['optionsinfo']['options_name'])) {
 	$options_name = $vars['params']['optionsinfo']['options_name'];
@@ -268,9 +268,11 @@ pre(array('$vars'=>$vars));
 
 		myWinToolbar.disableAll();
 
+		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+
 		//myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>approved']);
 
-		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>approved']);
+		//myWinToolbar.enableOnly(['<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>approved']);
 
 		//myForm.setItemFocus("txt_optionsname");
 

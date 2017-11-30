@@ -1328,7 +1328,7 @@ if(!class_exists('APP_app_smartmoney')) {
 		        die;
 		      }
 
-					$sql = "select * from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_status=".TRN_RECEIVED." and loadtransaction_refnumber='$refnumber' limit 1";
+					$sql = "select * from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_status=".TRN_RECEIVED." and loadtransaction_refnumber='$refnumber' and loadtransaction_cardlabel!='' limit 1";
 
 					if(!($result = $appdb->query($sql))) {
 		        json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -2134,82 +2134,49 @@ if(!class_exists('APP_app_smartmoney')) {
 				} else
 				if(!empty($post['method'])&&$post['method']=='smartmoneysave') {
 
+					if(!empty($post['unassigned_messagedate'])&&preg_match('/^(?<MM>\d+)\-(?<DD>\d+)\-(?<YY>\d+)$/si',$post['unassigned_messagedate'],$match)) {
+						//pre(array('$match'=>$match));
+					} else {
+						$retval = array();
+						$retval['error_code'] = 7457345;
+						$retval['error_message'] = 'Invalid message date!';
+						json_encode_return($retval);
+						die;
+					}
+
+					if(!empty($post['unassigned_messagetime'])&&preg_match('/^(?<HH>\d+)\-(?<MM>\d+)\-(?<SS>\d+)$/si',$post['unassigned_messagetime'],$match)) {
+						//pre(array('$match'=>$match));
+					} else {
+						$retval = array();
+						$retval['error_code'] = 7457346;
+						$retval['error_message'] = 'Invalid message time!';
+						json_encode_return($retval);
+						die;
+					}
+
 					$retval = array();
 					$retval['return_code'] = 'SUCCESS';
 					$retval['return_message'] = 'Card number successfully saved!';
 
 					$content = array();
-					$content['smartmoneynumber_number'] = !empty($post['smartmoneynumber_number']) ? $post['smartmoneynumber_number'] : '';
-					$content['smartmoneynumber_type'] = !empty($post['smartmoneynumber_type']) ? $post['smartmoneynumber_type'] : '';
-
+					$content['loadtransaction_cardlabel'] = !empty($post['loadtransaction_cardlabel']) ? $post['loadtransaction_cardlabel'] : '';
+					$content['loadtransaction_simcardbalance'] = !empty($post['loadtransaction_simcardbalance']) ? $post['loadtransaction_simcardbalance'] : 0;
+					$content['loadtransaction_receiveagentcommissionamount'] = !empty($post['loadtransaction_receiveagentcommissionamount']) ? $post['loadtransaction_receiveagentcommissionamount'] : 0;
+					$content['loadtransaction_fromnumber'] = !empty($post['loadtransaction_fromnumber']) ? $post['loadtransaction_fromnumber'] : '';
 					//pre(array('$post'=>$post));
 
-					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+					/*if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&intval($post['rowid'])>0) {
 
 						$retval['rowid'] = $post['rowid'];
 
-						$content['smartmoneynumber_updatestamp'] = 'now()';
+						$content['loadtransaction_updatestamp'] = 'now()';
 
-						if(!($result = $appdb->update("tbl_smartmoneynumber",$content,"smartmoneynumber_id=".$post['rowid']))) {
+						if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
 
-					} else {
-
-						if(!($result = $appdb->insert("tbl_smartmoneynumber",$content,"smartmoneynumber_id"))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-
-						if(!empty($result['returning'][0]['smartmoneynumber_id'])) {
-							$retval['rowid'] = $result['returning'][0]['smartmoneynumber_id'];
-						}
-
-					}
-
-					json_encode_return($retval);
-					die;
-				} else
-				if(!empty($post['method'])&&$post['method']=='smartmoneydelete') {
-
-					$retval = array();
-					$retval['return_code'] = 'SUCCESS';
-					$retval['return_message'] = 'Card number successfully deleted!';
-
-					if(!empty($post['rowids'])) {
-
-						$rowids = explode(',', $post['rowids']);
-
-						$arowid = array();
-
-						for($i=0;$i<count($rowids);$i++) {
-							$rowid = intval(trim($rowids[$i]));
-							if(!empty($rowid)) {
-								$arowid[] = $rowid;
-							}
-						}
-
-						if(!empty($arowid)) {
-							$rowids = implode(',', $arowid);
-
-							if(!($result = $appdb->query("delete from tbl_smartmoneynumber where smartmoneynumber_id in (".$rowids.")"))) {
-								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;
-							}
-
-							json_encode_return($retval);
-							die;
-						}
-
-					}
-
-					if(!empty($post['rowid'])) {
-						if(!($result = $appdb->query("delete from tbl_smartmoneynumber where smartmoneynumber_id=".$post['rowid']))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-					}
+					}*/
 
 					json_encode_return($retval);
 					die;
@@ -2244,6 +2211,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					'label' => 'MESSAGE DATE',
 					'labelWidth' => 150,
 					'name' => 'unassigned_messagedate',
+					'inputMask' => array('alias'=>'mm-dd-yyyy','prefix'=>'','autoUnmask'=>false),
 					//'inputWidth' => 500,
 					'readonly' => $readonly,
 					'required' => !$readonly,
@@ -2299,26 +2267,31 @@ if(!class_exists('APP_app_smartmoney')) {
 
 				$transactiontype = array('PADALA','TOPUP','PAYMAYA','PICKUP');
 
-				foreach($transactiontype as $v) {
+				$smartmoneys = getSmartMoneyOfSimNumber($params['cardinfo']['loadtransaction_assignedsim']);
+
+				//pre(array('$smartmoneys'=>$smartmoneys));
+
+				foreach($smartmoneys as $v) {
 					$selected = false;
-					if(!empty($params['cardinfo']['smartmoneynumber_type'])&&$params['cardinfo']['smartmoneynumber_type']==$v) {
-						$selected = true;
-					}
+					//if(!empty($params['cardinfo']['smartmoneynumber_type'])&&$params['cardinfo']['smartmoneynumber_type']==$v) {
+					//	$selected = true;
+					//}
 					if($readonly) {
 						if($selected) {
-							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+							$opt[] = array('text'=>$v['smartmoney_label'].' / '.$v['smartmoney_number'],'value'=>$v['smartmoney_label'],'selected'=>$selected);
 						}
 					} else {
-						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+						$opt[] = array('text'=>$v['smartmoney_label'].' / '.$v['smartmoney_number'],'value'=>$v['smartmoney_label'],'selected'=>$selected);
 					}
 				}
 
 				if($post['method']=='smartmoneynew'||$post['method']=='smartmoneyedit') {
 					$params['tbDetails'][] = array(
 						'type' => 'combo',
-						'label' => 'ASSIGNED CARD NO.',
-						'name' => 'smartmoneynumber_type',
+						'label' => 'ASSIGNED CARD',
+						'name' => 'loadtransaction_cardlabel',
 						'labelWidth' => 150,
+						'inputWidth' => 250,
 						'readonly' => true,
 						//'required' => !$readonly,
 						'options' => $opt,
@@ -2326,12 +2299,14 @@ if(!class_exists('APP_app_smartmoney')) {
 				} else {
 					$params['tbDetails'][] = array(
 						'type' => 'input',
-						'label' => 'ASSIGNED CARD NO.',
-						'name' => 'smartmoneynumber_type',
+						'label' => 'ASSIGNED CARD',
+						'name' => 'loadtransaction_cardlabel',
 						'labelWidth' => 150,
+						'inputWidth' => 250,
 						'readonly' => true,
 						//'required' => !$readonly,
-						'value' => !empty($params['cardinfo']['smartmoneynumber_type']) ? $params['cardinfo']['smartmoneynumber_type'] : '',
+						'value' => !empty($params['cardinfo']['loadtransaction_cardlabel']) ? $params['cardinfo']['loadtransaction_cardlabel'] : '',
+						//'value' => '',
 					);
 				}
 
@@ -2343,8 +2318,9 @@ if(!class_exists('APP_app_smartmoney')) {
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'MESSAGE TIME',
-					'labelWidth' => 150,
+					'labelWidth' => 180,
 					'name' => 'unassigned_messagetime',
+					'inputMask' => array('alias'=>'hh:mm:ss','prefix'=>'','autoUnmask'=>false),
 					//'inputWidth' => 500,
 					'readonly' => $readonly,
 					'required' => !$readonly,
@@ -2354,7 +2330,7 @@ if(!class_exists('APP_app_smartmoney')) {
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'REFERENCE NO.',
-					'labelWidth' => 150,
+					'labelWidth' => 180,
 					'name' => 'loadtransaction_refnumber',
 					//'inputWidth' => 500,
 					'readonly' => $readonly,
@@ -2365,7 +2341,7 @@ if(!class_exists('APP_app_smartmoney')) {
 				$params['tbDetails'][] = array(
 					'type' => 'input',
 					'label' => 'MOBILE NO./CARD NO.',
-					'labelWidth' => 150,
+					'labelWidth' => 180,
 					'name' => 'loadtransaction_fromnumber',
 					//'inputWidth' => 500,
 					'readonly' => $readonly,
@@ -4207,7 +4183,7 @@ if(!class_exists('APP_app_smartmoney')) {
               $where = " and extract(epoch from loadtransaction_updatestamp)>=$datefrom and extract(epoch from loadtransaction_updatestamp)<=$dateto";
             }
 
-						if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype in ('RECEIVED') $where order by loadtransaction_id desc"))) {
+						if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype in ('RECEIVED') and loadtransaction_status=".TRN_CLAIMED." $where order by loadtransaction_id desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
