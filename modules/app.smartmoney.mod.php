@@ -2165,7 +2165,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					$content['loadtransaction_fromnumber'] = !empty($post['loadtransaction_fromnumber']) ? $post['loadtransaction_fromnumber'] : '';
 					//pre(array('$post'=>$post));
 
-					/*if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&intval($post['rowid'])>0) {
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&intval($post['rowid'])>0) {
 
 						$retval['rowid'] = $post['rowid'];
 
@@ -2176,7 +2176,7 @@ if(!class_exists('APP_app_smartmoney')) {
 							die;
 						}
 
-					}*/
+					}
 
 					json_encode_return($retval);
 					die;
