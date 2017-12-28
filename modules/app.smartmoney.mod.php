@@ -2196,6 +2196,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					$content['loadtransaction_simcardbalance'] = !empty($post['loadtransaction_simcardbalance']) ? $post['loadtransaction_simcardbalance'] : 0;
 					$content['loadtransaction_receiveagentcommissionamount'] = !empty($post['loadtransaction_receiveagentcommissionamount']) ? $post['loadtransaction_receiveagentcommissionamount'] : 0;
 					$content['loadtransaction_fromnumber'] = !empty($post['loadtransaction_fromnumber']) ? $post['loadtransaction_fromnumber'] : '';
+					$content['loadtransaction_otherchargesamount'] = !empty($post['loadtransaction_otherchargesamount']) ? $post['loadtransaction_otherchargesamount'] : '';
 					//pre(array('$post'=>$post));
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&intval($post['rowid'])>0) {
