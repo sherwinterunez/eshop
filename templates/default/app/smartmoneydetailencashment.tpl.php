@@ -733,11 +733,11 @@ pre(array('$vars'=>$vars));
 				//var smartmoney_transferfeeamount = parseFloat(myForm.getItemValue('smartmoney_transferfeeamount'));
 				//var smartmoney_receiveagentcommissionamount = parseFloat(myForm.getItemValue('smartmoney_receiveagentcommissionamount'));
 
-				if(smartmoney_otherchargesamount>0&&loadtransaction_amount>0) {
+				//if(smartmoney_otherchargesamount>0&&loadtransaction_amount>0) {
 					var total = loadtransaction_amount + smartmoney_otherchargesamount;
 
 					myForm.setItemValue('loadtransaction_amountdue',total);
-				}
+				//}
 
 			}
 			<?php /* else
