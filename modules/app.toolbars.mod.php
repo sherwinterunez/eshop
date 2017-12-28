@@ -1088,7 +1088,7 @@ $toolbars['app']['smartmoney'] = 	array(
 			"func"=>";(function(obj,id){srt.toolbar_func(obj,id);})(this,id);",
 			"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 			"hidden"=>true,
-	),	array(	"id"=>"smartmoneyrefresh",
+	),	array(	"id"=>"smartmoneyprint",
 			"type"=>"spacer",
 	),
 	array(	"id"=>"smartmoneyfrom",
