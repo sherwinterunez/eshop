@@ -1354,7 +1354,7 @@ if(!class_exists('APP_app_smartmoney')) {
 		      $retval['error_code'] = '345325';
 		      $retval['error_message'] = 'Invalid Sender ID!';
 
-					pre(array('$post'=>$post));
+					pre(array('$post'=>$post,'$senderid'=>$senderid));
 
 		      if(!empty($senderid)) {
 		      } else {
