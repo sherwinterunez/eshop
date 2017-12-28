@@ -231,7 +231,8 @@ pre(array('$vars'=>$vars));
 			{type: "block", name: "tbDetails", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbDetails']) ? json_encode($params['tbDetails']) : '[]'; ?>},
 			//{type: "block", name: "tbPayments", hidden: true, width: 1200, blockOffset: 0, offsetTop:0, list:[]},
 			{type: "block", name: "tbMessage", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbMessage']) ? json_encode($params['tbMessage']) : '[]'; ?>},
-			{type: "block", name: "tbHistory", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:[]},
+			{type: "block", name: "tbHistory", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbHistory']) ? json_encode($params['tbHistory']) : '[]'; ?>},
+			{type: "block", name: "tbReceipt", hidden: true, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbReceipt']) ? json_encode($params['tbReceipt']) : '[]'; ?>},
 			{type: "label", label: ""}
 		];
 
