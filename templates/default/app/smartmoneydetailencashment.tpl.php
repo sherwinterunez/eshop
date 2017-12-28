@@ -668,6 +668,12 @@ pre(array('$vars'=>$vars));
 							var loadtransaction_amount = 0.00;
 							var loadtransaction_receiveagentcommissionamount = 0.00;
 							var loadtransaction_amountdue = 0.00;
+							var loadtransaction_otherchargesamount = 0.00;
+
+							if(ddata.data.loadtransaction_otherchargesamount) {
+								loadtransaction_otherchargesamount = parseFloat(ddata.data.loadtransaction_otherchargesamount);
+								myForm.setItemValue('loadtransaction_otherchargesamount',ddata.data.loadtransaction_otherchargesamount);
+							}
 
 							if(ddata.data.loadtransaction_amount) {
 								loadtransaction_amount = parseFloat(ddata.data.loadtransaction_amount);
@@ -681,7 +687,7 @@ pre(array('$vars'=>$vars));
 
 							//loadtransaction_amountdue = loadtransaction_amount + loadtransaction_receiveagentcommissionamount;
 
-							loadtransaction_amountdue = loadtransaction_amount;
+							loadtransaction_amountdue = loadtransaction_amount + loadtransaction_otherchargesamount;
 
 							myForm.setItemValue('loadtransaction_amountdue',loadtransaction_amountdue);
 
