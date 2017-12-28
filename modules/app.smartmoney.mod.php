@@ -1731,8 +1731,8 @@ if(!class_exists('APP_app_smartmoney')) {
 					$content['loadtransaction_ymd'] = date('Ymd',$dt);
 					$content['loadtransaction_status'] = TRN_CLAIMED;
 					$content['loadtransaction_updatestamp'] = 'now()';
-					$content['loadtransaction_receiverid'] = !empty($post['smartmoney_recipientname']) ? $post['smartmoney_recipientname']: 0;
-					$content['loadtransaction_receivername'] = !empty($post['smartmoney_fullname']) ? $post['smartmoney_fullname'] : '';
+					$content['loadtransaction_receiverid'] = $content['loadtransaction_customerid'] = !empty($post['smartmoney_recipientname']) ? $post['smartmoney_recipientname']: 0;
+					$content['loadtransaction_receivername'] = $content['loadtransaction_customername'] = !empty($post['smartmoney_fullname']) ? $post['smartmoney_fullname'] : '';
 					$content['loadtransaction_receivernumber'] = !empty($post['smartmoney_recipientnumber']) ? $post['smartmoney_recipientnumber'] : '';
 					$content['loadtransaction_receiveraddress'] = !empty($post['smartmoney_recipientaddress']) ? $post['smartmoney_recipientaddress'] : '';
 					$content['loadtransaction_receiveridexpiration'] = !empty($post['smartmoney_idexpiration']) ? $post['smartmoney_idexpiration'] : '';
