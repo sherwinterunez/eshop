@@ -435,6 +435,48 @@ if(!class_exists('APP_app_inventory')) {
 						}
 					}
 
+					if(!empty($retval['rowid'])&&!empty($post['smartmoneytransaction_id'])&&is_array($post['smartmoneytransaction_id'])&&!empty($post['smartmoneytransaction_date'])&&is_array($post['smartmoneytransaction_date'])&&!empty($post['smartmoneytransaction_time'])&&is_array($post['smartmoneytransaction_time'])) {
+
+						foreach($post['smartmoneytransaction_id'] as $k=>$v) {
+
+							$sdt = $post['smartmoneytransaction_date'][$v];
+							$stm = $post['smartmoneytransaction_time'][$v];
+
+							$smt = date2timestamp($sdt.' '.$stm,'m-d-Y h:i:s');
+
+							//pre(array('id'=>$v,'$sdt'=>$sdt,'$stm'=>$stm,'$smt'=>$smt));
+
+							$content = array();
+							$content['loadtransaction_createstampunix'] = $smt;
+
+							if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$v))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+						}
+					}
+
+					if(!empty($retval['rowid'])&&!empty($post['simcardtransaction_id'])&&is_array($post['simcardtransaction_id'])&&!empty($post['simcardtransaction_date'])&&is_array($post['simcardtransaction_date'])&&!empty($post['simcardtransaction_time'])&&is_array($post['simcardtransaction_time'])) {
+
+						foreach($post['simcardtransaction_id'] as $k=>$v) {
+
+							$sdt = $post['simcardtransaction_date'][$v];
+							$stm = $post['simcardtransaction_time'][$v];
+
+							$smt = date2timestamp($sdt.' '.$stm,'m-d-Y h:i:s');
+
+							//pre(array('id'=>$v,'$sdt'=>$sdt,'$stm'=>$stm,'$smt'=>$smt));
+
+							$content = array();
+							$content['loadtransaction_createstampunix'] = $smt;
+
+							if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$v))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+						}
+					}
+
 					if(!empty($dontbypass)&&!empty($sim_device)&&!empty($sim_number)) {
 
 						$curl = new MyCurl;
@@ -4017,7 +4059,7 @@ if($readonly) {
 
 									$transid = $prefix . $v['loadtransaction_ymd'] . sprintf('%04d', $v['loadtransaction_id']);
 
-									$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDate($v['loadtransaction_createstamp'],'m-d-Y'),pgDate($v['loadtransaction_createstamp'],'H:i'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_customernumber'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_type']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_servicecharge'],2),number_format($v['loadtransaction_transferfee'],2),number_format($v['loadtransaction_processingfee'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
+									$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDateUnix($v['loadtransaction_createstampunix'],'m-d-Y'),pgDateUnix($v['loadtransaction_createstampunix'],'H:i:s'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_customernumber'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_type']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_servicecharge'],2),number_format($v['loadtransaction_transferfee'],2),number_format($v['loadtransaction_processingfee'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
 								}
 
 								$retval = array('rows'=>$rows);
@@ -4081,12 +4123,12 @@ if($readonly) {
 									$transid = $prefix . $v['loadtransaction_ymd'] . sprintf('%04d', $v['loadtransaction_id']);
 
 									if($flag==1) {
-										$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDate($v['loadtransaction_createstamp'],'m-d-Y'),pgDate($v['loadtransaction_createstamp'],'H:i'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_destcardno'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_cardlabel']),strtoupper($v['loadtransaction_smartmoneytype']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
+										$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDateUnix($v['loadtransaction_createstampunix'],'m-d-Y'),pgDateUnix($v['loadtransaction_createstampunix'],'H:i:s'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_destcardno'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_cardlabel']),strtoupper($v['loadtransaction_smartmoneytype']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
 									} else
 									if($flag==2) {
-										$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDate($v['loadtransaction_createstamp'],'m-d-Y'),pgDate($v['loadtransaction_createstamp'],'H:i'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_fromnumber'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_cardlabel']),strtoupper($v['loadtransaction_smartmoneytype']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
+										$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDateUnix($v['loadtransaction_createstampunix'],'m-d-Y'),pgDateUnix($v['loadtransaction_createstampunix'],'H:i:s'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_fromnumber'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_cardlabel']),strtoupper($v['loadtransaction_smartmoneytype']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
 									} else {
-										$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDate($v['loadtransaction_createstamp'],'m-d-Y'),pgDate($v['loadtransaction_createstamp'],'H:i'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_destcardno'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_cardlabel']),strtoupper($v['loadtransaction_smartmoneytype']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
+										$rows[] = array('id'=>$v['loadtransaction_id'],'simcardbalance'=>$v['loadtransaction_simcardbalance'],'runningbalance'=>$v['loadtransaction_runningbalance'],'data'=>array($v['loadtransaction_id'],pgDateUnix($v['loadtransaction_createstampunix'], 'm-d-Y H:i:s'),$v['loadtransaction_datetime'],pgDateUnix($v['loadtransaction_createstampunix'],'m-d-Y'),pgDateUnix($v['loadtransaction_createstampunix'],'H:i:s'),$transid,$v['loadtransaction_customername'],$v['loadtransaction_refnumber'],$v['loadtransaction_destcardno'],$v['loadtransaction_recipientnumber'],strtoupper($v['loadtransaction_cardlabel']),strtoupper($v['loadtransaction_smartmoneytype']),getLoadTransactionStatusString($v['loadtransaction_status']),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($in,2),number_format($out,2),number_format($v['loadtransaction_simcardbalance'],2),number_format($v['loadtransaction_runningbalance'],2)));
 									}
 								}
 
