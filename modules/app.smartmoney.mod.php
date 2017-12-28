@@ -2290,6 +2290,19 @@ if(!class_exists('APP_app_smartmoney')) {
 					'value' => !empty($params['cardinfo']['loadtransaction_receiveagentcommissionamount']) ? $params['cardinfo']['loadtransaction_receiveagentcommissionamount'] : 0,
 				);
 
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'OTHER CHARGES',
+					'labelWidth' => 150,
+					'name' => 'loadtransaction_otherchargesamount',
+					//'inputWidth' => 500,
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'numeric' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['cardinfo']['loadtransaction_otherchargesamount']) ? $params['cardinfo']['loadtransaction_otherchargesamount'] : 0,
+				);
+
 				$opt = array();
 
 				//if(!$readonly) {
