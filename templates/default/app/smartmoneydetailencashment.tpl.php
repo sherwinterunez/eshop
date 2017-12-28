@@ -672,7 +672,7 @@ pre(array('$vars'=>$vars));
 
 							if(ddata.data.loadtransaction_otherchargesamount) {
 								loadtransaction_otherchargesamount = parseFloat(ddata.data.loadtransaction_otherchargesamount);
-								myForm.setItemValue('loadtransaction_otherchargesamount',ddata.data.loadtransaction_otherchargesamount);
+								myForm.setItemValue('smartmoney_otherchargesamount',ddata.data.loadtransaction_otherchargesamount);
 							}
 
 							if(ddata.data.loadtransaction_amount) {
