@@ -211,6 +211,7 @@ pre(array('$vars'=>$vars));
 		//myTabbar.addTab("tbPayments", "Payments");
 		myTabbar.addTab("tbMessage", "Message");
 		myTabbar.addTab("tbHistory", "History");
+		myTabbar.addTab("tbReceipt", "tbReceipt");
 
 		myTabbar.tabs("tbDetails").setActive();
 
