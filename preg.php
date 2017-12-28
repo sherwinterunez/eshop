@@ -348,7 +348,8 @@ foreach($str as $k=>$v) {
 
 //$regx = 'CONFIRM.+?Ref\:(?<REF>.{12}).+?Customer.+?Cellphone.+?Receiver.+?Cellphone';
 //$regx = '.+?Sent.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<LABEL>.+?)\s+to\s+(?<CARDNO>.{16}).+?at.+?\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12})';
-$regx = '.+?Sent.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<LABEL>.+?)\s+to\s+(?<CARDNO>.+?\s+)at.+?\d+(?<MOBILENO>\d{10}).+?deducted\s+P(?<FEE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref\:(?<REF>.{12})';
+//$regx = '.+?Sent.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<LABEL>.+?)\s+to\s+(?<CARDNO>.+?\s+)at.+?\d+(?<MOBILENO>\d{10}).+?deducted\s+P(?<FEE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref\:(?<REF>.{12})';
+//$regx = '.+?Sent.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<LABEL>.+?)\s+to\s+(?<CARDNO>.{16}).+?at.+?\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12})';
 //$regx = '.+?Remittance.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?fee.+?P(?<FEE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?deducted.+?bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref\:(?<REF>.{12})';
 //$regx = '.+?Remittance .+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission.+?P(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?received.+?\d+(?<MOBILENO>\d{10}).+?Ref\:(?<REF>.{12}).+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
 //$regx = '.+?Remittance .+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
@@ -367,7 +368,7 @@ $regx = '.+?Sent.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<LABEL>.+?)
 
 //$regx = '.+?Remittance.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?commission.+?P(?<COMMISSION>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?added.+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?Ref\:(?<REF>.{12})';
 
-//$regx = '.+?Received.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<SOURCE>.+?)\s+.+?Ref\:(?<REF>.{12}).+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
+$regx = '.+?Received.+?P(?<AMOUNT>[0-9\,]+\.\d+|[0-9\,]+|\d+).+?from\s+(?<SOURCE>.+?)\s+.+?Ref\:(?<REF>.{12}).+?Bal.+?P(?<BALANCE>[0-9\,]+\.\d+|[0-9\,]+|\d+)';
 
 $str = array();
 //$str[] = '17Aug 2143:Sent PHP500.00 from LOADING to 557751******8104 at 639092701100.Ref:f620ccf870f6.Sa next msg,i-type ang customer &receiver cellphone# &send to 8890.';
@@ -417,6 +418,8 @@ $str[] = '30Oct 1813:Remittance of P1,500.00 & commission of P17.25 was added to
 $str[] = '01Dec 1741:Sent P500.00 from LOADING to ****8104 at 09092701100. Also deducted P18.50 from your account.Bal:P10,896.00.Ref:4cf334b57203 ';
 
 $str[] = '28Dec 1655:Sent P500.00 from LOADING to ****8104 at 09092701100. Also deducted P18.50 from your account.Bal:P14,181.00.Ref:304b244099ec ';
+
+$str[] = '2017-12-28 12:31:16: Received PHP4,700.00 from +639284879822 w/commission kung ikaw ay Smart Padala Agent.LIBRE ang pag-claim ni suki! Ref:dcbbdfc5b809 Bal: PHP38491.05. Para malaman ang iyong komisyon, i-check ang balance sa Smart Money menu.';
 
 foreach($str as $k=>$v) {
 	if(preg_match('/'.$regx.'/si',$v,$matches)) {

@@ -2168,7 +2168,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						die;
 					}
 
-					if(!empty($post['unassigned_messagetime'])&&preg_match('/^(?<HH>\d+)\-(?<MM>\d+)\-(?<SS>\d+)$/si',$post['unassigned_messagetime'],$match)) {
+					if(!empty($post['unassigned_messagetime'])&&preg_match('/^(?<HH>\d+)\:(?<MM>\d+)\:(?<SS>\d+)$/si',$post['unassigned_messagetime'],$match)) {
 						//pre(array('$match'=>$match));
 					} else {
 						$retval = array();
@@ -2178,11 +2178,19 @@ if(!class_exists('APP_app_smartmoney')) {
 						die;
 					}
 
+					$sdt = $post['unassigned_messagedate'];
+					$stm = $post['unassigned_messagetime'];
+
+					$smt = date2timestamp($sdt.' '.$stm,'m-d-Y h:i:s');
+
+					//pre(array('id'=>$v,'$sdt'=>$sdt,'$stm'=>$stm,'$smt'=>$smt));
+
 					$retval = array();
 					$retval['return_code'] = 'SUCCESS';
 					$retval['return_message'] = 'Card number successfully saved!';
 
 					$content = array();
+					$content['loadtransaction_createstampunix'] = $smt;
 					$content['loadtransaction_cardlabel'] = !empty($post['loadtransaction_cardlabel']) ? $post['loadtransaction_cardlabel'] : '';
 					$content['loadtransaction_simcardbalance'] = !empty($post['loadtransaction_simcardbalance']) ? $post['loadtransaction_simcardbalance'] : 0;
 					$content['loadtransaction_receiveagentcommissionamount'] = !empty($post['loadtransaction_receiveagentcommissionamount']) ? $post['loadtransaction_receiveagentcommissionamount'] : 0;
@@ -2248,8 +2256,8 @@ if(!class_exists('APP_app_smartmoney')) {
 					'labelWidth' => 150,
 					'name' => 'loadtransaction_amount',
 					//'inputWidth' => 500,
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'readonly' => true,
+					//'required' => !$readonly,
 					'numeric' => true,
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					'value' => !empty($params['cardinfo']['loadtransaction_amount']) ? $params['cardinfo']['loadtransaction_amount'] : 0,
@@ -2261,8 +2269,8 @@ if(!class_exists('APP_app_smartmoney')) {
 					'labelWidth' => 150,
 					'name' => 'loadtransaction_simcardbalance',
 					//'inputWidth' => 500,
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'readonly' => true,
+					//'required' => !$readonly,
 					'numeric' => true,
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					'value' => !empty($params['cardinfo']['loadtransaction_simcardbalance']) ? $params['cardinfo']['loadtransaction_simcardbalance'] : 0,
@@ -2357,8 +2365,8 @@ if(!class_exists('APP_app_smartmoney')) {
 					'labelWidth' => 180,
 					'name' => 'loadtransaction_refnumber',
 					//'inputWidth' => 500,
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'readonly' => true,
+					//'required' => !$readonly,
 					'value' => !empty($params['cardinfo']['loadtransaction_refnumber']) ? $params['cardinfo']['loadtransaction_refnumber'] : '',
 				);
 
