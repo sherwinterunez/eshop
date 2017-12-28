@@ -726,6 +726,9 @@ pre(array('$vars'=>$vars));
 				var loadtransaction_amount = parseFloat(myForm.getItemValue('loadtransaction_amount'));
 				var smartmoney_otherchargesamount = parseFloat(myForm.getItemValue('smartmoney_otherchargesamount'));
 
+				console.log('loadtransaction_amount',loadtransaction_amount);
+				console.log('smartmoney_otherchargesamount',smartmoney_otherchargesamount);
+
 				//var smartmoney_sendagentcommissionamount = parseFloat(myForm.getItemValue('smartmoney_sendagentcommissionamount'));
 				//var smartmoney_transferfeeamount = parseFloat(myForm.getItemValue('smartmoney_transferfeeamount'));
 				//var smartmoney_receiveagentcommissionamount = parseFloat(myForm.getItemValue('smartmoney_receiveagentcommissionamount'));
