@@ -416,6 +416,8 @@ $str[] = '30Oct 1813:Remittance of P1,500.00 & commission of P17.25 was added to
 
 $str[] = '01Dec 1741:Sent P500.00 from LOADING to ****8104 at 09092701100. Also deducted P18.50 from your account.Bal:P10,896.00.Ref:4cf334b57203 ';
 
+$str[] = '28Dec 1655:Sent P500.00 from LOADING to ****8104 at 09092701100. Also deducted P18.50 from your account.Bal:P14,181.00.Ref:304b244099ec ';
+
 foreach($str as $k=>$v) {
 	if(preg_match('/'.$regx.'/si',$v,$matches)) {
 		print_r(array('$matches'=>$matches));
