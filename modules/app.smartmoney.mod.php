@@ -1741,7 +1741,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					$content['loadtransaction_receiverspecifyid'] = !empty($post['smartmoney_specifyid']) ? $post['smartmoney_specifyid'] : '';
 					$content['loadtransaction_amountdue'] = !empty($post['loadtransaction_amountdue']) ? $post['loadtransaction_amountdue'] : 0;
 					$content['loadtransaction_staffid'] = !empty($user_staffid) ? $user_staffid : 0;
-					$content['loadtransaction_otherchargesamount'] = !empty($post['loadtransaction_otherchargesamount']) ? $post['loadtransaction_otherchargesamount'] : 0;
+					$content['loadtransaction_otherchargesamount'] = !empty($post['smartmoney_otherchargesamount']) ? $post['smartmoney_otherchargesamount'] : 0;
 
 					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$smartmoneyinfo['loadtransaction_id']))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
