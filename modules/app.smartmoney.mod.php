@@ -1362,7 +1362,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 		      $sql = "select * from tbl_remitcust where remitcust_id=$senderid";
 
-					pre(array('$post'=>$post,'$senderid'=>$senderid,'$sql'=>$sql));
+					//pre(array('$post'=>$post,'$senderid'=>$senderid,'$sql'=>$sql));
 
 		      if(!($result = $appdb->query($sql))) {
 		        json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
