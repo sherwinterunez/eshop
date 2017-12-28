@@ -1667,7 +1667,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						$content['loadtransaction_status'] = TRN_LOCKED;
 						$content['loadtransaction_updatestamp'] = 'now()';
 
-						if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_refnumber='$refnumber'"))) {
+						if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_refnumber='$refnumber' and loadtransaction_status=".TRN_RECEIVED))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
