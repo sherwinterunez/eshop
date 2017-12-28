@@ -1328,6 +1328,22 @@ if(!class_exists('APP_app_smartmoney')) {
 		        die;
 		      }
 
+					$sql = "select * from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_status=".TRN_CLAIMED." and loadtransaction_refnumber='$refnumber' and loadtransaction_cardlabel!='' limit 1";
+
+					if(!($result = $appdb->query($sql))) {
+		        json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+		        die;
+		      }
+
+					if(!empty($result['rows'][0]['loadtransaction_id'])) {
+						$retval = array();
+			      $retval['error_code'] = '345385';
+			      $retval['error_message'] = 'This Reference Number was Already Claimed!';
+
+						json_encode_return($retval);
+		        die;
+					}
+
 					$sql = "select * from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype='RECEIVED' and loadtransaction_status=".TRN_RECEIVED." and loadtransaction_refnumber='$refnumber' and loadtransaction_cardlabel!='' limit 1";
 
 					if(!($result = $appdb->query($sql))) {
@@ -1352,7 +1368,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 		      $retval = array();
 		      $retval['error_code'] = '345325';
-		      $retval['error_message'] = 'Invalid Sender ID!';
+		      $retval['error_message'] = 'Invalid Remittance/Sender ID!';
 
 		      if(!empty($senderid)) {
 		      } else {
@@ -1433,7 +1449,13 @@ if(!class_exists('APP_app_smartmoney')) {
 		            'senderidexpiration'=>$remitcust['remitcust_idexpiration'],
 		          );
 
-		        }
+		        } else {
+
+							$retval = array();
+				      $retval['error_code'] = '345325';
+				      $retval['error_message'] = 'Invalid Remittance/Sender Mobile Number!';
+
+						}
 		      }
 
 
