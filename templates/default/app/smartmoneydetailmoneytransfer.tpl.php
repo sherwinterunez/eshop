@@ -30,7 +30,7 @@ if(!empty($vars['post']['wid'])) {
 
 //$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'transfer',$moduleid.'approved',$moduleid.'manually',$moduleid.'cancelled',$moduleid.'hold');
 
-$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved',$moduleid.'manually',$moduleid.'cancelled',$moduleid.'hold');
+$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'print',$moduleid.'approved',$moduleid.'manually',$moduleid.'cancelled',$moduleid.'hold');
 
 /*if(!empty($vars['params']['optionsinfo']['options_name'])) {
 	$options_name = $vars['params']['optionsinfo']['options_name'];
