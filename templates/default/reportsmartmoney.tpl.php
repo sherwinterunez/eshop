@@ -28,9 +28,9 @@ body, html, #printform {
 }
 
 .dhxform_obj_dhx_skyblue div.dhxform_txt_label2 {
-  font-family: Verdana;
+  /*font-family: Verdana;*/
   /*font-family: Calibri;*/
-  /*font-family: Courier;*/
+  font-family: "Courier New";
   /*font-family: "Times New Roman";*/
   font-weight: normal;
   color: #000;
