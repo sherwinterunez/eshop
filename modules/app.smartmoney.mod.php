@@ -3753,6 +3753,17 @@ if(!class_exists('APP_app_smartmoney')) {
 		      'value' => !empty($params['smartmoneyinfo']['loadtransaction_confirmation']) ? $params['smartmoneyinfo']['loadtransaction_confirmation'] : '',
 		    );
 
+				if(!empty($params['smartmoneyinfo']['loadtransaction_status'])) {
+					$params['tbReceipt'][] = array(
+			      'type' => 'input',
+			      'label' => 'STATUS',
+			      'name' => 'receipt_test',
+			      'readonly' => true,
+			      //'required' => !$readonly,
+			      'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? pgDate($params['smartmoneyinfo']['loadtransaction_status']) : '',
+			    );
+				}
+
 				$templatefile = $this->templatefile($routerid,$formid);
 
 				if(file_exists($templatefile)) {
