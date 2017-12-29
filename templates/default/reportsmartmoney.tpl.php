@@ -36,9 +36,10 @@ body, html, #printform {
 #printform .receiptHeader_%formval% {
   font-size: 25px;
   text-align: center;
+  font-weight: bold;
 }
 #printform .receiptAddress_%formval% {
-  font-size: 14px;
+  font-size: 16px;
   text-align: center;
 }
 #printform .receiptSmartPadala_%formval% {
@@ -48,6 +49,7 @@ body, html, #printform {
 #printform .receiptTitle_%formval% {
   font-size: 18px;
   text-align: center;
+  font-weight: bold;
 }
 
 #printform .schoolName_%formval% {
