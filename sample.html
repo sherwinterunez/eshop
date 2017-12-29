@@ -1155,9 +1155,19 @@
         qz.print(config, printData).catch(displayError);
     }
 
+    function printHTML() {
+        var config = getUpdatedConfig();
+
+        var printData = [
+            { type: 'html', format: 'file', data: 'assets/receipt.html'}
+        ];
+
+        qz.print(config, printData).catch(displayError);
+    }
+
 
     /// Pixel Printers ///
-    function printHTML() {
+    function printHTML2() {
         var config = getUpdatedConfig();
 
         var colA = '<h2>*&nbsp; QZ Print Plugin HTML Printing &nbsp;*</h2>' +
