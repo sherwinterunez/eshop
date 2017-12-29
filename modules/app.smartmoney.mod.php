@@ -4117,10 +4117,10 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					//pre(array('post'=>$this->post));
 
-					if($this->post['method']=='generatereportprint') {
-						pre(array('post'=>$this->post));
-						die;
-					}
+					//if($this->post['method']=='generatereportprint') {
+						//pre(array('post'=>$this->post));
+						//die;
+					//}
 
 					$toolbar = false;
 
@@ -4148,6 +4148,13 @@ if(!class_exists('APP_app_smartmoney')) {
 					}
 
 					//pre(array('$retval'=>$retval));
+
+					if($this->post['method']=='generatereportprint') {
+						pre(array('$retflag'=>$retflag,'$form'=>$form));
+						pre(array('$retflag'=>$retflag,'$retval'=>$retval));
+						pre(array('post'=>$this->post));
+						die;
+					}
 
 					$jsonval = json_encode($retval,JSON_OBJECT_AS_ARRAY);
 
