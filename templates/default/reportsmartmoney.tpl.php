@@ -143,7 +143,7 @@ body, html, #printform {
 
   var formData = [
     {type: "settings", position: "label-left", labelWidth: 130, inputWidth: 100},
-    {type: "block", name: "tbReceipt", hidden:false, width: 160, blockOffset: 0, offsetTop:0, list:myForm.tbReceipt},
+    {type: "block", name: "tbReceipt", hidden:false, width: 300, blockOffset: 0, offsetTop:0, list:myForm.tbReceipt},
     {type: "label", label: ""}
   ];
 

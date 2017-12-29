@@ -1543,28 +1543,28 @@ if(!class_exists('APP_app_smartmoney')) {
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'JJS Telecom',
-						'labelWidth' => 160,
+						'labelWidth' => 300,
 						'className' => 'receiptHeader_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'Ziga Avenue, Brgy. Basud, Tabaco City, Albay, 4511',
-						'labelWidth' => 160,
+						'labelWidth' => 300,
 						'className' => 'receiptAddress_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'Smart Padala: 5577519312809107',
-						'labelWidth' => 160,
+						'labelWidth' => 300,
 						'className' => 'receiptSmartPadala_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'SMART MONEY REMITTANCE',
-						'labelWidth' => 160,
+						'labelWidth' => 300,
 						'className' => 'receiptTitle_'.$post['formval'],
 					);
 
