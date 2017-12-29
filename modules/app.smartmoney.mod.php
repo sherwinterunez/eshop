@@ -1810,6 +1810,13 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
+						'label' => '&nbsp;',
+						'labelWidth' => 300,
+						'className' => 'page-break',
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
 						'label' => 'Thank You. Come Again.',
 						'labelWidth' => 300,
 						'className' => 'receiptTitle_'.$post['formval'],
