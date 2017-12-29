@@ -3983,10 +3983,10 @@ if(!class_exists('APP_app_smartmoney')) {
 
 		} // _form_discountdetailrebate
 
-		function router() {
+		function router($retflag=false) {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
 
-			$retflag=false;
+			//$retflag=false;
 
 			header_json();
 
