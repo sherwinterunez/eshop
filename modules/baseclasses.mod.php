@@ -724,7 +724,7 @@ if(!class_exists('APP_Base')) {
 
 					//pre(array('$tvars'=>$tvars));
 
-					$page = $apptemplate->page('reportmainmonthlyattendance',$tvars,true);
+					$page = $apptemplate->page('reportsmartmoney',$tvars,true);
 
 					$page = str_replace('%formval%',$vars['post']['formval'],$page);
 
