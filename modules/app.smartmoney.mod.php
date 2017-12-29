@@ -1546,10 +1546,10 @@ if(!class_exists('APP_app_smartmoney')) {
 						'labelWidth' => 500,
 					);
 
-					if($post['method']=='generatereportprint') {
-						return json_encode($params);
+					//if($post['method']=='generatereportprint') {
+						//return json_encode($params);
 						//pre(array('$post'=>$post));
-					}
+					//}
 
 					json_encode_return($params);
 					die;
