@@ -25,6 +25,12 @@ body, html, #printform {
 #printform .receiptHeader_%formval% {
   font-size: 25px;
 }
+#printform .receiptAddress_%formval% {
+  font-size: 14px;
+}
+#printform .receiptSmartPadala_%formval% {
+  font-size: 16px;
+}
 #printform .schoolName_%formval% {
   font-size: 25px;
 }
