@@ -3363,6 +3363,31 @@ if(!class_exists('APP_app_smartmoney')) {
 				} else
 				if(!empty($post['method'])&&($post['method']=='generatereport'||$post['method']=='generatereportprint')) {
 
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+						if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['rows'][0]['loadtransaction_id'])) {
+							$params['smartmoneyinfo'] = $result['rows'][0];
+
+							$custData = getRemitCustData($params['smartmoneyinfo']['loadtransaction_customerid']);
+
+							if(!empty($custData)&&is_array($custData)) {
+								foreach($custData as $k=>$v) {
+									$params['smartmoneyinfo'][$k] = $v;
+								}
+							}
+						}
+					}
+
+					$receiptno = '';
+
+					if(!empty($params['smartmoneyinfo']['loadtransaction_id'])&&!empty($params['smartmoneyinfo']['loadtransaction_ymd'])) {
+						$receiptno = 'ST'.$params['smartmoneyinfo']['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['smartmoneyinfo']['loadtransaction_id']));
+					}
+
 					$params['tbReceipt'] = array();
 
 //--- page #1 ----
@@ -3416,9 +3441,9 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'XX201712290006581',
+						'label' => $receiptno,
 						'labelWidth' => $labelWidthR,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails7_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
@@ -3434,7 +3459,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'REFERENCE NO.:',
+						'label' => 'SM NUMBER:',
 						'labelWidth' => $labelWidthL,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -3446,9 +3471,9 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'adfk345id13',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_destcardno']) ? $params['smartmoneyinfo']['loadtransaction_destcardno'] : '',
 						'labelWidth' => $labelWidthR,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails7_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
@@ -3464,7 +3489,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'DATE:',
+						'label' => 'AMOUNT:',
 						'labelWidth' => $labelWidthL,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -3476,9 +3501,9 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '12/28/2017 05:45:34 PM',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_amount']) ? number_format($params['smartmoneyinfo']['loadtransaction_amount'],2) : '',
 						'labelWidth' => $labelWidthR,
-						'className' => 'receiptDetails2_'.$post['formval'],
+						'className' => 'receiptDetails7_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
@@ -3490,11 +3515,16 @@ if(!class_exists('APP_app_smartmoney')) {
 						'className' => 'block_'.$post['formval'],
 					);
 
+					$sendagentcommissionamount = !empty($params['smartmoneyinfo']['loadtransaction_sendagentcommissionamount']) ? floatval($params['smartmoneyinfo']['loadtransaction_sendagentcommissionamount']) : 0;
+					$receiveagentcommissionamount = !empty($params['smartmoneyinfo']['loadtransaction_receiveagentcommissionamount']) ? floatval($params['smartmoneyinfo']['loadtransaction_receiveagentcommissionamount']) : 0;
+
+					$transactionfee = $sendagentcommissionamount + $receiveagentcommissionamount;
+
 					$block = array();
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'AMOUNT RECEIVED:',
+						'label' => 'TRANSACTION FEE:',
 						'labelWidth' => $labelWidthL,
 						'className' => 'receiptDetails3_'.$post['formval'],
 					);
@@ -3506,9 +3536,9 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '1,500.00',
+						'label' => number_format($transactionfee,2),
 						'labelWidth' => $labelWidthR,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails7_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
@@ -3524,9 +3554,159 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'RECIPIENT NAME:',
+						'label' => 'TRANSFER FEE:',
 						'labelWidth' => $labelWidthL,
 						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => $labelOffset,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_transferfeeamount']) ? number_format($params['smartmoneyinfo']['loadtransaction_transferfeeamount'],2) : '0.00',
+						'labelWidth' => $labelWidthR,
+						'className' => 'receiptDetails7_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => $labelWidthA,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'OTHER CHARGES:',
+						'labelWidth' => $labelWidthL,
+						'className' => 'receiptDetails3_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => $labelOffset,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_otherchargesamount']) ? number_format($params['smartmoneyinfo']['loadtransaction_otherchargesamount'],2) : '0.00',
+						'labelWidth' => $labelWidthR,
+						'className' => 'receiptDetails7_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => $labelWidthA,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'AMOUNT DUE:',
+						'labelWidth' => $labelWidthL,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => $labelOffset,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_amountdue']) ? number_format($params['smartmoneyinfo']['loadtransaction_amountdue'],2) : '0.00',
+						'labelWidth' => $labelWidthR,
+						'className' => 'receiptDetails7_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => $labelWidthA,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'CASH RECEIVED:',
+						'labelWidth' => $labelWidthL,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => $labelOffset,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_cashreceived']) ? number_format($params['smartmoneyinfo']['loadtransaction_cashreceived'],2) : '0.00',
+						'labelWidth' => $labelWidthR,
+						'className' => 'receiptDetails7_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => $labelWidthA,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'CHANGE:',
+						'labelWidth' => $labelWidthL,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => $labelOffset,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_changed']) ? number_format($params['smartmoneyinfo']['loadtransaction_changed'],2) : '0.00',
+						'labelWidth' => $labelWidthR,
+						'className' => 'receiptDetails7_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => $labelWidthA,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					/*$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'RECIPIENT NAME:',
+						'labelWidth' => $labelWidthL,
+						'className' => 'receiptDetails3_'.$post['formval'],
 					);
 
 					$block[] = array(
@@ -3548,15 +3728,15 @@ if(!class_exists('APP_app_smartmoney')) {
 						'offsetTop' => 0,
 						'list' => $block,
 						'className' => 'block_'.$post['formval'],
-					);
+					);*/
 
 					$block = array();
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'ADDRESS:',
+						'label' => 'RECIPIENT NO.:',
 						'labelWidth' => $labelWidthL,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails3_'.$post['formval'],
 					);
 
 					$block[] = array(
@@ -3566,7 +3746,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '#143 PAWA TABACO CITY ALBAY 4155',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_recipientnumber']) ? $params['smartmoneyinfo']['loadtransaction_recipientnumber'] : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -3579,6 +3759,13 @@ if(!class_exists('APP_app_smartmoney')) {
 						'list' => $block,
 						'className' => 'block_'.$post['formval'],
 					);
+
+					$cashier = !empty($params['smartmoneyinfo']['loadtransaction_staffid']) ? getCustomerNameByID($params['smartmoneyinfo']['loadtransaction_staffid']) : '';
+
+					if(!empty($cashier)) {
+					} else {
+					  $cashier = !empty($params['smartmoneyinfo']['loadtransaction_username']) ? $params['smartmoneyinfo']['loadtransaction_username'] : $applogin->fullname();
+					}
 
 					$block = array();
 
@@ -3596,7 +3783,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'SHERWIN TERUNEZ',
+						'label' => strtoupper($cashier),
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -3626,7 +3813,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '12/28/6587 05:45:34 PM',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_updatestamp']) ? pgDate($params['smartmoneyinfo']['loadtransaction_updatestamp'],'m-d-Y h:i:s A') : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails2_'.$post['formval'],
 					);
@@ -4520,7 +4707,7 @@ if(!class_exists('APP_app_smartmoney')) {
 				$receiptno = '';
 
 				if(!empty($params['smartmoneyinfo']['loadtransaction_id'])&&!empty($params['smartmoneyinfo']['loadtransaction_ymd'])) {
-					$receiptno = $params['smartmoneyinfo']['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['smartmoneyinfo']['loadtransaction_id']));
+					$receiptno = 'ST'.$params['smartmoneyinfo']['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['smartmoneyinfo']['loadtransaction_id']));
 				}
 
 				$params['tbDetails'][] = array(

@@ -86,6 +86,10 @@ body, html, #printform {
   text-align: center;
   padding-bottom: 25px;
 }
+#printform .receiptDetails7_%formval% {
+  font-size: 15px;
+  text-align: right;
+}
 
 #printform .schoolName_%formval% {
   font-size: 25px;
