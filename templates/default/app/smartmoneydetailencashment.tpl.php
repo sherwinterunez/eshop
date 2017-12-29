@@ -1379,6 +1379,35 @@ pre(array('$vars'=>$vars));
 
 		};
 
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>print').onClick = function(id,formval,wid) {
+			showMessage("toolbar: "+id,5000);
+			//doSelect_%formval%("retail");
+
+			var myWinObj = srt.windows[wid];
+
+			var myForm = myWinObj.form;
+
+			var rowid = myForm.getItemValue('rowid');
+
+			if(rowid) {
+				myTab.postData('/'+settings.router_id+'/json/', {
+					//odata: {rowid:rowid},
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatemainid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval=%formval%&wid="+wid,
+				}, function(ddata,odata){
+
+					//jQuery("#formdiv_%formval% #<?php echo $templatemainid; ?>").parent().html(ddata.html);
+
+					//window.open('/'+settings.router_id+'/app/print/sample');
+
+					//var win = window.open('/'+settings.router_id+'/print/'+ddata.topost,"win","status=yes,scrollbars=yes,toolbar=no,menubar=yes,height=650,width=1000");
+
+					//var win = window.open('/'+settings.router_id+'/print/'+ddata.topost,"_blank");
+
+				});
+			}
+
+		};
+
 	}
 
 	<?php echo $wid.$templatedetailid.$submod; ?>_%formval%();

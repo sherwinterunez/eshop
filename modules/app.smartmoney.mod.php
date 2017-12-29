@@ -3787,7 +3787,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
-						'label' => 'SMART MONEY REMITTANCE',
+						'label' => 'SMART MONEY TRANSFER',
 						'labelWidth' => 500,
 						'className' => 'receiptTitle_'.$post['formval'],
 					);
