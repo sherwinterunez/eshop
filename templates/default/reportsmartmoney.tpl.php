@@ -50,6 +50,8 @@ body, html, #printform {
   font-size: 18px;
   text-align: center;
   font-weight: bold;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 #printform .receiptDetails_%formval% {
   font-size: 15px;
