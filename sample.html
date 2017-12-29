@@ -762,6 +762,9 @@
 <script>
     /// Authentication setup ///
     qz.security.setCertificatePromise(function(resolve, reject) {
+
+      alert('setCertificatePromise');
+
         //Preferred method - from server
 //        $.ajax("assets/signing/digital-certificate.txt").then(resolve, reject);
 
@@ -832,6 +835,9 @@
     });
 
     qz.security.setSignaturePromise(function(toSign) {
+
+      alert('setSignaturePromise');
+
         return function(resolve, reject) {
             //Preferred method - from server
 //            $.ajax("/secure/url/for/sign-message?request=" + toSign).then(resolve, reject);
@@ -844,6 +850,9 @@
 
     /// Connection ///
     function launchQZ() {
+
+      alert('launchQZ');
+
         if (!qz.websocket.isActive()) {
             window.location.assign("qz:launch");
             //Retry 5 times, pausing 1 second between each attempt
@@ -1881,9 +1890,9 @@
         //alert('hello!');
 
 
-        setTimeout(function(){
-          printFile('epl_sample.txt');
-        },2000);
+        //setTimeout(function(){
+          //printFile('epl_sample.txt');
+        //},2000);
 
     	},5000);
 
