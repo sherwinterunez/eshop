@@ -34,7 +34,7 @@ if(!empty($vars['post']['wid'])) {
 
 //$myToolbar = array($moduleid.'lock',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'approved');
 
-$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'lock');
+$myToolbar = array($moduleid.'save',$moduleid.'cancel',$moduleid.'refresh',$moduleid.'print',$moduleid.'lock');
 
 /*if(!empty($vars['params']['optionsinfo']['options_name'])) {
 	$options_name = $vars['params']['optionsinfo']['options_name'];
