@@ -680,7 +680,7 @@ if(!class_exists('APP_Base')) {
 		} // postjson($vars=false,$retflag=false)
 
 		function doprint($vars) {
-			pre(array('$vars'=>$vars)); die;
+			//pre(array('$vars'=>$vars)); die;
 
 			global $apptemplate, $appform, $current_page;
 
@@ -722,7 +722,7 @@ if(!class_exists('APP_Base')) {
 					$tvars['formval'] = $vars['post']['formval'];
 					//echo 'hello, sherwin!';
 
-					//pre(array('$tvars'=>$tvars));
+					pre(array('$tvars'=>$tvars)); die;
 
 					$page = $apptemplate->page('reportsmartmoney',$tvars,true);
 
