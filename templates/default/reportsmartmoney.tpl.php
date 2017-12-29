@@ -14,12 +14,13 @@ body, html, #printform {
   width: 100%;
 }
 @media all {
-	.page-break	{ display: none; }
+	/*.page-break	{ display: none; }*/
+  .page-break	{ display: block; page-break-before: always; }
 }
 
 @media print {
 	/*.page-break	{ display: block; page-break-before: always; }*/
-  .page-break	{ display: block; page-break-before: auto; }
+  .page-break	{ display: block; page-break-before: always; }
 }
 
 .dhxform_obj_dhx_skyblue div.dhxform_item_label_left {
