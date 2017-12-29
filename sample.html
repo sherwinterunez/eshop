@@ -1811,7 +1811,7 @@
             };
         }
 
-        var pxlMargins = $("#pxlMargins").val();
+        /*var pxlMargins = $("#pxlMargins").val();
         if ($("#pxlMarginsActive").prop('checked')) {
             pxlMargins = {
                 top: $("#pxlMarginsTop").val(),
@@ -1819,7 +1819,14 @@
                 bottom: $("#pxlMarginsBottom").val(),
                 left: $("#pxlMarginsLeft").val()
             };
-        }
+        }*/
+
+        var pxlMargins = {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
+        };
 
         var copies = 1;
         var jobName = null;
