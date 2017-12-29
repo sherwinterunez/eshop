@@ -28,7 +28,8 @@ body, html, #printform {
 }
 
 .dhxform_obj_dhx_skyblue div.dhxform_txt_label2 {
-  font-family: Calibri;
+  /*font-family: Calibri;*/
+  font-family: Courier;
   font-weight: normal;
   color: #000;
   margin: 0;
