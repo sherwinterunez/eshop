@@ -763,7 +763,7 @@
     /// Authentication setup ///
     qz.security.setCertificatePromise(function(resolve, reject) {
 
-      alert('setCertificatePromise');
+      //alert('setCertificatePromise');
 
         //Preferred method - from server
 //        $.ajax("assets/signing/digital-certificate.txt").then(resolve, reject);
@@ -836,7 +836,7 @@
 
     qz.security.setSignaturePromise(function(toSign) {
 
-      alert('setSignaturePromise');
+      //alert('setSignaturePromise');
 
         return function(resolve, reject) {
             //Preferred method - from server
@@ -851,7 +851,7 @@
     /// Connection ///
     function launchQZ() {
 
-      alert('launchQZ');
+      //alert('launchQZ');
 
         if (!qz.websocket.isActive()) {
             window.location.assign("qz:launch");
