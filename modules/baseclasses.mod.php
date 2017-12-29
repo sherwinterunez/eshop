@@ -696,7 +696,7 @@ if(!class_exists('APP_Base')) {
 
 			// header($title=false,$name='header',$vars=false, $ret=false) {
 
-			$header = $apptemplate->header($this->desc.' | '.getOption('$APP_NAME',APP_NAME),'appheader');
+			$header = $apptemplate->header($this->desc.' | '.getOption('$APP_NAME',APP_NAME),'header');
 
 			//$header = $apptemplate->header($this->desc.' | '.APP_NAME, 'appheader', false, true);
 
