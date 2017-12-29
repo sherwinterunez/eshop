@@ -662,7 +662,7 @@ if(!class_exists('APP_Base')) {
 					$this->cls_ajax->post = $this->post;
 
 					if(method_exists($this->cls_ajax,'router')) {
-						$this->cls_ajax->router();
+						return $this->cls_ajax->router($retflag);
 					} else {
 						$bypass = false;
 					}
