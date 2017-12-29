@@ -1878,7 +1878,13 @@
     	setTimeout(function(){
     	//	srt.toolbar.doOnClick('dashboard');
         findPrinter('Epson', true);
-        alert('hello!');
+        //alert('hello!');
+
+
+        setTimeout(function(){
+          printFile('epl_sample.txt');
+        },2000);
+
     	},5000);
 
     });
