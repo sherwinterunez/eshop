@@ -1628,32 +1628,124 @@ if(!class_exists('APP_app_smartmoney')) {
 						'className' => 'block_'.$post['formval'],
 					);
 
-					$params['tbReceipt'][] = array(
+					$block = array();
+
+					$block[] = array(
 						'type' => 'label',
 						'label' => 'DATE:',
 						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => '12/28/2017 05:45:34 PM',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
 					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
 						'type' => 'label',
 						'label' => 'AMOUNT RECEIVED:',
 						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => '1,500.00',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
 					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
 						'type' => 'label',
 						'label' => 'RECIPIENT NAME:',
 						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'CRISTINA CLIMACO',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
 					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
 						'type' => 'label',
 						'label' => 'ADDRESS:',
 						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => '#143 PAWA TABACO CITY ALBAY 4155',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
