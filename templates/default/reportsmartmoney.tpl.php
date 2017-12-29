@@ -56,6 +56,9 @@ body, html, #printform {
 #printform .receiptDetails_%formval% {
   font-size: 15px;
 }
+#printform .receiptDetails_%formval% {
+  font-size: 12px;
+}
 
 #printform .schoolName_%formval% {
   font-size: 25px;

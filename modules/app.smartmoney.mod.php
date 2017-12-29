@@ -1646,7 +1646,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'type' => 'label',
 						'label' => '12/28/2017 05:45:34 PM',
 						'labelWidth' => 160,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails2_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
@@ -1796,7 +1796,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'type' => 'label',
 						'label' => '12/28/2017 05:45:34 PM',
 						'labelWidth' => 160,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails2_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
