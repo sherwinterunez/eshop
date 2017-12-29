@@ -22,6 +22,10 @@ body, html, #printform {
   .page-break	{ display: block; page-break-before: auto; }
 }
 
+.dhxform_obj_dhx_skyblue div.dhxform_txt_label2 {
+  font-weight: normal;
+}
+
 #printform .receiptHeader_%formval% {
   font-size: 25px;
   font-weight: normal;
