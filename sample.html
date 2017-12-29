@@ -1159,7 +1159,12 @@
         var config = getUpdatedConfig();
 
         var printData = [
-            { type: 'html', format: 'file', data: 'assets/receipt.html'}
+            {
+              type: 'html',
+              format: 'file',
+              data: 'assets/receipt.html',
+              options: { pageWidth: 8 },
+            }
         ];
 
         qz.print(config, printData).catch(displayError);
@@ -1821,12 +1826,14 @@
             };
         }*/
 
-        var pxlMargins = {
+        /*var pxlMargins = {
             top: 0,
             right: 0,
             bottom: 0,
             left: 0
-        };
+        };*/
+
+        var pxlMargins = 0;
 
         var copies = 1;
         var jobName = null;
