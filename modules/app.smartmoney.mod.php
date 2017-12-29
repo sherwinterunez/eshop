@@ -1584,7 +1584,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'XXXXXXXXXX',
+						'label' => 'XX201712290000001',
 						'labelWidth' => 160,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1598,11 +1598,34 @@ if(!class_exists('APP_app_smartmoney')) {
 						'className' => 'block_'.$post['formval'],
 					);
 
-					$params['tbReceipt'][] = array(
+					$block = array();
+
+					$block[] = array(
 						'type' => 'label',
 						'label' => 'REFERENCE NO.:',
 						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'adfk345id13',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
