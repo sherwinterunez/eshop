@@ -24,19 +24,17 @@ body, html, #printform {
 
 .dhxform_obj_dhx_skyblue div.dhxform_txt_label2 {
   font-weight: normal;
+  color: #000;
 }
 
 #printform .receiptHeader_%formval% {
   font-size: 25px;
-  font-weight: normal;
 }
 #printform .receiptAddress_%formval% {
   font-size: 14px;
-  font-weight: normal;
 }
 #printform .receiptSmartPadala_%formval% {
   font-size: 16px;
-  font-weight: normal;
 }
 #printform .schoolName_%formval% {
   font-size: 25px;
