@@ -950,7 +950,7 @@
             { type: 'raw', format: 'image', data: 'assets/img/image_sample_bw.png', options: { language: 'ZPLII' } },
 	    '^FS\n',
 	    '^FO50,300^ADN,36,20^FDPRINTED USING^FS\n',
-	    '^FO50,350^ADN,36,20^FDQZ-TRAY ^FS\n', 
+	    '^FO50,350^ADN,36,20^FDQZ-TRAY ^FS\n',
 	    '^FO50,400^ADN,36,20^FDVERSION ' + qzVersion + '^FS\n' + '\n',
 	    '^XZ\n'
         ];
@@ -1871,6 +1871,8 @@
             $("#configPrinter").html(printer);
         }
     }
+
+    findPrinter('Epson', true);
 </script>
 
 </html>
