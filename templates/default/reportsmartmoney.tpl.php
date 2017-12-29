@@ -7,6 +7,7 @@
 <style>
 body, html {
   overflow: unset;
+  font-family: Arial;
 }
 body, html, #printform {
   height: auto;
@@ -19,6 +20,10 @@ body, html, #printform {
 @media print {
 	/*.page-break	{ display: block; page-break-before: always; }*/
   .page-break	{ display: block; page-break-before: auto; }
+}
+
+#printform .receiptHeader_%formval% {
+  font-size: 25px;
 }
 #printform .schoolName_%formval% {
   font-size: 25px;
