@@ -642,7 +642,7 @@ if(!class_exists('APP_Base')) {
 				//pre(array('$this->vars'=>$this->vars,'$vars'=>$vars,'$classname'=>$classname,'$classfile'=>$classfile));
 
 				if(method_exists($this->cls_ajax,'router')) {
-					$this->cls_ajax->router();
+					return $this->cls_ajax->router($retflag);
 				} else {
 					$bypass = false;
 				}
