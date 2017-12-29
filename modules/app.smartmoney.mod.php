@@ -1748,18 +1748,64 @@ if(!class_exists('APP_app_smartmoney')) {
 						'className' => 'block_'.$post['formval'],
 					);
 
-					$params['tbReceipt'][] = array(
+					$block = array();
+
+					$block[] = array(
 						'type' => 'label',
 						'label' => 'CASHIER:',
 						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'SHERWIN TERUNEZ',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
 					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
 						'type' => 'label',
 						'label' => 'DATE/TIME:',
 						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => '12/28/2017 05:45:34 PM',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
