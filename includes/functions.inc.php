@@ -684,6 +684,10 @@ function header_xml() {
 	header('Content-type: text/xml');
 }
 
+function header_html() {
+	header('Content-type: text/html');
+}
+
 function substrNumChar($str,$numchar=0) {
 	if(!empty($str)) {
 	} else return false;
