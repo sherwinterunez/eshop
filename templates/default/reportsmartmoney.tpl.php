@@ -70,6 +70,23 @@ body, html, #printform {
   padding-top: 1px;
 }
 
+#printform .receiptDetails4_%formval% {
+  font-size: 13px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+#printform .receiptDetails5_%formval% {
+  font-size: 16px;
+  text-align: center;
+}
+
+#printform .receiptDetails6_%formval% {
+  font-size: 16px;
+  text-align: center;
+  padding-bottom: 25px;
+}
+
 #printform .schoolName_%formval% {
   font-size: 25px;
 }
