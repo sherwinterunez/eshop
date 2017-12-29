@@ -1392,7 +1392,7 @@ pre(array('$vars'=>$vars));
 			if(rowid) {
 				myTab.postData('/'+settings.router_id+'/json/', {
 					//odata: {rowid:rowid},
-					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatemainid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval=%formval%&wid="+wid+"&rowid="+rowid,
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval=%formval%&wid="+wid+"&rowid="+rowid,
 				}, function(ddata,odata){
 
 					//jQuery("#formdiv_%formval% #<?php echo $templatemainid; ?>").parent().html(ddata.html);
