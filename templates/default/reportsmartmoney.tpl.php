@@ -60,6 +60,10 @@ body, html, #printform {
   font-size: 12px;
   padding-top: 3px;
 }
+#printform .receiptDetails3_%formval% {
+  font-size: 14px;
+  padding-top: 1px;
+}
 
 #printform .schoolName_%formval% {
   font-size: 25px;

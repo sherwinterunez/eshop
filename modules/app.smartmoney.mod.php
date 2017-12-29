@@ -1664,7 +1664,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'type' => 'label',
 						'label' => 'AMOUNT RECEIVED:',
 						'labelWidth' => 130,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails3_'.$post['formval'],
 					);
 
 					$block[] = array(
