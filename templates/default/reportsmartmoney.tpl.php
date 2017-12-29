@@ -10,7 +10,7 @@ body, html {
 }
 body, html, #printform {
   height: auto;
-  width: auto;
+  width: 100%;
 }
 @media all {
 	.page-break	{ display: none; }
