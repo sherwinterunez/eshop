@@ -722,7 +722,7 @@ if(!class_exists('APP_Base')) {
 					$tvars['formval'] = $vars['post']['formval'];
 					//echo 'hello, sherwin!';
 
-					//pre(array('$tvars'=>$tvars));
+					pre(array('$tvars'=>$tvars));
 
 					$page = $apptemplate->page('reportsmartmoney',$tvars,true);
 
