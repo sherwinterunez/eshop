@@ -3760,7 +3760,7 @@ if(!class_exists('APP_app_smartmoney')) {
 			      'name' => 'receipt_test',
 			      'readonly' => true,
 			      //'required' => !$readonly,
-			      'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? pgDate($params['smartmoneyinfo']['loadtransaction_status']) : '',
+			      'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? $params['smartmoneyinfo']['loadtransaction_status'] : '',
 			    );
 				}
 
