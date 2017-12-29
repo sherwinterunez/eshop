@@ -1547,6 +1547,27 @@ if(!class_exists('APP_app_smartmoney')) {
 						'className' => 'receiptHeader_'.$post['formval'],
 					);
 
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'Ziga Avenue, Brgy. Basud, Tabaco City, Albay, 4511',
+						'labelWidth' => 500,
+						'className' => 'receiptAddress_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'Smart Padala: 5577519312809107',
+						'labelWidth' => 500,
+						'className' => 'receiptSmartPadala_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'SMART MONEY REMITTANCE',
+						'labelWidth' => 500,
+						'className' => 'receiptTitle_'.$post['formval'],
+					);
+
 					if($post['method']=='generatereportprint') {
 						return json_encode($params);
 						//pre(array('$post'=>$post));
