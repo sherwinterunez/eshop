@@ -51,6 +51,9 @@ body, html, #printform {
   text-align: center;
   font-weight: bold;
 }
+#printform .receiptDetails_%formval% {
+  font-size: 15px;
+}
 
 #printform .schoolName_%formval% {
   font-size: 25px;
