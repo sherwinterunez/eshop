@@ -58,6 +58,7 @@ body, html, #printform {
 }
 #printform .receiptDetails2_%formval% {
   font-size: 12px;
+  padding-top: 3px;
 }
 
 #printform .schoolName_%formval% {
