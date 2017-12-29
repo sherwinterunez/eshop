@@ -1810,9 +1810,286 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
+						'label' => 'Thank You. Come Again.',
+						'labelWidth' => 300,
+						'className' => 'receiptTitle_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
 						'label' => '&nbsp;',
 						'labelWidth' => 300,
 						'className' => 'page-break',
+					);
+
+//--- page #2 ----
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'JJS Telecom',
+						'labelWidth' => 300,
+						'className' => 'receiptHeader_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'Ziga Avenue, Brgy. Basud, Tabaco City, Albay, 4511',
+						'labelWidth' => 300,
+						'className' => 'receiptAddress_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'Smart Padala: 5577519312809107',
+						'labelWidth' => 300,
+						'className' => 'receiptSmartPadala_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'SMART MONEY REMITTANCE',
+						'labelWidth' => 300,
+						'className' => 'receiptTitle_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'RECEIPT NO.:',
+						'labelWidth' => 130,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'XX201712290000001',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'REFERENCE NO.:',
+						'labelWidth' => 130,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'adfk345id13',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'DATE:',
+						'labelWidth' => 130,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => '12/28/2017 05:45:34 PM',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails2_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'AMOUNT RECEIVED:',
+						'labelWidth' => 130,
+						'className' => 'receiptDetails3_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => '1,500.00',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'RECIPIENT NAME:',
+						'labelWidth' => 130,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'CRISTINA CLIMACO',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'ADDRESS:',
+						'labelWidth' => 130,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => '#143 PAWA TABACO CITY ALBAY 4155',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'CASHIER:',
+						'labelWidth' => 130,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'SHERWIN TERUNEZ',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'DATE/TIME:',
+						'labelWidth' => 130,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 10,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => '12/28/2017 05:45:34 PM',
+						'labelWidth' => 160,
+						'className' => 'receiptDetails2_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => 300,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
@@ -1821,6 +2098,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'labelWidth' => 300,
 						'className' => 'receiptTitle_'.$post['formval'],
 					);
+
 
 					if($post['method']=='generatereportprint') {
 						return json_encode($params);
