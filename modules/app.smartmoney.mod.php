@@ -1571,56 +1571,56 @@ if(!class_exists('APP_app_smartmoney')) {
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'RECEIPT NO.:',
-						'labelWidth' => 120,
+						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'REFERENCE NO.:',
-						'labelWidth' => 120,
+						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'DATE:',
-						'labelWidth' => 120,
+						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'AMOUNT RECEIVED:',
-						'labelWidth' => 120,
+						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'RECIPIENT NAME:',
-						'labelWidth' => 120,
+						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'ADDRESS:',
-						'labelWidth' => 120,
+						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'CASHIER:',
-						'labelWidth' => 120,
+						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'DATE/TIME:',
-						'labelWidth' => 120,
+						'labelWidth' => 130,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
 
