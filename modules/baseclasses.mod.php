@@ -208,6 +208,7 @@ if(!class_exists('APP_Base')) {
 			$approuter->addroute(array('^/'.$this->pathid.'/js/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'dojs'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/js/\?(.*)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'dojs'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/json/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'postjson'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/print/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'doprint'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/api/smartmoneycardno/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=', 'callback'=>array($this,'smartmoneycardno'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/api/smartmoneycardno/\?(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=', 'callback'=>array($this,'smartmoneycardno'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/api/smartmoneysendername/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=', 'callback'=>array($this,'smartmoneysendername'))));
@@ -504,7 +505,7 @@ if(!class_exists('APP_Base')) {
 			$xml .= '</complete>';
 
 			print_r($xml);
-			
+
 		} // function smartmoneycardno($vars=false,$retflag=false) {
 
 		function smartmoneysendername($vars=false,$retflag=false) {
@@ -677,6 +678,70 @@ if(!class_exists('APP_Base')) {
 			}
 
 		} // postjson($vars=false,$retflag=false)
+
+		function doprint($vars) {
+			//pre(array('$vars'=>$vars));
+
+			global $apptemplate, $appform, $current_page;
+
+			//$this->check_url();
+
+			//pre(array('$this->scripts'=>$apptemplate->scripts));
+
+			foreach($apptemplate->scripts as $k=>$v) {
+				if($v=='/app/js/') {
+					unset($apptemplate->scripts[$k]);
+				}
+			}
+
+			// header($title=false,$name='header',$vars=false, $ret=false) {
+
+			$header = $apptemplate->header($this->desc.' | '.getOption('$APP_NAME',APP_NAME),'appheader');
+
+			//$header = $apptemplate->header($this->desc.' | '.APP_NAME, 'appheader', false, true);
+
+			//echo $header;
+
+			//$apptemplate->page('topnav');
+
+			//$apptemplate->page('topmenu');
+
+			//$apptemplate->page('workarea');
+
+			// footer($name='footer', $vars=false, $ret=false) {
+
+			$page = '';
+
+			if(!empty($vars['params'])) {
+				$vars['params'] = str_replace(' ','+',$vars['params']);
+				$vars['post'] = json_decode(gzuncompress(base64_decode($vars['params'])),true);
+				if($vars['post']) {
+					$vars['post']['method'] = 'generatereportprint';
+					$tvars = array();
+					$tvars['json'] = $this->postjson($vars,1);
+					$tvars['formval'] = $vars['post']['formval'];
+					//echo 'hello, sherwin!';
+
+					//pre(array('$tvars'=>$tvars));
+
+					$page = $apptemplate->page('reportmainmonthlyattendance',$tvars,true);
+
+					$page = str_replace('%formval%',$vars['post']['formval'],$page);
+
+					//echo $page;
+				}
+			}
+
+
+			$footer = $apptemplate->footer('footer', false, true);
+
+			//echo $footer;
+
+			header_html();
+
+			die($header.$page.$footer);
+
+		}
 
 		function json($vars) { }
 
