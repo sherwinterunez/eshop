@@ -3754,6 +3754,7 @@ if(!class_exists('APP_app_smartmoney')) {
 		    );
 
 				if(!empty($params['smartmoneyinfo']['loadtransaction_status'])) {
+
 					$params['tbReceipt'][] = array(
 			      'type' => 'input',
 			      'label' => 'STATUS',
@@ -3762,6 +3763,13 @@ if(!class_exists('APP_app_smartmoney')) {
 			      //'required' => !$readonly,
 			      'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? $params['smartmoneyinfo']['loadtransaction_status'] : '',
 			    );
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'JJS Telecom',
+						'labelWidth' => 500,
+					);
+
 				}
 
 				$templatefile = $this->templatefile($routerid,$formid);
