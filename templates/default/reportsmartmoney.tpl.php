@@ -35,13 +35,21 @@ body, html, #printform {
 
 #printform .receiptHeader_%formval% {
   font-size: 25px;
+  text-align: center;
 }
 #printform .receiptAddress_%formval% {
   font-size: 14px;
+  text-align: center;
 }
 #printform .receiptSmartPadala_%formval% {
   font-size: 16px;
+  text-align: center;
 }
+#printform .receiptTitle_%formval% {
+  font-size: 18px;
+  text-align: center;
+}
+
 #printform .schoolName_%formval% {
   font-size: 25px;
 }
