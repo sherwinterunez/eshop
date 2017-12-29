@@ -1536,6 +1536,25 @@ if(!class_exists('APP_app_smartmoney')) {
 					//$retval['post'] = $post;
 					json_encode_return($retval);
 				} else
+				if(!empty($post['method'])&&($post['method']=='generatereport'||$post['method']=='generatereportprint')) {
+
+					$params['tbReceipt'] = array();
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'Please specify parameters to generate report.',
+						'labelWidth' => 500,
+					);
+
+					if($post['method']=='generatereportprint') {
+						return json_encode($params);
+						//pre(array('$post'=>$post));
+					}
+
+					json_encode_return($params);
+					die;
+
+				} else
 		    if(!empty($post['method'])&&($post['method']=='smartmoneynew')) {
 
 		      $retval = array();
