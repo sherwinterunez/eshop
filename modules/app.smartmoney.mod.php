@@ -1584,7 +1584,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'XX201712290000001',
+						'label' => 'XX201712290006581',
 						'labelWidth' => 160,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1794,7 +1794,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '12/28/2017 05:45:34 PM',
+						'label' => '12/28/6587 05:45:34 PM',
 						'labelWidth' => 160,
 						'className' => 'receiptDetails2_'.$post['formval'],
 					);
