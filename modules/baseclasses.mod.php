@@ -718,7 +718,7 @@ if(!class_exists('APP_Base')) {
 				if($vars['post']) {
 					$vars['post']['method'] = 'generatereportprint';
 
-					pre(array('$vars'=>$vars)); die;
+					//pre(array('$vars'=>$vars)); die;
 
 					$tvars = array();
 					$tvars['json'] = $this->postjson($vars,1);

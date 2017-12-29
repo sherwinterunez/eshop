@@ -4117,6 +4117,11 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					//pre(array('post'=>$this->post));
 
+					if($this->post['method']=='generatereportprint') {
+						pre(array('post'=>$this->post));
+						die;
+					}
+
 					$toolbar = false;
 
 					if(!empty($this->post['wid'])) {
@@ -4503,7 +4508,8 @@ if(!class_exists('APP_app_smartmoney')) {
 						return $jsonval;
 					}
 
-				}			}
+				}
+			}
 
 			return false;
 		} // router($vars=false,$retflag=false)
