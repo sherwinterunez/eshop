@@ -3755,19 +3755,41 @@ if(!class_exists('APP_app_smartmoney')) {
 
 				if(!empty($params['smartmoneyinfo']['loadtransaction_status'])) {
 
-					$params['tbReceipt'][] = array(
+					/*$params['tbReceipt'][] = array(
 			      'type' => 'input',
 			      'label' => 'STATUS',
 			      'name' => 'receipt_test',
 			      'readonly' => true,
 			      //'required' => !$readonly,
 			      'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? $params['smartmoneyinfo']['loadtransaction_status'] : '',
-			    );
+			    );*/
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
 						'label' => 'JJS Telecom',
 						'labelWidth' => 500,
+						'className' => 'receiptCompany_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'Ziga Avenue, Brgy. Basud, Tabaco City, Albay, 4511',
+						'labelWidth' => 500,
+						'className' => 'receiptAddress_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'Smart Padala: 5577519312808109',
+						'labelWidth' => 500,
+						'className' => 'receiptSmartPadala_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'label',
+						'label' => 'SMART MONEY REMITTANCE',
+						'labelWidth' => 500,
+						'className' => 'receiptTitle_'.$post['formval'],
 					);
 
 				}
