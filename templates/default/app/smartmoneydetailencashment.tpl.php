@@ -1399,7 +1399,7 @@ pre(array('$vars'=>$vars));
 
 					//window.open('/'+settings.router_id+'/app/print/sample');
 
-					//var win = window.open('/'+settings.router_id+'/print/'+ddata.topost,"win","status=yes,scrollbars=yes,toolbar=no,menubar=yes,height=650,width=1000");
+					var win = window.open('/'+settings.router_id+'/print/'+ddata.topost,"win","status=yes,scrollbars=yes,toolbar=no,menubar=yes,height=650,width=1000");
 
 					//var win = window.open('/'+settings.router_id+'/print/'+ddata.topost,"_blank");
 
