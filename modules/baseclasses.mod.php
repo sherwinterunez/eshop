@@ -717,12 +717,15 @@ if(!class_exists('APP_Base')) {
 				$vars['post'] = json_decode(gzuncompress(base64_decode($vars['params'])),true);
 				if($vars['post']) {
 					$vars['post']['method'] = 'generatereportprint';
+
+					pre(array('$vars'=>$vars)); die;
+
 					$tvars = array();
 					$tvars['json'] = $this->postjson($vars,1);
 					$tvars['formval'] = $vars['post']['formval'];
 					//echo 'hello, sherwin!';
 
-					pre(array('$tvars'=>$tvars)); die;
+					//pre(array('$tvars'=>$tvars)); die;
 
 					$page = $apptemplate->page('reportsmartmoney',$tvars,true);
 
