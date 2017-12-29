@@ -1526,6 +1526,16 @@ if(!class_exists('APP_app_smartmoney')) {
 		      die;
 
 		    } else
+				if(!empty($post['method'])&&($post['method']=='smartmoneyprint')) {
+					$tpost = $post;
+
+					$tpost['method'] = 'generatereport';
+
+					$retval = array();
+					$retval['topost'] = base64_encode(gzcompress(json_encode($tpost)));
+					//$retval['post'] = $post;
+					json_encode_return($retval);
+				} else
 		    if(!empty($post['method'])&&($post['method']=='smartmoneynew')) {
 
 		      $retval = array();
