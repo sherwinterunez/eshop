@@ -22,6 +22,10 @@ body, html, #printform {
   .page-break	{ display: block; page-break-before: auto; }
 }
 
+.dhxform_obj_dhx_skyblue div.dhxform_item_label_left {
+  padding-top: 0;
+}
+
 .dhxform_obj_dhx_skyblue div.dhxform_txt_label2 {
   font-weight: normal;
   color: #000;
