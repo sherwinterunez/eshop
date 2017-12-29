@@ -1542,8 +1542,9 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$params['tbReceipt'][] = array(
 						'type' => 'label',
-						'label' => 'Please specify parameters to generate report.',
+						'label' => 'JJS Telecom',
 						'labelWidth' => 500,
+						'className' => 'receiptHeader_'.$post['formval'],
 					);
 
 					if($post['method']=='generatereportprint') {
