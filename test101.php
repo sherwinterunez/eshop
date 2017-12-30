@@ -145,9 +145,16 @@ doSMSCommands3($sms,$mobileNo,$ip);
 
 //print_r(array('$masked'=>$masked));
 
-$asm = getAllSmartMoney();
+//$asm = getAllSmartMoney();
 
-print_r(array('$asm'=>$asm));
+//print_r(array('$asm'=>$asm));
 
+//$cardno = '5299672795242119|PADALA';
+
+$cardno = '5299672795242119';
+
+$x = explode('|',$cardno);
+
+pre(array('$x'=>$x));
 
 ////

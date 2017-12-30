@@ -3987,6 +3987,13 @@ if(!class_exists('APP_app_smartmoney')) {
 					$loadtransaction_cashreceived = !empty($post['loadtransaction_cashreceived'])&&is_numeric($post['loadtransaction_cashreceived']) ? $post['loadtransaction_cashreceived'] : false;
 					$loadtransaction_assignedsim = !empty($post['loadtransaction_assignedsim']) ? $post['loadtransaction_assignedsim'] : false;
 
+					if(!empty($loadtransaction_cardno)) {
+						$xc = explode('|',$loadtransaction_cardno);
+						if(!empty($xc[0])) {
+							$loadtransaction_cardno = $xc[0];
+						}
+					}
+
 					$smartmoney_transactiontype = !empty($post['smartmoney_transactiontype']) ? $post['smartmoney_transactiontype'] : '';
 
 					if(!empty($smartmoney_transactiontype)) {
