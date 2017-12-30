@@ -3238,12 +3238,17 @@ if(!class_exists('APP_app_smartmoney')) {
 					$retval['error'] = true;
 					//$retval['error_message'] = 'Invalid Card/Mobile Number!';
 
+					// 7788 9328 5462 34 -- PAYMAYA (14 digits)
+
 					if(isSmartMoneyCardNo($cardno)) {
 					} else {
 						if(isSmartMobileNo($cardno)) {
 						} else {
-							json_encode_return($retval);
-							die;
+							if(isPaymayaCardNo($cardno)) {
+							} else {
+								json_encode_return($retval);
+								die;
+							}
 						}
 					}
 

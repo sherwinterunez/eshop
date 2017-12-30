@@ -5835,6 +5835,19 @@ function isSmartMoneyCardNo($number=false) {
 	return false;
 }
 
+function isPaymayaCardNo($number=false) {
+	if(!empty($number)&&is_numeric($number)) {
+	} else {
+		return false;
+	}
+
+	if(strlen($number)==14) {
+		return true;
+	}
+
+	return false;
+}
+
 function isValidCardNo($number=false, $digit=16) {
 	if(!empty($number)&&is_numeric($number)) {
 	} else {
