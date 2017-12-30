@@ -3228,7 +3228,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					$retval['error_code'] = '345345';
 					$retval['error_message'] = 'Invalid Amount!';
 
-					if(!empty($amount)&&$amount>=100) {
+					if(!empty($amount)&&$amount>=1) {
 					} else {
 						json_encode_return($retval);
 						die;
