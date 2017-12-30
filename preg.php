@@ -421,6 +421,8 @@ $str[] = '28Dec 1655:Sent P500.00 from LOADING to ****8104 at 09092701100. Also 
 
 $str[] = '2017-12-28 12:31:16: Received PHP4,700.00 from +639284879822 w/commission kung ikaw ay Smart Padala Agent.LIBRE ang pag-claim ni suki! Ref:dcbbdfc5b809 Bal: PHP38491.05. Para malaman ang iyong komisyon, i-check ang balance sa Smart Money menu.';
 
+$str[] = '30Dec 2229:Remittance of P100.00 & fee of P3.50 was deducted from your account.Avail bal:P11,531.25.Ref:5c981aac84aa';
+
 foreach($str as $k=>$v) {
 	if(preg_match('/'.$regx.'/si',$v,$matches)) {
 		print_r(array('$matches'=>$matches));

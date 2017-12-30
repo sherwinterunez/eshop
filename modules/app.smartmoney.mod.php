@@ -1694,6 +1694,66 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
+						'label' => 'AMOUNT:',
+						'labelWidth' => $labelWidthL,
+						'className' => 'receiptDetails3_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => $labelOffset,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_amount']) ? number_format($params['smartmoneyinfo']['loadtransaction_amount'],2) : '0.00',
+						'labelWidth' => $labelWidthR,
+						'className' => 'receiptDetails7_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => $labelWidthA,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'SERVICE CHARGE:',
+						'labelWidth' => $labelWidthL,
+						'className' => 'receiptDetails3_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => $labelOffset,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_otherchargesamount']) ? number_format($params['smartmoneyinfo']['loadtransaction_otherchargesamount'],2) : '0.00',
+						'labelWidth' => $labelWidthR,
+						'className' => 'receiptDetails7_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => $labelWidthA,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
 						'label' => 'AMOUNT RECEIVED:',
 						'labelWidth' => $labelWidthL,
 						'className' => 'receiptDetails3_'.$post['formval'],
@@ -1708,7 +1768,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'type' => 'label',
 						'label' => !empty($params['smartmoneyinfo']['loadtransaction_amountdue']) ? number_format($params['smartmoneyinfo']['loadtransaction_amountdue'],2) : '0.00',
 						'labelWidth' => $labelWidthR,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails7_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
@@ -1999,7 +2059,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'type' => 'label',
 						'label' => !empty($params['smartmoneyinfo']['loadtransaction_amount']) ? number_format($params['smartmoneyinfo']['loadtransaction_amount'],2) : '',
 						'labelWidth' => $labelWidthR,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails7_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
@@ -2027,9 +2087,9 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => !empty($params['smartmoneyinfo']['loadtransaction_otherchargesamount']) ? number_format($params['smartmoneyinfo']['loadtransaction_otherchargesamount'],2) : '',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_otherchargesamount']) ? number_format($params['smartmoneyinfo']['loadtransaction_otherchargesamount'],2) : '0.00',
 						'labelWidth' => $labelWidthR,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails7_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
@@ -2059,7 +2119,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'type' => 'label',
 						'label' => !empty($params['smartmoneyinfo']['loadtransaction_amountdue']) ? number_format($params['smartmoneyinfo']['loadtransaction_amountdue'],2) : '0.00',
 						'labelWidth' => $labelWidthR,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails7_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
