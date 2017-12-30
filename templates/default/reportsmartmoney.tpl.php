@@ -90,6 +90,10 @@ body, html, #printform {
   font-size: 15px;
   text-align: right;
 }
+#printform .receiptDetails8_%formval% {
+  font-size: 15px;
+  padding-top: 20px;
+}
 
 #printform .schoolName_%formval% {
   font-size: 25px;

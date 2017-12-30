@@ -1793,7 +1793,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'type' => 'label',
 						'label' => 'CASHIER:',
 						'labelWidth' => $labelWidthL,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails8_'.$post['formval'],
 					);
 
 					$block[] = array(
@@ -1805,7 +1805,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'type' => 'label',
 						'label' => strtoupper($cashier),
 						'labelWidth' => $labelWidthR,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails8_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
@@ -3732,11 +3732,11 @@ if(!class_exists('APP_app_smartmoney')) {
 						'className' => 'block_'.$post['formval'],
 					);
 
-					/*$block = array();
+					$block = array();
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'RECIPIENT NAME:',
+						'label' => 'SENDER NAME:',
 						'labelWidth' => $labelWidthL,
 						'className' => 'receiptDetails3_'.$post['formval'],
 					);
@@ -3748,7 +3748,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'CRISTINA CLIMACO',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_customername']) ? $params['smartmoneyinfo']['loadtransaction_customername'] : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -3760,7 +3760,37 @@ if(!class_exists('APP_app_smartmoney')) {
 						'offsetTop' => 0,
 						'list' => $block,
 						'className' => 'block_'.$post['formval'],
-					);*/
+					);
+
+					$block = array();
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => 'SENDER NO.:',
+						'labelWidth' => $labelWidthL,
+						'className' => 'receiptDetails3_'.$post['formval'],
+					);
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => $labelOffset,
+					);
+
+					$block[] = array(
+						'type' => 'label',
+						'label' => !empty($params['smartmoneyinfo']['sendernumber']) ? $params['smartmoneyinfo']['sendernumber'] : '',
+						'labelWidth' => $labelWidthR,
+						'className' => 'receiptDetails_'.$post['formval'],
+					);
+
+					$params['tbReceipt'][] = array(
+						'type' => 'block',
+						'width' => $labelWidthA,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
 
 					$block = array();
 
@@ -3805,7 +3835,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'type' => 'label',
 						'label' => 'CASHIER:',
 						'labelWidth' => $labelWidthL,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails8_'.$post['formval'],
 					);
 
 					$block[] = array(
@@ -3817,7 +3847,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						'type' => 'label',
 						'label' => strtoupper($cashier),
 						'labelWidth' => $labelWidthR,
-						'className' => 'receiptDetails_'.$post['formval'],
+						'className' => 'receiptDetails8_'.$post['formval'],
 					);
 
 					$params['tbReceipt'][] = array(
