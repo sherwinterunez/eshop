@@ -1538,6 +1538,31 @@ if(!class_exists('APP_app_smartmoney')) {
 				} else
 				if(!empty($post['method'])&&($post['method']=='generatereport'||$post['method']=='generatereportprint')) {
 
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+					  if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id=".$post['rowid']))) {
+					    json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+					    die;
+					  }
+
+					  if(!empty($result['rows'][0]['loadtransaction_id'])) {
+					    $params['smartmoneyinfo'] = $result['rows'][0];
+
+					    $custData = getRemitCustData($params['smartmoneyinfo']['loadtransaction_customerid']);
+
+					    if(!empty($custData)&&is_array($custData)) {
+					      foreach($custData as $k=>$v) {
+					        $params['smartmoneyinfo'][$k] = $v;
+					      }
+					    }
+					  }
+					}
+
+					$receiptno = '';
+
+					if(!empty($params['smartmoneyinfo']['loadtransaction_id'])&&!empty($params['smartmoneyinfo']['loadtransaction_ymd'])) {
+					  $receiptno = 'EN'.$params['smartmoneyinfo']['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['smartmoneyinfo']['loadtransaction_id']));
+					}
+
 					$params['tbReceipt'] = array();
 
 //--- page #1 ----
@@ -1591,7 +1616,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'XX201712290006581',
+						'label' => $receiptno,
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1621,7 +1646,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'adfk345id13',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_refnumber']) ? $params['smartmoneyinfo']['loadtransaction_refnumber'] : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1651,7 +1676,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '12/28/2017 05:45:34 PM',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_updatestamp']) ? pgDate($params['smartmoneyinfo']['loadtransaction_updatestamp'],'m-d-Y h:i:s A') : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails2_'.$post['formval'],
 					);
@@ -1681,7 +1706,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '1,500.00',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_amountdue']) ? number_format($params['smartmoneyinfo']['loadtransaction_amountdue'],2) : '0.00',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1711,7 +1736,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'CRISTINA CLIMACO',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_receivername']) ? $params['smartmoneyinfo']['loadtransaction_receivername'] : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1741,7 +1766,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '#143 PAWA TABACO CITY ALBAY 4155',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_receiveraddress']) ? $params['smartmoneyinfo']['loadtransaction_receiveraddress'] : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1754,6 +1779,13 @@ if(!class_exists('APP_app_smartmoney')) {
 						'list' => $block,
 						'className' => 'block_'.$post['formval'],
 					);
+
+					$cashier = !empty($params['smartmoneyinfo']['loadtransaction_staffid']) ? getCustomerNameByID($params['smartmoneyinfo']['loadtransaction_staffid']) : '';
+
+					if(!empty($cashier)) {
+					} else {
+					  $cashier = !empty($params['smartmoneyinfo']['loadtransaction_username']) ? $params['smartmoneyinfo']['loadtransaction_username'] : $applogin->fullname();
+					}
 
 					$block = array();
 
@@ -1771,7 +1803,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'SHERWIN TERUNEZ',
+						'label' => strtoupper($cashier),
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1801,7 +1833,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '12/28/6587 05:45:34 PM',
+						'label' => date('m-d-Y h:i:s A'),
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails2_'.$post['formval'],
 					);
@@ -1875,7 +1907,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'XX201712290000001',
+						'label' => $receiptno,
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1905,7 +1937,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'adfk345id13',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_refnumber']) ? $params['smartmoneyinfo']['loadtransaction_refnumber'] : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1935,7 +1967,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '12/28/2017 05:45:34 PM',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_updatestamp']) ? pgDate($params['smartmoneyinfo']['loadtransaction_updatestamp'],'m-d-Y h:i:s A') : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails2_'.$post['formval'],
 					);
@@ -1965,7 +1997,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '1,500.00',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_amount']) ? number_format($params['smartmoneyinfo']['loadtransaction_amount'],2) : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -1995,7 +2027,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '10.00',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_otherchargesamount']) ? number_format($params['smartmoneyinfo']['loadtransaction_otherchargesamount'],2) : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -2025,7 +2057,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '1,500.00',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_amountdue']) ? number_format($params['smartmoneyinfo']['loadtransaction_amountdue'],2) : '0.00',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -2055,7 +2087,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'CRISTINA CLIMACO',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_receivername']) ? $params['smartmoneyinfo']['loadtransaction_receivername'] : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -2085,7 +2117,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '#143 PAWA TABACO CITY ALBAY 4155',
+						'label' => !empty($params['smartmoneyinfo']['loadtransaction_receiveraddress']) ? $params['smartmoneyinfo']['loadtransaction_receiveraddress'] : '',
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -2136,7 +2168,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => 'SHERWIN TERUNEZ',
+						'label' => strtoupper($cashier),
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails_'.$post['formval'],
 					);
@@ -2166,7 +2198,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => '12/28/2017 05:45:34 PM',
+						'label' => date('m-d-Y h:i:s A'),
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails2_'.$post['formval'],
 					);
@@ -3813,7 +3845,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					$block[] = array(
 						'type' => 'label',
-						'label' => !empty($params['smartmoneyinfo']['loadtransaction_updatestamp']) ? pgDate($params['smartmoneyinfo']['loadtransaction_updatestamp'],'m-d-Y h:i:s A') : '',
+						'label' => date('m-d-Y h:i:s A'),
 						'labelWidth' => $labelWidthR,
 						'className' => 'receiptDetails2_'.$post['formval'],
 					);
