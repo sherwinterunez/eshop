@@ -3176,6 +3176,7 @@ if(!class_exists('APP_app_smartmoney')) {
 			if(!empty($routerid)&&!empty($formid)) {
 
 				$readonly = true;
+				$manuallycompleted = false;
 
 				$params = array();
 
@@ -3189,8 +3190,12 @@ if(!class_exists('APP_app_smartmoney')) {
 					$customer_type = getCustomerType($userData['user_staffid']);
 				}
 
-				if(!empty($this->vars['post']['method'])&&($this->vars['post']['method']=='smartmoneynew'||$this->vars['post']['method']=='smartmoneyedit')) {
+				if(!empty($post['method'])&&($this->vars['post']['method']=='smartmoneynew'||$post['method']=='smartmoneyedit')) {
 					$readonly = false;
+				}
+
+				if(!empty($post['method'])&&($post['method']=='smartmoneymanually')) {
+					$manuallycompleted = true;
 				}
 
 				if(!empty($post['method'])&&$post['method']=='getsenderdata') {
@@ -3978,8 +3983,20 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					if(!empty($post['smartmoney_status'])) {
 						$content = array();
-						$content['loadtransaction_status'] = $post['smartmoney_status'];
+						$content['loadtransaction_status'] = $loadtransaction_status = $post['smartmoney_status'];
 						$content['loadtransaction_updatestamp'] = 'now()';
+
+						if(!empty($content['loadtransaction_status'])&&$content['loadtransaction_status']==TRN_COMPLETED_MANUALLY) {
+
+							$content['loadtransaction_manualdate'] = !empty($post['retail_manualdate']) ? $post['retail_manualdate'] : '';
+							$content['loadtransaction_manualtime'] = !empty($post['retail_manualtime']) ? $post['retail_manualtime'] : '';
+							$content['loadtransaction_refnumber'] = $params['retailinfo']['loadtransaction_refnumber'] = !empty($post['retail_referenceno']) ? $post['retail_referenceno'] : '';
+							//$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = !empty($post['retail_simcardbalance']) ? $post['retail_simcardbalance'] : 0;
+							//$content['loadtransaction_runningbalance'] = $loadtransaction_runningbalance = !empty($post['retail_runningbalance']) ? $post['retail_runningbalance'] : 0;
+							//$content['loadtransaction_amount'] = !empty($post['retail_amountdue']) ? $post['retail_amountdue'] : 0;
+
+							//pre(array('$content'=>$content));
+						}
 
 						if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$post['rowid']))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -4004,30 +4021,33 @@ if(!class_exists('APP_app_smartmoney')) {
 									$receiptno = $loadtransaction['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($loadtransaction['loadtransaction_id']));
 								}
 
-								$content = array();
-								$content['ledger_loadtransactionid'] = $loadtransaction['loadtransaction_id'];
-								$content['ledger_debit'] = $loadtransaction['loadtransaction_amountdue'];
+								if($loadtransaction_status==TRN_CANCELLED) {
+									$content = array();
+									$content['ledger_loadtransactionid'] = $loadtransaction['loadtransaction_id'];
+									$content['ledger_debit'] = $loadtransaction['loadtransaction_amountdue'];
 
-								$ledger_datetimeunix = intval(getDbUnixDate());
+									$ledger_datetimeunix = intval(getDbUnixDate());
 
-								$content['ledger_type'] = 'SMARTMONEY '.$loadtransaction['loadtransaction_smartmoneytype'].' '.$loadtransaction['loadtransaction_amount'];
-								$content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
-								$content['ledger_datetimeunix'] = $ledger_datetimeunix;
-								$content['ledger_user'] = $user_staffid;
-								$content['ledger_seq'] = '0';
-								$content['ledger_receiptno'] = $receiptno;
+									$content['ledger_type'] = 'REFUND SMARTMONEY '.$loadtransaction['loadtransaction_smartmoneytype'].' '.$loadtransaction['loadtransaction_amount'];
+									$content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
+									$content['ledger_datetimeunix'] = $ledger_datetimeunix;
+									$content['ledger_user'] = $user_staffid;
+									$content['ledger_seq'] = '0';
+									$content['ledger_receiptno'] = $receiptno;
 
-								//if(!empty($rebate_credit)) {
-									//$content['ledger_rebate'] = $rebate_credit;
-									//$content['ledger_rebatebalance'] = $rebate_balance;
-								//}
+									//if(!empty($rebate_credit)) {
+										//$content['ledger_rebate'] = $rebate_credit;
+										//$content['ledger_rebatebalance'] = $rebate_balance;
+									//}
 
-								if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
-									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-									die;
+									if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
+										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+										die;
+									}
+
+									computeStaffBalance($user_staffid);
+
 								}
-
-								computeStaffBalance($user_staffid);
 							}
 						}
 					}
@@ -5021,6 +5041,73 @@ if(!class_exists('APP_app_smartmoney')) {
 
 				}
 
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'FOR MANUALLY COMPLETED',
+					'labelWidth' => 200,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'block',
+					'name' => 'datetime',
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'width' => 300,
+					'list' => array(
+
+						array(
+							'type' => !$manuallycompleted ? 'input' : 'calendar',
+							'label' => 'DATE',
+							'name' => 'retail_manualdate',
+							'readonly' => true,
+							'required' => $manuallycompleted,
+							'calendarPosition' => 'right',
+							'dateFormat' => '%m-%d-%Y',
+							'value' => !empty($params['smartmoneyinfo']['loadtransaction_manualdate']) ? $params['smartmoneyinfo']['loadtransaction_manualdate'] : '',
+							'labelWidth' => 50,
+							'inputWidth' => 80,
+						),
+						array(
+							'type' => 'newcolumn',
+							'offset' => 15,
+						),
+						array(
+							'type' => 'input', //$readonly ? 'input' : 'calendar',
+							'label' => 'TIME',
+							'name' => 'retail_manualtime',
+							'readonly' => !$manuallycompleted,
+							'required' => $manuallycompleted,
+							'inputMask' => array('alias'=>'hh:mm:ss','prefix'=>'','autoUnmask'=>true),
+							'value' => !empty($params['smartmoneyinfo']['loadtransaction_manualtime']) ? $params['smartmoneyinfo']['loadtransaction_manualtime'] : '',
+							'labelWidth' => 50,
+							'inputWidth' => 80,
+						),
+					),
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'REFERENCE NO',
+					'name' => 'retail_referenceno',
+					'labelWidth' => 125,
+					'inputWidth' => 155,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => !empty($params['smartmoneyinfo']['loadtransaction_refnumber']) ? $params['smartmoneyinfo']['loadtransaction_refnumber'] : '',
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'MONEY BALANCE',
+					'name' => 'retail_simcardbalance',
+					'labelWidth' => 125,
+					'inputWidth' => 155,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['smartmoneyinfo']['loadtransaction_simcardbalance']) ? $params['smartmoneyinfo']['loadtransaction_simcardbalance'] : '',
+				);
+
 				$params['tbMessage'][] = array(
 		      'type' => 'input',
 		      'label' => 'FROM',
@@ -5049,47 +5136,6 @@ if(!class_exists('APP_app_smartmoney')) {
 		      'rows' => 5,
 		      'value' => !empty($params['smartmoneyinfo']['loadtransaction_confirmation']) ? $params['smartmoneyinfo']['loadtransaction_confirmation'] : '',
 		    );
-
-				if(!empty($params['smartmoneyinfo']['loadtransaction_status'])) {
-
-					/*$params['tbReceipt'][] = array(
-			      'type' => 'input',
-			      'label' => 'STATUS',
-			      'name' => 'receipt_test',
-			      'readonly' => true,
-			      //'required' => !$readonly,
-			      'value' => !empty($params['smartmoneyinfo']['loadtransaction_status']) ? $params['smartmoneyinfo']['loadtransaction_status'] : '',
-			    );*/
-
-					$params['tbReceipt'][] = array(
-						'type' => 'label',
-						'label' => 'JJS Telecom',
-						'labelWidth' => 500,
-						'className' => 'receiptCompany_'.$post['formval'],
-					);
-
-					$params['tbReceipt'][] = array(
-						'type' => 'label',
-						'label' => 'Ziga Avenue, Brgy. Basud, Tabaco City, Albay, 4511',
-						'labelWidth' => 500,
-						'className' => 'receiptAddress_'.$post['formval'],
-					);
-
-					$params['tbReceipt'][] = array(
-						'type' => 'label',
-						'label' => 'Smart Padala: 5577519312808109',
-						'labelWidth' => 500,
-						'className' => 'receiptSmartPadala_'.$post['formval'],
-					);
-
-					$params['tbReceipt'][] = array(
-						'type' => 'label',
-						'label' => 'SMART MONEY TRANSFER',
-						'labelWidth' => 500,
-						'className' => 'receiptTitle_'.$post['formval'],
-					);
-
-				}
 
 				$templatefile = $this->templatefile($routerid,$formid);
 

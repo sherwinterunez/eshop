@@ -403,7 +403,6 @@ $str[] = '2017-09-24 17:08:38: Received PHP600.00 from +639216811152 w/commissio
 
 //$str[] = '28Sep 1437: Received P900.00 with P11.50 commission from 09984815444 to LOADING.LIBRE ang pag-claim! Ref:5c4ed4976d7b Bal:P505,608.62';
 
-$str[] = '27Sep 1346:Remittance of P500.00 & commission of P11.50 was added to your account.Avail Bal:P71,611.25.Ref:d9d9359b2e2d';
 
 $str[] = '2017-09-27 09:20:24: Received PHP1,000.00 from POSIBLE w/commission kung ikaw ay Smart Padala Agent.LIBRE ang pag-claim ni suki! Ref:3a5c3e85d7d4 Bal: PHP47143.50. Para malaman ang iyong komisyon, i-check ang balance sa Smart Money menu.';
 
@@ -421,7 +420,9 @@ $str[] = '28Dec 1655:Sent P500.00 from LOADING to ****8104 at 09092701100. Also 
 
 $str[] = '2017-12-28 12:31:16: Received PHP4,700.00 from +639284879822 w/commission kung ikaw ay Smart Padala Agent.LIBRE ang pag-claim ni suki! Ref:dcbbdfc5b809 Bal: PHP38491.05. Para malaman ang iyong komisyon, i-check ang balance sa Smart Money menu.';
 
+$str[] = '27Sep 1346:Remittance of P500.00 & commission of P11.50 was added to your account.Avail Bal:P71,611.25.Ref:d9d9359b2e2d';
 $str[] = '30Dec 2229:Remittance of P100.00 & fee of P3.50 was deducted from your account.Avail bal:P11,531.25.Ref:5c981aac84aa';
+$str[] = '26Aug 1558:Remittance of PHP600.00 & fee of PHP18.50 was deducted from your account.Avail bal:PHP13,206.00.Ref:a1e65ae6793a';
 
 foreach($str as $k=>$v) {
 	if(preg_match('/'.$regx.'/si',$v,$matches)) {

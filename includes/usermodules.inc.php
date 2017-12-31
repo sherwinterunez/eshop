@@ -6031,6 +6031,8 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 		$loadtransaction_cardlabel = !empty($match['LABEL']) ? $match['LABEL'] : false;
 
+		$loadtransaction_fees = !empty($match['FEE']) ? parseFloat(str_replace(',','',$match['FEE'])) : false;
+
 		$sql = "select * from tbl_loadtransaction where loadtransaction_status=".TRN_SENT." and loadtransaction_type='smartmoney' and loadtransaction_invalid=0 and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_id asc limit 1";
 
 		print_r(array('$sql'=>$sql));
@@ -6045,6 +6047,11 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 			$content = $result['rows'][0];
 
 			$loadtransaction_id = $content['loadtransaction_id'];
+
+			$loadtransaction_transferfeeamount = parseFloat($content['loadtransaction_transferfeeamount']);
+			$loadtransaction_receiveagentcommissionamount = parseFloat($content['loadtransaction_receiveagentcommissionamount']);
+
+			$transaction_fees = $loadtransaction_transferfeeamount + $loadtransaction_receiveagentcommissionamount;
 
 			unset($content['loadtransaction_id']);
 			unset($content['loadtransaction_createstamp']);
@@ -6079,6 +6086,10 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 			if(!empty($confirmationFrom)&&empty($content['loadtransaction_confirmationfrom'])) {
 				$content['loadtransaction_confirmationfrom'] = $confirmationFrom;
+			}
+
+			if(!empty($loadtransaction_fees)&&$loadtransaction_fees!=$transaction_fees) {
+				$content['loadtransaction_status'] = TRN_PENDING;
 			}
 
 			$content['loadtransaction_updatestamp'] = 'now()';
@@ -6116,6 +6127,11 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 					$loadtransaction_id = $content['loadtransaction_id'];
 
+					$loadtransaction_transferfeeamount = parseFloat($content['loadtransaction_transferfeeamount']);
+					$loadtransaction_receiveagentcommissionamount = parseFloat($content['loadtransaction_receiveagentcommissionamount']);
+
+					$transaction_fees = $loadtransaction_transferfeeamount + $loadtransaction_receiveagentcommissionamount;
+
 					unset($content['loadtransaction_id']);
 					unset($content['loadtransaction_createstamp']);
 					unset($content['loadtransaction_execstamp']);
@@ -6149,6 +6165,10 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 					if(!empty($confirmationFrom)&&empty($content['loadtransaction_confirmationfrom'])) {
 						$content['loadtransaction_confirmationfrom'] = $confirmationFrom;
+					}
+
+					if(!empty($loadtransaction_fees)&&$loadtransaction_fees!=$transaction_fees) {
+						$content['loadtransaction_status'] = TRN_PENDING;
 					}
 
 					$content['loadtransaction_updatestamp'] = 'now()';
