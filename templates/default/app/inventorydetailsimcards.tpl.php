@@ -715,6 +715,25 @@ if(!empty($vars['post']['rowid'])) {
 							myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.attachHeader("&nbsp;,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
 						}
 
+						var x;
+
+						if(ddata.rows&&ddata.rows.length>0) {
+							for(x in ddata.rows) {
+								//alert(JSON.stringify(ddata.rows[x]));
+
+								if(ddata.rows[x].simcardbalance&&parseFloat(ddata.rows[x].simcardbalance)>0&&ddata.rows[x].runningbalance&&parseFloat(ddata.rows[x].runningbalance)>0) {
+									var o = myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.cells(ddata.rows[x].id,0).getRowObj();
+									if(parseFloat(ddata.rows[x].simcardbalance)!=parseFloat(ddata.rows[x].runningbalance)) {
+										//alert('simcardbalance: '+ddata.rows[x].simcardbalance+' <> runningbalance: '+ddata.rows[x].runningbalance);
+										o.style.fontWeight = 'normal';
+										o.style.color = '#f00';
+									} else {
+										o.style.fontWeight = 'normal';
+									}
+								}
+							}
+						}
+
 					},'json');
 				} catch(e) {
 					console.log(e);
