@@ -1525,13 +1525,38 @@ if(!empty($vars['post']['rowid'])) {
 
 			var trowid = myWinObj.myGridSimTransaction.getSelectedRowId();
 
-			if(rowid&&trowid) {
+			if(!trowid) {
+				trowid = 0;
+			}
+
+			var smrowid = [];
+
+			<?php
+			if(!empty($vars['post']['rowid'])) {
+				$sm = getSmartMoneyOfSim($vars['post']['rowid']);
+
+				if(!empty($sm)&&is_array($sm)) {
+					foreach($sm as $k=>$v) { ?>
+						var tsmrowid = myWinObj.myGridSmartMoneyTransactions_<?php echo $v['smartmoney_number']; ?>.getSelectedRowId();
+						if(tsmrowid) {
+							smrowid.push(tsmrowid);
+						}
+		<?php }
+				}
+			}
+		 	?>
+
+			if(smrowid.length==0) {
+				var smrowid = 0;
+			}
+
+			if(rowid) {
 
 				showSaving();
 
 				myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {rowid:rowid, trowid:trowid},
-					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&rowid="+rowid+"&trowid="+trowid+"&formval="+formval+"&wid="+wid,
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&rowid="+rowid+"&trowid="+trowid+"&formval="+formval+"&wid="+wid+"&smrowid="+smrowid,
 				}, function(ddata,odata){
 					//if(ddata.html) {
 					//	jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);

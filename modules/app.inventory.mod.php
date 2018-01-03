@@ -651,6 +651,79 @@ if(!class_exists('APP_app_inventory')) {
 						}
 					}
 
+					if(!empty($post['smrowid'])) {
+						if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id in (".$post['smrowid'].")"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+					}
+
+					if(!empty($result['rows'][0]['loadtransaction_id'])) {
+						$loadtransactionRows = $result['rows'];
+
+						foreach($loadtransactionRows as $kl=>$loadtransaction) {
+
+							$loadtransaction_createstampunix = $loadtransaction['loadtransaction_createstampunix'];
+							$loadtransaction_assignedsim = $loadtransaction['loadtransaction_assignedsim'];
+							$loadtransaction_cardlabel = $loadtransaction['loadtransaction_cardlabel'];
+
+							if(!empty($loadtransaction_cardlabel)) {
+								if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_createstampunix>=$loadtransaction_createstampunix and loadtransaction_cardlabel='".$loadtransaction_cardlabel."' and loadtransaction_assignedsim='$loadtransaction_assignedsim' and loadtransaction_status in (".TRN_COMPLETED_MANUALLY.",".TRN_COMPLETED.",".TRN_CLAIMED.",".TRN_RECEIVED.") order by loadtransaction_createstampunix asc"))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
+							}
+
+							if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+								//pre(array('$results'=>$result['rows']));
+
+								//$retval['rows'] = $result['rows'];
+								$loadtransaction_runningbalance = 0;
+
+								$first = true;
+
+								foreach($result['rows'] as $k=>$v) {
+
+									$loadtransaction_id = $v['loadtransaction_id'];
+
+									if($first) {
+										$loadtransaction_runningbalance = $v['loadtransaction_simcardbalance'];
+										$first = false;
+									} else {
+										$in = 0;
+										$out = 0;
+
+										if($v['loadtransaction_smartmoneytype']=='PADALA'||$v['loadtransaction_smartmoneytype']=='TOPUP'||$v['loadtransaction_smartmoneytype']=='PAYMAYA'||$v['loadtransaction_smartmoneytype']=='PICKUP') {
+											$out = $v['loadtransaction_amount'];
+										} else
+										if($v['loadtransaction_smartmoneytype']=='RECEIVED') {
+											$in = $v['loadtransaction_amount'];
+										}
+
+										$loadtransaction_runningbalance = ($loadtransaction_runningbalance + $in);
+										$loadtransaction_runningbalance = ($loadtransaction_runningbalance - $out);
+
+										//pre(array('$loadtransaction_id'=>$v['loadtransaction_id'],'$in'=>$in,'$out'=>$out,'$loadtransaction_runningbalance'=>$loadtransaction_runningbalance));
+									}
+
+									$content = array();
+
+									$content['loadtransaction_runningbalance'] = toFloat($loadtransaction_runningbalance,2);
+
+									//pre(array('$content'=>$content,'$in'=>$in,'$out'=>$out,'$loadtransaction_runningbalance'=>$loadtransaction_runningbalance));
+
+									if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction_id))) {
+										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+										die;
+									}
+
+								}
+							}
+
+						}
+					}
+
 					json_encode_return($retval);
 					die;
 				} else
