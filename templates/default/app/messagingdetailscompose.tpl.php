@@ -40,7 +40,7 @@ if(!empty($vars['post']['method'])) {
 	#formdiv_%formval% #messagingdetailscompose .dhx_cell_editor .dhx_cell_stb {
 		display: none;
 	}
-	
+
 </style>
 <div id="messagingdetails">
 	<div id="messagingdetailscompose">
@@ -66,7 +66,7 @@ if(!empty($vars['post']['method'])) {
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "messaging"},
-				{type: "hidden", name: "formid", value: "messagingdetailscompose"},				
+				{type: "hidden", name: "formid", value: "messagingdetailscompose"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 			]},
 		];
@@ -100,9 +100,9 @@ if(!empty($vars['post']['method'])) {
 			}
 
 			if(smscnt>1) {
-				$('#messagingdetailscomposedetailsform_%formval% #charcount').html(contlen+' used ('+smscnt+' SMS)');				
+				$('#messagingdetailscomposedetailsform_%formval% #charcount').html(contlen+' used ('+smscnt+' SMS)');
 			} else {
-				$('#messagingdetailscomposedetailsform_%formval% #charcount').html(contlen+' used');				
+				$('#messagingdetailscomposedetailsform_%formval% #charcount').html(contlen+' used');
 			}
 		});
 
@@ -118,11 +118,15 @@ if(!empty($vars['post']['method'])) {
 				return false;
 			}
 
+			var usernumbers = trim($("#messagingmaincomposeform_%formval% input[name='user_to_number']").val());
+
 			var tonumbers = trim($("#messagingmaincomposeform_%formval% input[name='txt_to_number']").val());
 
 			var togroups = trim($("#messagingmaincomposeform_%formval% input[name='txt_to_groups']").val());
 
-			if(tonumbers.length<1&&togroups.length<1) {
+			//alert(usernumbers);
+
+			if(usernumbers.length<1&&tonumbers.length<1&&togroups.length<1) {
 				showAlertError('Please select a Number or Group!');
 				return false;
 			}
@@ -139,19 +143,29 @@ if(!empty($vars['post']['method'])) {
 				//if(val) {
 					//var $ = jQuery;
 
+					var usernumbers = [];
+
 					var content = trim(myComposeEditor_%formval%.getContent());
 
 					var tonumbers = $("#messagingmaincomposeform_%formval% input[name='txt_to_number']").val();
 					var togroups = $("#messagingmaincomposeform_%formval% input[name='txt_to_groups']").val();
 					var ports = $("#messagingmaincomposeform_%formval% input[name='txt_ports']").val();
+					var usernumber = $("#messagingmaincomposeform_%formval% input[name='user_to_number']").val();
 
 					tonumbers = tonumbers ? tonumbers : '';
 					togroups = togroups ? togroups : '';
 					ports = ports ? ports : '';
+					usernumber = usernumber ? usernumber : '';
+
+					var anum = usernumber.split(/,|;| /);
+
+					for(var p in anum) {
+						usernumbers.push(anum[p]);
+					}
 
 					myTab.postData('/'+settings.router_id+'/json/', {
 						odata: {},
-						pdata: "routerid="+settings.router_id+"&action=formonly&formid=messagingdetailscompose&module=messaging&method="+id+"&formval=%formval%&content="+encodeURIComponent(content)+"&tonumbers="+encodeURIComponent(tonumbers)+"&togroups="+encodeURIComponent(togroups)+"&ports="+encodeURIComponent(ports),
+						pdata: "routerid="+settings.router_id+"&action=formonly&formid=messagingdetailscompose&module=messaging&method="+id+"&formval=%formval%&content="+encodeURIComponent(content)+"&tonumbers="+encodeURIComponent(tonumbers)+"&togroups="+encodeURIComponent(togroups)+"&ports="+encodeURIComponent(ports)+"&usernumber="+encodeURIComponent(usernumbers),
 					}, function(ddata,odata){
 
 						var $ = jQuery;

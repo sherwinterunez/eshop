@@ -5041,6 +5041,9 @@ if(!class_exists('APP_app_smartmoney')) {
 
 				}
 
+				//if($post['method']=='smartmoneymanually') {
+				//}
+
 				$params['tbDetails'][] = array(
 					'type' => 'label',
 					'label' => 'FOR MANUALLY COMPLETED',
@@ -5091,8 +5094,8 @@ if(!class_exists('APP_app_smartmoney')) {
 					'name' => 'retail_referenceno',
 					'labelWidth' => 125,
 					'inputWidth' => 155,
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'readonly' => !$manuallycompleted,
+					'required' => $manuallycompleted,
 					'value' => !empty($params['smartmoneyinfo']['loadtransaction_refnumber']) ? $params['smartmoneyinfo']['loadtransaction_refnumber'] : '',
 				);
 
@@ -5102,8 +5105,8 @@ if(!class_exists('APP_app_smartmoney')) {
 					'name' => 'retail_simcardbalance',
 					'labelWidth' => 125,
 					'inputWidth' => 155,
-					'readonly' => $readonly,
-					'required' => !$readonly,
+					'readonly' => !$manuallycompleted,
+					'required' => $manuallycompleted,
 					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
 					'value' => !empty($params['smartmoneyinfo']['loadtransaction_simcardbalance']) ? $params['smartmoneyinfo']['loadtransaction_simcardbalance'] : '',
 				);

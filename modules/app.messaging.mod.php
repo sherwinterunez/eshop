@@ -554,6 +554,7 @@ if(!class_exists('APP_app_messaging')) {
 						$ports = trim($this->vars['post']['ports']);
 						$togroups = trim($this->vars['post']['togroups']);
 						$tonumbers = trim($this->vars['post']['tonumbers']);
+						$usernumbers = trim($this->vars['post']['usernumber']);
 
 						$smscontent = strip_tags($smscontent, '<br>');
 						$smscontent = str_replace('<br>',"\n",$smscontent);
@@ -563,12 +564,18 @@ if(!class_exists('APP_app_messaging')) {
 						$asim = explode(';', $ports);
 						$atogroups = explode(';', $togroups);
 						$atonumbers = explode(';', $tonumbers);
+						$ausernumbers = explode(',', $usernumbers);
+
+						foreach($ausernumbers as $k=>$v) {
+							$atonumbers[] = $v;
+						}
 
 						$recipients = array();
 
 						$retval['asim'] = $asim;
 						$retval['atogroups'] = $atogroups;
 						$retval['atonumbers'] = $atonumbers;
+						$retval['ausernumbers'] = $ausernumbers;
 
 						//pre(array('retval'=>$retval));
 
@@ -592,7 +599,7 @@ if(!class_exists('APP_app_messaging')) {
 
 							foreach($asim as $sim) {
 								if(!empty($allsim[$sim])) {
-									$netsim[$allsim[$sim]['sim_network']][] = $anetsim[] = $allsim[$sim];
+									$netsim[$allsim[$sim]['simcard_provider']][] = $anetsim[] = $allsim[$sim];
 								}
 							}
 							//pre(array('$netsim'=>$netsim,'$anetsim'=>$anetsim));
@@ -633,6 +640,8 @@ if(!class_exists('APP_app_messaging')) {
 									$cid = getCustomerIDByNumber($v);
 									if(!empty($cid)) {
 										//$recipients[$cid] = $v;
+										$recipients[] = $v;
+									} else {
 										$recipients[] = $v;
 									}
 								}

@@ -57,7 +57,7 @@ if(!empty($vars['params']['groups'])) {
 		$vars['group_json'] = json_encode($vars['params']['groups']);
 		$groups = true;
 	//} else {
-	//	$groups = false;		
+	//	$groups = false;
 	//}
 } else {
 	$vars['group_json'] = json_encode(array(array('text'=>"No Groups Available")));
@@ -78,7 +78,7 @@ if(!empty($vars['params']['ports'])) {
 ?>
 <!--
 <?php
-//pre(array('$vars'=>$vars)); 
+//pre(array('$vars'=>$vars));
 ?>
 -->
 <style>
@@ -89,14 +89,16 @@ if(!empty($vars['params']['ports'])) {
 		padding: 5px;
 	}
 
-	#formdiv_%formval% #messagingmaincompose div.cls_sherwin div.dhxform_block {
+	#formdiv_%formval% #messagingmaincompose div.cls_sherwin div.dhxform_block,
+	#formdiv_%formval% #messagingmaincompose div.cls_sherwin2 div.dhxform_block {
 		background-color: #fff;
 		border:1px solid #a4bed4;
 		overflow-y: scroll;
 		height: 150px;
 	}
 
-	#formdiv_%formval% #messagingmaincompose div.cls_sherwin div.dhxform_block div.dhxform_item_label_right {
+	#formdiv_%formval% #messagingmaincompose div.cls_sherwin div.dhxform_block div.dhxform_item_label_right,
+	#formdiv_%formval% #messagingmaincompose div.cls_sherwin2 div.dhxform_block div.dhxform_item_label_right {
 		padding: 0;
 	}
 </style>
@@ -142,7 +144,7 @@ if(!empty($vars['params']['ports'])) {
 
 		myTab.toolbar.enableOnly(myToolbar);
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		formData_%formval% = [
 			{type: "settings", position: "label-left", labelWidth: 100, inputWidth: 300},
@@ -156,9 +158,11 @@ if(!empty($vars['params']['ports'])) {
 			//{type: "input", name: "to_number", label: "To Number", value: ""},
 			//{type: "input", name: "to_groups", label: "To Groups", value: ""},
 			//{type: "input", name: "subject", label: "Subject", value: ""},
+			{type:"label",label:"NUMBER"},
+			{type: "input", name: "user_to_number", readonly:false, hidden:false, inputWidth:350, value: "",className: "cls_sherwininput"},
 			{type:"label",label:"To Number"},
-			{type: "input", name: "txt_to_number", readonly:true, hidden:true, value: "<?php echo !empty($params['composeto']) ? $params['composeto'] : ''; ?>"},
-			{type: "block", width: 298, offsetTop: 5, offsetLeft: 4, inputLeft: 0, blockOffset: 5, className: "cls_sherwin", 
+			{type: "input", name: "txt_to_number", readonly:true, hidden:true, className: "cls_sherwininput", value: "<?php echo !empty($params['composeto']) ? $params['composeto'] : ''; ?>"},
+			{type: "block", width: 298, offsetTop: 5, offsetLeft: 4, inputLeft: 0, blockOffset: 5, className: "cls_sherwin2",
 				list: <?php echo $vars['contact_json']; ?>
 			},
 			/*{type:"multiselect",name:"to_number",disabled: <?php echo $contacts ? 'false' : 'true'; ?>,inputHeight:100,
@@ -167,7 +171,7 @@ if(!empty($vars['params']['ports'])) {
 			{type: "newcolumn", offset:20},
 			{type:"label",label:"To Groups"},
 			{type: "input", name: "txt_to_groups", readonly:true, hidden:true, value: "<?php echo !empty($params['composetogroups']) ? $params['composetogroups'] : ''; ?>"},
-			{type: "block", width: 298, offsetTop: 5, offsetLeft: 4, inputLeft: 0, blockOffset: 5, className: "cls_sherwin", 
+			{type: "block", width: 298, offsetTop: 5, offsetLeft: 4, inputLeft: 0, blockOffset: 5, className: "cls_sherwin",
 				list: <?php echo $vars['group_json']; ?>
 			},
 			/*{type:"multiselect",name:"to_groups",inputHeight:100,
@@ -176,7 +180,7 @@ if(!empty($vars['params']['ports'])) {
 			{type: "newcolumn", offset:20},
 			{type:"label",label:"SIMs"},
 			{type: "input", name: "txt_ports", readonly:true, hidden:true, value: ""},
-			{type: "block", width: 298, offsetTop: 5, offsetLeft: 4, inputLeft: 0, blockOffset: 5, className: "cls_sherwin", 
+			{type: "block", width: 298, offsetTop: 5, offsetLeft: 4, inputLeft: 0, blockOffset: 5, className: "cls_sherwin",
 				list: <?php echo $vars['port_json']; ?>
 			},
 			/*{type:"multiselect",name:"ports",inputHeight:100,
@@ -240,7 +244,7 @@ if(!empty($vars['params']['ports'])) {
 								this.disableItem(name);
 								this.uncheckItem(name);
 							} else {
-								this.enableItem(name);								
+								this.enableItem(name);
 							}
 						}
 					});
@@ -293,7 +297,7 @@ if(!empty($vars['params']['ports'])) {
 								this.disableItem(name);
 								this.uncheckItem(name);
 							} else {
-								this.enableItem(name);								
+								this.enableItem(name);
 							}
 						}
 					});
@@ -345,7 +349,7 @@ if(!empty($vars['params']['ports'])) {
 								this.disableItem(name);
 								this.uncheckItem(name);
 							} else {
-								this.enableItem(name);								
+								this.enableItem(name);
 							}
 						}
 					});

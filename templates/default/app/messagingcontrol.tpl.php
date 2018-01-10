@@ -453,6 +453,11 @@ pre(array('$_SESSION'=>$_SESSION));
 			$("#formdiv_%formval% #messagingmaincompose div.cls_sherwin div.dhxform_block").height(lbHeight-120);
 			$("#formdiv_%formval% #messagingmaincompose div.cls_sherwin div.dhxform_block").width(composewidth);
 
+			$("#formdiv_%formval% #messagingmaincompose div.cls_sherwin2 div.dhxform_block").height(lbHeight-184);
+			$("#formdiv_%formval% #messagingmaincompose div.cls_sherwin2 div.dhxform_block").width(composewidth);
+
+			$("#formdiv_%formval% #messagingmaincompose div.cls_sherwininput input.dhxform_textarea").width(composewidth-5);
+
 			//myForm_%formval%.setItemWidth("to_number", lbWidth-150);
 			//myForm_%formval%.setItemWidth("to_groups", lbWidth-150);
 			//myForm_%formval%.setItemWidth("subject", lbWidth-150);
