@@ -41,6 +41,11 @@ $sidebar[] = array(
 	'text'=>'Unassigned',
 	'icon'=>'recent.png',
 );
+$sidebar[] = array(
+	'id'=>'adjustment',
+	'text'=>'Adjustment',
+	'icon'=>'documents.png',
+);
 
 /*
 $sidebar[] = array(

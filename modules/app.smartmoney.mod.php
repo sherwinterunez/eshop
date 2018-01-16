@@ -846,6 +846,26 @@ if(!class_exists('APP_app_smartmoney')) {
 
 		} // _form_smartmoneymainsettings
 
+		function _form_smartmoneymainadjustment($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				$params = array();
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_smartmoneymainadjustment
+
 		function _form_smartmoneydetailservicefees($routerid=false,$formid=false) {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
 
@@ -1290,6 +1310,610 @@ if(!class_exists('APP_app_smartmoney')) {
 			return false;
 
 		} // _form_smartmoneydetailcards
+
+		function _form_smartmoneydetailadjustment($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				$readonly = true;
+
+				$method = false;
+
+				$params = array();
+
+				$post = $this->vars['post'];
+
+				if(!empty($this->vars['post']['method'])&&($this->vars['post']['method']=='smartmoneynew'||$this->vars['post']['method']=='smartmoneyedit')) {
+					$method = $post['method'];
+					$readonly = false;
+				}
+
+				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='smartmoneyedit')) {
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+						if(!($result = $appdb->query("select * from tbl_smartmoneynumber where smartmoneynumber_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						$method = $post['method'];
+
+						if(!empty($result['rows'][0]['smartmoneynumber_id'])) {
+							$params['cardinfo'] = $result['rows'][0];
+						}
+					}
+				} else
+				if(!empty($post['method'])&&$post['method']=='smartmoneysave') {
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Card number successfully saved!';
+
+					$content = array();
+					$content['smartmoneynumber_number'] = !empty($post['smartmoneynumber_number']) ? $post['smartmoneynumber_number'] : '';
+					$content['smartmoneynumber_type'] = !empty($post['smartmoneynumber_type']) ? $post['smartmoneynumber_type'] : '';
+
+					//pre(array('$post'=>$post));
+
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+
+						$retval['rowid'] = $post['rowid'];
+
+						$content['smartmoneynumber_updatestamp'] = 'now()';
+
+						if(!($result = $appdb->update("tbl_smartmoneynumber",$content,"smartmoneynumber_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+					} else {
+
+						if(!($result = $appdb->insert("tbl_smartmoneynumber",$content,"smartmoneynumber_id"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						if(!empty($result['returning'][0]['smartmoneynumber_id'])) {
+							$retval['rowid'] = $result['returning'][0]['smartmoneynumber_id'];
+						}
+
+					}
+
+					json_encode_return($retval);
+					die;
+				} else
+				if(!empty($post['method'])&&$post['method']=='smartmoneydelete') {
+
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Card number successfully deleted!';
+
+					if(!empty($post['rowids'])) {
+
+						$rowids = explode(',', $post['rowids']);
+
+						$arowid = array();
+
+						for($i=0;$i<count($rowids);$i++) {
+							$rowid = intval(trim($rowids[$i]));
+							if(!empty($rowid)) {
+								$arowid[] = $rowid;
+							}
+						}
+
+						if(!empty($arowid)) {
+							$rowids = implode(',', $arowid);
+
+							if(!($result = $appdb->query("delete from tbl_smartmoneynumber where smartmoneynumber_id in (".$rowids.")"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							json_encode_return($retval);
+							die;
+						}
+
+					}
+
+					if(!empty($post['rowid'])) {
+						if(!($result = $appdb->query("delete from tbl_smartmoneynumber where smartmoneynumber_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+					}
+
+					json_encode_return($retval);
+					die;
+				}
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$newcolumnoffset = 50;
+
+				$position = 'right';
+
+/*
+		myTabbar.addTab("tbSimcards", "Sim Card");
+		myTabbar.addTab("tbDetails", "Details");
+		myTabbar.addTab("tbSmsfunctions", "SMS Function");
+		myTabbar.addTab("tbTransactions", "Transactions");
+*/
+
+				$block = array();
+
+				$receiptno = 'auto generated';
+
+				if(!empty($params['adjustmentinfo']['adjustment_id'])&&!empty($params['adjustmentinfo']['adjustment_ymd'])) {
+					$receiptno = 'EADJ'.$params['adjustmentinfo']['adjustment_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($params['adjustmentinfo']['adjustment_id']));
+				}
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'ADJUSTMENT NO.',
+					'name' => 'adjustment_number',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => $receiptno,
+				);
+
+				//if($method=='onrowselect') {
+				if($readonly) {
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'DATE',
+						'name' => 'adjustment_datetime',
+						'readonly' => $readonly,
+						'required' => !$readonly,
+						'value' => !empty($params['adjustmentinfo']['adjustment_datetime']) ? $params['adjustmentinfo']['adjustment_datetime'] : '',
+					);
+				} else {
+					$block[] = array(
+						'type' => 'calendar',
+						'label' => 'DATE',
+						'name' => 'adjustment_datetime',
+						'readonly' => true,
+						'required' => !$readonly,
+						'enableTime' => true,
+						'enableTodayButton' => true,
+						'calendarPosition' => 'right',
+						'dateFormat' => '%m-%d-%Y %H:%i',
+						'validate' => "NotEmpty",
+						'value' => !empty($params['adjustmentinfo']['adjustment_datetime']) ? $params['adjustmentinfo']['adjustment_datetime'] : '',
+					);
+				}
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 50,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'CASHIER',
+					'name' => 'adjustment_cashier',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => '',
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'STATUS',
+					'name' => 'adjustment_status',
+					'readonly' => true,
+					//'required' => !$readonly,
+					'value' => '',
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'block',
+					'width' => 1000,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'REMARKS',
+					'name' => 'adjustment_remarks',
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'rows' => 3,
+					'inputWidth' => 580,
+					'value' => !empty($params['adjustmentinfo']['adjustment_remarks']) ? $params['adjustmentinfo']['adjustment_remarks'] : '',
+				);
+
+				/*$block = array();
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 150,
+				);
+
+				$block[] = array(
+					'type' => 'checkbox',
+					'label' => 'CUSTOMER ADJUSTMENT',
+					'labelWidth' => 200,
+					'name' => 'adjustment_forcustomer',
+					'readonly' => $readonly,
+					'checked' => !empty($params['adjustmentinfo']['adjustment_forcustomer']) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'checkbox',
+					'label' => 'SIMCARD ADJUSTMENT',
+					'labelWidth' => 200,
+					'name' => 'adjustment_forsimcard',
+					'readonly' => $readonly,
+					'checked' => !empty($params['adjustmentinfo']['adjustment_forsimcard']) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'block',
+					'width' => 1000,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
+				);*/
+
+				/*$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'CUSTOMER ADJUSTMENT DETAILS',
+					'labelWidth' => 500,
+				);
+
+				$block = array();
+
+				if($readonly) {
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'RECEIPT NO.',
+						'name' => 'adjustment_customerreceipt',
+						'readonly' => $readonly,
+						//'required' => !$readonly,
+						'value' => !empty($params['adjustmentinfo']['adjustment_customerreceipt']) ? $params['adjustmentinfo']['adjustment_customerreceipt'] : '',
+					);
+				} else {
+
+					$block[] = array(
+						'type' => 'hidden',
+						'name' => 'adjustment_customerreceiptno',
+						'value' => '',
+					);
+
+					$block[] = array(
+						'type' => 'combo',
+						'label' => 'RECEIPT NO.',
+						'name' => 'adjustment_customerreceipt',
+						'readonly' => $readonly,
+						'options' => array(), //$opt,
+					);
+				}
+
+				if($readonly) {
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'CUSTOMER',
+						'name' => 'adjustment_customername',
+						'readonly' => $readonly,
+						'required' => !$readonly,
+						'value' => !empty($params['adjustmentinfo']['adjustment_customername']) ? $params['adjustmentinfo']['adjustment_customername'] : '',
+					);
+				} else {
+
+					$block[] = array(
+						'type' => 'hidden',
+						'name' => 'adjustment_customername',
+						'value' => '',
+					);
+
+					$block[] = array(
+						'type' => 'combo',
+						'label' => 'CUSTOMER',
+						'name' => 'adjustment_customerid',
+						'readonly' => $readonly,
+						'required' => !$readonly,
+						'options' => array(), //$opt,
+					);
+				}
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'ITEM',
+					'name' => 'adjustment_customeritem',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['adjustmentinfo']['adjustment_customeritem']) ? $params['adjustmentinfo']['adjustment_customeritem'] : '',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 50,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'MOBILE NUMBER',
+					'name' => 'adjustment_customermobileno',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'numeric' => true,
+					'value' => !empty($params['adjustmentinfo']['adjustment_customermobileno']) ? $params['adjustmentinfo']['adjustment_customermobileno'] : '',
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'AMOUNT DUE',
+					'name' => 'adjustment_customeramountdue',
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['adjustmentinfo']['adjustment_customeramountdue']) ? $params['adjustmentinfo']['adjustment_customeramountdue'] : 0,
+				);
+
+				$block2 = array();
+
+				if($method=='inventorynew') {
+					$block2[] = array(
+						'type' => 'checkbox',
+						'label' => 'CREDIT',
+						'labelWidth' => 100,
+						'name' => 'adjustment_customercredit',
+						'readonly' => $readonly,
+						'checked' => true,
+						'position' => 'label-right',
+					);
+				} else {
+					$block2[] = array(
+						'type' => 'checkbox',
+						'label' => 'CREDIT',
+						'labelWidth' => 100,
+						'name' => 'adjustment_customercredit',
+						'readonly' => $readonly,
+						'checked' => !empty($params['adjustmentinfo']['adjustment_customercredit']) ? true : false,
+						'position' => 'label-right',
+					);
+				}
+
+				$block2[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block2[] = array(
+					'type' => 'checkbox',
+					'label' => 'DEBIT',
+					'labelWidth' => 100,
+					'name' => 'adjustment_customerdebit',
+					'readonly' => $readonly,
+					'checked' => !empty($params['adjustmentinfo']['adjustment_customerdebit']) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$block[] = array(
+					'type' => 'block',
+					'width' => 400,
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'list' => $block2,
+				);
+
+				if($method=='onrowselect') {
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'name' => 'adjustment_blockcustomer',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 5,
+						'list' => $block,
+					);
+				} else {
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'name' => 'adjustment_blockcustomer',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 5,
+						'list' => $block,
+						'disabled' => !empty($params['adjustmentinfo']['adjustment_forcustomer']) ? false : true,
+					);
+				}*/
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'SIMCARD ADJUSTMENT DETAILS',
+					'labelWidth' => 500,
+				);
+
+				$block = array();
+
+				if($readonly) {
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'ASSIGNED TO CARD',
+						'name' => 'adjustment_simcardassignment',
+						'readonly' => $readonly,
+						'required' => !$readonly,
+						'numeric' => true,
+						'value' => !empty($params['adjustmentinfo']['adjustment_simcardassignment']) ? $params['adjustmentinfo']['adjustment_simcardassignment'] : '',
+					);
+				} else {
+					$block[] = array(
+						'type' => 'combo',
+						'label' => 'ASSIGNED TO CARD',
+						'name' => 'adjustment_simcardassignment',
+						'readonly' => $readonly,
+						'options' => array(), //$opt,
+					);
+				}
+
+				if($method=='onrowselect') {
+					$block[] = array(
+						'type' => 'input',
+						'label' => 'DATE',
+						'name' => 'adjustment_simcarddatetime',
+						'readonly' => $readonly,
+						'required' => !$readonly,
+						'value' => !empty($params['adjustmentinfo']['adjustment_simcarddatetime']) ? $params['adjustmentinfo']['adjustment_simcarddatetime'] : '',
+					);
+				} else {
+					$block[] = array(
+						'type' => 'calendar',
+						'label' => 'DATE',
+						'name' => 'adjustment_simcarddatetime',
+						'readonly' => $readonly,
+						'required' => !$readonly,
+						'enableTime' => true,
+						'enableTodayButton' => true,
+						'calendarPosition' => 'right',
+						'dateFormat' => '%m-%d-%Y %H:%i',
+						'validate' => "NotEmpty",
+					);
+				}
+
+				/*$block[] = array(
+					'type' => 'input',
+					'label' => 'DATE',
+					'name' => 'adjustment_simcarddatetime',
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => '',
+				);*/
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'REFERENCE NO.',
+					'name' => 'adjustment_simcardreferenceno',
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => !empty($params['adjustmentinfo']['adjustment_simcardreferenceno']) ? $params['adjustmentinfo']['adjustment_simcardreferenceno'] : '',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 50,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'AMOUNT DUE',
+					'name' => 'adjustment_simcardamountdue',
+					'labelWidth' => 150,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['adjustmentinfo']['adjustment_simcardamountdue']) ? $params['adjustmentinfo']['adjustment_simcardamountdue'] : 0,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'RECEIVE AGENT COMMISSION',
+					'name' => 'adjustment_simcardreceiveagentcommission',
+					'labelWidth' => 150,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['adjustmentinfo']['adjustment_simcardreceiveagentcommission']) ? $params['adjustmentinfo']['adjustment_simcardreceiveagentcommission'] : 0,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'SIMCARD BALANCE',
+					'name' => 'adjustment_simcarditembalance',
+					'labelWidth' => 150,
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					'value' => !empty($params['adjustmentinfo']['adjustment_simcarditembalance']) ? $params['adjustmentinfo']['adjustment_simcarditembalance'] : 0,
+				);
+
+
+				$block2 = array();
+
+				if($method=='inventorynew') {
+					$block2[] = array(
+						'type' => 'checkbox',
+						'label' => 'CREDIT',
+						'labelWidth' => 100,
+						'name' => 'adjustment_simcardcredit',
+						'readonly' => $readonly,
+						'checked' => true,
+						'position' => 'label-right',
+					);
+				} else {
+					$block2[] = array(
+						'type' => 'checkbox',
+						'label' => 'CREDIT',
+						'labelWidth' => 100,
+						'name' => 'adjustment_simcardcredit',
+						'readonly' => $readonly,
+						'checked' => !empty($params['adjustmentinfo']['adjustment_simcardcredit']) ? true : false,
+						'position' => 'label-right',
+					);
+				}
+
+				$block2[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block2[] = array(
+					'type' => 'checkbox',
+					'label' => 'DEBIT',
+					'labelWidth' => 100,
+					'name' => 'adjustment_simcarddebit',
+					'readonly' => $readonly,
+					'checked' => !empty($params['adjustmentinfo']['adjustment_simcarddebit']) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$block[] = array(
+					'type' => 'block',
+					'width' => 400,
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'list' => $block2,
+				);
+
+				if($method=='onrowselect') {
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 5,
+						'list' => $block,
+						'name' => 'adjustment_blocksimcard',
+					);
+				} else {
+					$params['tbDetails'][] = array(
+						'type' => 'block',
+						'width' => 1000,
+						'blockOffset' => 0,
+						'offsetTop' => 5,
+						'list' => $block,
+						'name' => 'adjustment_blocksimcard',
+						//'disabled' => !empty($params['adjustmentinfo']['adjustment_forsimcard']) ? false : true,
+					);
+				}
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_smartmoneydetailadjustment
 
 		function _form_smartmoneydetailencashment($routerid=false,$formid=false) {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
@@ -2487,11 +3111,13 @@ if(!class_exists('APP_app_smartmoney')) {
 		        $customer_type = getCustomerType($userData['user_staffid']);
 		      }
 
+					$loadtransaction_id = $smartmoneyinfo['loadtransaction_id'];
+
 					$content = array();
 
 					$dt = intval(getDbUnixDate());
 
-					$content['loadtransaction_ymd'] = date('Ymd',$dt);
+					$content['loadtransaction_ymd'] = $loadtransaction_ymd = date('Ymd',$dt);
 					$content['loadtransaction_status'] = TRN_CLAIMED;
 					$content['loadtransaction_updatestamp'] = 'now()';
 					$content['loadtransaction_receiverid'] = $content['loadtransaction_customerid'] = !empty($post['smartmoney_recipientname']) ? $post['smartmoney_recipientname']: 0;
@@ -2502,14 +3128,43 @@ if(!class_exists('APP_app_smartmoney')) {
 					$content['loadtransaction_receiveridnumber'] = !empty($post['smartmoney_idnumber']) ? $post['smartmoney_idnumber'] : '';
 					$content['loadtransaction_receiveridtype'] = !empty($post['smartmoney_idtype']) ? $post['smartmoney_idtype'] : '';
 					$content['loadtransaction_receiverspecifyid'] = !empty($post['smartmoney_specifyid']) ? $post['smartmoney_specifyid'] : '';
-					$content['loadtransaction_amountdue'] = !empty($post['loadtransaction_amountdue']) ? $post['loadtransaction_amountdue'] : 0;
+					$content['loadtransaction_amountdue'] = $loadtransaction_amountdue = !empty($post['loadtransaction_amountdue']) ? $post['loadtransaction_amountdue'] : 0;
 					$content['loadtransaction_staffid'] = !empty($user_staffid) ? $user_staffid : 0;
 					$content['loadtransaction_otherchargesamount'] = !empty($post['smartmoney_otherchargesamount']) ? $post['smartmoney_otherchargesamount'] : 0;
+					$content['loadtransaction_createstampunix'] = '#extract(epoch from loadtransaction_updatestamp)#';
 
 					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$smartmoneyinfo['loadtransaction_id']))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 						die;
 					}
+
+					if(!empty($user_staffid)) {
+			      $receiptno = '';
+
+			      if(!empty($loadtransaction_id)&&!empty($loadtransaction_ymd)) {
+			        $receiptno = $loadtransaction_ymd . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($loadtransaction_id));
+			      }
+
+			      $content = array();
+			      $content['ledger_loadtransactionid'] = $loadtransaction_id;
+			      $content['ledger_debit'] = $loadtransaction_amountdue;
+
+			      $ledger_datetimeunix = intval(getDbUnixDate());
+
+			      $content['ledger_type'] = 'SMARTMONEY ENCASHMENT '.$loadtransaction_amountdue;
+			      $content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
+			      $content['ledger_datetimeunix'] = $ledger_datetimeunix;
+			      $content['ledger_user'] = $user_staffid;
+			      $content['ledger_seq'] = '0';
+			      $content['ledger_receiptno'] = $receiptno;
+
+			      if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
+			        json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+			        die;
+			      }
+
+			      computeStaffBalance($user_staffid);
+			    }
 
 					json_encode_return($retval);
 					die;

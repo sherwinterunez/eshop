@@ -1,6 +1,6 @@
 <?php
 $moduleid = 'smartmoney';
-$submod = 'cards';
+$submod = 'adjustment';
 $templatemainid = $moduleid.'main';
 $templatedetailid = $moduleid.'detail';
 $mainheight = 250;
@@ -124,15 +124,19 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 			myGrid.setImagePath("/codebase/imgs/")
 
-			myGrid.setHeader("#master_checkbox,ID, Card Number, Type, &nbsp;");
+			myGrid.setHeader("#master_checkbox, ID, Date, Customer, Simcard, &nbsp;");
 
-			myGrid.setInitWidths("50,70,200,200,*");
+			myGrid.setInitWidths("50,180,200,100,100,*");
 
-			myGrid.setColAlign("center,center,left,left,left");
+			myGrid.setColAlign("center,left,left,left,left,left");
 
-			myGrid.setColTypes("ch,ro,ro,ro,ro");
+			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,");
 
-			myGrid.setColSorting("int,int,str,str,str");
+			myGrid.setColSorting("int,str,str,str,str,str");
+
+			//myGrid.setNumberFormat("0,000.00",6);
+
+			//myGrid.setNumberFormat("0,000.00",7);
 
 			myGrid.enablePaging(true,100,10,"<?php echo $templatemainid.$submod; ?>gridpagingArea",true,"<?php echo $templatemainid.$submod; ?>gridrecinfoArea");
 
@@ -147,9 +151,9 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 				if(ddata.rows[0].id) {
 
-					myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#combo_filter,&nbsp;");
+					//myGrid.attachHeader("&nbsp;,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#combo_filter");
 
-					/*myGrid.attachEvent("onBeforeSelect", function(new_row,old_row,new_col_index){
+					myGrid.attachEvent("onBeforeSelect", function(new_row,old_row,new_col_index){
 
 						var method = myFormStatus_%formval%;
 
@@ -158,7 +162,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 						}
 
 						return true;
-					});*/
+					});
 
 					myGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
 						layout_resize_%formval%();
@@ -188,7 +192,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 						obj.rowid = rowId;
 						obj.formval = '%formval%';
 
-						obj.title = 'Cards / '+myGrid.cells(rowId,2).getValue();
+						obj.title = 'Item / '+myGrid.cells(rowId,2).getValue()+' / '+myGrid.cells(rowId,3).getValue();
 
 						openWindow(obj, function(winobj,obj){
 							console.log(obj);
@@ -283,9 +287,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 				layout_resize_%formval%();
 
-				<?php /*
-
-				myTab.postData('/'+settings.router_id+'/json/', {
+				/*myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {},
 					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=nodata&formval=%formval%",
 				}, function(ddata,odata){
@@ -293,9 +295,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 						jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
 						layout_resize_%formval%();
 					}
-				});
-
-				*/ ?>
+				});*/
 
 			}
 
@@ -326,7 +326,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 			obj.rowid = 0;
 			obj.formval = '%formval%';
 
-			obj.title = 'New Cards';
+			obj.title = 'New Adjustment';
 
 			openWindow(obj, function(winobj,obj){
 				console.log(obj);

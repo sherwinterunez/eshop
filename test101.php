@@ -151,10 +151,14 @@ doSMSCommands3($sms,$mobileNo,$ip);
 
 //$cardno = '5299672795242119|PADALA';
 
-$cardno = '5299672795242119';
+/*$cardno = '5299672795242119';
 
 $x = explode('|',$cardno);
 
-pre(array('$x'=>$x));
+pre(array('$x'=>$x));*/
+
+$sm = getAllSmartMoney();
+
+pre(array('$sm'=>$sm));
 
 ////

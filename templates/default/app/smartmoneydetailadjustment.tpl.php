@@ -1,6 +1,6 @@
 <?php
 $moduleid = 'smartmoney';
-$submod = 'cards';
+$submod = 'adjustment';
 $templatemainid = $moduleid.'main';
 $templatedetailid = $moduleid.'detail';
 
@@ -97,15 +97,14 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%").height(dim[1]-123);
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%").width(dim[0]-36);
 
-		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .servicefees_container_%formval% .dhxform_container").height(dim[1]-210);
-		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .servicefees_container_%formval% .dhxform_container").width(dim[0]-54);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .item_simcommands_%formval% .dhxform_container").height(dim[1]-150);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .item_simcommands_%formval% .dhxform_container").width(dim[0]-54);
 
-		if(typeof(myWinObj.myGridSmartMoneyScheme)!='undefined') {
+		if(typeof(myWinObj.myGridAssignedSim)!='undefined') {
 			try {
-				myWinObj.myGridSmartMoneyScheme.setSizes();
+				myWinObj.myGridAssignedSim.setSizes();
 			} catch(e) {}
 		}
-
 	}
 
 	function <?php echo $wid.$templatedetailid.$submod; ?>_openwindow_%formval%(rowid) {
@@ -125,7 +124,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		//obj.title = 'Sim Cards / '+myGrid.cells(rowId,2).getValue()+' / '+myGrid.cells(rowId,3).getValue();
 
-		obj.title = 'Cards';
+		obj.title = 'Adjustment';
 
 		openWindow(obj, function(winobj,obj){
 			console.log(obj);
@@ -183,10 +182,11 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myTabbar.setArrowsMode("auto");
 
+		//myTabbar.addTab("tbItem", "Item");
 		myTabbar.addTab("tbDetails", "Details");
-		//myTabbar.addTab("tbPayments", "Payments");
-		//myTabbar.addTab("tbMessage", "Message");
-		//myTabbar.addTab("tbHistory", "History");
+		//myTabbar.addTab("tbSimcommands", "Assigned Sim and Sim Commands");
+		//myTabbar.addTab("tbSmsexpression", "SMS Expression");
+		//myTabbar.addTab("tbSmserror", "SMS Error");
 
 		myTabbar.tabs("tbDetails").setActive();
 
@@ -205,9 +205,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
 			]},
 			{type: "block", name: "tbDetails", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo json_encode($params['tbDetails']); ?>},
-			//{type: "block", name: "tbPayments", hidden: true, width: 1500, blockOffset: 0, offsetTop:0, list:[]},
-			//{type: "block", name: "tbMessage", hidden: true, width: 1500, blockOffset: 0, offsetTop:0, list:[]},
-			//{type: "block", name: "tbHistory", hidden: true, width: 1500, blockOffset: 0, offsetTop:0, list:[]},
+			{type: "label", label: ""},
 			{type: "label", label: ""}
 		];
 
@@ -232,222 +230,134 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myFormStatus_%formval% = '<?php echo $method; ?>';
 
-///////////////////////////////////
-
-		myTab.postData('/'+settings.router_id+'/json/', {
-			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&table=servicefeeslist&rowid=<?php echo !empty($vars['post']['rowid'])?$vars['post']['rowid']:'0'; ?>&formval=%formval%",
-		}, function(ddata,odata){
-
-			if(typeof(myWinObj.myGridSmartMoneyScheme)!='null'&&typeof(myWinObj.myGridSmartMoneyScheme)!='undefined'&&myWinObj.myGridSmartMoneyScheme!=null) {
-				try {
-					myWinObj.myGridSmartMoneyScheme.destructor();
-					myWinObj.myGridSmartMoneyScheme = null;
-				} catch(e) {
-					console.log(e);
-				}
-			}
-
-			var myGridSmartMoneyScheme = myWinObj.myGridSmartMoneyScheme = new dhtmlXGridObject(myForm.getContainer('servicefees_container'));
-
-			myGridSmartMoneyScheme.setImagePath("/codebase/imgs/")
-
-			myGridSmartMoneyScheme.setHeader("No, Minimum Amount, Maximum Amount, Send Agent Commission, Transfer Fee, Receive Agent Commission, &nbsp;");
-
-			myGridSmartMoneyScheme.setInitWidths("50,200,200,200,200,200,*");
-
-			myGridSmartMoneyScheme.setColAlign("center,right,right,right,right,right,right");
-
-			myGridSmartMoneyScheme.setColTypes("ro,edn,edn,edn,edn,edn,ro");
-
-			//myGridSmartMoneyScheme.setNumberFormat("00000000000",1,"","");
-
-			//myGridSmartMoneyScheme.setNumberFormat("0,000.00",1,".",",");
-			//myGridSmartMoneyScheme.setNumberFormat("0,000.00",2,".",",");
-			//myGridSmartMoneyScheme.setNumberFormat("0,000.00",3,".",",");
-			//myGridSmartMoneyScheme.setNumberFormat("0,000.00",4,".",",");
-			//myGridSmartMoneyScheme.setNumberFormat("0,000.00",5,".",",");
-
-			myGridSmartMoneyScheme.setColSorting("str,int,int,int,int,int,int");
-
-			//var combobox = myGridSmartMoneyScheme.getCombo(2);
-			//combobox.put("Smart","Smart");
-			//combobox.put("Globe","Globe");
-			//combobox.put("Sun","Sun");
-
-			myGridSmartMoneyScheme.init();
-
-			myGridSmartMoneyScheme.setSizes();
-
-			/*myGridSmartMoneyScheme.addRow(1,"1,RETAIL,SMART,SRET9988,0,-10,1%,100,1000");
-			myGridSmartMoneyScheme.addRow(2,"2,,,,");
-			myGridSmartMoneyScheme.addRow(3,"3,,,,");
-			myGridSmartMoneyScheme.addRow(4,"4,,,,");
-			myGridSmartMoneyScheme.addRow(5,"5,,,,");
-			myGridSmartMoneyScheme.addRow(6,"6,,,,");
-			myGridSmartMoneyScheme.addRow(7,"7,,,,");
-			myGridSmartMoneyScheme.addRow(8,"8,,,,");
-			myGridSmartMoneyScheme.addRow(9,"9,,,,");
-			myGridSmartMoneyScheme.addRow(10,"10,,,,");*/
-
-			<?php /*
-			myGridSmartMoneyScheme.attachEvent("onCheck", function(rId,cInd,state){
-				var mobileNo = trim(myGridSmartMoneyScheme.cells(rId,1).getValue());
-
-				//showMessage('rId=>'+rId+', cInd=>'+cInd+', state=>'+state+', mobileNo=>'+mobileNo,10000);
-
-				if(state==true&&(cInd==3||cInd==4)) {
-					if(mobileNo=='') {
-						myGridSmartMoneyScheme.cells(rId,cInd).setValue(false);
-					} else {
-						if(cInd==3) {
-							myGridSmartMoneyScheme.forEachRow(function(id){
-								if(rId!=id) {
-									myGridSmartMoneyScheme.cells(id,3).setValue(false);
-								}
-							});
-						}
-					}
-				}
-			});
-			*/ ?>
-
-			<?php /*
-			myGridSmartMoneyScheme.attachEvent("onCellChanged", function(rId,cInd,nValue){
-				//showMessage('rId=>'+rId+', cInd=>'+cInd+', nValue=>'+nValue,10000);
-
-				if(cInd==1) {
-					//var mobileNo = trim(myGridSmartMoneyScheme.cells(rId,cInd).getValue());
-					var mobileNo = trim(nValue);
-
-					if(mobileNo!='') {
-
-						if(!ValidMobileNo(mobileNo)) {
-							myGridSmartMoneyScheme.cells(rId,cInd).setValue('');
-							showErrorMessage('Invalid Mobile Number!',5000);
-							return false;
-						}
-
-						myTab.postData('/'+settings.router_id+'/json/', {
-							odata: {},
-							pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getnetwork&mobileno="+mobileNo+"&formval=%formval%",
-						}, function(ddata,odata){
-							if(ddata.network) {
-								if(ddata.network=='Unknown') {
-									showErrorMessage('Invalid Mobile Number!',5000);
-									return false;
-								}
-								myGridSmartMoneyScheme.cells(rId,2).setValue(ddata.network);
-							}
-						});
-					} else {
-						myGridSmartMoneyScheme.cells(rId,2).setValue('');
-						myGridSmartMoneyScheme.cells(rId,3).setValue(0);
-						myGridSmartMoneyScheme.cells(rId,4).setValue(0);
-					}
-				}
-
-			});
-			*/ ?>
-
-			myGridSmartMoneyScheme.attachEvent("onEditCell", function(stage,rId,cInd,nValue,oValue){
-				//showMessage('state=>'+stage+', rId=>'+rId+', cInd=>'+cInd+', nValue=>'+nValue+', oValue=>'+oValue,10000);
-
-				//if(stage==1&&cInd==6) {
-					//myGridSmartMoneyScheme.cells(rId,cInd).inputMask({alias:'percentage',placeholder:'',min:-100,allowMinus:true,autoUnmask:false});
-					//myGridSmartMoneyScheme.cells(rId,cInd).inputMask('99999999999');
-					//myGridSmartMoneyScheme.cells(rId,cInd).numeric();
-					//jQuery(myGridSmartMoneyScheme.cells(rId,cInd).cell).first().numeric();
-					//jQuery(myGridSmartMoneyScheme.cells(rId,cInd).cell).first().attr('maxlength', 11);
-				//} else
-				//if(stage==1&&(cInd==4||cInd==5)) {
-				//	myGridSmartMoneyScheme.cells(rId,cInd).inputMask({alias:'currency',prefix:'',placeholder:'',allowMinus:true,allowPlus:false,autoUnmask:false});
-				//} else
-				if(stage==1&&(cInd==1||cInd==2||cInd==3||cInd==4||cInd==5)) {
-					myGridSmartMoneyScheme.cells(rId,cInd).inputMask({alias:'currency',prefix:'',placeholder:'',allowMinus:false,allowPlus:false,autoUnmask:false});
-				}
-
-				return true;
-			});
-
-			try {
-
-				myGridSmartMoneyScheme.parse(ddata,function(){
-
-					/*if(typeof(f)!='undefined'&&rowid!=null) {
-						myGridSmartMoneyScheme.selectRowById(rowid,false,true,true);
-					} else
-					if(typeof(f)=='undefined'&&ddata.rows.length>0) {
-						myGridSmartMoneyScheme.selectRowById(ddata.rows[0].id,false,true,true);
-					}*/
-
-					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
-
-					myGridSmartMoneyScheme.forEachRow(function(id){
-						myGridSmartMoneyScheme.cells(id,1).setDisabled(true);
-						myGridSmartMoneyScheme.cells(id,2).setDisabled(true);
-						myGridSmartMoneyScheme.cells(id,3).setDisabled(true);
-						myGridSmartMoneyScheme.cells(id,4).setDisabled(true);
-						myGridSmartMoneyScheme.cells(id,5).setDisabled(true);
-						//myGridSmartMoneyScheme.cells(id,6).setDisabled(true);
-						//myGridSmartMoneyScheme.cells(id,7).setDisabled(true);
-						//myGridSmartMoneyScheme.cells(id,8).setDisabled(true);
-					});
-
-					<?php } ?>
-
-					<?php /*
-					var x;
-
-					if(ddata.rows&&ddata.rows.length>0) {
-						for(x in ddata.rows) {
-							if(ddata.rows[x].type) {
-								//alert(JSON.stringify(ddata.rows[x].type));
-								var myCombo = myGridSmartMoneyScheme.getColumnCombo(1);
-
-								myCombo.load(JSON.stringify(ddata.rows[x].type));
-
-								myCombo.enableFilteringMode(true);
-							}
-							if(ddata.rows[x].provider) {
-								//alert(JSON.stringify(ddata.rows[x].options));
-								var myCombo = myGridSmartMoneyScheme.getColumnCombo(2);
-
-								myCombo.load(JSON.stringify(ddata.rows[x].provider));
-
-								myCombo.enableFilteringMode(true);
-							}
-							if(ddata.rows[x].simcard) {
-								//alert(JSON.stringify(ddata.rows[x].options));
-								var myCombo = myGridSmartMoneyScheme.getColumnCombo(3);
-
-								myCombo.load(JSON.stringify(ddata.rows[x].simcard));
-
-								myCombo.enableFilteringMode(true);
-							}
-							break;
-						}
-					}
-					*/ ?>
-
-				},'json');
-
-			} catch(e) {
-				console.log('myGridSmartMoneyScheme.parse error: '+e);
-			}
-
-
-		});
+		//myForm.hideItem('tbSimcommands');
+		//myForm.hideItem('tbSmsexpression');
+		//myForm.hideItem('tbSmserror');
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new'||$method==$moduleid.'edit') { ?>
+		<?php if($method==$moduleid.'new') { ?>
 
 		myWinToolbar.disableAll();
 
 		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		myForm.setItemFocus("smartmoneyservicefees_desc");
+		//myForm.setItemFocus("simcard_name");
+
+		myForm.enableLiveValidation(true);
+
+		myWinToolbar.showOnly(myToolbar);
+
+		if(myForm.getItemValue('adjustment_datetime')==null) {
+
+			var date = new Date();
+
+			myForm.setItemValue('adjustment_datetime',date);
+
+		}
+
+///////////////////////////////////////
+
+		var dhxCombo = myForm.getCombo("adjustment_simcardassignment");
+
+		dhxCombo.setTemplate({
+			input: '#number#',
+			columns: [
+				/*{header: "&nbsp;",  width:  41, 		option: "#checkbox#"}, */ // column for checkboxes
+				{header: "ID", width:  50, css: "capital", option: "#id#"},
+				{header: "CARD", width:  150, css: "capital", option: "#number#"},
+				{header: "LABEL", width:  150, css: "capital", option: "#label#"},
+				{header: "SIMCARD", width:  150, css: "capital", option: "#simcard#"},
+				/*{header: "ACTIVE", width:  150, css: "capital", option: "#active#"},
+				{header: "ONLINE", width:  150, css: "capital", option: "#online#"},*/
+			]
+		});
+
+		/*
+		<?php
+		$opt = array();
+		$idx = array();
+
+		//$allSims = getAllSims(0,true);
+
+		$allSims = getAllSmartMoney();
+
+		foreach($allSims as $k=>$v) {
+			//if($k!=$vars['post']['rowid']&&!empty($v['simcard_number'])) {
+			if(!empty($v['smartmoney_number'])) {
+				$selected = false;
+
+				if(!empty($vars['params']['adjustmentinfo']['adjustment_simcardassignment'])&&$v['simcard_id']==$vars['params']['adjustmentinfo']['adjustment_simcardassignment']) {
+					$selected = true;
+				}
+
+				$idx[] = $v['smartmoney_number'];
+
+				$opt[] = array('value'=>$v['smartmoney_number'],'selected'=>$selected,'text'=>array(
+					'id' => !empty($v['smartmoney_id']) ? $v['smartmoney_id'] : ' ',
+					'number' => !empty($v['smartmoney_number']) ? $v['smartmoney_number'] : ' ',
+					'label' => !empty($v['smartmoney_label']) ? $v['smartmoney_label'] : ' ',
+					'simcard' => !empty($v['simcard_number']) ? $v['simcard_number'] : ' ',
+					//'active' => !empty($v['simcard_active']) ? 'YES' : ' ',
+					//'online' => !empty($v['simcard_online']) ? 'YES' : ' ',
+				));
+			}
+		}
+		?>
+		*/
+
+		myForm.adjustment_simcardassignment = <?php echo json_encode($idx); ?>;
+
+		myForm.invalidSimcard = false;
+
+		dhxCombo.addOption(<?php echo json_encode($opt); ?>);
+
+		dhxCombo.enableFilteringMode(true);
+
+		dhxCombo.attachEvent("onChange", function(value, text){
+			console.log('onChange: '+value+', '+text);
+		});
+
+		dhxCombo.attachEvent("onClose", function(){
+			//console.log('onChange: '+value+', '+text);
+			//console.log(this);
+			console.log('onClose: '+myForm.getItemValue('adjustment_simcardassignment'));
+		});
+
+		dhxCombo.attachEvent("onBlur", function(){
+			//console.log('onChange: '+value+', '+text);
+
+			var v = myForm.getItemValue('adjustment_simcardassignment');
+
+			if(v.length<1) {
+				return;
+			}
+
+			//console.log('onBlur: ['+v+']');
+			//console.log('onBlur: length: '+v.length);
+			//console.log(myForm.adjustment_customerreceipt);
+			//console.log('indexOf '+myForm.adjustment_customerreceipt.indexOf(myForm.getItemValue('adjustment_customerreceipt')));
+			/*if(myForm.adjustment_simcardassignment.indexOf(v)>=0&&srt.ValidateMobileNo(v)) {
+				//console.log('Valid '+myForm.adjustment_customerreceipt);
+				myForm.invalidSimcard = false;
+			} else {
+				myForm.invalidSimcard = true;
+				showAlert('Invalid Simcard!');
+			}*/
+
+		});
+
+///////////////////////////////////////
+
+		<?php } else if($method==$moduleid.'edit') { ?>
+
+		myWinToolbar.disableAll();
+
+		myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel','<?php echo $moduleid; ?>recompute']);
+
+		//myForm.setItemFocus("simcard_name");
+
+		myForm.enableLiveValidation(true);
 
 		myWinToolbar.showOnly(myToolbar);
 
@@ -579,10 +489,54 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		    return true;
 		});
 
-		myForm.attachEvent("onChange", function (name, value){
+		myForm.attachEvent("onChange", function (name, value, state){
 		    //showMessage("onChange: ["+name+"] "+name.length+" / {"+value+"} "+value.length,5000);
+				//showMessage("onChange: ["+name+"] "+name.length+" / {"+state+"} ",5000);
 
 			myChanged_%formval% = true;
+
+			if(name=='adjustment_forcustomer') {
+				if(state) {
+					myForm.enableItem('adjustment_blockcustomer');
+				} else {
+					myForm.disableItem('adjustment_blockcustomer');
+				}
+			} else
+			if(name=='adjustment_forsimcard') {
+				if(state) {
+					myForm.enableItem('adjustment_blocksimcard');
+				} else {
+					myForm.disableItem('adjustment_blocksimcard');
+				}
+			} else
+			if(name=='adjustment_customercredit') {
+				if(state) {
+					myForm.uncheckItem('adjustment_customerdebit');
+				} else {
+					myForm.checkItem('adjustment_customerdebit');
+				}
+			} else
+			if(name=='adjustment_customerdebit') {
+				if(state) {
+					myForm.uncheckItem('adjustment_customercredit');
+				} else {
+					myForm.checkItem('adjustment_customercredit');
+				}
+			} else
+			if(name=='adjustment_simcardcredit') {
+				if(state) {
+					myForm.uncheckItem('adjustment_simcarddebit');
+				} else {
+					myForm.checkItem('adjustment_simcarddebit');
+				}
+			} else
+			if(name=='adjustment_simcarddebit') {
+				if(state) {
+					myForm.uncheckItem('adjustment_simcardcredit');
+				} else {
+					myForm.checkItem('adjustment_simcardcredit');
+				}
+			}
 
 		});
 
@@ -614,7 +568,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			this.clearNote(id);
 		});
 
-		/*myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>new').onClick = function(id,formval) {
+		/*myWinToolbar.getToolbarData('<?php echo $moduleid; ?>new').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);
 
 			myTab.postData('/'+settings.router_id+'/json/', {
@@ -643,8 +597,6 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 					}
 				});
 			}
-
-
 		};
 
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>delete').onClick = function(id,formval,wid) {
@@ -681,9 +633,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 				});
 			}
-
 		};
-
 
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>save').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
@@ -692,13 +642,25 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			var myForm = myWinObj.form;
 
-			//var myForm = myForm2_%formval%;
+			//$("#messagingdetailsoptionsdetailsform_%formval% input[name='txt_optionnumber']").val(txt_optionnumber);
 
 			myForm.trimAllInputs();
 
 			if(!myForm.validate()) return false;
 
+			if(myForm.isItemChecked('adjustment_forcustomer')||myForm.isItemChecked('adjustment_forsimcard')) {
+			} else {
+				showAlert('Please select the type of adjustment to proceed.');
+				return false;
+			}
+
 			showSaving();
+
+			//var date = myForm.getItemValue('adjustment_date');
+
+			//var adjustment_date = (date.getMonth()+1) + '-' + date.getDate() + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
+
+			//console.log({adjustment_date:adjustment_date});
 
 			//$("#usermanagementmanageform_"+formval+" input[name='buttonid']").val(id);
 
@@ -710,23 +672,15 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			var extra = [];
 
-			myWinObj.myGridSmartMoneyScheme.forEachRow(function(id){
-				var m = myWinObj.myGridSmartMoneyScheme.cells(id,0).getValue();
-				var n = myWinObj.myGridSmartMoneyScheme.cells(id,1).getValue();
-				var o = myWinObj.myGridSmartMoneyScheme.cells(id,2).getValue();
-				var p = myWinObj.myGridSmartMoneyScheme.cells(id,3).getValue();
-				if(m&&n) {
-					//extra['itemassignedsim_seq['+id+']'] = m;
-					extra['smartmoneyservicefeeslist_minamount['+id+']'] = n; //myGridSmartMoneyScheme_%formval%.cells(id,1).getValue();
-					extra['smartmoneyservicefeeslist_maxamount['+id+']'] = o; //myGridSmartMoneyScheme_%formval%.cells(id,2).getValue();
-					extra['smartmoneyservicefeeslist_sendcommission['+id+']'] = p; //myGridSmartMoneyScheme_%formval%.cells(id,3).getValue();
-					extra['smartmoneyservicefeeslist_transferfee['+id+']'] = myWinObj.myGridSmartMoneyScheme.cells(id,4).getValue();
-					extra['smartmoneyservicefeeslist_receivecommission['+id+']'] =myWinObj.myGridSmartMoneyScheme.cells(id,5).getValue();
-					//extra['discountlist_rate['+id+']'] = myWinObj.myGridSmartMoneyScheme.cells(id,6).getValue();
-					//extra['discountlist_min['+id+']'] = myWinObj.myGridSmartMoneyScheme.cells(id,7).getValue();
-					//extra['discountlist_max['+id+']'] = myWinObj.myGridSmartMoneyScheme.cells(id,8).getValue();
+			/*myWinObj.myGridAssignedSim.forEachRow(function(id){
+				var m = myWinObj.myGridAssignedSim.cells(id,0).getValue();
+				if(m) {
+					extra['itemassignedsim_seq['+id+']'] = m;
+					extra['itemassignedsim_active['+id+']'] = myWinObj.myGridAssignedSim.cells(id,1).getValue();
+					extra['itemassignedsim_simname['+id+']'] = myWinObj.myGridAssignedSim.cells(id,2).getValue();
+					extra['itemassignedsim_simcommand['+id+']'] = myWinObj.myGridAssignedSim.cells(id,3).getValue();
 				}
-			});
+			});*/
 
 			var obj = {o:this,id:id};
 
@@ -800,6 +754,11 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			return false;
 		};
 
+		/*myWinToolbar.getToolbarData('<?php echo $moduleid; ?>cancel').onClick = function(id,formval,wid) {
+			//showMessage("toolbar: "+id,5000);
+			doSelect_%formval%("<?php echo $submod; ?>");
+		};*/
+
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>cancel').onClick = myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
 			//doSelect_%formval%("<?php echo $submod; ?>");
@@ -818,7 +777,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			} else {
 				myTab.postData('/'+settings.router_id+'/json/', {
 					odata: {rowid:rowid,wid:wid},
-					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=<?php echo $moduleid; ?>new&rowid=0&formval="+formval+"&wid="+wid,
+					pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=inventorynew&rowid=0&formval="+formval+"&wid="+wid,
 				}, function(ddata,odata){
 					if(ddata.html) {
 						jQuery("#"+odata.wid).html(ddata.html);
@@ -828,7 +787,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		};
 
-		/*myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval) {
+		/*myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval,wid) {
 			//showMessage("toolbar: "+id,5000);
 			//doSelect_%formval%("retail");
 

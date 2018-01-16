@@ -3558,6 +3558,7 @@ function getAllSmartMoney() {
 
 			foreach($sm as $n=>$m) {
 				$m['simcard_number'] = $v['simcard_number'];
+				$m['simcard_name'] = $v['simcard_name'];
 				$asm[] = $m;
 			}
 		}

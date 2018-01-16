@@ -695,10 +695,10 @@ if(!class_exists('APP_app_inventory')) {
 										$out = 0;
 
 										if($v['loadtransaction_smartmoneytype']=='PADALA'||$v['loadtransaction_smartmoneytype']=='TOPUP'||$v['loadtransaction_smartmoneytype']=='PAYMAYA'||$v['loadtransaction_smartmoneytype']=='PICKUP') {
-											$out = $v['loadtransaction_amount'];
+											$out = ($v['loadtransaction_amount'] + $v['loadtransaction_receiveagentcommissionamount']);
 										} else
 										if($v['loadtransaction_smartmoneytype']=='RECEIVED') {
-											$in = $v['loadtransaction_amount'];
+											$in = ($v['loadtransaction_amount'] + $v['loadtransaction_receiveagentcommissionamount']);
 										}
 
 										$loadtransaction_runningbalance = ($loadtransaction_runningbalance + $in);
@@ -4152,7 +4152,7 @@ if($readonly) {
 
 						if(!empty($simcard_number)) {
 
-							if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_assignedsim='$simcard_number' and loadtransaction_type in ('smartmoney') order by loadtransaction_createstampunix desc"))) {
+							if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_assignedsim='$simcard_number' and loadtransaction_type in ('smartmoney','adjustment') order by loadtransaction_createstampunix desc"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
@@ -4191,6 +4191,15 @@ if($readonly) {
 										$prefix = 'SM';
 										$in = $v['loadtransaction_amount'];
 										$flag = 2;
+									} else
+									if($v['loadtransaction_type']=='adjustment') {
+										$prefix = 'EADJ';
+										if(!empty($v['loadtransaction_adjustmentdebit'])) {
+											$out = $v['loadtransaction_amountdue'];
+										} else
+										if(!empty($v['loadtransaction_adjustmentcredit'])) {
+											$in = $v['loadtransaction_amountdue'];
+										}
 									}
 
 									$transid = $prefix . $v['loadtransaction_ymd'] . sprintf('%04d', $v['loadtransaction_id']);
