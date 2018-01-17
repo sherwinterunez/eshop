@@ -416,104 +416,20 @@ pre(array('$vars'=>$vars));
 		});
 
 ///////////////////////////////////////
-		<?php /*
-		var dhxCombo = myForm.getCombo("retail_provider");
-		var dhxCombo2 = myForm.getCombo("retail_item");
-
-		dhxCombo.enableFilteringMode(true);
-		dhxCombo2.enableFilteringMode(true);
-
-		dhxCombo.attachEvent("onChange", function(value, text){
-			//console.log('onChange: '+value+', '+text);
-
-			if(!value) {
-				dhxCombo2.clearAll();
-				return false;
-			}
-
-			myTab.postData('/'+settings.router_id+'/json/', {
-				odata: {dhxCombo:dhxCombo,dhxCombo2:dhxCombo2},
-				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitem&provider="+value+"&formval=%formval%",
-			}, function(ddata,odata){
-				if(ddata.option) {
-					//console.log(JSON.stringify(ddata.option));
-					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-					//jQuery("#"+odata.wid).html(ddata.html);
-					odata.dhxCombo2.clearAll();
-					odata.dhxCombo2.addOption(ddata.option);
-				}
-			});
-
-		});
-
-		dhxCombo2.attachEvent("onChange", function(value, text){
-			console.log('onChange: '+value+', '+text);
-
-			if(!value) {
-			//	dhxCombo2.clearAll();
-
-				myForm.setItemValue('retail_load',0);
-				myForm.setItemValue('retail_discountpercent','');
-				myForm.setItemValue('retail_discount','');
-				myForm.setItemValue('retail_amountdue',0);
-				myForm.setItemValue('retail_cashreceived',0);
-
-				myForm.setItemValue('retail_itemcost',0);
-				myForm.setItemValue('retail_itemquantity',0);
-				myForm.setItemValue('retail_itemsrp',0);
-				myForm.setItemValue('retail_itemeshopsrp',0);
-
-				return false;
-			}
-
-			var provider = myForm.getItemValue('retail_provider');
-
-			if(!provider) {
-				return false;
-			}
-
-			myTab.postData('/'+settings.router_id+'/json/', {
-				odata: {dhxCombo:dhxCombo,dhxCombo2:dhxCombo2},
-				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&method=getitemdata&item="+value+"&formval=%formval%&provider="+provider,
-			}, function(ddata,odata){
-				if(ddata.data) {
-					//console.log(JSON.stringify(ddata.data));
-
-					myForm.setItemValue('retail_load',ddata.quantity);
-					myForm.setItemValue('retail_discountpercent',ddata.percent);
-					myForm.setItemValue('retail_discount',ddata.discount);
-					myForm.setItemValue('retail_amountdue',ddata.amountdue);
-
-					myForm.setItemValue('retail_itemcost',ddata.data.item_cost);
-					myForm.setItemValue('retail_itemquantity',ddata.data.item_quantity);
-					myForm.setItemValue('retail_itemsrp',ddata.data.item_srp);
-					myForm.setItemValue('retail_itemeshopsrp',ddata.data.item_eshopsrp);
-
-					if(ddata.data.item_regularload) {
-						myForm.setItemValue('retail_itemregularload',ddata.data.item_regularload);
-					}
-
-					//jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-					//jQuery("#"+odata.wid).html(ddata.html);
-					//odata.dhxCombo2.clearAll();
-					//odata.dhxCombo2.addOption(ddata.option);
-				}
-			});
-
-		});
-
-		dhxCombo.attachEvent("onClose", function(){
-			//console.log('onClose: '+myForm.getItemValue('retail_provider'));
-		});
-
-		dhxCombo.attachEvent("onBlur", function(){
-			//console.log('onBlur: '+myForm.getItemValue('retail_provider'));
-		});
-		*/ ?>
 
 ///////////////////////////////////////
 
-		<?php } else if($method==$moduleid.'approved'||$method==$moduleid.'manually'||$method==$moduleid.'cancelled'||$method==$moduleid.'hold'||$method==$moduleid.'transfer') { ?>
+		<?php } else if($method==$moduleid.'manually') { ?>
+
+			myWinToolbar.disableAll();
+
+			myWinToolbar.enableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
+
+			//myForm.setItemFocus("txt_optionsname");
+
+			myWinToolbar.showOnly(myToolbar);
+
+		<?php } else if($method==$moduleid.'approved'||$method==$moduleid.'cancelled'||$method==$moduleid.'hold'||$method==$moduleid.'transfer') { ?>
 
 			myWinToolbar.disableAll();
 

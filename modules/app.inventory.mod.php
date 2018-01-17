@@ -4152,7 +4152,9 @@ if($readonly) {
 
 						if(!empty($simcard_number)) {
 
-							if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_assignedsim='$simcard_number' and loadtransaction_type in ('smartmoney','adjustment') order by loadtransaction_createstampunix desc"))) {
+							$sql = "select * from tbl_loadtransaction where loadtransaction_assignedsim='$simcard_number' and loadtransaction_type in ('smartmoney','adjustment') order by loadtransaction_createstampunix desc";
+
+							if(!($result = $appdb->query($sql))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
@@ -4160,12 +4162,16 @@ if($readonly) {
 							if(!empty($result['rows'][0]['loadtransaction_id'])) {
 								$rows = array();
 
+								//pre(array('$rows'=>$result['rows']));
+
 								foreach($result['rows'] as $k=>$v) {
 
 									if($v['loadtransaction_status']==TRN_COMPLETED||$v['loadtransaction_status']==TRN_COMPLETED_MANUALLY||$v['loadtransaction_status']==TRN_CLAIMED||$v['loadtransaction_status']==TRN_RECEIVED) {
 									} else {
 										continue;
 									}
+
+									//pre(array('$v'=>$v));
 
 									if(trim($v['loadtransaction_cardlabel'])!='') {
 									} else {

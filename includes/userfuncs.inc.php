@@ -4705,6 +4705,27 @@ function getCustomerLastLoadCommand($id=false) {
 	return false;
 }
 
+function getLoadTransactionDestCardNo($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)) {
+	} else return false;
+
+	$sql = "select * from tbl_loadtransaction where loadtransaction_id=$id";
+
+	//pre(array('$sql'=>$sql));
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['loadtransaction_id'])) {
+		return $result['rows'][0]['loadtransaction_destcardno'];
+	}
+
+	return false;
+}
+
 function getLoadTransactionMobileNumber($id=false) {
 	global $appdb;
 

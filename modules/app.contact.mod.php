@@ -5288,13 +5288,17 @@ $block[] = array(
 						if(!empty($result['rows'][0]['ledger_id'])) {
 							foreach($result['rows'] as $k=>$v) {
 
-								$mobileNo = getLoadTransactionMobileNumber($v['ledger_loadtransactionid']);
-
-								if(!$mobileNo) {
-									$mobileNo = getCustomerNumber($v['ledger_user']);
+								if(preg_match('/SMARTMONEY/si',$v['ledger_type'])&&!preg_match('/ENCASHMENT/si',$v['ledger_type'])) {
+									$mobileNo = getLoadTransactionDestCardNo($v['ledger_loadtransactionid']);
+								} else {
+									$mobileNo = getLoadTransactionMobileNumber($v['ledger_loadtransactionid']);
 
 									if(!$mobileNo) {
-										$mobileNo = '';
+										$mobileNo = getCustomerNumber($v['ledger_user']);
+
+										if(!$mobileNo) {
+											$mobileNo = '';
+										}
 									}
 								}
 
