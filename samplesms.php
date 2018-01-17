@@ -183,14 +183,16 @@ $tstop = timer_stop();
 echo "\nsampleSMS done (".$tstop." secs).\n";
 */
 
-$message = "AIRTIME GOSURF99 09173621234\r\n";
+//$message = "AIRTIME GOSURF99 09173621234\r\n";
+
+$message = "17Jan 1221:Sent P500.00 from LOADING to ****1105 at 09287860079. Also deducted P18.50 from your account.Bal:P11,428.75.Ref:71a86777319c";
 
 $content = array();
-$content['smsinbox_contactsid'] = 138;
-$content['smsinbox_contactnumber'] = getCustomerNumber($content['smsinbox_contactsid']);
+$content['smsinbox_contactsid'] = 0; //138;
+$content['smsinbox_contactnumber'] = 'SmartPadala'; //getCustomerNumber($content['smsinbox_contactsid']);
 //$content['smsinbox_contactnumber'] = 'SMARTMoney';
 //$content['smsinbox_contactnumber'] = 'SMARTLoad';
-$content['smsinbox_simnumber'] = '09197708008';
+$content['smsinbox_simnumber'] = '09477409000'; //'09197708008';
 $content['smsinbox_message'] = $message;
 $content['smsinbox_unread'] = 1;
 

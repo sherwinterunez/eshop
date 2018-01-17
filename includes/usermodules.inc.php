@@ -6031,7 +6031,7 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 		$loadtransaction_cardlabel = !empty($match['LABEL']) ? $match['LABEL'] : false;
 
-		$loadtransaction_fees = !empty($match['FEE']) ? parseFloat(str_replace(',','',$match['FEE'])) : false;
+		$loadtransaction_fees = !empty($match['FEE']) ? floatval(str_replace(',','',$match['FEE'])) : false;
 
 		$sql = "select * from tbl_loadtransaction where loadtransaction_status=".TRN_SENT." and loadtransaction_type='smartmoney' and loadtransaction_invalid=0 and loadtransaction_assignedsim='$loadtransaction_assignedsim' order by loadtransaction_id asc limit 1";
 
@@ -6048,8 +6048,8 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 			$loadtransaction_id = $content['loadtransaction_id'];
 
-			$loadtransaction_transferfeeamount = parseFloat($content['loadtransaction_transferfeeamount']);
-			$loadtransaction_receiveagentcommissionamount = parseFloat($content['loadtransaction_receiveagentcommissionamount']);
+			$loadtransaction_transferfeeamount = floatval($content['loadtransaction_transferfeeamount']);
+			$loadtransaction_receiveagentcommissionamount = floatval($content['loadtransaction_receiveagentcommissionamount']);
 
 			$transaction_fees = $loadtransaction_transferfeeamount + $loadtransaction_receiveagentcommissionamount;
 
@@ -6127,8 +6127,8 @@ function _SmartMoneyPadalaExpression($vars=array()) {
 
 					$loadtransaction_id = $content['loadtransaction_id'];
 
-					$loadtransaction_transferfeeamount = parseFloat($content['loadtransaction_transferfeeamount']);
-					$loadtransaction_receiveagentcommissionamount = parseFloat($content['loadtransaction_receiveagentcommissionamount']);
+					$loadtransaction_transferfeeamount = floatval($content['loadtransaction_transferfeeamount']);
+					$loadtransaction_receiveagentcommissionamount = floatval($content['loadtransaction_receiveagentcommissionamount']);
 
 					$transaction_fees = $loadtransaction_transferfeeamount + $loadtransaction_receiveagentcommissionamount;
 
