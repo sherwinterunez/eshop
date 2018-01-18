@@ -4651,7 +4651,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 								$content['loadtransaction_amountdue'] = $loadtransaction_amountdue = !empty($post['loadtransaction_amountdue']) ? str_replace(',','',$post['loadtransaction_amountdue']) : 0;
 								//$content['loadtransaction_cashreceived'] = !empty($post['loadtransaction_cashreceived']) ? str_replace(',','',$post['loadtransaction_cashreceived']) : 0;
-								//$content['loadtransaction_changed'] = !empty($post['loadtransaction_changed']) ? str_replace(',','',$post['loadtransaction_changed']) : 0;
+								$content['loadtransaction_changed'] = !empty($post['loadtransaction_changed']) ? str_replace(',','',$post['loadtransaction_changed']) : 0;
 								$content['loadtransaction_sendagentcommissionamount'] = !empty($post['smartmoney_sendagentcommissionamount']) ? str_replace(',','',$post['smartmoney_sendagentcommissionamount']) : 0;
 								$content['loadtransaction_transferfeeamount'] = !empty($post['smartmoney_transferfeeamount']) ? str_replace(',','',$post['smartmoney_transferfeeamount']) : 0;
 								$content['loadtransaction_receiveagentcommissionamount'] = !empty($post['smartmoney_receiveagentcommissionamount']) ? str_replace(',','',$post['smartmoney_receiveagentcommissionamount']) : 0;
