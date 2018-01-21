@@ -695,10 +695,10 @@ if(!class_exists('APP_app_inventory')) {
 										$out = 0;
 
 										if($v['loadtransaction_smartmoneytype']=='PADALA'||$v['loadtransaction_smartmoneytype']=='TOPUP'||$v['loadtransaction_smartmoneytype']=='PAYMAYA'||$v['loadtransaction_smartmoneytype']=='PICKUP') {
-											$out = ($v['loadtransaction_amount'] + $v['loadtransaction_receiveagentcommissionamount']);
+											$out = ($v['loadtransaction_amount'] + $v['loadtransaction_sendagentcommissionamount'] + $v['loadtransaction_transferfeeamount']);
 										} else
 										if($v['loadtransaction_smartmoneytype']=='RECEIVED') {
-											$in = ($v['loadtransaction_amount'] + $v['loadtransaction_receiveagentcommissionamount']);
+											$in = ($v['loadtransaction_amount'] + $v['loadtransaction_sendagentcommissionamount'] + $v['loadtransaction_transferfeeamount']);
 										}
 
 										$loadtransaction_runningbalance = ($loadtransaction_runningbalance + $in);
