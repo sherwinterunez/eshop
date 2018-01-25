@@ -1341,6 +1341,8 @@ alter table tbl_loadtransaction add column loadtransaction_receiverspecifyid tex
 
 alter table tbl_loadtransaction add column loadtransaction_staffid integer NOT NULL DEFAULT 0;
 
+alter table tbl_loadtransaction add column loadtransaction_amountdiff numeric NOT NULL DEFAULT 0;
+
 ------------------------------------------------------------------------------------------------------------------
 
 alter table tbl_remitcust add column remitcust_idtype text DEFAULT ''::text NOT NULL;

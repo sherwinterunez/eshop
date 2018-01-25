@@ -4637,6 +4637,20 @@ if(!class_exists('APP_app_smartmoney')) {
 					$retval['return_message'] = 'Smart Money Transfer successfully updated!';
 
 					if(!empty($post['smartmoney_status'])) {
+
+						if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+
+						$loadtransaction_oldamountdue = 0;
+
+						if(!empty($result['rows'][0]['loadtransaction_id'])) {
+							$loadtransaction = $result['rows'][0];
+
+							$loadtransaction_oldamountdue = $loadtransaction['loadtransaction_amountdue'];
+						}
+
 						$content = array();
 						$content['loadtransaction_status'] = $loadtransaction_status = $post['smartmoney_status'];
 						$content['loadtransaction_updatestamp'] = 'now()';
@@ -4650,6 +4664,18 @@ if(!class_exists('APP_app_smartmoney')) {
 							if(!empty($loadtransaction_cardno)&&!empty($smartmoney_transactiontype)&&!empty($smartmoney_oldtransactiontype)&&$smartmoney_transactiontype!=$smartmoney_oldtransactiontype) {
 
 								$content['loadtransaction_amountdue'] = $loadtransaction_amountdue = !empty($post['loadtransaction_amountdue']) ? str_replace(',','',$post['loadtransaction_amountdue']) : 0;
+
+								$loadtransaction_amountdiff = 0;
+
+								if($loadtransaction_oldamountdue>$loadtransaction_amountdue) {
+									$loadtransaction_amountdiff = $loadtransaction_oldamountdue - $loadtransaction_amountdue;
+								} else
+								if($loadtransaction_amountdue>$loadtransaction_oldamountdue) {
+									$loadtransaction_amountdiff = $loadtransaction_amountdue - $loadtransaction_oldamountdue;
+								}
+
+								$content['loadtransaction_amountdiff'] = $loadtransaction_amountdiff;
+
 								//$content['loadtransaction_cashreceived'] = !empty($post['loadtransaction_cashreceived']) ? str_replace(',','',$post['loadtransaction_cashreceived']) : 0;
 								$content['loadtransaction_changed'] = !empty($post['loadtransaction_changed']) ? str_replace(',','',$post['loadtransaction_changed']) : 0;
 								$content['loadtransaction_sendagentcommissionamount'] = !empty($post['smartmoney_sendagentcommissionamount']) ? str_replace(',','',$post['smartmoney_sendagentcommissionamount']) : 0;
@@ -4695,13 +4721,14 @@ if(!class_exists('APP_app_smartmoney')) {
 
 						if(!empty($user_staffid)) {
 
-							if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id=".$post['rowid']))) {
+							/*if(!($result = $appdb->query("select * from tbl_loadtransaction where loadtransaction_id=".$post['rowid']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
-							}
+							}*/
 
-							if(!empty($result['rows'][0]['loadtransaction_id'])) {
-								$loadtransaction = $result['rows'][0];
+							//if(!empty($result['rows'][0]['loadtransaction_id'])) {
+							if(!empty($loadtransaction)&&!empty($loadtransaction['loadtransaction_id'])) {
+								//$loadtransaction = $result['rows'][0];
 
 								$receiptno = '';
 
@@ -4709,7 +4736,36 @@ if(!class_exists('APP_app_smartmoney')) {
 									$receiptno = $loadtransaction['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($loadtransaction['loadtransaction_id']));
 								}
 
+								if($loadtransaction_status==TRN_COMPLETED_MANUALLY&&!empty($loadtransaction_amountdiff)) {
+
+									$content = array();
+									$content['ledger_loadtransactionid'] = $loadtransaction['loadtransaction_id'];
+									$content['ledger_debit'] = $loadtransaction['loadtransaction_amountdue'];
+
+									$ledger_datetimeunix = intval(getDbUnixDate());
+
+									$content['ledger_type'] = 'REFUND SMARTMONEY '.$loadtransaction['loadtransaction_smartmoneytype'].' '.$loadtransaction_amountdiff;
+									$content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
+									$content['ledger_datetimeunix'] = $ledger_datetimeunix;
+									$content['ledger_user'] = $user_staffid;
+									$content['ledger_seq'] = '0';
+									$content['ledger_receiptno'] = $receiptno;
+
+									//if(!empty($rebate_credit)) {
+										//$content['ledger_rebate'] = $rebate_credit;
+										//$content['ledger_rebatebalance'] = $rebate_balance;
+									//}
+
+									if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
+										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+										die;
+									}
+
+									computeStaffBalance($user_staffid);
+
+								} else
 								if($loadtransaction_status==TRN_CANCELLED) {
+
 									$content = array();
 									$content['ledger_loadtransactionid'] = $loadtransaction['loadtransaction_id'];
 									$content['ledger_debit'] = $loadtransaction['loadtransaction_amountdue'];
@@ -4883,9 +4939,14 @@ if(!class_exists('APP_app_smartmoney')) {
 					$content['loadtransaction_status'] = !empty($post['smartmoney_approved']) ? TRN_APPROVED : TRN_DRAFT;
 					//$content['loadtransaction_itemthreshold'] = $item_threshold;
 
+					if(!empty($user_staffid)) {
+						$content['loadtransaction_staffid'] = $user_staffid;
+					}
+
 					if(!empty($post['loadtransaction_assignedsim'])&&$post['loadtransaction_assignedsim']=='AUTOMATIC') {
 						$asm = getAllSmartMoney();
 						if(!empty($asm)) {
+
 							shuffle($asm);
 
 							$content['loadtransaction_assignedsim'] = $asm[0]['simcard_number'];
@@ -4899,6 +4960,9 @@ if(!class_exists('APP_app_smartmoney')) {
 						$content['loadtransaction_assignedsim'] = $post['loadtransaction_assignedsim'];
 
 						if(!empty($asm)) {
+
+							shuffle($asm);
+
 							foreach($asm as $k=>$v) {
 								if(!empty($v['smartmoney_modemcommand'])&&!empty($v['simcard_number'])&&$v['simcard_number']==$content['loadtransaction_assignedsim']) {
 									//pre(array('$v'=>$v));
