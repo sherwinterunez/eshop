@@ -5897,6 +5897,18 @@ if(!class_exists('APP_app_smartmoney')) {
 					'value' => !empty($params['smartmoneyinfo']['loadtransaction_simcardbalance']) ? $params['smartmoneyinfo']['loadtransaction_simcardbalance'] : '',
 				);
 
+				$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'REFUND/ADJ.',
+					'name' => 'retail_refundadj',
+					'labelWidth' => 125,
+					'inputWidth' => 155,
+					'readonly' => true,
+					'inputMask' => array('alias'=>'currency','prefix'=>'','autoUnmask'=>true),
+					//'required' => $manuallycompleted,
+					'value' => !empty($params['smartmoneyinfo']['loadtransaction_amountdiff']) ? $params['smartmoneyinfo']['loadtransaction_amountdiff'] : '0.00',
+				);
+
 				$params['tbMessage'][] = array(
 		      'type' => 'input',
 		      'label' => 'FROM',
