@@ -4740,14 +4740,14 @@ if(!class_exists('APP_app_smartmoney')) {
 
 									$content = array();
 									$content['ledger_loadtransactionid'] = $loadtransaction['loadtransaction_id'];
-									$content['ledger_debit'] = $loadtransaction['loadtransaction_amountdue'];
+									$content['ledger_debit'] = $loadtransaction_amountdiff;
 
 									$ledger_datetimeunix = intval(getDbUnixDate());
 
 									$content['ledger_type'] = 'REFUND SMARTMONEY '.$loadtransaction['loadtransaction_smartmoneytype'].' '.$loadtransaction_amountdiff;
 									$content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
 									$content['ledger_datetimeunix'] = $ledger_datetimeunix;
-									$content['ledger_user'] = $user_staffid;
+									$content['ledger_user'] = $loadtransaction['loadtransaction_staffid'];
 									$content['ledger_seq'] = '0';
 									$content['ledger_receiptno'] = $receiptno;
 
