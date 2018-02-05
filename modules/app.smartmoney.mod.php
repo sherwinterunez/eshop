@@ -5634,6 +5634,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					'label' => 'RECEIVER NUMBER',
 					'name' => 'smartmoney_receivernumber',
 					'labelWidth' => 150,
+					'inputMask' => array('mask'=>'09999999999'),
 					'readonly' => $readonly,
 					'required' => !$readonly,
 					'value' => !empty($params['smartmoneyinfo']['loadtransaction_recipientnumber']) ? $params['smartmoneyinfo']['loadtransaction_recipientnumber'] : '',

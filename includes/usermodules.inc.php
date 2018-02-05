@@ -4413,6 +4413,86 @@ function _eLoadSMSErrorProcessSMS($vars=array()) {
 
 				}
 			}
+		} else {
+
+			$sql = "select * from tbl_loadtransaction where $where and loadtransaction_status=".TRN_SENT." and loadtransaction_invalid=0 and loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype in ('PADALA','TOPUP','PAYMAYA','PICKUP') order by loadtransaction_id asc limit 1";
+
+			//print_r(array('$sql'=>$sql));
+
+			if(!($result = $appdb->query($sql))) {
+				return false;
+			}
+
+			if(!empty($result['rows'][0]['loadtransaction_id'])) {
+
+				//$content = array();
+				//$content['loadtransaction_simnumber'] = $simnumber;
+
+				$loadtransaction = $result['rows'][0];
+
+				$loadtransaction_id = $loadtransaction['loadtransaction_id'];
+
+				$loadtransaction_staffid = $loadtransaction['loadtransaction_staffid'];
+
+				//$loadtransaction_item = $loadtransaction['loadtransaction_item'];
+
+				//$loadtransaction_provider = $loadtransaction['loadtransaction_provider'];
+
+				/*$customer_type = getCustomerType($loadtransaction_staffid);
+
+				if(!empty($smscommands['smscommands_notification0'])&&!empty($loadtransaction['loadtransaction_customernumber'])) {
+					$noti = explode(',', $smscommands['smscommands_notification0']);
+
+					foreach($noti as $v) {
+						sendToGateway($loadtransaction['loadtransaction_customernumber'],$loadtransaction_assignedsim,getNotificationByID($v));
+					}
+				}*/
+
+				$content = array();
+				$content['loadtransaction_status'] = TRN_CANCELLED;
+				$content['loadtransaction_updatestamp'] = 'now()';
+
+				if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$loadtransaction_id))) {
+					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+					die;
+				}
+
+				if(!empty($loadtransaction)&&!empty($loadtransaction['loadtransaction_id'])&&!empty($loadtransaction_staffid)) {
+
+					print_r(array('SMARTMONEY AUTO CANCEL'=>'SMARTMONEY AUTO CANCEL','$loadtransaction'=>$loadtransaction));
+
+					$receiptno = '';
+
+					if(!empty($loadtransaction['loadtransaction_id'])&&!empty($loadtransaction['loadtransaction_ymd'])) {
+						$receiptno = $loadtransaction['loadtransaction_ymd'] . sprintf('%0'.getOption('$RECEIPTDIGIT_SIZE',7).'d', intval($loadtransaction['loadtransaction_id']));
+					}
+
+					$content = array();
+					$content['ledger_loadtransactionid'] = $loadtransaction['loadtransaction_id'];
+					$content['ledger_debit'] = $loadtransaction['loadtransaction_amountdue'];
+
+					$ledger_datetimeunix = intval(getDbUnixDate());
+
+					$content['ledger_type'] = 'REFUND SMARTMONEY '.$loadtransaction['loadtransaction_smartmoneytype'].' '.$loadtransaction['loadtransaction_amount'];
+					$content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
+					$content['ledger_datetimeunix'] = $ledger_datetimeunix;
+					$content['ledger_user'] = $loadtransaction_staffid;
+					$content['ledger_seq'] = '0';
+					$content['ledger_receiptno'] = $receiptno;
+
+					print_r(array('SMARTMONEY AUTO CANCEL'=>'SMARTMONEY AUTO CANCEL','$ledger'=>$content));
+
+					if(!($result = $appdb->insert("tbl_ledger",$content,"ledger_id"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
+
+					computeStaffBalance($loadtransaction_staffid);
+
+				}
+
+			}
+
 		}
 	}
 

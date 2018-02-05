@@ -9854,6 +9854,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 									$t['resultindex'] = $row['atcommands_resultindex'];
 									$t['expectedresult'] = !empty($row['atcommands_expectedresult']) ? $row['atcommands_expectedresult'] : false;
 									$t['repeat'] = !empty($row['atcommands_repeat']) ? $row['atcommands_repeat'] : false;
+									$t['return'] = !empty($row['atcommands_return']) ? $row['atcommands_return'] : false;
 									$t['regx'] = array();
 
 									for($i=0;$i<10;$i++) {
@@ -10211,6 +10212,7 @@ function doSMSCommands($sms=false,$mobileNo=false) {
 				$t['resultindex'] = $row['atcommands_resultindex'];
 				$t['expectedresult'] = !empty($row['atcommands_expectedresult']) ? $row['atcommands_expectedresult'] : false;
 				$t['repeat'] = !empty($row['atcommands_repeat']) ? $row['atcommands_repeat'] : false;
+				$t['return'] = !empty($row['atcommands_return']) ? $row['atcommands_return'] : false;
 				$t['regx'] = array();
 
 				for($i=0;$i<10;$i++) {
@@ -10505,6 +10507,7 @@ function doSMSCommands3($sms=false,$mobileNo=false) {
 									$t['resultindex'] = $row['atcommands_resultindex'];
 									$t['expectedresult'] = !empty($row['atcommands_expectedresult']) ? $row['atcommands_expectedresult'] : false;
 									$t['repeat'] = !empty($row['atcommands_repeat']) ? $row['atcommands_repeat'] : false;
+									$t['return'] = !empty($row['atcommands_return']) ? $row['atcommands_return'] : false;
 									$t['regx'] = array();
 
 									for($i=0;$i<10;$i++) {
@@ -10870,6 +10873,7 @@ function doSMSCommands3($sms=false,$mobileNo=false) {
 				$t['resultindex'] = $row['atcommands_resultindex'];
 				$t['expectedresult'] = !empty($row['atcommands_expectedresult']) ? $row['atcommands_expectedresult'] : false;
 				$t['repeat'] = !empty($row['atcommands_repeat']) ? $row['atcommands_repeat'] : false;
+				$t['return'] = !empty($row['atcommands_return']) ? $row['atcommands_return'] : false;
 				$t['regx'] = array();
 
 				for($i=0;$i<10;$i++) {
@@ -11251,6 +11255,7 @@ function doModemCommands($sms=false,$mobileNo=false) {
 				$t['resultindex'] = $row['atcommands_resultindex'];
 				$t['expectedresult'] = !empty($row['atcommands_expectedresult']) ? $row['atcommands_expectedresult'] : false;
 				$t['repeat'] = !empty($row['atcommands_repeat']) ? $row['atcommands_repeat'] : false;
+				$t['return'] = !empty($row['atcommands_return']) ? $row['atcommands_return'] : false;
 				$t['regx'] = array();
 
 				for($i=0;$i<10;$i++) {
