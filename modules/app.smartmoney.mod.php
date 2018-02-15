@@ -1915,7 +1915,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 		} // _form_smartmoneydetailadjustment
 
-		function _form_smartmoneydetailencashment($routerid=false,$formid=false) {
+		function _form_smartmoney($routerid=false,$formid=false) {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
 
 			if(!empty($routerid)&&!empty($formid)) {
@@ -3131,7 +3131,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					$content['loadtransaction_amountdue'] = $loadtransaction_amountdue = !empty($post['loadtransaction_amountdue']) ? $post['loadtransaction_amountdue'] : 0;
 					$content['loadtransaction_staffid'] = !empty($user_staffid) ? $user_staffid : 0;
 					$content['loadtransaction_otherchargesamount'] = !empty($post['smartmoney_otherchargesamount']) ? $post['smartmoney_otherchargesamount'] : 0;
-					$content['loadtransaction_createstampunix'] = '#extract(epoch from loadtransaction_updatestamp)#';
+					//$content['loadtransaction_createstampunix'] = '#extract(epoch from loadtransaction_updatestamp)#';
 
 					if(!($result = $appdb->update("tbl_loadtransaction",$content,"loadtransaction_id=".$smartmoneyinfo['loadtransaction_id']))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -4708,6 +4708,13 @@ if(!class_exists('APP_app_smartmoney')) {
 							$content['loadtransaction_simcardbalance'] = $loadtransaction_simcardbalance = !empty($post['retail_simcardbalance']) ? $post['retail_simcardbalance'] : 0;
 							//$content['loadtransaction_runningbalance'] = $loadtransaction_runningbalance = !empty($post['retail_runningbalance']) ? $post['retail_runningbalance'] : 0;
 							//$content['loadtransaction_amount'] = !empty($post['retail_amountdue']) ? $post['retail_amountdue'] : 0;
+
+							if(!empty($content['loadtransaction_manualdate'])&&!empty($content['loadtransaction_manualtime'])) {
+								$sdt = $content['loadtransaction_manualdate'];
+								$stm = $content['loadtransaction_manualtime'];
+
+								$content['loadtransaction_createstampunix'] = date2timestamp($sdt.' '.$stm,'m-d-Y h:i:s');
+							}
 
 							//pre(array('$content'=>$content));
 						}
