@@ -1915,7 +1915,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 		} // _form_smartmoneydetailadjustment
 
-		function _form_smartmoney($routerid=false,$formid=false) {
+		function _form_smartmoneydetailencashment($routerid=false,$formid=false) {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
 
 			if(!empty($routerid)&&!empty($formid)) {
@@ -3300,7 +3300,7 @@ if(!class_exists('APP_app_smartmoney')) {
 					'value' => '',
 				);
 
-				if($post['method']=='smartmoneynew') {
+				if(!empty($post['method'])&&$post['method']=='smartmoneynew') {
 		      $params['tbDetails'][] = array(
 		        'type' => 'combo',
 		        'label' => 'RECIPIENT NAME',
@@ -3370,7 +3370,7 @@ if(!class_exists('APP_app_smartmoney')) {
 		      'value' => $fund_username,
 		    );
 
-		    if($post['method']=='smartmoneynew') {
+		    if(!empty($post['method'])&&$post['method']=='smartmoneynew') {
 
 		      $params['tbDetails'][] = array(
 		        'type' => 'input',
@@ -3514,7 +3514,7 @@ if(!class_exists('APP_app_smartmoney')) {
 		      'value' => '',
 		    );*/
 
-		    if($post['method']=='smartmoneynew') {
+		    if(!empty($post['method'])&&$post['method']=='smartmoneynew') {
 		      $params['tbDetails'][] = array(
 		        'type' => 'calendar',
 		        'label' => 'EXPIRATION DATE',
