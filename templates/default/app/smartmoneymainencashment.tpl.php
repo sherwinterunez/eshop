@@ -125,7 +125,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 
 			myGrid.setImagePath("/codebase/imgs/")
 
-			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Sender, Card, Amount, Sender Agent, Transfer Fee, Receive Agent, Other Charges, Amnt Due, Status");
+			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Receiver, Mobile No, Amount, Sender Agent, Transfer Fee, Receive Agent, Other Charges, Amnt Due, Status");
 
 			myGrid.setInitWidths("50,50,120,120,200,120,80,100,100,100,100,120,120");
 
