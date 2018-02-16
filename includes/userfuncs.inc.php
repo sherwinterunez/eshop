@@ -3542,6 +3542,28 @@ function getSmartMoneyOfSimNumber($sim=false) {
 	return false;
 }
 
+function getSmartMoneyCardNo($sim=false,$label=false) {
+
+	if(!empty($sim)&&!empty($label)) {
+	} else {
+		return false;
+	}
+
+	$mn = getSmartMoneyOfSimNumber($sim);
+
+	if(!empty($mn)&&is_array($mn)) {
+		//pre(array('$mn'=>$mn));
+
+		foreach($mn as $k=>$v) {
+			if($v['smartmoney_label']==$label) {
+				return $v['smartmoney_number'];
+			}
+		}
+	}
+
+	return false;
+}
+
 function getAllSmartMoney() {
 
 	$asims = getAllSims(11,false,'SMARTMONEY');

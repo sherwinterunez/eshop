@@ -157,8 +157,16 @@ $x = explode('|',$cardno);
 
 pre(array('$x'=>$x));*/
 
-$sm = getAllSmartMoney();
+/*$sm = getAllSmartMoney();
 
 pre(array('$sm'=>$sm));
+
+$mn = getSmartMoneyOfSimNumber('09391230888');
+
+pre(array('$mn'=>$mn));*/
+
+$cardno = getSmartMoneyCardNo('09391230888','ENCASHMENT');
+
+pre(array('$cardno'=>$cardno));
 
 ////

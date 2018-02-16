@@ -6453,7 +6453,14 @@ if(!class_exists('APP_app_smartmoney')) {
 
 								$statusString = getLoadTransactionStatusString($v['loadtransaction_status']);
 
-								$rows[] = array('id'=>$v['loadtransaction_id'],'data'=>array(0,$v['loadtransaction_id'],pgDate($v['loadtransaction_updatestamp']),$receiptno,$v['loadtransaction_receivername'],$v['loadtransaction_receivernumber'],number_format($v['loadtransaction_amount'],2),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($v['loadtransaction_amountdue'],2),$statusString));
+								$cardno = getSmartMoneyCardNo($v['loadtransaction_assignedsim'],$v['loadtransaction_cardlabel']);
+
+								if(!empty($cardno)) {
+								} else {
+									$cardno = '';
+								}
+
+								$rows[] = array('id'=>$v['loadtransaction_id'],'data'=>array(0,$v['loadtransaction_id'],pgDate($v['loadtransaction_updatestamp']),$receiptno,$v['loadtransaction_receivername'],$v['loadtransaction_refnumber'],$cardno,number_format($v['loadtransaction_amount'],2),number_format($v['loadtransaction_sendagentcommissionamount'],2),number_format($v['loadtransaction_transferfeeamount'],2),number_format($v['loadtransaction_receiveagentcommissionamount'],2),number_format($v['loadtransaction_otherchargesamount'],2),number_format($v['loadtransaction_amountdue'],2),$statusString));
 							}
 
 							$retval = array('rows'=>$rows);

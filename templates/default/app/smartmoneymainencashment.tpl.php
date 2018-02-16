@@ -125,15 +125,15 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh',$moduleid.'sep1',$modulei
 
 			myGrid.setImagePath("/codebase/imgs/")
 
-			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Receiver, Mobile No, Amount, Sender Agent, Transfer Fee, Receive Agent, Other Charges, Amnt Due, Status");
+			myGrid.setHeader("#master_checkbox, ID, Receipt Date, Receipt No, Receiver, Reference, Assigned No, Amount, Sender Agent, Transfer Fee, Receive Agent, Other Charges, Amnt Due, Status");
 
-			myGrid.setInitWidths("50,50,120,120,200,120,80,100,100,100,100,120,120");
+			myGrid.setInitWidths("50,50,120,120,200,120,120,80,100,100,100,100,120,120");
 
-			myGrid.setColAlign("center,center,left,left,left,center,right,right,right,right,right,right,center");
+			myGrid.setColAlign("center,center,left,left,left,right,right,right,right,right,right,right,right,center");
 
-			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+			myGrid.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
-			myGrid.setColSorting("int,int,str,str,str,str,str,str,str,str,str,str,str");
+			myGrid.setColSorting("int,int,str,str,str,str,str,str,str,str,str,str,str,str");
 
 			myGrid.enablePaging(true,100,10,"<?php echo $templatemainid.$submod; ?>gridpagingArea",true,"<?php echo $templatemainid.$submod; ?>gridrecinfoArea");
 
