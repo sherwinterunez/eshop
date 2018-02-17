@@ -3111,7 +3111,7 @@ if(!class_exists('APP_app_smartmoney')) {
 		        $customer_type = getCustomerType($userData['user_staffid']);
 		      }
 
-					$loadtransaction_id = $smartmoneyinfo['loadtransaction_id'];
+					$retval['rowid'] = $loadtransaction_id = $smartmoneyinfo['loadtransaction_id'];
 
 					$content = array();
 
