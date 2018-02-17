@@ -6435,7 +6435,7 @@ if(!class_exists('APP_app_smartmoney')) {
               $where = " and extract(epoch from loadtransaction_updatestamp)>=$datefrom and extract(epoch from loadtransaction_updatestamp)<=$dateto";
             }
 
-						if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype in ('RECEIVED') and loadtransaction_status=".TRN_CLAIMED." $where order by loadtransaction_id desc"))) {
+						if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from loadtransaction_updatestamp)) as elapsedtime from tbl_loadtransaction where loadtransaction_type='smartmoney' and loadtransaction_smartmoneytype in ('RECEIVED') and loadtransaction_status=".TRN_CLAIMED." $where order by loadtransaction_updatestamp desc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
