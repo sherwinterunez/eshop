@@ -1193,7 +1193,7 @@ pre(array('$vars'=>$vars));
 
 							//console.log('WID: '+wid);
 
-							//closeWindow(wid);
+							closeWindow(wid);
 
 							if(data.rowid) {
 								<?php echo $wid.$templatedetailid.$submod; ?>_openwindow_%formval%(data.rowid)
