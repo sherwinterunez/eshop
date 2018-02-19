@@ -4950,7 +4950,7 @@ if(!class_exists('APP_app_smartmoney')) {
 						$content['loadtransaction_staffid'] = $user_staffid;
 					}
 
-					/*if(!empty($post['loadtransaction_assignedsim'])&&$post['loadtransaction_assignedsim']=='AUTOMATIC') {
+					if(!empty($post['loadtransaction_assignedsim'])&&$post['loadtransaction_assignedsim']=='AUTOMATIC') {
 						$asm = getAllSmartMoney();
 						if(!empty($asm)) {
 
@@ -4978,15 +4978,6 @@ if(!class_exists('APP_app_smartmoney')) {
 									break;
 								}
 							}
-						}
-					}*/
-
-					if(!empty($post['loadtransaction_assignedsim'])) {
-						$cardassigned = explode('|',$post['loadtransaction_assignedsim']);
-						if(!empty($cardassigned)&&!empty($cardassigned[0])&&!empty($cardassigned[1])&&!empty($cardassigned[2])) {
-							$content['loadtransaction_assignedsim'] = $cardassigned[0];
-							$content['loadtransaction_simcommand'] = $cardassigned[2];
-							$content['loadtransaction_cardlabel'] = $cardassigned[1];
 						}
 					}
 
@@ -5437,21 +5428,17 @@ if(!class_exists('APP_app_smartmoney')) {
 				//	$opt[] = array('text'=>'','value'=>'','selected'=>false);
 				//}
 
-				//$assignedsim = array('AUTOMATIC');
-
-				$assignedsim = array();
+				$assignedsim = array('AUTOMATIC');
 
 				$asm = getAllSmartMoney();
 
 				if(!empty($asm)) {
 					foreach($asm as $k=>$v) {
 						if(!empty($v['simcard_number'])&&!in_array($v['simcard_number'],$assignedsim)) {
-							$assignedsim[] = array('simcard_number'=>$v['simcard_number'],'smartmoney_number'=>$v['smartmoney_number'],'smartmoney_label'=>$v['smartmoney_label'],'smartmoney_modemcommand'=>$v['smartmoney_modemcommand']);
+							$assignedsim[] = $v['simcard_number'];
 						}
 					}
 				}
-
-				//pre(array('$assignedsim'=>$assignedsim));
 
 				foreach($assignedsim as $v) {
 					$selected = false;
@@ -5460,17 +5447,17 @@ if(!class_exists('APP_app_smartmoney')) {
 					}
 					if($readonly) {
 						if($selected) {
-							$opt[] = array('text'=>$v['simcard_number'].'/'.$v['smartmoney_label'],'value'=>$v['simcard_number'].'|'.$v['smartmoney_label'].'|'.$v['smartmoney_modemcommand'],'selected'=>$selected);
+							$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
 						}
 					} else {
-						$opt[] = array('text'=>$v['simcard_number'].'/'.$v['smartmoney_label'],'value'=>$v['simcard_number'].'|'.$v['smartmoney_label'].'|'.$v['smartmoney_modemcommand'],'selected'=>$selected);
+						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
 					}
 				}
 
 				if($post['method']=='smartmoneynew'||$post['method']=='smartmoneytransfer') {
 					$params['tbDetails'][] = array(
 						'type' => 'combo',
-						'label' => 'ASSIGNED CARD',
+						'label' => 'ASSIGNED SIM CARD',
 						'labelWidth' => 200,
 						//'inputWidth' => 100,
 						'name' => 'loadtransaction_assignedsim',
@@ -5482,13 +5469,13 @@ if(!class_exists('APP_app_smartmoney')) {
 				} else {
 					$params['tbDetails'][] = array(
 						'type' => 'input',
-						'label' => 'ASSIGNED CARD',
+						'label' => 'ASSIGNED SIM CARD',
 						'labelWidth' => 200,
 						'name' => 'loadtransaction_assignedsim',
 						//'labelWidth' => 150,
 						'readonly' => true,
 						//'numeric' => true,
-						'value' => !empty($params['smartmoneyinfo']['loadtransaction_assignedsim']) ? $params['smartmoneyinfo']['loadtransaction_assignedsim'].'/'.$params['smartmoneyinfo']['loadtransaction_cardlabel'] : '',
+						'value' => !empty($params['smartmoneyinfo']['loadtransaction_assignedsim']) ? $params['smartmoneyinfo']['loadtransaction_assignedsim'] : '',
 					);
 				}
 

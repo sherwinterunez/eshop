@@ -165,8 +165,12 @@ $mn = getSmartMoneyOfSimNumber('09391230888');
 
 pre(array('$mn'=>$mn));*/
 
-$cardno = getSmartMoneyCardNo('09391230888','ENCASHMENT');
+//$cardno = getSmartMoneyCardNo('09391230888','ENCASHMENT');
 
-pre(array('$cardno'=>$cardno));
+//pre(array('$cardno'=>$cardno));
+
+$asm = getAllSmartMoney();
+
+pre(array('$asm'=>$asm));
 
 ////
