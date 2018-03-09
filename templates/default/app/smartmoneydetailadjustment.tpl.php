@@ -648,11 +648,11 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			if(!myForm.validate()) return false;
 
-			if(myForm.isItemChecked('adjustment_forcustomer')||myForm.isItemChecked('adjustment_forsimcard')) {
+			<?php /*if(myForm.isItemChecked('adjustment_forcustomer')||myForm.isItemChecked('adjustment_forsimcard')) {
 			} else {
 				showAlert('Please select the type of adjustment to proceed.');
 				return false;
-			}
+			}*/ ?>
 
 			showSaving();
 

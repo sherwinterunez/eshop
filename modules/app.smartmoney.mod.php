@@ -1355,7 +1355,7 @@ if(!class_exists('APP_app_smartmoney')) {
 
 					//pre(array('$post'=>$post));
 
-					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
+					/*if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
 						$retval['rowid'] = $post['rowid'];
 
@@ -1377,7 +1377,7 @@ if(!class_exists('APP_app_smartmoney')) {
 							$retval['rowid'] = $result['returning'][0]['smartmoneynumber_id'];
 						}
 
-					}
+					}*/
 
 					json_encode_return($retval);
 					die;

@@ -1264,7 +1264,14 @@ sherwint_eshop=#
 								}
 							} else
 							if($customer_type=='STAFF') {
-								if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc"))) {
+
+								//$sql = "select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc";
+
+								$sql = "select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>=0 and ledger_unpaid=1 and ledger_refunded=0 and ledger_type not ilike '%REFUND%' and (ledger_type ilike '%DEALER%' or ledger_type ilike '%RETAIL%' or ledger_type ilike '%SMARTMONEY ENCASHMENT%' or ledger_type ilike '%SMARTMONEY PADALA%' or ledger_type ilike '%BEGINNING%' or ledger_type ilike '%ADDITIONAL%') order by ledger_datetimeunix asc";
+
+								log_notice(array('$sql'=>$sql));
+
+								if(!($result = $appdb->query($sql))) {
 									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 									die;
 								}
@@ -1274,22 +1281,42 @@ sherwint_eshop=#
 
 								$ledgerpaid = array();
 								$paydocs = array();
+								$totaldebit = $payment_totalamountpaid;
 
 								//pre(array('$payment_totalamountpaid'=>$payment_totalamountpaid));
 
-								log_notice(array('$payment_totalamountpaid'=>$payment_totalamountpaid));
+								foreach($result['rows'] as $k=>$v) {
+									$ledger_debit = toFloat($v['ledger_debit'],2);
+
+									if($ledger_debit>0) {
+										$totaldebit = $totaldebit + $ledger_debit;
+									}
+								}
+
+								log_notice(array('$payment_totalamountpaid'=>$payment_totalamountpaid,'$totaldebit'=>$totaldebit,'total'=>($payment_totalamountpaid+$totaldebit)));
 
 								//$amountdue = 0;
 								foreach($result['rows'] as $k=>$v) {
 									//$amountdue = $amountdue + floatval($v['ledger_credit']);
 
+									$ledger_debit = toFloat($v['ledger_debit'],2);
 									$ledger_credit = toFloat($v['ledger_credit'],2);
+
+									if($ledger_debit>0) {
+										$paid = array();
+										$paid['debit'] = true;
+										$paid['unpaid'] = 0;
+										$ledgerpaid[$v['ledger_id']] = $paid;
+										continue;
+									}
 
 									if(!empty($v['ledger_paid'])) {
 										$ledger_credit = toFloat($v['ledger_credit'],2) - toFloat($v['ledger_paid'],2);
 									}
 
-									$tcompute = toFloat(($payment_totalamountpaid - $ledger_credit),2);
+									//$tcompute = toFloat(($payment_totalamountpaid - $ledger_credit),2);
+
+									$tcompute = toFloat(($totaldebit - $ledger_credit),2);
 
 									if($tcompute>=0) {
 										$paid = array();
@@ -1306,7 +1333,8 @@ sherwint_eshop=#
 										//$paid['balance0'] = round($tcompute,2);
 										$paid['balance'] = $tcompute;
 
-										$payment_totalamountpaid = $tcompute;
+										//$payment_totalamountpaid = $tcompute;
+										$totaldebit = $tcompute;
 
 										$ledgerpaid[$v['ledger_id']] = $paid;
 										$paydocs[$v['ledger_id']] = $v;
@@ -1314,11 +1342,19 @@ sherwint_eshop=#
 										$paid = array();
 										$paid['credit'] = toFloat($ledger_credit,2);
 
-										if(!empty($v['ledger_paid'])) {
+										/*if(!empty($v['ledger_paid'])) {
 											$paid['paid'] = toFloat($payment_totalamountpaid,2) + toFloat($v['ledger_paid'],2);
 											$paid['ipay'] = toFloat($payment_totalamountpaid,2);
 										} else {
 											$paid['paid'] = toFloat($payment_totalamountpaid,2);
+											//$paid['ipay'] = round(floatval($payment_totalamountpaid),2);
+										}*/
+
+										if(!empty($v['ledger_paid'])) {
+											$paid['paid'] = toFloat($totaldebit,2) + toFloat($v['ledger_paid'],2);
+											$paid['ipay'] = toFloat($totaldebit,2);
+										} else {
+											$paid['paid'] = toFloat($totaldebit,2);
 											//$paid['ipay'] = round(floatval($payment_totalamountpaid),2);
 										}
 
@@ -1329,7 +1365,7 @@ sherwint_eshop=#
 										$ledgerpaid[$v['ledger_id']] = $paid;
 										$paydocs[$v['ledger_id']] = $v;
 
-										$payment_totalamountpaid = $tcompute;
+										$totaldebit = $tcompute;
 
 										//break;
 									}
@@ -1348,6 +1384,15 @@ sherwint_eshop=#
 
 										log_notice(array('$ledgerpaid['.$k.']'=>$v));
 
+										if(!empty($v['debit'])) {
+											$cupdate = array();
+											$cupdate['ledger_unpaid'] = $v['unpaid'];
+
+											if(!($result = $appdb->update("tbl_ledger",$cupdate,"ledger_id=".$k))) {
+												json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+												die;
+											}
+										} else
 										if($v['paid']>0) {
 											$cupdate = array();
 											$cupdate['ledger_paid'] = $v['paid'];
@@ -2002,13 +2047,21 @@ sherwint_eshop=#
 						$customer_type = getCustomerType($this->post['rowid']);
 
 						if($customer_type=='REGULAR') {
-							if(!($result = $appdb->query("select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=".$this->post['rowid']." and a.ledger_unpaid=1 and a.ledger_fundid=b.fund_id and b.fund_type='fundcredit' order by a.ledger_datetimeunix asc"))) {
+
+							$sql = "select a.*,b.* from tbl_ledger as a,tbl_fund as b where a.ledger_user=".$this->post['rowid']." and a.ledger_unpaid=1 and a.ledger_fundid=b.fund_id and b.fund_type='fundcredit' order by a.ledger_datetimeunix asc";
+
+							if(!($result = $appdb->query($sql))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
 						} else
 						if($customer_type=='STAFF') {
-							if(!($result = $appdb->query("select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc"))) {
+
+							//$sql ="select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc";
+
+							$sql ="select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>=0 and ledger_unpaid=1 and ledger_refunded=0 and ledger_type not ilike '%REFUND%' and (ledger_type ilike '%DEALER%' or ledger_type ilike '%RETAIL%' or ledger_type ilike '%SMARTMONEY ENCASHMENT%' or ledger_type ilike '%SMARTMONEY PADALA%' or ledger_type ilike '%BEGINNING%' or ledger_type ilike '%ADDITIONAL%') order by ledger_datetimeunix asc";
+
+							if(!($result = $appdb->query($sql))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
@@ -2019,21 +2072,34 @@ sherwint_eshop=#
 						//pre(array('$result'=>$result));
 
 						$amountdue = 0;
+						$ledger_credit = 0;
+						$total_debit = 0;
 
 						if(!empty($result['rows'][0]['ledger_id'])) {
 							foreach($result['rows'] as $k=>$v) {
 								$ledger_credit = floatval($v['ledger_credit']);
+								$ledger_debit = 0;
 
 								if(!empty($v['ledger_paid'])) {
 									$ledger_credit = floatval($ledger_credit) - floatval($v['ledger_paid']);
 								}
 
 								$amountdue = $amountdue + $ledger_credit;
+
+								if(!empty($v['ledger_debit'])) {
+									$ledger_debit = floatval($v['ledger_debit']);
+									$total_debit = $total_debit + $ledger_debit;
+
+									$amountdue = $amountdue - $ledger_debit;
+
+									$ledger_credit = $ledger_debit * -1;
+								}
+
 								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$ledger_credit));
 							}
 						}
 
-						$retval = array('rows'=>$rows,'amountdue'=>$amountdue);
+						$retval = array('rows'=>$rows,'amountdue'=>$amountdue,'debit'=>$ledger_debit,'sql'=>$sql);
 					} else
 					if($this->post['table']=='documentgrid') {
 
