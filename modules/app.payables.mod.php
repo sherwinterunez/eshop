@@ -1267,7 +1267,9 @@ sherwint_eshop=#
 
 								//$sql = "select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc";
 
-								$sql = "select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>=0 and ledger_unpaid=1 and ledger_refunded=0 and ledger_type not ilike '%REFUND%' and (ledger_type ilike '%DEALER%' or ledger_type ilike '%RETAIL%' or ledger_type ilike '%SMARTMONEY ENCASHMENT%' or ledger_type ilike '%SMARTMONEY PADALA%' or ledger_type ilike '%BEGINNING%' or ledger_type ilike '%ADDITIONAL%') order by ledger_datetimeunix asc";
+								//$sql = "select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>=0 and ledger_unpaid=1 and ledger_refunded=0 and ledger_type not ilike '%REFUND%' and (ledger_type ilike '%DEALER%' or ledger_type ilike '%RETAIL%' or ledger_type ilike '%SMARTMONEY ENCASHMENT%' or ledger_type ilike '%SMARTMONEY PADALA%' or ledger_type ilike '%BEGINNING%' or ledger_type ilike '%ADDITIONAL%' or ledger_type ilike '%CUSTOMERRELOAD%') order by ledger_datetimeunix asc";
+
+								$sql = "select * from tbl_ledger where ledger_user=".$payment_customerid." and ledger_credit>=0 and ledger_unpaid=1 and ledger_refunded=0 and (ledger_type ilike '%DEALER%' or ledger_type ilike '%RETAIL%' or ledger_type ilike '%SMARTMONEY ENCASHMENT%' or ledger_type ilike '%SMARTMONEY PADALA%' or ledger_type ilike '%BEGINNING%' or ledger_type ilike '%ADDITIONAL%' or ledger_type ilike '%CUSTOMERRELOAD%') order by ledger_datetimeunix asc";
 
 								log_notice(array('$sql'=>$sql));
 
@@ -2059,7 +2061,9 @@ sherwint_eshop=#
 
 							//$sql ="select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>0 and ledger_unpaid=1 and ledger_refunded=0 order by ledger_datetimeunix asc";
 
-							$sql ="select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>=0 and ledger_unpaid=1 and ledger_refunded=0 and ledger_type not ilike '%REFUND%' and (ledger_type ilike '%DEALER%' or ledger_type ilike '%RETAIL%' or ledger_type ilike '%SMARTMONEY ENCASHMENT%' or ledger_type ilike '%SMARTMONEY PADALA%' or ledger_type ilike '%BEGINNING%' or ledger_type ilike '%ADDITIONAL%') order by ledger_datetimeunix asc";
+							//$sql ="select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>=0 and ledger_unpaid=1 and ledger_refunded=0 and ledger_type not ilike '%REFUND%' and (ledger_type ilike '%DEALER%' or ledger_type ilike '%RETAIL%' or ledger_type ilike '%SMARTMONEY ENCASHMENT%' or ledger_type ilike '%SMARTMONEY PADALA%' or ledger_type ilike '%BEGINNING%' or ledger_type ilike '%ADDITIONAL%' or ledger_type ilike '%CUSTOMERRELOAD%') order by ledger_datetimeunix asc";
+
+							$sql ="select * from tbl_ledger where ledger_user=".$this->post['rowid']." and ledger_credit>=0 and ledger_unpaid=1 and (ledger_type ilike '%DEALER%' or ledger_type ilike '%RETAIL%' or ledger_type ilike '%SMARTMONEY ENCASHMENT%' or ledger_type ilike '%SMARTMONEY PADALA%' or ledger_type ilike '%BEGINNING%' or ledger_type ilike '%ADDITIONAL%' or ledger_type ilike '%CUSTOMERRELOAD%') order by ledger_datetimeunix asc";
 
 							if(!($result = $appdb->query($sql))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
