@@ -4769,6 +4769,7 @@ if(!class_exists('APP_app_smartmoney')) {
 									}
 
 									computeStaffBalance($user_staffid);
+									computeStaffBalance($loadtransaction['loadtransaction_staffid']);
 
 								} else
 								if($loadtransaction_status==TRN_CANCELLED) {
@@ -4782,7 +4783,7 @@ if(!class_exists('APP_app_smartmoney')) {
 									$content['ledger_type'] = 'REFUND SMARTMONEY '.$loadtransaction['loadtransaction_smartmoneytype'].' '.$loadtransaction['loadtransaction_amount'];
 									$content['ledger_datetime'] = pgDateUnix($ledger_datetimeunix);
 									$content['ledger_datetimeunix'] = $ledger_datetimeunix;
-									$content['ledger_user'] = $user_staffid;
+									$content['ledger_user'] = $loadtransaction['loadtransaction_staffid']; //$user_staffid;
 									$content['ledger_seq'] = '0';
 									$content['ledger_receiptno'] = $receiptno;
 
@@ -4797,6 +4798,7 @@ if(!class_exists('APP_app_smartmoney')) {
 									}
 
 									computeStaffBalance($user_staffid);
+									computeStaffBalance($loadtransaction['loadtransaction_staffid']);
 
 								}
 							}

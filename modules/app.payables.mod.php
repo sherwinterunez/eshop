@@ -1314,9 +1314,9 @@ sherwint_eshop=#
 										continue;
 									}
 
-									if(!empty($v['ledger_paid'])) {
-										$ledger_credit = toFloat($v['ledger_credit'],2) - toFloat($v['ledger_paid'],2);
-									}
+									//if(!empty($v['ledger_paid'])) {
+										//$ledger_credit = toFloat($v['ledger_credit'],2) - toFloat($v['ledger_paid'],2);
+									//}
 
 									//$tcompute = toFloat(($payment_totalamountpaid - $ledger_credit),2);
 
