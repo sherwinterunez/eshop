@@ -1314,9 +1314,9 @@ sherwint_eshop=#
 										continue;
 									}
 
-									//if(!empty($v['ledger_paid'])) {
-										//$ledger_credit = toFloat($v['ledger_credit'],2) - toFloat($v['ledger_paid'],2);
-									//}
+									if(!empty($v['ledger_paid'])) {
+										$ledger_credit = $ledger_credit - toFloat($v['ledger_paid'],2);
+									}
 
 									//$tcompute = toFloat(($payment_totalamountpaid - $ledger_credit),2);
 
@@ -2087,7 +2087,7 @@ sherwint_eshop=#
 								$ledger_debit = 0;
 
 								if(!empty($v['ledger_paid'])) {
-									$ledger_credit = floatval($ledger_credit) - floatval($v['ledger_paid']);
+									$ledger_credit = $ledger_credit - floatval($v['ledger_paid']);
 								}
 
 								$amountdue = $amountdue + $ledger_credit;
@@ -2101,7 +2101,7 @@ sherwint_eshop=#
 									$ledger_credit = $ledger_debit * -1;
 								}
 
-								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$ledger_credit));
+								$rows[] = array('id'=>$v['ledger_id'],'data'=>array($v['ledger_id'],$v['ledger_receiptno'],$v['ledger_datetime'],$v['ledger_type'],$ledger_credit,$amountdue));
 							}
 						}
 
