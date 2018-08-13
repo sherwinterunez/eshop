@@ -184,6 +184,52 @@ if(!class_exists('APP_app_inventory')) {
 
 		} // _form_inventorymaincashfund
 
+		function _form_inventorystatussimcards($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				$params = array();
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$retval = array();
+
+				if(!($result = $appdb->query("select * from tbl_simcard where simcard_active>0 and simcard_online<1"))) {
+					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+					die;
+				}
+
+				if(!empty($result['rows'][0]['simcard_id'])) {
+
+					$retval['return_code'] = 'ERROR';
+
+					$simerr = array();
+
+					foreach($result['rows'] as $k=>$v) {
+						$simerr[] = $v;
+					}
+
+					$retval['simcard'] = $simerr;
+
+				} else {
+					$retval['return_code'] = 'OK';
+				}
+
+				json_encode_return($retval);
+				die;
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_inventorystatussimcards
+
 		function _form_inventorydetailsimcards($routerid=false,$formid=false) {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
 

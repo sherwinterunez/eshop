@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -55,7 +55,7 @@ srt.init = function(){
 	    //pattern:    "2U",           // string, layout's pattern
 	    pattern:    "1C",           // string, layout's pattern
 	    skin:       "dhx_skyblue",  // string, optional,"dhx_skyblue","dhx_web","dhx_terrace"
-	 
+
 	    offsets: {          // optional, offsets for fullscreen init
 	        top:    0,     // you can specify all four sides
 	        right:  0,     // or only the side where you want to have an offset
@@ -175,7 +175,7 @@ srt.init = function(){
 		if(!tbdata) return false;
 
 		tbdata.tab = this.tabbar.addNewTab({id: id, text:tbdata.text, active:true, close:true, parentobj:this});*/
-		
+
 	});
 
 	initWindow();
@@ -259,11 +259,56 @@ dhtmlXCellObject.prototype.defaultOnClick = function(id,formval,ret) {
 			var $ = jQuery;
 
 			if(data.error_code) {
-			} else 
+			} else
 			if(data.html) {
 			}
 		}
 	});
+
+}
+
+srt.checkStatus = function() {
+
+	postData('/'+settings.router_id+'/json/','action=formonly&formid=inventorystatussimcards&routerid=app&module=inventory',function(data){
+
+		console.log('inventorystatussimcards',data);
+
+		if(data.return_code&&data.return_code=='ERROR'&&data.simcard&&data.simcard.length>0) {
+			for(i=0;i<data.simcard.length;i++) {
+				showErrorMessage('SIMCARD ERROR ('+data.simcard[i].simcard_number+') / '+data.simcard[i].simcard_name);
+			}
+		}
+
+		/*if(data.return_code) {
+			if(data.return_code=='SUCCESS') {
+				//showAlert(data.return_message);
+				//srt.toolbar.setItemText('status',data.return_message);
+
+				var o = srt.toolbar.getObj('status');
+
+				jQuery(o).toggle('fade',function(){
+					srt.toolbar.getObj('status').innerHTML = data.return_message;
+
+					if(data.status=='paused') {
+						//srt.dummy.apply(srt.toolbar.getObj('status'));
+						srt.toolbar.getObj('status').style.color = '#ff0000';
+						//jQuery(srt.toolbar.getObj('status')).animate({'color':'#ff0000'});
+					} else {
+						//jQuery(srt.toolbar.getObj('status')).animate({'color':'#000000'});
+						srt.toolbar.getObj('status').style.color = '#000000';
+					}
+
+					jQuery(o).toggle('fade');
+				});
+
+			}
+		}*/
+
+		setTimeout(function(){
+			srt.checkStatus();
+		},60000);
+
+	},true);
 
 }
 
@@ -272,5 +317,6 @@ jQuery(document).ready(function($) {
 
 	setTimeout(function(){
 		srt.toolbar.doOnClick('dashboard');
+		srt.checkStatus();
 	},600);
 });

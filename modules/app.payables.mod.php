@@ -1327,6 +1327,7 @@ sherwint_eshop=#
 										$paid['credit'] = toFloat($ledger_credit,2);
 
 										if(!empty($v['ledger_paid'])) {
+											$paid['ledger_paid'] = 1;
 											$paid['paid'] = $paid['credit'] + toFloat($v['ledger_paid'],2);
 											$paid['ipay'] = $paid['credit'];
 										} else {

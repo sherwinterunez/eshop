@@ -169,8 +169,10 @@ pre(array('$mn'=>$mn));*/
 
 //pre(array('$cardno'=>$cardno));
 
-$asm = getAllSmartMoney();
+//$asm = getAllSmartMoney();
 
-pre(array('$asm'=>$asm));
+//pre(array('$asm'=>$asm));
+
+computeStaffBalance(509);
 
 ////
